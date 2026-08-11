@@ -40,6 +40,74 @@ export function sql(): Sql {
  * to audit than a directory of generated diffs.
  */
 export const SCHEMA_SQL = `
+-- ---------------------------------------------------------------------------
+-- Better Auth's own tables.
+--
+-- Transcribed from getAuthTables() in the installed better-auth package rather
+-- than from documentation, so they match the version actually running. Column
+-- names are quoted camelCase because that is what Better Auth's query builder
+-- emits; unquoted identifiers would fold to lowercase and every lookup would
+-- miss.
+--
+-- The Better Auth CLI is not used to create these: it requires the auth
+-- instance to be exported as a value, and ours is a lazily-built function so
+-- that \`next build\` does not need a live database.
+-- ---------------------------------------------------------------------------
+create table if not exists "user" (
+  id              text primary key,
+  name            text not null,
+  email           text not null unique,
+  "emailVerified" boolean not null default false,
+  image           text,
+  "createdAt"     timestamptz not null default now(),
+  "updatedAt"     timestamptz not null default now()
+);
+
+create table if not exists session (
+  id           text primary key,
+  "expiresAt"  timestamptz not null,
+  token        text not null unique,
+  "createdAt"  timestamptz not null default now(),
+  "updatedAt"  timestamptz not null default now(),
+  "ipAddress"  text,
+  "userAgent"  text,
+  "userId"     text not null references "user"(id) on delete cascade
+);
+
+create table if not exists account (
+  id                      text primary key,
+  "accountId"             text not null,
+  "providerId"            text not null,
+  "userId"                text not null references "user"(id) on delete cascade,
+  "accessToken"           text,
+  "refreshToken"          text,
+  "idToken"               text,
+  "accessTokenExpiresAt"  timestamptz,
+  "refreshTokenExpiresAt" timestamptz,
+  scope                   text,
+  password                text,
+  "createdAt"             timestamptz not null default now(),
+  "updatedAt"             timestamptz not null default now()
+);
+
+create table if not exists verification (
+  id           text primary key,
+  identifier   text not null,
+  value        text not null,
+  "expiresAt"  timestamptz not null,
+  "createdAt"  timestamptz not null default now(),
+  "updatedAt"  timestamptz not null default now()
+);
+
+-- Index names avoid session_user / current_user style identifiers: SESSION_USER
+-- is a reserved SQL keyword and Postgres rejects it as a relation name.
+create index if not exists session_user_idx on session ("userId");
+create index if not exists account_user_idx on account ("userId");
+create index if not exists verification_identifier_idx on verification (identifier);
+
+-- ---------------------------------------------------------------------------
+-- Application tables.
+-- ---------------------------------------------------------------------------
 create table if not exists accounts (
   id            text primary key,
   email         text unique not null,
