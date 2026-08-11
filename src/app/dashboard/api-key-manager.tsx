@@ -48,9 +48,9 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
   }
 
   return (
-    <div className="rounded-lg border border-ink-200 bg-white">
+    <div className="rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
       <header className="border-b border-ink-100 px-5 py-4">
-        <h2 className="font-serif text-lg text-ink-900">API keys</h2>
+        <h2 className="t-heading text-ink-900">API keys</h2>
         <p className="mt-1 text-sm text-ink-500">
           For the JSON API and the hosted MCP mode. {pro ? '' : 'Keys work on any plan; the API is metered and the free allowance applies.'}
         </p>
@@ -69,7 +69,7 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
             type="button"
             onClick={create}
             disabled={busy}
-            className="rounded bg-ink-900 px-4 py-2 text-sm font-medium text-ink-50 disabled:bg-ink-300"
+            className="rounded-[3px] bg-seal-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-seal-700 disabled:bg-ink-300"
           >
             {busy ? 'Creating…' : 'Create a key'}
           </button>

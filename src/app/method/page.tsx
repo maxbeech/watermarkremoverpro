@@ -5,6 +5,8 @@ import { Faq } from '@/components/faq'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import { MIN_TRIALS } from '@/lib/detector'
 import { loadBaseline } from '@/lib/detector/baselines'
+import { BandRule } from '@/components/brand/band'
+import { PageHeader } from '@/components/brand/ui'
 
 export const metadata: Metadata = {
   title: 'Method',
@@ -48,15 +50,17 @@ export default async function MethodPage() {
   return (
     <>
       <JsonLd data={faqPageLd(FAQ)} />
-      <article className="mx-auto max-w-3xl px-5 pt-12">
-        <h1 className="font-serif text-3xl text-ink-900">Method</h1>
-        <p className="mt-4 text-lg leading-relaxed text-ink-600">
-          Everything MarkWitness reports is one of two measurements, kept separate on purpose. This
-          page is the whole method, including the parts that limit what it can tell you.
-        </p>
+      <PageHeader
+        eyebrow="Method"
+        title="Two measurements, kept separate on purpose."
+        lead="Everything MarkWitness reports is one of two measurements. This page is the whole method, including the parts that limit what it can tell you."
+      />
+
+      <article className="mx-auto max-w-3xl px-5 pt-14">
 
         <section className="mt-10">
-          <h2 className="font-serif text-2xl text-ink-900">1. The provenance-mark test (keyed)</h2>
+          <h2 className="t-title text-ink-900">1. The provenance-mark test (keyed)</h2>
+          <BandRule at={18} className="mt-4 max-w-[6rem]" />
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             A green-list watermark test, after Kirchenbauer, Geiping, Wen, Katz, Miers and Goldstein,{' '}
             <em>A Watermark for Large Language Models</em> (ICML 2023, arXiv:2301.10226). A keyed
@@ -102,7 +106,8 @@ export default async function MethodPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-serif text-2xl text-ink-900">2. The style measurement (key-free)</h2>
+          <h2 className="t-title text-ink-900">2. The style measurement (key-free)</h2>
+          <BandRule at={46} className="mt-4 max-w-[6rem]" />
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Fourteen subject-independent register features, among them mean word length, moving-average
             type-token ratio, hapax ratio, mean sentence length, sentence-length variability,
@@ -120,7 +125,8 @@ export default async function MethodPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-serif text-2xl text-ink-900">The reference corpora</h2>
+          <h2 className="t-title text-ink-900">The reference corpora</h2>
+          <BandRule at={70} className="mt-4 max-w-[6rem]" />
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Measured, not estimated. Every document was language-verified by the engine’s own
             identifier before being included, because the API was asked for Spanish and is generally telling
@@ -166,7 +172,8 @@ export default async function MethodPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-serif text-2xl text-ink-900">3. Per-passage findings are corrected</h2>
+          <h2 className="t-title text-ink-900">3. Per-passage findings are corrected</h2>
+          <BandRule at={30} className="mt-4 max-w-[6rem]" />
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Each passage carries its own test, so a long document runs dozens simultaneously and some
             will look significant by chance. A Benjamini-Hochberg false-discovery-rate correction is
@@ -181,7 +188,8 @@ export default async function MethodPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-serif text-2xl text-ink-900">Where the analysis runs</h2>
+          <h2 className="t-title text-ink-900">Where the analysis runs</h2>
+          <BandRule at={58} className="mt-4 max-w-[6rem]" />
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             The free check runs entirely in your browser. The engine is a single module with no
             network calls; open the network tab and watch. The API, the hosted MCP mode and the PDF

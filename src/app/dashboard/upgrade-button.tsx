@@ -33,7 +33,7 @@ export function UpgradeButton({ billingLive }: { billingLive: boolean }) {
         type="button"
         onClick={start}
         disabled={busy}
-        className="rounded bg-ink-900 px-4 py-2 text-sm font-medium text-ink-50 disabled:bg-ink-300"
+        className="rounded-[3px] bg-seal-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-seal-700 disabled:bg-ink-300"
       >
         {busy ? 'Starting…' : 'Upgrade to Pro'}
       </button>

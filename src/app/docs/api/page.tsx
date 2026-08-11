@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { API_PRICE_PENCE_PER_1K_WORDS, SITE } from '@/lib/site'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
+import { PageHeader } from '@/components/brand/ui'
 
 export const metadata: Metadata = {
   title: 'JSON API',
@@ -12,19 +13,26 @@ export const metadata: Metadata = {
 
 export default function ApiDocsPage() {
   return (
-    <article className="mx-auto max-w-3xl px-5 pt-12 pb-16">
-      <h1 className="font-serif text-3xl text-ink-900">JSON API</h1>
-      <p className="mt-4 text-[15px] leading-relaxed text-ink-600">
-        The same engine the browser runs, plus any detection keys this deployment holds that cannot
-        be shipped to a browser. Metered at{' '}
-        <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words, rounded up.
-      </p>
+    <>
+      <PageHeader
+        eyebrow="For machines"
+        title="JSON API"
+        lead={
+          <>
+            The same engine the browser runs, plus any detection keys this deployment holds that
+            cannot be shipped to a browser. Metered at{' '}
+            <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words, rounded
+            up.
+          </>
+        }
+      />
+      <article className="mx-auto max-w-3xl px-5 pt-12 pb-16">
       <p className="mt-3 text-sm text-ink-500">
-        <a href="/api/openapi.json" className="underline underline-offset-2 hover:text-ink-900">OpenAPI 3.1 document</a>
+        <a href="/api/openapi.json" className="link-quiet">OpenAPI 3.1 document</a>
         {' · '}
-        <a href="/pricing.json" className="underline underline-offset-2 hover:text-ink-900">pricing.json</a>
+        <a href="/pricing.json" className="link-quiet">pricing.json</a>
         {' · '}
-        <Link href="/dashboard" className="underline underline-offset-2 hover:text-ink-900">Get a key</Link>
+        <Link href="/dashboard" className="link-quiet">Get a key</Link>
       </p>
 
       <Section title="Authentication">
@@ -108,14 +116,15 @@ export default function ApiDocsPage() {
           a provenance mark. This is a permanent constraint rather than an unimplemented feature.
         </p>
       </Section>
-    </article>
+      </article>
+    </>
   )
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-10">
-      <h2 className="font-serif text-2xl text-ink-900">{title}</h2>
+      <h2 className="t-heading text-ink-900">{title}</h2>
       <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-ink-600">{children}</div>
     </section>
   )

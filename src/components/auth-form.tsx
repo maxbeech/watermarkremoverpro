@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createAuthClient } from 'better-auth/react'
+import { buttonClass } from '@/components/brand/ui'
 
 const client = createAuthClient()
 
@@ -46,7 +47,7 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            className="w-full rounded border border-ink-200 bg-white px-3 py-2 text-sm"
+            className={INPUT}
           />
         </Field>
       )}
@@ -58,7 +59,7 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
-          className="w-full rounded border border-ink-200 bg-white px-3 py-2 text-sm"
+          className={INPUT}
         />
       </Field>
 
@@ -70,31 +71,33 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
-          className="w-full rounded border border-ink-200 bg-white px-3 py-2 text-sm"
+          className={INPUT}
         />
       </Field>
 
       {error && (
-        <p className="rounded border border-signal-500 bg-signal-100 px-3 py-2 text-sm text-signal-700">{error}</p>
+        <p className="rounded-[3px] border border-signal-400 bg-signal-100 px-3.5 py-2.5 text-sm text-signal-700">
+          {error}
+        </p>
       )}
 
-      <button
-        type="submit"
-        disabled={busy}
-        className="w-full rounded bg-ink-900 px-4 py-2 text-sm font-medium text-ink-50 disabled:bg-ink-300"
-      >
+      <button type="submit" disabled={busy} className={buttonClass('primary', 'w-full')}>
         {busy ? 'Working…' : mode === 'signup' ? 'Create account' : 'Sign in'}
       </button>
     </form>
   )
 }
 
+const INPUT =
+  'w-full rounded-[3px] border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800 ' +
+  'transition-colors duration-150 hover:border-ink-300 focus:border-seal-400'
+
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-sm text-ink-600">{label}</span>
+      <span className="t-eyebrow text-ink-500">{label}</span>
       {hint && <span className="ml-2 text-xs text-ink-400">{hint}</span>}
-      <div className="mt-1">{children}</div>
+      <div className="mt-2">{children}</div>
     </label>
   )
 }
@@ -107,7 +110,7 @@ export function SignOutButton() {
         await client.signOut()
         window.location.href = '/'
       }}
-      className="text-sm text-ink-500 underline underline-offset-2 hover:text-ink-900"
+      className="link-quiet text-sm text-ink-500"
     >
       Sign out
     </button>

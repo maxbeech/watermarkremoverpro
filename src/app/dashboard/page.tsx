@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   if (!databaseConfigured()) {
     return (
       <section className="mx-auto max-w-3xl px-5 py-14">
-        <h1 className="font-serif text-2xl text-ink-900">Accounts are unavailable here</h1>
+        <h1 className="t-title text-ink-900">Accounts are unavailable here</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
           This deployment has no database configured, so sign-in, saved history and API keys are not
           available. This is a deployment configuration state, not an error you caused.
@@ -61,15 +61,15 @@ export default async function DashboardPage() {
   return (
     <section className="mx-auto max-w-3xl px-5 py-12">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-serif text-3xl text-ink-900">Your account</h1>
+        <h1 className="t-title text-ink-900">Your account</h1>
         <SignOutButton />
       </div>
       <p className="mt-2 text-sm text-ink-500">{entitlements.email}</p>
 
       {/* -------------------------------------------------------------- */}
-      <div className="mt-8 rounded-lg border border-ink-200 bg-white p-5">
+      <div className="mt-8 rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 className="font-serif text-lg text-ink-900">{plan.name} plan</h2>
+          <h2 className="t-heading text-ink-900">{plan.name} plan</h2>
           {!entitlements.pro && <UpgradeButton billingLive={stripeConfigured()} />}
         </div>
         <dl className="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
@@ -96,9 +96,9 @@ export default async function DashboardPage() {
       </div>
 
       {/* -------------------------------------------------------------- */}
-      <div className="mt-6 rounded-lg border border-ink-200 bg-white">
+      <div className="mt-6 rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
         <header className="border-b border-ink-100 px-5 py-4">
-          <h2 className="font-serif text-lg text-ink-900">Saved checks</h2>
+          <h2 className="t-heading text-ink-900">Saved checks</h2>
           <p className="mt-1 text-sm text-ink-500">
             Checks run on the server, through the API or when generating an evidence report. The
             no-signup browser check deliberately saves nothing, so it does not appear here.

@@ -3,6 +3,11 @@ import Link from 'next/link'
 import { API_PRICE_PENCE_PER_1K_WORDS, PLANS } from '@/lib/site'
 import { JsonLd, faqPageLd, softwareApplicationLd } from '@/components/json-ld'
 import { Faq } from '@/components/faq'
+import { BandRule } from '@/components/brand/band'
+import { ButtonLink, Eyebrow, PageHeader, Panel, Section, Wrap } from '@/components/brand/ui'
+import { ExhibitFrame, ResultExhibit } from '@/components/marketing/exhibit'
+import { Reveal } from '@/components/marketing/parallax'
+import { markedSpecimenResult } from '@/components/marketing/specimen'
 import { stripeConfigured } from '@/lib/billing'
 
 export const metadata: Metadata = {
@@ -29,23 +34,26 @@ const FAQ = [
   },
 ]
 
-export default function PricingPage() {
+export default async function PricingPage() {
   const billingLive = stripeConfigured()
+  const specimen = await markedSpecimenResult()
 
   return (
     <>
       <JsonLd data={[softwareApplicationLd(), faqPageLd(FAQ)]} />
-      <section className="mx-auto max-w-5xl px-5 pt-12">
-        <h1 className="font-serif text-3xl text-ink-900">Pricing</h1>
-        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-600">
-          The measurement is the same on every tier. What you pay for is the server-side path: keys a
-          browser cannot hold, a stored record, and a document you can hand to someone else.
-        </p>
+      <PageHeader
+        eyebrow="Pricing"
+        title="The measurement is the same on every tier."
+        wide
+        lead="What you pay for is the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else."
+      />
 
+      <Section tight>
+        <Wrap wide>
         {!billingLive && (
-          <div className="mt-6 rounded-lg border border-signal-500 bg-signal-100 px-4 py-3 text-sm text-signal-700">
+          <div className="mb-10 rounded-[4px] border border-signal-400 bg-signal-100 px-5 py-4 text-sm text-signal-700">
             <p className="font-medium">Paid plans are not yet purchasable on this deployment.</p>
-            <p className="mt-1 leading-relaxed">
+            <p className="mt-1.5 leading-relaxed">
               No payment processor is configured here, so the Pro checkout is switched off rather than
               shown as a button that fails. Free and account-tier checks work normally. This notice
               disappears when billing credentials are configured.
@@ -53,7 +61,7 @@ export default function PricingPage() {
           </div>
         )}
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-3">
+        <div className="grid gap-5 lg:grid-cols-3">
           <Tier
             name={PLANS.anonymous.name}
             price="Free"
@@ -82,30 +90,53 @@ export default function PricingPage() {
           />
         </div>
 
-        <div className="mt-8 rounded-lg border border-ink-200 bg-white p-6">
-          <h2 className="font-serif text-xl text-ink-900">For programmatic callers</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-ink-600">
+        {/* What the paid tier actually produces, shown rather than described. */}
+        <div className="mt-14 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <Eyebrow>What Pro adds</Eyebrow>
+            <h2 className="t-title mt-4 text-ink-900">A document, not a screen.</h2>
+            <BandRule at={40} className="mt-5 max-w-[7rem]" />
+            <p className="t-lead mt-5 text-ink-600">
+              The free check gives you this result and deliberately leaves nothing behind. Pro turns
+              the same measurement into a dated PDF carrying the signal strength and its band, the
+              per-passage breakdown after correction, the keys tested, the full stated limits and a
+              SHA-256 hash tying it to the exact file you checked.
+            </p>
+            <p className="mt-5 text-sm leading-relaxed text-ink-500">
+              Not sold at any price, on any tier: removal, reduction, paraphrase or rewriting to
+              weaken a provenance mark.
+            </p>
+          </div>
+
+          <Reveal>
+            <ExhibitFrame
+              url="markwitness.helm7.com/check"
+              tilt
+              caption="A real analysis of a specimen paragraph carrying a mark under the open reference key this product publishes."
+            >
+              <ResultExhibit result={specimen} passages={1} />
+            </ExhibitFrame>
+          </Reveal>
+        </div>
+
+        <Panel className="mt-14 p-7" interactive>
+          <Eyebrow tone="ink">For programmatic callers</Eyebrow>
+          <h2 className="t-heading mt-4 text-ink-900">The same engine, metered</h2>
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-600">
             The JSON API and the MCP server expose the same engine, metered at{' '}
             <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words. An agent
             assembling a deliverable can disclose provenance before handoff rather than leaving the
             recipient to discover it.
           </p>
-          <p className="mt-3 text-sm text-ink-500">
-            <Link href="/docs/api" className="underline underline-offset-2 hover:text-ink-900">API documentation</Link>
-            {' · '}
-            <Link href="/docs/mcp" className="underline underline-offset-2 hover:text-ink-900">MCP server</Link>
-            {' · '}
-            <a href="/pricing.json" className="underline underline-offset-2 hover:text-ink-900">pricing.json</a>
-            {' · '}
-            <a href="/api/openapi.json" className="underline underline-offset-2 hover:text-ink-900">OpenAPI</a>
+          <p className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-500">
+            <Link href="/docs/api" className="link-quiet">API documentation</Link>
+            <Link href="/docs/mcp" className="link-quiet">MCP server</Link>
+            <a href="/pricing.json" className="link-quiet">pricing.json</a>
+            <a href="/api/openapi.json" className="link-quiet">OpenAPI</a>
           </p>
-        </div>
-
-        <p className="mt-8 text-sm leading-relaxed text-ink-500">
-          Not sold at any price, on any tier: removal, reduction, paraphrase or rewriting to weaken a
-          provenance mark.
-        </p>
-      </section>
+        </Panel>
+        </Wrap>
+      </Section>
 
       <Faq items={FAQ} title="Pricing questions" />
     </>
@@ -129,34 +160,43 @@ function Tier({
 }) {
   return (
     <div
-      className={`rounded-lg border bg-white p-6 ${highlight ? 'border-ink-900 shadow-sm' : 'border-ink-200'}`}
+      className={
+        'flex flex-col rounded-[4px] border bg-white p-7 transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-[2px] ' +
+        (highlight
+          ? 'border-seal-300 shadow-[var(--shadow-raised)] hover:shadow-[var(--shadow-exhibit)]'
+          : 'border-ink-200 shadow-[var(--shadow-panel)] hover:border-seal-200 hover:shadow-[var(--shadow-raised)]')
+      }
     >
-      <h2 className="font-serif text-lg text-ink-900">{name}</h2>
-      <p className="mt-2">
-        <span className="figure text-3xl text-ink-900">{price}</span>{' '}
+      <h2 className="t-eyebrow text-ink-400">{name}</h2>
+      <p className="mt-4 flex items-baseline gap-2">
+        <span className="figure text-4xl leading-none text-ink-900">{price}</span>
         <span className="text-sm text-ink-400">{note}</span>
       </p>
-      <ul className="mt-5 space-y-3 text-sm leading-relaxed text-ink-600">
+      <BandRule at={highlight ? 78 : 34} tone={highlight ? 'seal' : 'muted'} className="mt-5 max-w-[5rem]" />
+      <ul className="mt-6 flex-1 space-y-3.5 text-sm leading-relaxed text-ink-600">
         {features.map((f) => (
-          <li key={f} className="flex gap-2">
-            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-300" />
+          <li key={f} className="flex gap-3">
+            <span
+              className={
+                'mt-[7px] h-[3px] w-[3px] shrink-0 ' + (highlight ? 'bg-seal-500' : 'bg-ink-400')
+              }
+            />
             <span>{f}</span>
           </li>
         ))}
       </ul>
       {cta.disabled ? (
-        <span className="mt-6 block cursor-not-allowed rounded bg-ink-100 px-4 py-2 text-center text-sm text-ink-400">
+        <span className="mt-7 block cursor-not-allowed rounded-[3px] bg-ink-100 px-4 py-2.5 text-center text-sm text-ink-400">
           {cta.label}
         </span>
       ) : (
-        <Link
+        <ButtonLink
           href={cta.href}
-          className={`mt-6 block rounded px-4 py-2 text-center text-sm font-medium ${
-            highlight ? 'bg-ink-900 text-ink-50' : 'border border-ink-300 text-ink-800'
-          }`}
+          tone={highlight ? 'primary' : 'quiet'}
+          className="mt-7 w-full"
         >
           {cta.label}
-        </Link>
+        </ButtonLink>
       )}
     </div>
   )

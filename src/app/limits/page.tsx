@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { statedLimits } from '@/lib/detector'
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { JsonLd, faqPageLd } from '@/components/json-ld'
+import { PageHeader } from '@/components/brand/ui'
 import { Faq } from '@/components/faq'
 
 export const metadata: Metadata = {
@@ -32,12 +33,12 @@ export default function LimitsPage() {
   return (
     <>
       <JsonLd data={faqPageLd(FAQ)} />
+      <PageHeader
+        eyebrow="Attached to every result"
+        title="Stated limits"
+        lead="These are attached to every result MarkWitness produces, in every channel, and printed in full on every exported report. They are the output, not commentary on it."
+      />
       <article className="mx-auto max-w-3xl px-5 pt-12">
-        <h1 className="font-serif text-3xl text-ink-900">Stated limits</h1>
-        <p className="mt-4 text-lg leading-relaxed text-ink-600">
-          These are attached to every result MarkWitness produces, in every channel, and printed in
-          full on every exported report. They are the output, not commentary on it.
-        </p>
 
         <ol className="mt-8 space-y-6">
           {limits.map((limit, i) => (
@@ -49,7 +50,7 @@ export default function LimitsPage() {
         </ol>
 
         <section className="mt-12">
-          <h2 className="font-serif text-2xl text-ink-900">The asymmetry worth understanding</h2>
+          <h2 className="t-heading text-ink-900">The asymmetry worth understanding</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             A detected mark is meaningful evidence that text carrying that key’s signature is present.
             An absent mark is much weaker evidence of anything, because so many ordinary histories
@@ -66,7 +67,7 @@ export default function LimitsPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-serif text-2xl text-ink-900">One thing this product will never do</h2>
+          <h2 className="t-heading text-ink-900">One thing this product will never do</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Remove, weaken, paraphrase around or reduce a provenance mark. Not on the free tier, not
             on Pro, not through the API, not through the MCP server, not as a parameter, and not

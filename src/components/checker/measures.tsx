@@ -105,7 +105,7 @@ export function KeyMeasure({
                 {fmtPct(result.greenRate)}
               </p>
             </div>
-            <dl className="flex gap-6 sm:gap-8">
+            <dl className="flex flex-wrap gap-x-6 gap-y-3">
               <Stat label="Expected by chance">
                 <span className="figure text-base">{fmtPct(result.expectedGreenRate)}</span>
               </Stat>
@@ -135,13 +135,13 @@ export function KeyMeasure({
             />
             <div className="mt-2 flex items-baseline justify-between">
               <span className="t-eyebrow text-ink-300">25%</span>
-              <span className="t-eyebrow text-ink-400">
-                {result.greenRateInterval
-                  ? `interval ${fmtPct(result.greenRateInterval.low)} to ${fmtPct(result.greenRateInterval.high)}`
-                  : 'no interval could be computed'}
-              </span>
               <span className="t-eyebrow text-ink-300">85%</span>
             </div>
+            <p className="t-eyebrow mt-2.5 text-ink-400">
+              {result.greenRateInterval
+                ? `interval ${fmtPct(result.greenRateInterval.low)} to ${fmtPct(result.greenRateInterval.high)}`
+                : 'no interval could be computed'}
+            </p>
           </div>
 
           <p className="mt-4 text-xs leading-relaxed text-ink-500">
@@ -173,7 +173,7 @@ export function PassageRow({ passage }: { passage: PassageFinding }) {
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <span className="t-eyebrow text-ink-400">
-          Passage {passage.index + 1} <span className="figure">{passage.words}</span> words
+          Passage {passage.index + 1} · <span className="figure">{passage.words}</span> words
         </span>
         <span
           className={

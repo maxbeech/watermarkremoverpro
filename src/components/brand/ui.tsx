@@ -105,6 +105,36 @@ export function SectionHead({
   )
 }
 
+/**
+ * The masthead every non-home page opens with. Having one of these is what stops
+ * forty pages each inventing their own heading size and their own top padding.
+ */
+export function PageHeader({
+  eyebrow,
+  title,
+  lead,
+  wide = false,
+  children,
+}: {
+  eyebrow: string
+  title: string
+  lead?: React.ReactNode
+  wide?: boolean
+  children?: React.ReactNode
+}) {
+  return (
+    <div className="paper border-b border-ink-200">
+      <Wrap wide={wide} className="pt-12 pb-12">
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h1 className="t-title mt-5 text-ink-900">{title}</h1>
+        <BandRule at={64} className="mt-6 max-w-[9rem]" />
+        {lead && <p className="t-lead mt-6 max-w-2xl text-ink-600">{lead}</p>}
+        {children}
+      </Wrap>
+    </div>
+  )
+}
+
 const BUTTON_BASE =
   'inline-flex items-center justify-center gap-2 rounded-[3px] px-5 py-2.5 text-sm font-medium ' +
   'transition-[background-color,color,box-shadow,transform] duration-150 ' +

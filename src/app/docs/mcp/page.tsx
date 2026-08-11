@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { API_PRICE_PENCE_PER_1K_WORDS, SITE } from '@/lib/site'
+import { PageHeader } from '@/components/brand/ui'
 
 export const metadata: Metadata = {
   title: 'MCP server',
@@ -11,12 +12,18 @@ export const metadata: Metadata = {
 
 export default function McpDocsPage() {
   return (
-    <article className="mx-auto max-w-3xl px-5 pt-12 pb-16">
-      <h1 className="font-serif text-3xl text-ink-900">MCP server</h1>
-      <p className="mt-4 text-[15px] leading-relaxed text-ink-600">
-        So an agent assembling a deliverable can disclose the provenance of text{' '}
-        <em>before</em> handing it over, rather than the recipient discovering it afterwards.
-      </p>
+    <>
+      <PageHeader
+        eyebrow="For machines"
+        title="MCP server"
+        lead={
+          <>
+            So an agent assembling a deliverable can disclose the provenance of text <em>before</em>{' '}
+            handing it over, rather than the recipient discovering it afterwards.
+          </>
+        }
+      />
+      <article className="mx-auto max-w-3xl px-5 pt-12 pb-16">
 
       <Section title="Configuration">
         <p>Point your client at the server over stdio:</p>
@@ -83,17 +90,18 @@ export default function McpDocsPage() {
           laundering surface that would turn an individual diagnostic into an evasion service.
         </p>
         <p className="text-sm">
-          <Link href="/limits" className="underline underline-offset-2 hover:text-ink-900">The full stated limits</Link>
+          <Link href="/limits" className="link-quiet">The full stated limits</Link>
         </p>
       </Section>
-    </article>
+      </article>
+    </>
   )
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-10">
-      <h2 className="font-serif text-2xl text-ink-900">{title}</h2>
+      <h2 className="t-heading text-ink-900">{title}</h2>
       <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-ink-600">{children}</div>
     </section>
   )

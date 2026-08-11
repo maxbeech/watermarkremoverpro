@@ -72,7 +72,7 @@ export function VerifyDemo() {
         <button
           type="button"
           onClick={() => run(true)}
-          className="rounded bg-ink-900 px-5 py-2 text-sm font-medium text-ink-50"
+          className="rounded-[3px] bg-seal-600 px-5 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-seal-700"
         >
           Generate text marked with the reference key
         </button>
@@ -87,7 +87,7 @@ export function VerifyDemo() {
 
       {outcome && (
         <>
-          <div className="rounded-lg border border-ink-200 bg-white p-4">
+          <div className="rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-4">
             <p className="text-xs uppercase tracking-wide text-ink-400">
               {outcome.wasMarked
                 ? 'Text generated WITH the reference mark'
@@ -139,7 +139,7 @@ function Panel({
   expectation: string
 }) {
   return (
-    <div className="rounded-lg border border-ink-200 bg-white p-4">
+    <div className="rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-4">
       <h3 className="font-medium text-ink-900">{title}</h3>
       <p className="text-xs text-ink-400">{subtitle}</p>
 

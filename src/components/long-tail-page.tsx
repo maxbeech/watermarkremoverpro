@@ -82,7 +82,7 @@ export async function LongTailPageView({ page }: { page: LongTailPage }) {
       </div>
 
       <article className="mx-auto w-full max-w-6xl px-5 py-14">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-14">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,23rem)] lg:gap-14">
           <div className="prose-body max-w-2xl space-y-10">
             {page.sections.map((section) => (
               <section key={section.heading}>
