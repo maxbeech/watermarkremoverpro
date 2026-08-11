@@ -72,6 +72,13 @@ export function Drift({
 /**
  * Reveal on first entry into the viewport. One-shot: once shown, an element is
  * never re-hidden, so scrolling back up is not a second performance.
+ *
+ * It starts VISIBLE and only hides itself once mounted JavaScript has confirmed
+ * the element is genuinely below the fold. An earlier version started hidden and
+ * waited to be shown, which meant anything the observer never got around to
+ * reporting stayed invisible: a screenshot of the deployed homepage caught the
+ * second hero panel missing entirely. Motion is allowed to add something to a
+ * page. It is never allowed to be the reason content is not there.
  */
 export function Reveal({
   children,
@@ -83,38 +90,59 @@ export function Reveal({
   className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const [shown, setShown] = useState(false)
+  const [state, setState] = useState<'visible' | 'pending' | 'entering'>('visible')
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setShown(true)
-      return
-    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (typeof IntersectionObserver === 'undefined') return
+
+    // Only worth animating if it is below the fold right now.
+    const rect = el.getBoundingClientRect()
+    if (rect.top < window.innerHeight * 0.92) return
+
+    setState('pending')
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
           if (e.isIntersecting) {
-            setShown(true)
+            setState('entering')
             io.disconnect()
           }
         }
       },
-      { rootMargin: '0px 0px -12% 0px' },
+      { rootMargin: '0px 0px -8% 0px' },
     )
     io.observe(el)
-    return () => io.disconnect()
+
+    // A backstop, so a browser that never fires the observer still shows the
+    // content rather than leaving a hole in the page.
+    const timer = window.setTimeout(() => {
+      setState('entering')
+      io.disconnect()
+    }, 2500)
+
+    return () => {
+      io.disconnect()
+      window.clearTimeout(timer)
+    }
   }, [])
+
+  const hidden = state === 'pending'
 
   return (
     <div
       ref={ref}
       className={className}
       style={{
-        opacity: shown ? 1 : 0,
-        transform: shown ? 'none' : 'translateY(12px)',
-        transition: `opacity 560ms cubic-bezier(0.22,0.9,0.28,1) ${delay}ms, transform 560ms cubic-bezier(0.22,0.9,0.28,1) ${delay}ms`,
+        opacity: hidden ? 0 : 1,
+        transform: hidden ? 'translateY(12px)' : 'none',
+        transition:
+          state === 'visible'
+            ? undefined
+            : `opacity 560ms cubic-bezier(0.22,0.9,0.28,1) ${delay}ms, transform 560ms cubic-bezier(0.22,0.9,0.28,1) ${delay}ms`,
       }}
     >
       {children}
