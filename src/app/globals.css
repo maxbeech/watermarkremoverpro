@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+
+/*
+  MarkWitness is a product people reach for when they have been accused of
+  something. The visual language is deliberately closer to a lab report or a
+  court exhibit than to a SaaS landing page: restrained ink-on-paper palette,
+  a serif for argument, a monospace for anything measured. Nothing pulses,
+  nothing gradients, and no number is ever coloured red for drama.
+*/
+
+@theme {
+  --color-ink-50: #f7f7f5;
+  --color-ink-100: #eeeeea;
+  --color-ink-200: #dcdcd4;
+  --color-ink-300: #b9b9ad;
+  --color-ink-400: #8a8a7c;
+  --color-ink-500: #63635a;
+  --color-ink-600: #474742;
+  --color-ink-700: #33332f;
+  --color-ink-800: #22221f;
+  --color-ink-900: #141412;
+
+  --color-seal-50: #eef4f7;
+  --color-seal-100: #d6e5ed;
+  --color-seal-300: #8bb3c9;
+  --color-seal-500: #3d7595;
+  --color-seal-600: #2f5c76;
+  --color-seal-700: #244557;
+
+  --color-signal-100: #f6ead6;
+  --color-signal-500: #b0741f;
+  --color-signal-700: #7d5115;
+
+  --font-serif: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-ink-50);
+  color: var(--color-ink-800);
+  font-family: var(--font-sans);
+  font-feature-settings: 'kern', 'liga';
+}
+
+/* A measured figure always renders in the monospace face, so a reader can tell
+   at a glance which parts of a result were computed and which are prose. */
+.figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.prose-body p {
+  line-height: 1.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
