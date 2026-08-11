@@ -80,7 +80,7 @@ const ABBREVIATIONS = new Set([
 /** Split into sentences. Used for per-passage attribution and burstiness. */
 export function splitSentences(text: string): Passage[] {
   const passages: Passage[] = []
-  const terminator = /[.!?…]+["'”’\)\]]*(\s+|$)/g
+  const terminator = /[.!?…]+["'”’)\]]*(\s+|$)/g
   let cursor = 0
   let m: RegExpExecArray | null
 
@@ -89,7 +89,7 @@ export function splitSentences(text: string): Passage[] {
     const candidate = text.slice(cursor, endOfSentence)
 
     // Don't split on a known abbreviation, or on an initial like "J. R. R."
-    const beforeDot = candidate.trimEnd().replace(/[.!?…"'”’\)\]]+$/, '')
+    const beforeDot = candidate.trimEnd().replace(/[.!?…"'”’)\]]+$/, '')
     const lastWord = beforeDot.split(/[\s(]+/).pop() ?? ''
     const lastWordNorm = normalizeToken(lastWord)
     if (ABBREVIATIONS.has(lastWordNorm) || /^\p{Lu}$/u.test(lastWord)) continue

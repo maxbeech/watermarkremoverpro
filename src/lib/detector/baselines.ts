@@ -23,11 +23,11 @@ const cache = new Map<LanguageCode, Baseline>()
  * because bundlers must see each import literally to code-split them.
  */
 const loaders: Record<LanguageCode, () => Promise<{ default: unknown }>> = {
-  en: () => import('./baselines/en.json'),
-  es: () => import('./baselines/es.json'),
-  fr: () => import('./baselines/fr.json'),
-  de: () => import('./baselines/de.json'),
-  pt: () => import('./baselines/pt.json'),
+  en: () => import('./baselines/en'),
+  es: () => import('./baselines/es'),
+  fr: () => import('./baselines/fr'),
+  de: () => import('./baselines/de'),
+  pt: () => import('./baselines/pt'),
 }
 
 export async function loadBaseline(language: LanguageCode): Promise<Baseline> {

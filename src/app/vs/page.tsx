@@ -1,0 +1,12 @@
+import type { Metadata } from 'next'
+import { GroupIndex } from '@/components/group-index'
+
+export const metadata: Metadata = {
+  title: 'MarkWitness compared to AI detectors',
+  description: 'MarkWitness gets compared to AI detectors constantly, and they are not substitutes. These pages are precise about what each tool measures and for whom.',
+  alternates: { canonical: '/vs' },
+}
+
+export default function Page() {
+  return <GroupIndex group="vs" title="How MarkWitness compares" intro="MarkWitness gets compared to AI detectors constantly, and they are not substitutes. These pages are precise about what each tool measures and for whom." />
+}

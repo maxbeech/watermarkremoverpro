@@ -1,0 +1,152 @@
+# MarkWitness
+
+**Check your own writing for a statistical AI provenance mark — on your device.**
+
+MarkWitness tells a writer whether their own text carries a statistical AI
+provenance mark, how strong the signal is, and which passages carry it. The free
+check runs entirely in the browser: the document never leaves the device.
+
+It is the mirror image of an AI detector. Detectors are bought by the person
+doing the accusing; MarkWitness is for the person on the other end of it.
+
+> Checking **someone else's** work for AI use is a different job with different
+> ethics. [Learnaway](https://learnaway.ai) does that. Every page of this product
+> says so.
+
+---
+
+## The permanent constraint
+
+**MarkWitness does not remove, weaken, paraphrase around or reduce a provenance
+mark.** Not on the free tier, not on Pro, not through the API, not through the
+MCP server, not as a parameter, and not later.
+
+Provenance marking is a transparency mechanism — the thing Article 50 of the EU
+AI Act leans on — and a tool built to defeat it is an evasion service whatever it
+calls itself. This is enforced by tests in `tests/product-constraints.test.ts`,
+not just stated here.
+
+## What it measures
+
+Two channels, reported separately and never blended into a single "AI score".
+
+### 1. Provenance mark (keyed)
+
+A green-list watermark test after Kirchenbauer et al., *A Watermark for Large
+Language Models* (ICML 2023, [arXiv:2301.10226](https://arxiv.org/abs/2301.10226)).
+A keyed pseudorandom function seeded by the preceding token partitions the
+vocabulary; a marked generator prefers the green half; detection is the
+one-proportion z test on the excess.
+
+Two decisions matter for honesty:
+
+- **Repeated word pairs are scored once.** The z test assumes independent trials.
+  A document that repeats "of the" forty times supplies one bit of evidence, not
+  forty — counting repeats would let a repetitive but entirely human document
+  manufacture its own signal.
+- **Word-level, not subword.** We do not have any model's tokenizer, so we
+  partition word bigrams. A vendor's own detector can reach a different
+  conclusion on the same document, and every result says so.
+
+**The limitation that matters most:** a green-list mark is *keyed*, and no model
+vendor publishes a detection key. MarkWitness tests the keys it holds and names
+them on every result. "No mark detected" therefore always means *under those
+keys* — never "this document is clean". Any tool claiming to detect a named
+vendor's mark without a key from that vendor is not doing what it says.
+
+A **published open reference key** ships with the product so the machinery is
+auditable: mark a passage under it at `/verify` and watch the statistic move,
+then watch the same text sit at chance under a different key.
+
+### 2. Style (key-free)
+
+Fourteen subject-independent register features measured against a per-language
+reference corpus, reported as a distance in standard deviations with a seeded
+percentile bootstrap band.
+
+**This channel does not detect AI.** It measures register. Technical writing,
+fiction, translated text and non-native prose all sit far from an encyclopaedic
+reference for entirely ordinary reasons, and every surface that shows the number
+says so beside it.
+
+### Per-passage findings are corrected
+
+A long document runs one test per passage, so some will look significant by
+chance. A Benjamini-Hochberg false-discovery-rate correction is applied across
+all passages before any is presented as a finding. An uncorrected highlighter
+will confidently colour in sentences of any document you give it.
+
+## Reference baselines are measured, not written
+
+`src/lib/detector/baselines/*.ts` are **generated** from ~597,000 words of
+contemporary Wikipedia prose (CC BY-SA), pulled per language through the
+MediaWiki API. Every document was language-verified by the engine's own
+identifier before being kept — "the source said so" is not verification when the
+result is what every user's number gets compared against.
+
+| Language | Documents | Words | Chunks |
+|---|---|---|---|
+| English | 219 | 219,493 | 567 |
+| Spanish | 113 | 93,981 | 243 |
+| French | 113 | 94,265 | 248 |
+| German | 157 | 113,858 | 310 |
+| Portuguese | 96 | 77,307 | 205 |
+
+A language whose corpus is missing or too thin **fails the build** and ships as
+unsupported. It is never given another language's numbers.
+
+```bash
+npm run corpus      # fetch the corpora (resumable, backs off on 429)
+npm run baselines   # measure them into typed modules
+```
+
+## No fabricated figures
+
+Every statistic in the result type is `number | null` beside a `status` and a
+human-readable reason. "Not computed" is unrepresentable as a number, so a caller
+cannot render a fabricated zero by accident — they have to handle the null. The
+UI renders null as the reason it is null, never as `0` or `—`.
+
+## Development
+
+```bash
+npm install
+vercel env pull .env.local   # DATABASE_URL, BETTER_AUTH_SECRET
+npm run db:push              # apply the schema (idempotent)
+npm run dev                  # http://localhost:3540
+
+npm run check                # typecheck + lint + tests + MCP smoke + build
+npm run mcp                  # run the MCP server over stdio
+```
+
+`npm test` runs the unit suite **and** connects to the MCP server over the real
+protocol. A claim that a product "has an MCP server" is worth exactly as much as
+the last time someone actually connected to it.
+
+## Interfaces for machines
+
+| Surface | Path |
+|---|---|
+| JSON API | `POST /api/v1/check` |
+| Evidence report | `POST /api/v1/report` (Pro) |
+| OpenAPI 3.1 | `/api/openapi.json` |
+| Machine-readable pricing | `/pricing.json` |
+| Agent description | `/llms.txt` |
+| MCP server | `mcp/server.ts` — local (no key, nothing recorded) or hosted |
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · Neon Postgres ·
+Better Auth · Stripe · pdf-lib · vitest · Vercel.
+
+The detection engine is **isomorphic TypeScript**, not WASM. The binding
+requirement is that the computation is real and runs on-device, not that it is
+compiled from Rust — and one module running unchanged in the browser and in the
+Node function gives a single source of truth for the arithmetic rather than two
+implementations that can silently disagree.
+
+## Status
+
+See [`docs/BUILD_LOG.md`](docs/BUILD_LOG.md) for what is built, what is verified
+live, and what is explicitly deferred — including the payment-processor gap that
+keeps paid plans switched off rather than shown as a button that fails.

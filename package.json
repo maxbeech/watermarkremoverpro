@@ -9,7 +9,7 @@
     "start": "next start -p 3540",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run && tsx scripts/mcp-smoke.mts",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "baselines": "tsx scripts/build-baselines.ts",
