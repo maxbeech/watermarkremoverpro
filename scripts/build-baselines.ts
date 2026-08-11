@@ -1,0 +1,133 @@
+/**
+ * Measure the language baselines from the fetched corpora.
+ *
+ * Reads corpus/<lang>/*.txt, chunks every document exactly the way a user's
+ * document will be chunked at runtime, measures every chunk with the same
+ * feature extractor the runtime uses, and writes the mean and standard
+ * deviation of each feature to src/lib/detector/baselines/<lang>.json.
+ *
+ * Those means and standard deviations are the ONLY numbers in this product that
+ * a user's document is compared against, and every one of them is computed here
+ * from real text. None is written by hand, estimated, or carried over from
+ * another product. If the corpus for a language is missing or too small, this
+ * script fails loudly and that language ships as unsupported — a baseline
+ * invented to fill a gap would make every Spanish result a fabrication.
+ *
+ * Run: npm run corpus && npm run baselines
+ */
+
+import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { chunkText, measureChunk, FEATURE_NAMES, type FeatureName } from '../src/lib/detector/features'
+import { FUNCTION_WORDS, SUPPORTED_LANGUAGES, type LanguageCode } from '../src/lib/detector/languages'
+import { mean, stdDev } from '../src/lib/detector/stats'
+
+/** Below this the standard deviations are too unstable to compare against. */
+const MIN_CHUNKS = 120
+
+interface CorpusManifest {
+  source: string
+  license: string
+  retrievedAt: string
+  documents: number
+  tokens: number
+}
+
+async function buildLanguage(lang: LanguageCode): Promise<void> {
+  const dir = join(process.cwd(), 'corpus', lang)
+  if (!existsSync(dir)) {
+    throw new Error(`No corpus at ${dir}. Run "npm run corpus ${lang}" first.`)
+  }
+
+  const manifestRaw = await readFile(join(dir, 'manifest.json'), 'utf8').catch(() => null)
+  if (!manifestRaw) throw new Error(`${lang}: corpus/${lang}/manifest.json is missing — corpus provenance is unknown, refusing to build a baseline from it.`)
+  const manifest = JSON.parse(manifestRaw) as CorpusManifest
+
+  const files = (await readdir(dir)).filter((f) => f.endsWith('.txt'))
+  const perFeature: Record<FeatureName, number[]> = Object.fromEntries(
+    FEATURE_NAMES.map((f) => [f, [] as number[]]),
+  ) as Record<FeatureName, number[]>
+  const perFunctionWord: Record<string, number[]> = Object.fromEntries(
+    FUNCTION_WORDS[lang].map((w) => [w, [] as number[]]),
+  )
+
+  let chunkCount = 0
+  let tokenCount = 0
+
+  for (const file of files) {
+    const text = await readFile(join(dir, file), 'utf8')
+    for (const chunk of chunkText(text)) {
+      const m = measureChunk(chunk, lang)
+      if (m.tokenCount === 0) continue
+      for (const f of FEATURE_NAMES) perFeature[f].push(m.features[f])
+      for (const w of FUNCTION_WORDS[lang]) perFunctionWord[w].push(m.functionWordRates[w])
+      chunkCount++
+      tokenCount += m.tokenCount
+    }
+  }
+
+  if (chunkCount < MIN_CHUNKS) {
+    throw new Error(
+      `${lang}: only ${chunkCount} measurement chunks (need ${MIN_CHUNKS}). Fetch more corpus rather than shipping a baseline this thin.`,
+    )
+  }
+
+  const features: Record<string, { mean: number; sd: number }> = {}
+  for (const f of FEATURE_NAMES) {
+    const sd = stdDev(perFeature[f])
+    features[f] = { mean: mean(perFeature[f]), sd }
+    if (!Number.isFinite(features[f].mean) || !Number.isFinite(sd) || sd <= 0) {
+      throw new Error(`${lang}: feature "${f}" produced a degenerate distribution (mean=${features[f].mean}, sd=${sd}).`)
+    }
+  }
+
+  const functionWords: Record<string, { mean: number; sd: number }> = {}
+  for (const w of FUNCTION_WORDS[lang]) {
+    const sd = stdDev(perFunctionWord[w])
+    // A function word that never appears in the corpus carries no information
+    // and would divide by zero. Drop it rather than fake a spread for it.
+    if (!Number.isFinite(sd) || sd <= 0) continue
+    functionWords[w] = { mean: mean(perFunctionWord[w]), sd }
+  }
+
+  const baseline = {
+    language: lang,
+    builtAt: new Date().toISOString(),
+    corpus: {
+      source: manifest.source,
+      license: manifest.license,
+      retrievedAt: manifest.retrievedAt,
+      documents: manifest.documents,
+      tokens: manifest.tokens,
+    },
+    measurement: {
+      chunks: chunkCount,
+      tokensMeasured: tokenCount,
+      chunkTokens: 400,
+      extractor: 'src/lib/detector/features.ts measureChunk()',
+    },
+    features,
+    functionWords,
+  }
+
+  const outDir = join(process.cwd(), 'src', 'lib', 'detector', 'baselines')
+  await mkdir(outDir, { recursive: true })
+  await writeFile(join(outDir, `${lang}.json`), JSON.stringify(baseline, null, 2) + '\n', 'utf8')
+  console.log(
+    `  ${lang}: ${chunkCount} chunks / ${tokenCount.toLocaleString()} tokens -> src/lib/detector/baselines/${lang}.json ` +
+      `(${Object.keys(functionWords).length}/${FUNCTION_WORDS[lang].length} function words retained)`,
+  )
+}
+
+async function main() {
+  const requested = process.argv.slice(2).filter((a) => !a.startsWith('-'))
+  const languages = (requested.length > 0 ? requested : [...SUPPORTED_LANGUAGES]) as LanguageCode[]
+  console.log('Building baselines...')
+  for (const lang of languages) await buildLanguage(lang)
+}
+
+main().catch((err) => {
+  console.error(`\nBaseline build failed: ${(err as Error).message}`)
+  process.exit(1)
+})
