@@ -1,5 +1,5 @@
 /**
- * Feature extraction — the single source of truth for what gets measured.
+ * Feature extraction: the single source of truth for what gets measured.
  *
  * This module is used by BOTH scripts/build-baselines.ts (to measure the
  * reference corpora) and the runtime distributional channel (to measure a
@@ -23,7 +23,7 @@ import { mean, stdDev } from './stats'
  *  both estimated over chunks of this size so the two are comparable. */
 export const CHUNK_TOKENS = 400
 
-/** A chunk shorter than this is dropped rather than measured — the variance
+/** A chunk shorter than this is dropped rather than measured, because the variance
  *  estimates on a 40-word fragment are noise. */
 export const MIN_CHUNK_TOKENS = 120
 
@@ -132,7 +132,7 @@ export function measureChunk(text: string, language: LanguageCode): ChunkMeasure
     mattr: movingAverageTtr(tokens),
     hapaxRatio: hapaxRatio(tokens),
     meanSentenceLength: meanSentence,
-    // Coefficient of variation of sentence length — "burstiness". Reported as a
+    // Coefficient of variation of sentence length, or "burstiness". Reported as a
     // ratio so it does not simply track mean sentence length.
     sentenceLengthCv: meanSentence > 0 ? sdSentence / meanSentence : 0,
     functionWordRate: per1000(functionWordHits),
@@ -153,7 +153,7 @@ export function measureChunk(text: string, language: LanguageCode): ChunkMeasure
  * Split text into measurement chunks on sentence boundaries.
  *
  * Chunking on sentences rather than a fixed token offset keeps sentence-length
- * statistics meaningful — a chunk that starts mid-sentence would record a
+ * statistics meaningful, because a chunk that starts mid-sentence would record a
  * truncated first sentence as a real short one.
  */
 export function chunkText(text: string): string[] {

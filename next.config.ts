@@ -3,7 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // The free check runs entirely in the browser. Nothing here may introduce a
-  // rewrite or proxy that would send document text to the origin — that would
+  // rewrite or proxy that would send document text to the origin, and that would
   // break the product's core promise, which is tested in
   // src/lib/detector/__tests__/privacy-contract.test.ts.
   async headers() {

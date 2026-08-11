@@ -15,7 +15,7 @@
  *  - The /verify page uses it so a user can watch the same thing happen with
  *    their own eyes, on the open reference key, in their own browser.
  *
- * NOTE ON SCOPE — this adds a mark. There is no inverse anywhere in this
+ * NOTE ON SCOPE: this adds a mark. There is no inverse anywhere in this
  * codebase and there will not be one. Removing, weakening or paraphrasing
  * around a provenance mark is the one thing MarkWitness does not do, on any
  * tier, for any caller. See docs/NO_REMOVAL.md.
@@ -39,7 +39,7 @@ export interface SimulationResult {
  *
  * Each word is replaced by whichever of its supplied alternatives keeps the
  * bigram green, mirroring a marked sampler choosing among plausible next tokens.
- * When no alternative is green, the original word stands — exactly as a real
+ * When no alternative is green, the original word stands, exactly as a real
  * marked generator leaves a token red rather than emitting nonsense.
  */
 export function applyGreenListMark(
@@ -98,7 +98,7 @@ function matchCase(original: string, replacement: string): string {
 }
 
 /**
- * Build a marked passage from a vocabulary directly — the cleanest positive
+ * Build a marked passage from a vocabulary directly, the cleanest positive
  * control, since every position has a green option available.
  */
 export function generateMarkedText(key: DetectionKey, vocabulary: string[], wordCount: number, seed = 7): string {

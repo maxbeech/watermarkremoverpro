@@ -13,15 +13,15 @@ import type { AnalysisResult } from '@/lib/detector'
 export const runtime = 'nodejs'
 
 /**
- * POST /api/v1/report — the dated PDF evidence report. Pro only.
+ * POST /api/v1/report, the dated PDF evidence report. Pro only.
  *
  * This is the paid wedge, and it is a wedge rather than a wrapper for a specific
  * reason: it is not the free result in a different container. The free check
  * runs in the browser and by design leaves nothing behind, so there is nothing
  * to date, nothing to tie to a stored record, and nothing a third party can be
  * pointed at. This endpoint runs the analysis on the server against every key
- * the deployment holds — including any vendor key, which cannot be shipped to a
- * browser without publishing it — records the check, and renders a document
+ * the deployment holds, including any vendor key that cannot be shipped to a
+ * browser without publishing it, records the check, and renders a document
  * anchored to the exact text by its SHA-256.
  *
  * It is reachable by a machine, with an API key, not only by a human clicking.

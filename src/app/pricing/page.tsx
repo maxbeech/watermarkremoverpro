@@ -16,7 +16,7 @@ const FAQ = [
   {
     question: 'What does Pro give me that free does not?',
     answer:
-      'The dated evidence report, which the free tier structurally cannot produce: the free check runs in your browser and deliberately leaves nothing behind, so there is no stored record to date, anchor or hand to anyone. Pro also runs the analysis server-side against every detection key the deployment holds — including any vendor key, which cannot be shipped to a browser without publishing it — plus batch upload and metered API and MCP access.',
+      'The dated evidence report, which the free tier structurally cannot produce: the free check runs in your browser and deliberately leaves nothing behind, so there is no stored record to date, anchor or hand to anyone. Pro also runs the analysis server-side against every detection key the deployment holds, including any vendor key that cannot be shipped to a browser without publishing it, plus batch upload and metered API and MCP access.',
   },
   {
     question: 'Is the API billed separately from the subscription?',

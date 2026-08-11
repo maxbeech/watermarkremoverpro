@@ -40,8 +40,8 @@ export default function McpDocsPage() {
         <p>
           <strong>Hosted (with an API key).</strong> Calls go to{' '}
           <code className="figure">{SITE.url}/api/v1/check</code>, which additionally applies any
-          vendor or institution detection keys that deployment holds — which cannot be shipped to a
-          local process without publishing them — saves the check to your history, and meters it at{' '}
+          vendor or institution detection keys that deployment holds, which cannot be shipped to a
+          local process without publishing them, saves the check to your history, and meters it at{' '}
           <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words.
         </p>
       </Section>
@@ -57,7 +57,7 @@ export default function McpDocsPage() {
         <h3 className="mt-5 font-medium text-ink-800">describe_method</h3>
         <p>
           Takes nothing and sends no document. Returns what is measured, which keys are available in
-          the current mode, which languages have baselines, and the limits — so an agent can decide
+          the current mode, which languages have baselines, and the limits, so an agent can decide
           whether a check will answer its question before sending anything.
         </p>
       </Section>

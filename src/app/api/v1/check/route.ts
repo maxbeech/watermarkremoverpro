@@ -10,7 +10,7 @@ import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 export const runtime = 'nodejs'
 
 /**
- * POST /api/v1/check — the metered capability.
+ * POST /api/v1/check, the metered capability.
  *
  * This is the surface an agent buys. It is the same engine the browser runs, so
  * the numbers an agent gets are the numbers a person would get on the same text,
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
     fdr: parsed.data.fdr,
   })
 
-  // Metered on words submitted, whether or not a statistic could be computed —
+  // Metered on words submitted, whether or not a statistic could be computed,
   // a document too short to score still costs a call. That is stated in the
   // pricing document rather than being a surprise on an invoice.
   const units = await recordUsage({

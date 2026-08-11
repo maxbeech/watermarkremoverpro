@@ -5,7 +5,7 @@
  * are the standard feature set for authorship and register work because their
  * rates are driven by how a text was produced rather than by what it is about.
  * A document about wetlands and a document about opera differ wildly in content
- * words and barely at all in "of" — which is what makes these usable as a
+ * words and barely at all in "of", which is what makes these usable as a
  * subject-independent reference.
  *
  * The lists are the FEATURE SET only. Every rate they are compared against is
@@ -107,7 +107,7 @@ export interface LanguageIdentification {
  * This is a measurement, not a guess: it counts how many of the document's own
  * tokens belong to each inventory. When two languages score within
  * MIN_MARGIN of each other the answer is `null` and the caller must ask the
- * user which language to use — the engine will not pick a baseline it cannot
+ * user which language to use, because the engine will not pick a baseline it cannot
  * justify, because analysing against the wrong baseline produces a real-looking
  * number that means nothing.
  */

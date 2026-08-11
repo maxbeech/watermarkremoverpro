@@ -6,7 +6,7 @@ import { PLANS, SITE } from '@/lib/site'
  * Stripe billing.
  *
  * STATUS ON THIS DEPLOYMENT: no Stripe credentials are configured. That is a
- * known, recorded gap — the only Stripe connection available to this workspace
+ * known, recorded gap. The only Stripe connection available to this workspace
  * at build time belonged to a different product, and writing to another brand's
  * live account to test a checkout flow would have been the wrong call.
  *

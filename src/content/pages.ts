@@ -7,7 +7,7 @@ import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/de
  * One typed source feeding /for/*, /vs/*, /guide/* and /in/*. Kept as data
  * rather than as a directory of near-identical page components so that a change
  * to the disclaimer wording, the CTA or the structured data lands on every page
- * at once — the usual failure of a programmatic SEO set is twenty pages that
+ * at once. The usual failure of a programmatic SEO set is twenty pages that
  * disagree about what the product does.
  *
  * The breadth axes here are audience x comparison x language. This product has
@@ -45,7 +45,7 @@ const AUDIENCES: LongTailPage[] = [
     metaDescription:
       'A student’s guide to checking your own coursework for a statistical AI provenance mark, understanding what a detector result does and does not prove, and preparing an academic-misconduct appeal.',
     intro:
-      'Being told your essay “came back as AI” is frightening partly because the number you are shown usually arrives with no explanation and no way to interrogate it. Before you write anything to your department, it is worth knowing what a statistical test can and cannot establish about a document — including this one.',
+      'Being told your essay “came back as AI” is frightening partly because the number you are shown usually arrives with no explanation and no way to interrogate it. Before you write anything to your department, it is worth knowing what a statistical test can and cannot establish about a document, including this one.',
     sections: [
       {
         heading: 'What the number your university showed you probably is',
@@ -79,12 +79,12 @@ const AUDIENCES: LongTailPage[] = [
       {
         question: 'Is my essay uploaded anywhere?',
         answer:
-          'Not on the free check. The analysis runs in your browser — you can open the network tab and watch. That matters here specifically: uploading an unsubmitted essay to a third party is itself something some departments take a dim view of.',
+          'Not on the free check. The analysis runs in your browser, and you can open the network tab and watch. That matters here specifically: uploading an unsubmitted essay to a third party is itself something some departments take a dim view of.',
       },
       {
         question: 'I did use AI for some parts. What now?',
         answer:
-          'MarkWitness will not help you conceal that, by design — there is no removal or rewriting feature on any tier. If your institution permits assisted writing with disclosure, disclose it. If it does not, an honest conversation earlier is almost always treated better than a discovered concealment later.',
+          'MarkWitness will not help you conceal that, by design. There is no removal or rewriting feature on any tier. If your institution permits assisted writing with disclosure, disclose it. If it does not, an honest conversation earlier is almost always treated better than a discovered concealment later.',
       },
     ],
   },
@@ -108,7 +108,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         heading: 'What to send a client',
         body: [
-          'Your drafting history first — document version history, commits, or the dated outline you worked from. This is the strongest evidence you have and it costs nothing.',
+          'Your drafting history first: document version history, commits, or the dated outline you worked from. This is the strongest evidence you have and it costs nothing.',
           'Then the evidence report, which states what was tested and, importantly, what the test cannot establish. Sending a document that admits its own limits reads as considerably more credible than one that claims to prove your innocence.',
           'Keep the tone procedural. You are not disputing that they ran a tool; you are asking what the tool’s false positive rate is and what the contract says about acceptance criteria.',
         ],
@@ -125,7 +125,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         question: 'Can I check a batch of articles at once?',
         answer:
-          'Yes, on Pro — batch upload in the browser, or the JSON API and MCP server if you want it inside your own delivery pipeline. Each document gets its own result and its own hash.',
+          'Yes, on Pro. Batch upload in the browser, or the JSON API and MCP server if you want it inside your own delivery pipeline. Each document gets its own result and its own hash.',
       },
       {
         question: 'Does a clean result mean the client has to pay?',
@@ -142,7 +142,7 @@ const AUDIENCES: LongTailPage[] = [
     metaDescription:
       'For reporters and editors who need to know whether filed copy carries a statistical AI provenance mark before publication, with the method and its limits stated in full.',
     intro:
-      'Newsrooms increasingly need to say something definite about how a piece was produced — to a standards editor, to a legal team, or in a correction. Guessing is not an option and neither is an unexplained percentage.',
+      'Newsrooms increasingly need to say something definite about how a piece was produced, whether to a standards editor, to a legal team, or in a correction. Guessing is not an option and neither is an unexplained percentage.',
     sections: [
       {
         heading: 'The disclosure problem',
@@ -154,7 +154,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         heading: 'Why the per-passage breakdown is corrected',
         body: [
-          'A 1,500-word piece contains dozens of passages. Testing each one separately and reporting whatever looks significant would light up two or three sentences of anybody’s writing, every time — that is what running many simultaneous tests does.',
+          'A 1,500-word piece contains dozens of passages. Testing each one separately and reporting whatever looks significant would light up two or three sentences of anybody’s writing, every time. That is what running many simultaneous tests does.',
           'We apply a false-discovery-rate correction across all passages before presenting any of them as a finding, and the report says how many were tested and how many survived. An uncorrected highlighter is a machine for generating false accusations inside your own newsroom.',
         ],
       },
@@ -162,7 +162,7 @@ const AUDIENCES: LongTailPage[] = [
         heading: 'Source material and confidentiality',
         body: [
           'The free check runs entirely in the browser, so unpublished copy is not transmitted to us. For a newsroom that is often the deciding factor: the alternative is uploading an embargoed piece to a third-party service.',
-          'If you use the API or the report endpoint, those necessarily run on our servers — that is documented rather than buried, so you can make that decision knowingly.',
+          'If you use the API or the report endpoint, those necessarily run on our servers, and that is documented rather than buried, so you can make that decision knowingly.',
         ],
       },
     ],
@@ -183,7 +183,7 @@ const AUDIENCES: LongTailPage[] = [
     slug: 'non-native-english-writers',
     group: 'for',
     title: 'For non-native English writers flagged by a detector',
-    metaTitle: 'AI detectors flag non-native English writing more often — what to do',
+    metaTitle: 'AI detectors flag non-native English writing more often: what to do',
     metaDescription:
       'Non-native English writing is disproportionately flagged by AI detectors. What that bias is, why it happens, and how to check your own work for an actual provenance mark instead.',
     intro:
@@ -193,7 +193,7 @@ const AUDIENCES: LongTailPage[] = [
         heading: 'The measured bias',
         body: [
           'Published research has repeatedly found that classifier-style AI detectors flag text by non-native English writers at substantially higher rates than text by native speakers, on writing that was entirely human in both cases.',
-          'The mechanism is not mysterious. These detectors lean on fluency signals — how predictable and how varied the wording is. Writing in an additional language tends to use a narrower, more standard vocabulary and more regular sentence construction, which is exactly what those detectors read as machine-like. The tool is measuring second-language writing and reporting it as AI.',
+          'The mechanism is not mysterious. These detectors lean on fluency signals, meaning how predictable and how varied the wording is. Writing in an additional language tends to use a narrower, more standard vocabulary and more regular sentence construction, which is exactly what those detectors read as machine-like. The tool is measuring second-language writing and reporting it as AI.',
         ],
       },
       {
@@ -219,7 +219,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         question: 'Does MarkWitness correct for the bias?',
         answer:
-          'It avoids it rather than correcting for it. The provenance-mark test does not use fluency at all. The style measurement is reported as a distance from a reference, explicitly labelled as a statement about register rather than about provenance — we do not turn it into a verdict, so there is no verdict to be biased.',
+          'It avoids it rather than correcting for it. The provenance-mark test does not use fluency at all. The style measurement is reported as a distance from a reference, explicitly labelled as a statement about register rather than about provenance, and we do not turn it into a verdict, so there is no verdict to be biased.',
       },
     ],
   },
@@ -227,11 +227,11 @@ const AUDIENCES: LongTailPage[] = [
     slug: 'grant-and-bid-writers',
     group: 'for',
     title: 'For grant and bid writers under AI disclosure rules',
-    metaTitle: 'AI disclosure in grant and tender submissions — check before you file',
+    metaTitle: 'AI disclosure in grant and tender submissions: check before you file',
     metaDescription:
       'Funders and procurement bodies increasingly require AI-use disclosure. Check a submission for a statistical provenance mark before filing, and keep a dated record of what you checked.',
     intro:
-      'Funders and procurement authorities have started attaching AI-use declarations to submissions. The risk is rarely deliberate concealment — it is a bid assembled from many contributors where nobody is certain what went through what.',
+      'Funders and procurement authorities have started attaching AI-use declarations to submissions. The risk is rarely deliberate concealment. It is a bid assembled from many contributors where nobody is certain what went through what.',
     sections: [
       {
         heading: 'The multi-author problem',
@@ -243,7 +243,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         heading: 'Keeping a defensible record',
         body: [
-          'The value of a dated report here is not that it proves the submission is human-written — it cannot, and it says so. The value is that it evidences due diligence: on this date, this exact file, this test was run, these keys were tested, and this is what it found.',
+          'The value of a dated report here is not that it proves the submission is human-written, because it cannot, and it says so. The value is that it evidences due diligence: on this date, this exact file, this test was run, these keys were tested, and this is what it found.',
           'Because the report carries a SHA-256 of the file, it is tied to the version you actually submitted rather than to a draft.',
         ],
       },
@@ -285,23 +285,23 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
   {
     slug: 'turnitin-ai-detector',
     competitor: 'Turnitin’s AI writing indicator',
-    metaTitle: 'MarkWitness vs Turnitin’s AI detector — they answer different questions',
+    metaTitle: 'MarkWitness vs Turnitin’s AI detector: they answer different questions',
     whatItIs: [
       'Turnitin’s AI writing indicator is an institutional product. It is bought by a university, run against work students submit, and reports a percentage to a marker. The student is the subject of the check, not its user, and generally cannot run it themselves or see how it reached its figure.',
       'It is a classifier: it was trained to separate human-written from machine-written text and outputs a confidence. That approach has a false positive rate, which is why institutions are advised not to treat the indicator as proof on its own.',
     ],
     keyDifference: [
       'MarkWitness is the mirror image. You run it, on your own writing, and it is built around the question a person on the receiving end of an accusation actually has.',
-      'It also measures a different thing. Turnitin’s indicator judges whether text reads as machine-generated. MarkWitness tests for a provenance mark — a deliberate statistical signature placed at generation time — and reports the style measurement separately, explicitly labelled as a statement about register rather than provenance.',
+      'It also measures a different thing. Turnitin’s indicator judges whether text reads as machine-generated. MarkWitness tests for a provenance mark, a deliberate statistical signature placed at generation time, and reports the style measurement separately, explicitly labelled as a statement about register rather than provenance.',
       'MarkWitness cannot tell you what Turnitin will say about your document, and does not claim to. Nothing outside Turnitin can, because their model is theirs.',
     ],
   },
   {
     slug: 'gptzero',
     competitor: 'GPTZero',
-    metaTitle: 'MarkWitness vs GPTZero — a provenance-mark test, not a classifier',
+    metaTitle: 'MarkWitness vs GPTZero: a provenance-mark test, not a classifier',
     whatItIs: [
-      'GPTZero is a widely used AI-text classifier. You paste text and it returns a judgement about how likely it is to be machine-generated, based largely on perplexity and burstiness — how predictable the wording is and how much sentence structure varies.',
+      'GPTZero is a widely used AI-text classifier. You paste text and it returns a judgement about how likely it is to be machine-generated, based largely on perplexity and burstiness, meaning how predictable the wording is and how much sentence structure varies.',
       'It is available directly to individuals, which makes it the tool many accused writers reach for first.',
     ],
     keyDifference: [
@@ -313,7 +313,7 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
   {
     slug: 'originality-ai',
     competitor: 'Originality.ai',
-    metaTitle: 'MarkWitness vs Originality.ai — checking your own work vs screening others’',
+    metaTitle: 'MarkWitness vs Originality.ai: checking your own work vs screening others’',
     whatItIs: [
       'Originality.ai is aimed at publishers, agencies and content buyers who want to screen work submitted to them, typically alongside plagiarism checking. Its buyer is the commissioner, and its output is a score used to accept or reject a delivery.',
       'It offers an API, and much of its use is bulk screening of freelance output.',
@@ -321,7 +321,7 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
     keyDifference: [
       'The audiences are opposite. Originality.ai exists to help a buyer evaluate a supplier. MarkWitness exists to help the writer on the other side of that transaction understand and respond to the result.',
       'That shapes everything: MarkWitness runs the free check in your browser so unpublished drafts are not uploaded, and produces a report designed to be handed to someone else rather than a score designed to gate a payment.',
-      'If your job genuinely is screening other people’s work, MarkWitness is the wrong tool and we say so on every page — Learnaway is built for that.',
+      'If your job genuinely is screening other people’s work, MarkWitness is the wrong tool and we say so on every page. Learnaway is built for that.',
     ],
   },
 ]
@@ -352,7 +352,7 @@ const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => ({
     {
       question: 'Which should I use if I have been accused?',
       answer:
-        'If the accusation came from a classifier, understanding that tool’s false positive rate is usually more useful than running another classifier. MarkWitness adds a different kind of evidence — a named, keyed test on your exact file, with its limits stated and a hash anchoring it — plus a document you can actually submit.',
+        'If the accusation came from a classifier, understanding that tool’s false positive rate is usually more useful than running another classifier. MarkWitness adds a different kind of evidence, a named and keyed test on your exact file with its limits stated and a hash anchoring it, plus a document you can actually submit.',
     },
   ],
 }))
@@ -366,7 +366,7 @@ const GUIDES: LongTailPage[] = [
     slug: 'ai-detection-false-positive',
     group: 'guide',
     title: 'AI detection false positives: what they are and what to do',
-    metaTitle: 'AI detector false positive — why it happens and how to respond',
+    metaTitle: 'AI detector false positive: why it happens and how to respond',
     metaDescription:
       'Why AI detectors flag human writing, which kinds of writing get flagged most, and a practical sequence for responding to a false positive.',
     intro:
@@ -383,7 +383,7 @@ const GUIDES: LongTailPage[] = [
       {
         heading: 'What to do, in order',
         body: [
-          'Ask which tool produced the figure and what its published false positive rate is. Ask what the institution’s policy says a detector score is sufficient to establish — very often, on its own, nothing.',
+          'Ask which tool produced the figure and what its published false positive rate is. Ask what the institution’s policy says a detector score is sufficient to establish. Very often, on its own, nothing.',
           'Assemble process evidence: drafts, version history, notes, search history, supervision correspondence. This is more persuasive than any detector output in either direction.',
           'Run a different kind of test. A provenance-mark check asks whether a deliberate statistical signature is present, rather than whether the writing reads a certain way, so it is not vulnerable to the same failure mode.',
           'Keep it procedural in tone. You are not accusing anyone of bad faith; you are asking what the evidence is and what the policy requires.',
@@ -406,7 +406,7 @@ const GUIDES: LongTailPage[] = [
       {
         question: 'Can I appeal on statistical grounds alone?',
         answer:
-          'Sometimes, though it lands better combined with process evidence. The strongest version asks the institution to state what its own policy requires beyond a score — most policies already require corroboration.',
+          'Sometimes, though it lands better combined with process evidence. The strongest version asks the institution to state what its own policy requires beyond a score, since most policies already require corroboration.',
       },
     ],
   },
@@ -414,7 +414,7 @@ const GUIDES: LongTailPage[] = [
     slug: 'claude-ai-watermark',
     group: 'guide',
     title: 'The Claude AI watermark: what a provenance mark is',
-    metaTitle: 'Claude AI watermark — what a provenance mark is and what it proves',
+    metaTitle: 'Claude AI watermark: what a provenance mark is and what it proves',
     metaDescription:
       'What a statistical AI provenance mark is, how green-list watermarking works, why detection needs a key, and what a mark does and does not prove about authorship.',
     intro:
@@ -423,17 +423,17 @@ const GUIDES: LongTailPage[] = [
       {
         heading: 'How green-list watermarking works',
         body: [
-          'The best-documented scheme comes from Kirchenbauer et al. (2023). Before generating each token, the model uses a keyed pseudorandom function — seeded by the preceding token — to split its vocabulary into a “green” list and a “red” list. Generation is then nudged toward green tokens.',
+          'The best-documented scheme comes from Kirchenbauer et al. (2023). Before generating each token, the model uses a keyed pseudorandom function, seeded by the preceding token, to split its vocabulary into a “green” list and a “red” list. Generation is then nudged toward green tokens.',
           'The nudge is small enough that the output still reads naturally, but across hundreds of tokens the excess of green choices becomes statistically obvious. Detection is a one-proportion z test: count the green tokens, compare to what chance would give, and read off how unlikely the excess is.',
-          'The elegance is that the mark lives in the choice between near-equivalent words, so it survives light editing and does not degrade quality — and it is invisible without the key.',
+          'The elegance is that the mark lives in the choice between near-equivalent words, so it survives light editing and does not degrade quality, and it is invisible without the key.',
         ],
       },
       {
         heading: 'Why the key is the whole story',
         body: [
-          'The partition is determined by a secret. Without it, you cannot tell which words were green, so you cannot count them, so there is no test to run. This is a deliberate property, not an oversight — a publicly checkable mark would be a publicly removable one.',
+          'The partition is determined by a secret. Without it, you cannot tell which words were green, so you cannot count them, so there is no test to run. This is a deliberate property, not an oversight, because a publicly checkable mark would be a publicly removable one.',
           'The practical consequence is that no third-party tool, including this one, can detect a specific vendor’s mark unless that vendor publishes a detection key or grants access to one. Any tool claiming to detect “the Claude watermark” without a key is not doing what it says.',
-          'MarkWitness therefore tests the keys it holds and names them on every result. It ships a published open reference key so the machinery is auditable — you can mark text under it yourself on our verify page and watch the detector find it — and accepts vendor or institution keys through configuration.',
+          'MarkWitness therefore tests the keys it holds and names them on every result. It ships a published open reference key so the machinery is auditable, and you can mark text under it yourself on our verify page and watch the detector find it, and it accepts vendor or institution keys through configuration.',
         ],
       },
       {
@@ -453,7 +453,7 @@ const GUIDES: LongTailPage[] = [
       {
         question: 'Does editing remove a watermark?',
         answer:
-          'It weakens it. Each edited word is one fewer scored position, so heavy paraphrase degrades the signal — which is precisely why an absent mark cannot be read as proof of human authorship. We do not offer editing to that end and will not.',
+          'It weakens it. Each edited word is one fewer scored position, so heavy paraphrase degrades the signal, which is precisely why an absent mark cannot be read as proof of human authorship. We do not offer editing to that end and will not.',
       },
       {
         question: 'Is this the same as an image watermark?',
@@ -466,7 +466,7 @@ const GUIDES: LongTailPage[] = [
     slug: 'prove-you-wrote-it',
     group: 'guide',
     title: 'How to prove you wrote something yourself',
-    metaTitle: 'How to prove you wrote it — evidence that actually works',
+    metaTitle: 'How to prove you wrote it: evidence that actually works',
     metaDescription:
       'What evidence actually establishes authorship when you are accused of using AI, in order of persuasiveness, and where a provenance-mark check fits.',
     intro:
@@ -483,7 +483,7 @@ const GUIDES: LongTailPage[] = [
       {
         heading: 'Knowledge evidence',
         body: [
-          'Being able to discuss the work — why a source was chosen, what an argument was going to be before it changed, what was cut — is persuasive in a way a document cannot be. Many institutions resolve these cases with a conversation for exactly that reason.',
+          'Being able to discuss the work, including why a source was chosen, what an argument was going to be before it changed and what was cut, is persuasive in a way a document cannot be. Many institutions resolve these cases with a conversation for exactly that reason.',
         ],
       },
       {
@@ -498,7 +498,7 @@ const GUIDES: LongTailPage[] = [
       {
         question: 'What if I drafted in a plain text editor with no history?',
         answer:
-          'Then lean on knowledge evidence and on the reliability of whatever flagged you. Going forward, draft somewhere with version history — it costs nothing and is the best insurance available.',
+          'Then lean on knowledge evidence and on the reliability of whatever flagged you. Going forward, draft somewhere with version history, which costs nothing and is the best insurance available.',
       },
       {
         question: 'Is a MarkWitness report enough on its own?',
@@ -511,7 +511,7 @@ const GUIDES: LongTailPage[] = [
     slug: 'eu-ai-act-article-50',
     group: 'guide',
     title: 'EU AI Act Article 50 and machine-readable AI marking',
-    metaTitle: 'EU AI Act Article 50 — AI content marking obligations explained',
+    metaTitle: 'EU AI Act Article 50: AI content marking obligations explained',
     metaDescription:
       'What Article 50 of the EU AI Act requires for marking AI-generated content, why providers are adding statistical provenance marks, and what it means for people whose writing is checked.',
     intro:
@@ -521,7 +521,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'What the obligation is',
         body: [
           'In broad terms, providers of generative AI systems must ensure their outputs are marked in a machine-readable format and detectable as artificially generated or manipulated, with the marking expected to be effective, interoperable, robust and reliable as far as technically feasible.',
-          'For text this is harder than for images. There is no file header to write to — text is copied, retyped and reformatted constantly — so the marking has to live in the words themselves. That is what pushes providers toward statistical watermarking.',
+          'For text this is harder than for images. There is no file header to write to, since text is copied, retyped and reformatted constantly, so the marking has to live in the words themselves. That is what pushes providers toward statistical watermarking.',
           'This page is an explanation, not legal advice. If a compliance obligation attaches to you, read the text and take advice on it.',
         ],
       },
@@ -593,7 +593,7 @@ const GUIDES: LongTailPage[] = [
       {
         question: 'Does translation remove it?',
         answer:
-          'Effectively, yes — a translation is a different set of word choices, so a mark applied in the source language does not survive into the target. This is a known limitation of text watermarking, not a trick.',
+          'Effectively, yes. A translation is a different set of word choices, so a mark applied in the source language does not survive into the target. This is a known limitation of text watermarking, not a trick.',
       },
     ],
   },
@@ -603,14 +603,14 @@ const GUIDES: LongTailPage[] = [
     title: 'What a confidence band means on a detector result',
     metaTitle: 'Confidence bands, z scores and p values on AI detection results',
     metaDescription:
-      'How to read a z score, a p value and a confidence interval on a provenance-mark check — and why a single percentage with no band is a warning sign.',
+      'How to read a z score, a p value and a confidence interval on a provenance-mark check, and why a single percentage with no band is a warning sign.',
     intro:
       'MarkWitness reports bands rather than single numbers, which is less punchy and considerably more honest. Here is how to read what it gives you.',
     sections: [
       {
         heading: 'The green-list rate and its interval',
         body: [
-          'The headline figure is the proportion of scored word pairs that fell in the green list. Under no watermark, that proportion should sit near the key’s expected fraction — typically half.',
+          'The headline figure is the proportion of scored word pairs that fell in the green list. Under no watermark, that proportion should sit near the key’s expected fraction, typically half.',
           'The interval beside it is a Wilson score interval: the range of true rates consistent with what was observed, given how many pairs were scored. A short document produces a wide interval because a short document genuinely carries less information. Reporting the point estimate alone would hide exactly that.',
         ],
       },
@@ -618,7 +618,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'z and p',
         body: [
           'The z score expresses how far the observed count sits from what chance would produce, in standard deviations. Roughly: 2 is unremarkable, 4 is notable, above 6 is very hard to explain by chance.',
-          'The p value converts that into a probability — how often chance alone would produce a green count at least this extreme. It is not the probability that AI wrote the document. That is a different quantity and this test does not compute it.',
+          'The p value converts that into a probability: how often chance alone would produce a green count at least this extreme. It is not the probability that AI wrote the document. That is a different quantity and this test does not compute it.',
         ],
       },
       {
@@ -650,7 +650,7 @@ const GUIDES: LongTailPage[] = [
 
 const LANGUAGE_NOTES: Record<LanguageCode, string> = {
   en: 'English has the largest reference corpus of the five, and is the language most institutional detectors were built and evaluated on.',
-  es: 'Spanish writing checked against a Spanish reference rather than an English one — comparing Spanish prose to an English baseline produces deviations that are artefacts of the mismatch.',
+  es: 'Spanish writing checked against a Spanish reference rather than an English one, because comparing Spanish prose to an English baseline produces deviations that are artefacts of the mismatch.',
   fr: 'French writing checked against a French reference, including the elision and clitic patterns that a token-level English baseline handles badly.',
   de: 'German writing checked against a German reference, where compounding and verb-final clauses make sentence-length and vocabulary statistics differ substantially from English.',
   pt: 'Portuguese writing checked against a Portuguese reference rather than being folded in with Spanish, which is a common and consequential shortcut in multilingual tooling.',
@@ -660,14 +660,14 @@ const LANGUAGES: LongTailPage[] = SUPPORTED_LANGUAGES.map((code) => ({
   slug: LANGUAGE_NAMES[code].toLowerCase(),
   group: 'in' as const,
   title: `Check ${LANGUAGE_NAMES[code]} writing for an AI provenance mark`,
-  metaTitle: `${LANGUAGE_NAMES[code]} AI watermark check — on your device`,
+  metaTitle: `${LANGUAGE_NAMES[code]} AI watermark check, on your device`,
   metaDescription: `Check ${LANGUAGE_NAMES[code]} writing for a statistical AI provenance mark, with a reference baseline measured from real ${LANGUAGE_NAMES[code]} prose. Runs in your browser.`,
   intro: `MarkWitness supports ${LANGUAGE_NAMES[code]} with its own measured reference baseline. ${LANGUAGE_NOTES[code]}`,
   sections: [
     {
       heading: 'Why a per-language baseline matters',
       body: [
-        'The provenance-mark test itself is language-independent — it counts word pairs against a keyed partition, and that arithmetic does not care what language the words are in.',
+        'The provenance-mark test itself is language-independent, since it counts word pairs against a keyed partition, and that arithmetic does not care what language the words are in.',
         'The style measurement is a different matter. It compares your document to a reference corpus, so the reference has to be in the same language or the comparison is meaningless. Every deviation would simply be measuring the language difference.',
         `MarkWitness measured its ${LANGUAGE_NAMES[code]} baseline from contemporary ${LANGUAGE_NAMES[code]} prose, and every document in that corpus was verified to be ${LANGUAGE_NAMES[code]} by the engine's own language identifier before it was included.`,
       ],
@@ -684,7 +684,7 @@ const LANGUAGES: LongTailPage[] = SUPPORTED_LANGUAGES.map((code) => ({
     {
       question: `Is the check less accurate in ${LANGUAGE_NAMES[code]} than in English?`,
       answer:
-        'The provenance-mark test behaves the same in every language, since it does not use a language model. The style measurement is as good as its corpus, and the English corpus is currently the largest — each result reports the size and retrieval date of the corpus it was measured against, so you can judge it yourself.',
+        'The provenance-mark test behaves the same in every language, since it does not use a language model. The style measurement is as good as its corpus, and the English corpus is currently the largest. Each result reports the size and retrieval date of the corpus it was measured against, so you can judge it yourself.',
     },
     {
       question: 'What about languages that are not supported?',

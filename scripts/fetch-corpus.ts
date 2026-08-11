@@ -6,7 +6,7 @@
  *
  * Why Wikipedia rather than Project Gutenberg, which is the more usual choice:
  * the baseline's job is to describe the register MarkWitness users actually
- * check — essays, reports, applications, articles — and a corpus of 19th century
+ * check, meaning essays, reports, applications and articles, against a corpus of 19th century
  * novels describes something else. A student's coursework compared against Moby
  * Dick would show a large "distance" that says nothing except that they are not
  * Melville. Contemporary expository prose is the honest comparison class, and
@@ -60,7 +60,7 @@ async function fetchBatch(lang: LanguageCode): Promise<WikiPage[]> {
   // Wikipedia rate-limits politely and expects the caller to back off rather
   // than give up: a 429 means "slower", not "no". Retrying it is not papering
   // over a failure, it is the documented way to use the API. A hard failure
-  // after the last attempt still stops the run — a short corpus must be visible.
+  // after the last attempt still stops the run, because a short corpus must be visible.
   let res: Response | null = null
   for (let attempt = 0; attempt < 5; attempt++) {
     res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
@@ -83,7 +83,7 @@ async function fetchBatch(lang: LanguageCode): Promise<WikiPage[]> {
 
 /**
  * Strip the artefacts that would bias the measured features: section headings
- * (no verbs, no punctuation — they deflate mean sentence length), and the
+ * (no verbs, no punctuation, and they deflate mean sentence length), and the
  * reference/see-also tails, which are lists rather than prose.
  */
 function cleanExtract(text: string): string {
@@ -160,7 +160,7 @@ async function collect(lang: LanguageCode): Promise<void> {
     }
 
     if (batch % 20 === 0) {
-      console.log(`  ${lang}: batch ${batch} — ${tokensTotal.toLocaleString()} tokens from ${manifest.length} documents`)
+      console.log(`  ${lang}: batch ${batch}: ${tokensTotal.toLocaleString()} tokens from ${manifest.length} documents`)
     }
     await new Promise((r) => setTimeout(r, 120))
   }

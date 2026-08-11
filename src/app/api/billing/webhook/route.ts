@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       {
         error: 'webhook_secret_missing',
         message:
-          'STRIPE_WEBHOOK_SECRET is not set. Events are rejected rather than trusted unverified — an unverified event could upgrade any account.',
+          'STRIPE_WEBHOOK_SECRET is not set. Events are rejected rather than trusted unverified, because an unverified event could upgrade any account.',
       },
       { status: 503 },
     )

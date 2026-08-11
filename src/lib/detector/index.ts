@@ -8,7 +8,7 @@
  *
  * The result type is built so that "not computed" is unrepresentable as a
  * number. Every statistic is `number | null` beside a status and a human
- * readable reason, so a caller cannot render a fabricated zero by accident —
+ * readable reason, so a caller cannot render a fabricated zero by accident, because
  * they have to handle the null.
  */
 
@@ -60,7 +60,7 @@ export interface AnalysisResult {
   engineVersion: ENGINE_VERSION_TYPE
   status: AnalysisStatus
   analyzedAt: string
-  /** SHA-256 of the exact text analysed — the anchor on an evidence report. */
+  /** SHA-256 of the exact text analysed. The anchor on an evidence report. */
   documentHash: string
   words: number
   characters: number
@@ -295,14 +295,14 @@ export function analyzeDocument(text: string, options: AnalyzeOptions): Analysis
  *
  * Without it, "no mark detected" reads as "your document is clean", which is a
  * claim this product is not in a position to make about any key it does not
- * hold — and cannot be in a position to make, since the whole construction is
+ * hold, and cannot be in a position to make, since the whole construction is
  * keyed.
  */
 export function coverageNotice(keys: DetectionKey[]): string {
   const names = keys.map((k) => k.label).join(', ')
   const vendor = keys.filter((k) => k.vendorPublished)
   if (vendor.length === 0) {
-    return `Tested against ${keys.length} key${keys.length === 1 ? '' : 's'} (${names}). None of these is a model vendor's published detection key, because no vendor publishes one. A result of "no mark detected" means no mark was found under these keys — it is not a statement about marks applied with a key nobody outside the vendor holds.`
+    return `Tested against ${keys.length} key${keys.length === 1 ? '' : 's'} (${names}). None of these is a model vendor's published detection key, because no vendor publishes one. A result of "no mark detected" means no mark was found under these keys, and it is not a statement about marks applied with a key nobody outside the vendor holds.`
   }
   return `Tested against ${keys.length} key${keys.length === 1 ? '' : 's'} (${names}), of which ${vendor.length} ${vendor.length === 1 ? 'is' : 'are'} vendor-published. A result of "no mark detected" applies only to the keys listed.`
 }
@@ -312,7 +312,7 @@ export function coverageNotice(keys: DetectionKey[]): string {
  *
  * Exported because the async wrapper below has to know which single baseline to
  * fetch before it can run, and because the UI needs to tell the user which
- * language it is about to use — and to ask, when the answer is ambiguous.
+ * language it is about to use, and to ask when the answer is ambiguous.
  */
 export function resolveLanguage(
   text: string,
@@ -347,7 +347,7 @@ export async function checkDocument(
       baselines = { [language]: await loadBaseline(language) }
     } catch {
       // Leave baselines empty. analyzeDocument then reports the style channel as
-      // 'no_baseline' with a reason, which is the honest outcome — far better
+      // 'no_baseline' with a reason, which is the honest outcome, far better
       // than aborting a watermark test that is perfectly able to run.
       baselines = {}
     }

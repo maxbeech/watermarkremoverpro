@@ -6,6 +6,7 @@ import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import { countWords } from '@/lib/detector/tokenize'
 import { PLANS } from '@/lib/site'
+import { buttonClass } from '@/components/brand/ui'
 import { ResultView } from './result-view'
 
 /**
@@ -13,7 +14,7 @@ import { ResultView } from './result-view'
  *
  * EVERYTHING HERE RUNS IN THE BROWSER. There is no fetch, no server action and
  * no analytics call carrying document text anywhere in this component or in
- * anything it imports — that is the product's central promise, and it is
+ * anything it imports. That is the product's central promise, and it is
  * enforced by a test (src/lib/detector/privacy-contract.test.ts) that fails the
  * build if a network call appears on this path.
  */
@@ -57,12 +58,12 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border border-ink-200 bg-white shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-4 py-3">
-          <div className="flex items-center gap-2 text-sm text-ink-500">
+      <div className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-raised)] transition-[border-color] duration-200 focus-within:border-seal-300">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 bg-ink-50/70 px-4 py-3">
+          <div className="flex items-center gap-2 text-sm text-seal-700">
             <ShieldIcon />
             <span>
-              Runs on your device. Open your browser’s network tab and watch — nothing is sent.
+              Runs on your device. Open your browser’s network tab and watch: nothing is sent.
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -73,7 +74,7 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
               id="language"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="rounded border border-ink-200 bg-white px-2 py-1 text-sm text-ink-800"
+              className="rounded-[3px] border border-ink-200 bg-white px-2 py-1 text-sm text-ink-800 transition-colors duration-150 hover:border-seal-300"
             >
               <option value="auto">Detect automatically</option>
               {SUPPORTED_LANGUAGES.map((code) => (
@@ -90,8 +91,8 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
           onChange={(e) => setText(e.target.value)}
           rows={12}
           spellCheck={false}
-          placeholder="Paste the writing you want to check. Your own writing — this tool is not for screening other people’s work."
-          className="w-full resize-y bg-transparent px-4 py-4 font-serif text-[15px] leading-relaxed text-ink-800 outline-none placeholder:text-ink-300"
+          placeholder="Paste the writing you want to check. Your own writing: this tool is not for screening other people’s work."
+          className="w-full resize-y bg-transparent px-5 py-5 font-serif text-[15px] leading-relaxed text-ink-800 outline-none placeholder:text-ink-300"
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-100 px-4 py-3">
@@ -112,7 +113,7 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
             <button
               type="button"
               onClick={() => fileInput.current?.click()}
-              className="text-ink-500 underline underline-offset-2 hover:text-ink-800"
+              className="link-quiet text-ink-500"
             >
               Open a .txt or .md file
             </button>
@@ -122,7 +123,7 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
             type="button"
             onClick={run}
             disabled={words === 0 || overCap || phase.kind === 'measuring'}
-            className="rounded bg-ink-900 px-5 py-2 text-sm font-medium text-ink-50 disabled:cursor-not-allowed disabled:bg-ink-300"
+            className={buttonClass('primary', 'disabled:bg-ink-300 disabled:text-ink-50')}
           >
             {phase.kind === 'measuring' ? 'Measuring…' : 'Run the check'}
           </button>
@@ -131,14 +132,14 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
         {overCap && (
           <p className="border-t border-signal-100 bg-signal-100/50 px-4 py-3 text-sm text-signal-700">
             This document is {(words - wordCap).toLocaleString()} words over the {wordCap.toLocaleString()}-word
-            limit for a check without an account. Nothing has been truncated or partially analysed —
-            a result measured on part of a document would not describe the document.
+            limit for a check without an account. Nothing has been truncated or partially analysed,
+            because a result measured on part of a document would not describe the document.
           </p>
         )}
       </div>
 
       {phase.kind === 'error' && (
-        <div className="rounded-lg border border-signal-500 bg-signal-100 px-4 py-3 text-sm text-signal-700">
+        <div className="rounded-[4px] border border-signal-500 bg-signal-100 px-4 py-3 text-sm text-signal-700">
           <p className="font-medium">The check did not run.</p>
           <p className="mt-1">{phase.message}</p>
         </div>

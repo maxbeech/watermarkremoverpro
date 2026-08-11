@@ -3,7 +3,7 @@
  *
  * Every statement is `create table if not exists` / `create index if not
  * exists`, so this is safe to re-run and will not drop anything. Destructive
- * changes are deliberately not automated here — a migration that can delete a
+ * changes are deliberately not automated here, because a migration that can delete a
  * user's saved checks should be a decision someone makes on purpose.
  *
  * Run: npm run db:push

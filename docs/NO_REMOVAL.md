@@ -15,8 +15,8 @@ on marking to let people know when they are reading generated content, and model
 vendors are shipping marks specifically to satisfy that class of obligation.
 
 A tool whose function is to strip the mark is a tool for defeating that
-mechanism. It does not matter what the marketing calls it — "humanizer",
-"rewriter", "style naturaliser" — the mechanism is the same and so is the effect.
+mechanism. It does not matter what the marketing calls it, whether "humanizer",
+"rewriter" or "style naturaliser". The mechanism is the same and so is the effect.
 
 The demand is real and it is well funded: "ai humanizer" carries roughly 823,000
 searches a month, against about 630 a month for the entire honest cluster this
@@ -34,7 +34,7 @@ ship:
    including its weaknesses.
 2. **Deliberate unattributability.** No signup, no logging, no per-user
    accountability *for a circumventing action*. Note the free tier is anonymous
-   and stores nothing — that is fine precisely because the action it performs is
+   and stores nothing, and that is fine precisely because the action it performs is
    a measurement, not a circumvention. The distinction is the action, not the
    anonymity.
 3. **Bulk or agent-callable circumvention.** Exposing removal through an API or
@@ -50,7 +50,7 @@ an absent mark cannot be treated as proof of human authorship, which is a point 
 falsely accused writer needs to be able to make.
 
 Explaining how a mechanism works is not the same as operating it. We decline to
-publish a recipe — how much editing defeats a given signal strength — because a
+publish a recipe for how much editing defeats a given signal strength, because a
 recipe is the evasion guide with extra steps.
 
 ## How this is enforced in code

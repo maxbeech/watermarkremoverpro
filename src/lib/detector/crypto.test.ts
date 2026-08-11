@@ -39,7 +39,7 @@ describe('sha256', () => {
       'a'.repeat(64),
       'a'.repeat(65),
       'a'.repeat(1000),
-      'çéñüß — multi-byte characters must hash identically',
+      'çéñüß \u2014 multi-byte characters must hash identically',
       'Le rapport a été déposé le 3 mars.',
     ]
     for (const sample of samples) {
@@ -98,7 +98,7 @@ describe('hmacUnitInterval', () => {
 
   it('is approximately uniform, which is what makes the null hypothesis hold', () => {
     // The green-list z test assumes each bigram is green with probability gamma.
-    // That assumption IS this uniformity — if the PRF were biased, every
+    // That assumption IS this uniformity. If the PRF were biased, every
     // document would carry a fake signal.
     const n = 4000
     let below = 0

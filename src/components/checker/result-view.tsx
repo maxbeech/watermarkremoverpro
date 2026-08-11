@@ -2,23 +2,29 @@
 
 import type { AnalysisResult } from '@/lib/detector'
 import { ALPHA } from '@/lib/detector'
+import { Band } from '@/components/brand/band'
+import { LimitNote } from '@/components/brand/ui'
 import { PassageBreakdown } from './passage-breakdown'
+import { KeyMeasure, MeasureHeader, Stat, Verdict, fmt } from './measures'
 
 /**
  * Rendering rules, which are product rules and not styling preferences:
  *
- *  - A null statistic renders as the reason it is null. Never as 0, never as
- *    "—", never omitted. The user has to be able to tell "we measured this and
+ *  - A null statistic renders as the reason it is null. Never as 0, never as a
+ *    dash, never omitted. The user has to be able to tell "we measured this and
  *    it was zero" from "we could not measure this".
  *  - The watermark verdict is always shown with its coverage notice attached.
  *  - The style figure is always shown with the sentence saying it is not a
  *    provenance mark. It is the single most misreadable number in the product.
+ *
+ * The measurement blocks come from ./measures, which the marketing site renders
+ * too, so a visitor is shown the real thing before they run a check.
  */
 export function ResultView({ result }: { result: AnalysisResult }) {
   if (result.status !== 'ok') {
     return (
-      <section className="rounded-lg border border-ink-200 bg-white p-5">
-        <h2 className="font-serif text-lg text-ink-900">No result was produced</h2>
+      <section className="rounded-[4px] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+        <h2 className="t-heading text-ink-900">No result was produced</h2>
         <p className="mt-2 text-sm leading-relaxed text-ink-600">{result.detail}</p>
         {result.status === 'language_undetermined' && (
           <p className="mt-3 text-sm text-ink-500">
@@ -34,111 +40,101 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   const dist = result.distribution
 
   return (
-    <div className="space-y-5">
+    <div className="mw-rise space-y-5">
       {/* ---------------------------------------------------------------- */}
-      <section className="rounded-lg border border-ink-200 bg-white">
-        <header className="border-b border-ink-100 px-5 py-4">
-          <h2 className="font-serif text-lg text-ink-900">Provenance mark</h2>
-          <p className="mt-1 text-sm text-ink-500">
-            A keyed statistical test, run once for each detection key this page holds.
-          </p>
-        </header>
+      <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+        <MeasureHeader
+          eyebrow="Channel one"
+          title="Provenance mark"
+          note="A keyed statistical test, run once for each detection key this page holds."
+        />
 
-        <div className="px-5 py-4">
-          <p className="font-serif text-xl text-ink-900">
-            {detections.length > 0
-              ? `A mark was detected under ${detections.length === 1 ? 'one key' : `${detections.length} keys`}.`
-              : computed.length > 0
-                ? 'No mark was detected under the keys tested.'
-                : 'The test could not run on this document.'}
-          </p>
+        <div className="px-5 py-5">
+          <Verdict result={result} />
 
-          <div className="mt-4 space-y-4">
+          <div className="mt-5 space-y-4">
             {result.watermark.results.map((r) => (
-              <div key={r.keyId} className="rounded border border-ink-100 bg-ink-50/60 p-4">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="text-sm font-medium text-ink-800">{r.keyLabel}</p>
-                  <p className="text-xs text-ink-400">
-                    {r.vendorPublished ? 'vendor-published key' : 'not a vendor key'}
-                  </p>
-                </div>
-
-                {r.status === 'computed' ? (
-                  <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-4">
-                    <Stat label="Green-list rate">
-                      <span className="figure">{fmtPct(r.greenRate)}</span>
-                      <span className="block text-xs text-ink-400">
-                        band {fmtPct(r.greenRateInterval?.low)}–{fmtPct(r.greenRateInterval?.high)}
-                      </span>
-                    </Stat>
-                    <Stat label="Expected by chance">
-                      <span className="figure">{fmtPct(r.expectedGreenRate)}</span>
-                    </Stat>
-                    <Stat label="z">
-                      <span className="figure">{fmt(r.z, 2)}</span>
-                    </Stat>
-                    <Stat label="p (one-sided)">
-                      <span className="figure">{fmtP(r.pValue)}</span>
-                    </Stat>
-                    <div className="col-span-2 sm:col-span-4">
-                      <p className="text-xs text-ink-500">
-                        Measured over{' '}
-                        <span className="figure">{r.trials?.toLocaleString()}</span> distinct word
-                        pairs. Repeated pairs are counted once.
-                      </p>
-                    </div>
-                  </dl>
-                ) : (
-                  <p className="mt-2 text-sm text-ink-600">{r.detail}</p>
-                )}
-              </div>
+              <KeyMeasure
+                key={r.keyId}
+                result={r}
+                detected={
+                  detections.some((d) => d.keyId === r.keyId)
+                }
+                animate
+              />
             ))}
           </div>
 
-          <p className="mt-4 rounded border-l-2 border-seal-300 bg-seal-50 px-4 py-3 text-sm leading-relaxed text-seal-700">
+          <p className="mt-5 border-l-2 border-seal-500 bg-seal-50 px-4 py-3 text-sm leading-relaxed text-seal-700">
             {result.watermark.coverageNotice}
           </p>
         </div>
       </section>
 
       {/* ---------------------------------------------------------------- */}
-      <section className="rounded-lg border border-ink-200 bg-white">
-        <header className="border-b border-ink-100 px-5 py-4">
-          <h2 className="font-serif text-lg text-ink-900">Style measurement</h2>
-          <p className="mt-1 text-sm text-ink-500">
-            How far this document sits from contemporary reference prose in the same language.
-          </p>
-        </header>
+      <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+        <MeasureHeader
+          eyebrow="Channel two"
+          title="Style measurement"
+          note="How far this document sits from contemporary reference prose in the same language."
+        />
 
-        <div className="px-5 py-4">
+        <div className="px-5 py-5">
           {dist && dist.status === 'computed' ? (
             <>
-              <div className="flex flex-wrap items-baseline gap-x-8 gap-y-3">
+              <div className="flex flex-wrap items-end gap-x-10 gap-y-4">
                 <Stat label="Distance from reference">
-                  <span className="figure text-lg">{fmt(dist.compositeDeviation, 2)} SD</span>
-                  {dist.compositeInterval ? (
-                    <span className="block text-xs text-ink-400">
-                      band {fmt(dist.compositeInterval.low, 2)}–{fmt(dist.compositeInterval.high, 2)}
-                    </span>
-                  ) : (
-                    <span className="block text-xs text-ink-400">
-                      too few sentences to resample for a band
-                    </span>
-                  )}
+                  <span className="figure text-2xl leading-none">
+                    {fmt(dist.compositeDeviation, 2)} <span className="text-base text-ink-400">SD</span>
+                  </span>
                 </Stat>
                 <Stat label="Function-word distance">
-                  <span className="figure text-lg">{fmt(dist.functionWordDeviation, 2)} SD</span>
+                  <span className="figure text-2xl leading-none">
+                    {fmt(dist.functionWordDeviation, 2)}{' '}
+                    <span className="text-base text-ink-400">SD</span>
+                  </span>
                 </Stat>
                 <Stat label="Measured over">
-                  <span className="figure text-lg">{dist.tokens.toLocaleString()}</span>
-                  <span className="block text-xs text-ink-400">words in {dist.chunks} chunks</span>
+                  <span className="figure text-2xl leading-none">
+                    {dist.tokens.toLocaleString()}
+                  </span>
+                  <span className="mt-1 block text-xs text-ink-400">
+                    words in {dist.chunks} chunks
+                  </span>
                 </Stat>
               </div>
 
-              <h3 className="mt-5 text-sm font-medium text-ink-700">Largest deviations</h3>
-              <ul className="mt-2 divide-y divide-ink-100 text-sm">
+              <div className="mt-6">
+                <Band
+                  value={dist.compositeDeviation}
+                  low={dist.compositeInterval?.low}
+                  high={dist.compositeInterval?.high}
+                  reference={0}
+                  min={0}
+                  max={5}
+                  tone="seal"
+                  height={12}
+                  animate
+                  title={`Style distance ${fmt(dist.compositeDeviation, 2)} standard deviations from reference`}
+                />
+                <div className="mt-2 flex items-baseline justify-between">
+                  <span className="t-eyebrow text-ink-300">0 SD</span>
+                  <span className="t-eyebrow text-ink-400">
+                    {dist.compositeInterval
+                      ? `interval ${fmt(dist.compositeInterval.low, 2)} to ${fmt(dist.compositeInterval.high, 2)} SD`
+                      : 'too few sentences to resample for a band'}
+                  </span>
+                  <span className="t-eyebrow text-ink-300">5 SD</span>
+                </div>
+              </div>
+
+              <h3 className="t-eyebrow mt-8 text-ink-400">Largest deviations</h3>
+              <ul className="mt-3 divide-y divide-ink-100 text-sm">
                 {dist.features.slice(0, 5).map((f) => (
-                  <li key={f.feature} className="flex items-baseline justify-between gap-4 py-2">
+                  <li
+                    key={f.feature}
+                    className="flex items-baseline justify-between gap-4 py-2.5 transition-colors duration-150 hover:bg-ink-50"
+                  >
                     <span className="text-ink-600">{featureLabel(f.feature)}</span>
                     <span className="figure text-ink-800">
                       {f.observed.toFixed(2)}{' '}
@@ -152,10 +148,10 @@ export function ResultView({ result }: { result: AnalysisResult }) {
               </ul>
 
               {dist.corpus && (
-                <p className="mt-4 text-xs leading-relaxed text-ink-400">
+                <p className="mt-5 text-xs leading-relaxed text-ink-400">
                   Reference: {dist.corpus.documents.toLocaleString()} documents /{' '}
-                  {dist.corpus.tokens.toLocaleString()} words of {dist.corpus.source}, {dist.corpus.license},
-                  retrieved {dist.corpus.retrievedAt.slice(0, 10)}.
+                  {dist.corpus.tokens.toLocaleString()} words of {dist.corpus.source},{' '}
+                  {dist.corpus.license}, retrieved {dist.corpus.retrievedAt.slice(0, 10)}.
                 </p>
               )}
             </>
@@ -163,11 +159,14 @@ export function ResultView({ result }: { result: AnalysisResult }) {
             <p className="text-sm text-ink-600">{dist?.detail ?? 'No style measurement was made.'}</p>
           )}
 
-          <p className="mt-4 rounded border-l-2 border-ink-300 bg-ink-50 px-4 py-3 text-sm leading-relaxed text-ink-600">
-            This is a measure of register, not of provenance. It does not detect AI and it is not
-            evidence of who wrote the document. Technical writing, fiction, translated text and
-            non-native prose all sit far from an encyclopaedic reference for entirely ordinary reasons.
-          </p>
+          <div className="mt-5">
+            <LimitNote>
+              This is a measure of register, not of provenance. It does not detect AI and it is not
+              evidence of who wrote the document. Technical writing, fiction, translated text and
+              non-native prose all sit far from an encyclopaedic reference for entirely ordinary
+              reasons.
+            </LimitNote>
+          </div>
         </div>
       </section>
 
@@ -175,37 +174,27 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <PassageBreakdown result={result} />
 
       {/* ---------------------------------------------------------------- */}
-      <section className="rounded-lg border border-ink-200 bg-white">
-        <header className="border-b border-ink-100 px-5 py-4">
-          <h2 className="font-serif text-lg text-ink-900">Stated limits</h2>
-        </header>
-        <ul className="space-y-3 px-5 py-4 text-sm leading-relaxed text-ink-600">
+      <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+        <MeasureHeader eyebrow="Attached to every result" title="Stated limits" />
+        <ul className="space-y-3.5 px-5 py-5 text-sm leading-relaxed text-ink-600">
           {result.limits.map((limit, i) => (
             <li key={i} className="flex gap-3">
-              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-ink-300" />
+              <span className="mt-[9px] h-[3px] w-[3px] shrink-0 bg-ink-400" />
               <span>{limit}</span>
             </li>
           ))}
         </ul>
-        <div className="border-t border-ink-100 px-5 py-4 text-xs text-ink-400">
+        <div className="border-t border-ink-100 bg-ink-50/60 px-5 py-4 text-xs text-ink-400">
           <p>
             Document SHA-256 <span className="figure break-all">{result.documentHash}</span>
           </p>
           <p className="mt-1">
             Analysed {result.analyzedAt} · engine {result.engineVersion} · language{' '}
-            {result.language.name} ({result.language.determinedBy === 'caller' ? 'you chose it' : 'measured'})
+            {result.language.name}{' '}
+            ({result.language.determinedBy === 'caller' ? 'you chose it' : 'measured'})
           </p>
         </div>
       </section>
-    </div>
-  )
-}
-
-function Stat({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <dt className="text-xs uppercase tracking-wide text-ink-400">{label}</dt>
-      <dd className="mt-0.5 text-ink-800">{children}</dd>
     </div>
   )
 }
@@ -228,22 +217,3 @@ const FEATURE_LABELS: Record<string, string> = {
 }
 
 const featureLabel = (name: string) => FEATURE_LABELS[name] ?? name
-
-/** A null figure never renders as a number. */
-function fmt(value: number | null | undefined, digits: number): string {
-  return value === null || value === undefined || !Number.isFinite(value)
-    ? 'not computed'
-    : value.toFixed(digits)
-}
-
-function fmtPct(value: number | null | undefined): string {
-  return value === null || value === undefined || !Number.isFinite(value)
-    ? 'not computed'
-    : `${(value * 100).toFixed(1)}%`
-}
-
-function fmtP(value: number | null | undefined): string {
-  if (value === null || value === undefined || !Number.isFinite(value)) return 'not computed'
-  if (value < 1e-6) return '< 0.000001'
-  return value.toFixed(6)
-}

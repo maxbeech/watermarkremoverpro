@@ -3,7 +3,7 @@
  *
  * Why not WebCrypto: `crypto.subtle` is async and only available in a secure
  * context. The green-list watermark test derives one keyed pseudorandom value
- * per scored bigram — thousands per document — so an async primitive would mean
+ * per scored bigram, thousands per document, so an async primitive would mean
  * thousands of awaits per check, and a secure-context requirement would make the
  * engine behave differently in the browser than on the server. A synchronous
  * implementation keeps ONE engine that produces byte-identical results in both
@@ -117,7 +117,7 @@ export function toHex(bytes: Uint8Array): string {
   return out
 }
 
-/** Lowercase hex SHA-256 of a string — the document hash printed on evidence reports. */
+/** Lowercase hex SHA-256 of a string, the document hash printed on evidence reports. */
 export const sha256Hex = (text: string): string => toHex(sha256(utf8(text)))
 
 /**

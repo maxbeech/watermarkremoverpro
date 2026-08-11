@@ -17,12 +17,12 @@ const FAQ = [
   {
     question: 'Why two channels instead of one score?',
     answer:
-      'Because they answer different questions and blending them would destroy both. The watermark test has a real null hypothesis and a real p value. The style measurement does not detect AI at all — it measures register. Combining them into one number would produce something with no defined meaning that would nonetheless be quoted as if it had one.',
+      'Because they answer different questions and blending them would destroy both. The watermark test has a real null hypothesis and a real p value. The style measurement does not detect AI at all. It measures register. Combining them into one number would produce something with no defined meaning that would nonetheless be quoted as if it had one.',
   },
   {
     question: 'Why is a repeated word pair only counted once?',
     answer:
-      'The z test assumes independent trials. A document that repeats "of the" forty times supplies one bit of evidence about the key partition, not forty. Counting repeats would inflate the statistic on any repetitive document — manufacturing a signal out of a writing habit.',
+      'The z test assumes independent trials. A document that repeats "of the" forty times supplies one bit of evidence about the key partition, not forty. Counting repeats would inflate the statistic on any repetitive document, manufacturing a signal out of a writing habit.',
   },
   {
     question: 'Why does the style measurement not use a significance test?',
@@ -70,13 +70,13 @@ export default async function MethodPage() {
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             T is the number of scored word pairs and |s|<sub>G</sub> how many are green. We report the
             green rate with a Wilson interval, the z, and the one-sided p. Below {MIN_TRIALS} distinct
-            pairs no z is reported at all — the normal approximation is not trustworthy there, and a
+            pairs no z is reported at all, because the normal approximation is not trustworthy there and a
             number we do not trust is worse than no number.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Two honest caveats. Repeated word pairs are scored once, because the test assumes
             independent trials. And we partition on word bigrams rather than a model’s own subword
-            vocabulary, which we do not have — so a vendor’s own detector can reach a different
+            vocabulary, which we do not have, so a vendor’s own detector can reach a different
             conclusion on the same document.
           </p>
         </section>
@@ -91,11 +91,11 @@ export default async function MethodPage() {
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-seal-700">
             MarkWitness therefore tests the keys it holds and names them on every result. It ships a
-            published open reference key so the machinery is auditable —{' '}
+            published open reference key so the machinery is auditable:{' '}
             <Link href="/verify" className="underline underline-offset-2">
               mark a passage under it yourself
             </Link>{' '}
-            and watch the statistic move — and accepts vendor or institution keys through
+            and watch the statistic move. It also accepts vendor or institution keys through
             configuration. Any tool claiming to detect a named vendor’s mark without a key from that
             vendor is not doing what it says.
           </p>
@@ -104,9 +104,9 @@ export default async function MethodPage() {
         <section className="mt-10">
           <h2 className="font-serif text-2xl text-ink-900">2. The style measurement (key-free)</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
-            Fourteen subject-independent register features — mean word length, moving-average
+            Fourteen subject-independent register features, among them mean word length, moving-average
             type-token ratio, hapax ratio, mean sentence length, sentence-length variability,
-            function-word rate and six punctuation rates — measured on your document in 400-word
+            function-word rate and six punctuation rates, measured on your document in 400-word
             chunks and expressed as a signed distance in standard deviations from a reference corpus
             in the same language. The composite is the root-mean-square of those distances, with a
             seeded percentile bootstrap over your own sentences giving the band.
@@ -123,7 +123,7 @@ export default async function MethodPage() {
           <h2 className="font-serif text-2xl text-ink-900">The reference corpora</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Measured, not estimated. Every document was language-verified by the engine’s own
-            identifier before being included — the API was asked for Spanish and is generally telling
+            identifier before being included, because the API was asked for Spanish and is generally telling
             the truth, but a baseline is what every user’s number is compared against, and “the source
             said so” is not verification.
           </p>
@@ -152,7 +152,7 @@ export default async function MethodPage() {
                     <tr key={SUPPORTED_LANGUAGES[i]} className="border-b border-ink-100">
                       <td className="py-2 pr-4">{LANGUAGE_NAMES[SUPPORTED_LANGUAGES[i]]}</td>
                       <td className="py-2 text-ink-500" colSpan={4}>
-                        baseline not available in this build — reported as unsupported
+                        baseline not available in this build, reported as unsupported
                       </td>
                     </tr>
                   ),
@@ -175,7 +175,7 @@ export default async function MethodPage() {
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             Without that correction a per-passage highlighter will confidently colour in sentences of
-            any document you give it — which is the false accusation this product exists to help
+            any document you give it, which is the false accusation this product exists to help
             people answer, generated by the product itself.
           </p>
         </section>
@@ -185,7 +185,7 @@ export default async function MethodPage() {
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             The free check runs entirely in your browser. The engine is a single module with no
             network calls; open the network tab and watch. The API, the hosted MCP mode and the PDF
-            report necessarily run on our servers, because a programmatic caller has no browser —
+            report necessarily run on our servers, because a programmatic caller has no browser, and
             those are opt-in and documented rather than quietly the same path.
           </p>
         </section>

@@ -60,7 +60,7 @@ export default function LimitsPage() {
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
             That asymmetry is unavoidable and it is why MarkWitness never says “cleared”. What it can
             give you is a documented, dated, hash-anchored record of a specific test on a specific
-            file, with the method named — which is a great deal more than an unexplained percentage,
+            file, with the method named, which is a great deal more than an unexplained percentage,
             and considerably more durable than a claim that overstates itself.
           </p>
         </section>

@@ -64,7 +64,7 @@ export interface VerifiedKey {
 /**
  * Verify a presented key.
  *
- * Returns null for absent, unknown and revoked keys alike — the caller gets one
+ * Returns null for absent, unknown and revoked keys alike, so the caller gets one
  * 401 either way, because telling an attacker that a key exists but is revoked
  * is free information.
  */

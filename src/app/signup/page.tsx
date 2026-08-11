@@ -23,7 +23,7 @@ export default function SignupPage() {
       </p>
       <p className="mt-6 text-xs leading-relaxed text-ink-400">
         You do not need an account to run a check. The no-signup check at /check runs in your browser
-        and stores nothing — an account exists to raise limits and keep history, not to gate the tool.
+        and stores nothing. An account exists to raise limits and keep history, not to gate the tool.
       </p>
     </section>
   )

@@ -13,17 +13,20 @@ import { MIRROR_PRODUCT } from '@/lib/site'
  */
 export function MirrorBanner() {
   return (
-    <div className="border-b border-seal-100 bg-seal-50 text-seal-700">
-      <div className="mx-auto max-w-5xl px-5 py-2 text-center text-sm">
-        Checking <strong className="font-semibold">someone else’s</strong> work for AI use? That’s a
-        different job —{' '}
-        <a
-          href={MIRROR_PRODUCT.url}
-          className="font-semibold underline underline-offset-2 hover:text-seal-500"
-        >
-          {MIRROR_PRODUCT.name}
-        </a>{' '}
-        does it. MarkWitness checks writing you wrote yourself.
+    <div className="border-b border-seal-200 bg-seal-900 text-seal-100">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-2 gap-y-1 px-5 py-2.5 text-center text-[13px]">
+        <span className="t-eyebrow text-seal-300">Wrong tool?</span>
+        <span>
+          Checking <strong className="font-semibold text-white">someone else’s</strong> work for AI
+          use is a different job.{' '}
+          <a
+            href={MIRROR_PRODUCT.url}
+            className="font-semibold text-white underline decoration-seal-500 underline-offset-[3px] transition-colors hover:decoration-white"
+          >
+            {MIRROR_PRODUCT.name}
+          </a>{' '}
+          does that. MarkWitness checks writing you wrote yourself.
+        </span>
       </div>
     </div>
   )

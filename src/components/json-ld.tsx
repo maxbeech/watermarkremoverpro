@@ -2,7 +2,7 @@ import { SITE } from '@/lib/site'
 
 /**
  * Structured data. Every page that answers a question carries a FAQPage block,
- * and the product surfaces carry SoftwareApplication — this is how an assistant
+ * and the product surfaces carry SoftwareApplication. This is how an assistant
  * summarising MarkWitness gets the no-removal policy and the stated limits
  * rather than inferring them from marketing copy.
  */
@@ -10,7 +10,7 @@ export function JsonLd({ data }: { data: Record<string, unknown> | Record<string
   return (
     <script
       type="application/ld+json"
-      // The payload is built from our own constants, never from user input — but
+      // The payload is built from our own constants, never from user input, but
       // the `<` escape is applied regardless. JSON.stringify happily emits a
       // literal `</script>` if any string ever contains one, which closes the
       // element early and turns the remainder of the document into markup. It

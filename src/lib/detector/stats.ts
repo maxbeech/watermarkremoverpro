@@ -33,7 +33,7 @@ export function upperTailP(z: number): number {
 }
 
 /**
- * z statistic for an observed count of successes against a known null rate —
+ * z statistic for an observed count of successes against a known null rate.
  * the green-list watermark test's statistic.
  *
  * Returns null when there are no trials: an undefined statistic must surface as
@@ -48,7 +48,7 @@ export function binomialZ(successes: number, trials: number, p0: number): number
 
 /**
  * Wilson score interval for a binomial proportion. Preferred over the normal
- * approximation because it stays inside [0, 1] and behaves at small n — the
+ * approximation because it stays inside [0, 1] and behaves at small n. The
  * short-document case this product sees constantly.
  */
 export function wilsonInterval(
@@ -92,7 +92,7 @@ export function quantile(sorted: number[], q: number): number {
 }
 
 /**
- * mulberry32 — a small, fast, fully deterministic PRNG.
+ * mulberry32, a small, fast, fully deterministic PRNG.
  *
  * Determinism is a product requirement, not a convenience: the bootstrap
  * interval printed on a dated evidence report has to be reproducible by whoever
@@ -115,7 +115,7 @@ export function seededRandom(seed: number): () => number {
  * A per-passage breakdown runs one test per passage, so a long document will
  * throw up "significant" passages by chance alone. Returning raw per-passage
  * p-values as if each stood on its own would manufacture attribution the data
- * does not support — exactly the fabrication this product exists to argue
+ * does not support, which is exactly the fabrication this product exists to argue
  * against. Returns the indices whose discoveries survive at the given FDR.
  */
 export function benjaminiHochberg(pValues: number[], fdr = 0.05): number[] {

@@ -3,8 +3,8 @@
  * contemporary prose in the same language.
  *
  * WHAT THIS IS NOT. It is not a provenance mark, it does not detect AI, and it
- * is not evidence of authorship. Every consumer of this result — the UI, the
- * API, the MCP tool, the evidence report — is required to carry that sentence,
+ * is not evidence of authorship. Every consumer of this result, whether the UI,
+ * the API, the MCP tool or the evidence report, is required to carry that sentence,
  * because a single number labelled "distance" is the easiest thing in this
  * product to misread as a verdict, and being misread as a verdict is precisely
  * the harm MarkWitness exists to argue against.
@@ -13,7 +13,7 @@
  * distance in standard deviations from the corpus mean for that language, and
  * the composite is the root-mean-square of those distances. Technical writing,
  * fiction, poetry, translated text and non-native prose all sit far from an
- * encyclopaedic reference, and legitimately so — distance means "unlike the
+ * encyclopaedic reference, and legitimately so, because distance means "unlike the
  * reference corpus", which is a statement about register, not about a person.
  *
  * A NOTE ON WHY THERE IS NO sqrt(n) HERE. The obvious alternative statistic
@@ -120,7 +120,7 @@ function composite(
  * Percentile bootstrap over the document's own sentences.
  *
  * Resampling sentences rather than chunks means an interval can be produced for
- * a short document too — the free tier's cap leaves only three or four chunks,
+ * a short document too, since the free tier's cap leaves only three or four chunks,
  * and reporting a point estimate with no interval there would break the
  * product's own rule that a confidence figure is never a bare number.
  *

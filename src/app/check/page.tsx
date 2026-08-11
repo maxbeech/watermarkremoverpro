@@ -6,7 +6,7 @@ import { CORE_FAQ, Faq } from '@/components/faq'
 export const metadata: Metadata = {
   title: 'Check your writing for an AI provenance mark',
   description:
-    'Paste your own writing and get a calibrated confidence band, a per-passage breakdown and the stated limits. Runs in your browser — the document is never uploaded.',
+    'Paste your own writing and get a calibrated confidence band, a per-passage breakdown and the stated limits. Runs in your browser, and the document is never uploaded.',
   alternates: { canonical: '/check' },
 }
 

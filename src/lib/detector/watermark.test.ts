@@ -26,7 +26,7 @@ const VOCAB = [
  * Without this test the detector is unfalsifiable: a function that always
  * returns a small z is indistinguishable from a working detector when it is only
  * ever shown ordinary text. Here text is deliberately marked under a key, and
- * the test asserts the statistic finds it — and, just as importantly, that the
+ * the test asserts the statistic finds it and, just as importantly, that the
  * same text is NOT flagged under a different key, which is what proves the
  * result depends on the key rather than on some property of the generated prose.
  */

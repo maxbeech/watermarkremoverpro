@@ -104,7 +104,7 @@ describe('checkDocument', () => {
     expect(result.watermark.coverageNotice).toContain('no vendor publishes one')
   })
 
-  it('is reproducible — the same text yields the same figures', async () => {
+  it('is reproducible: the same text yields the same figures', async () => {
     const a = await checkDocument(ENGLISH, { keys: PUBLIC_DETECTION_KEYS })
     const b = await checkDocument(ENGLISH, { keys: PUBLIC_DETECTION_KEYS })
     expect(a.documentHash).toBe(b.documentHash)

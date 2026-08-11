@@ -100,7 +100,7 @@ export default async function DashboardPage() {
         <header className="border-b border-ink-100 px-5 py-4">
           <h2 className="font-serif text-lg text-ink-900">Saved checks</h2>
           <p className="mt-1 text-sm text-ink-500">
-            Checks run on the server — through the API, or when generating an evidence report. The
+            Checks run on the server, through the API or when generating an evidence report. The
             no-signup browser check deliberately saves nothing, so it does not appear here.
           </p>
         </header>

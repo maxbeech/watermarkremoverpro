@@ -6,6 +6,20 @@
   court exhibit than to a SaaS landing page: restrained ink-on-paper palette,
   a serif for argument, a monospace for anything measured. Nothing pulses,
   nothing gradients, and no number is ever coloured red for drama.
+
+  THE SIGNATURE, applied everywhere: the measurement band. A horizontal track
+  carrying a hatched uncertainty interval, a hard marker at the measured value
+  and a chance line to read it against. It is the literal output of the product
+  and it is also the site's shape language, so the marketing pages and the app
+  are visibly the same object seen from two distances.
+
+  COLOUR CARRIES MEANING AND NOTHING ELSE. Each family has exactly one job:
+    ink     structure, prose, chrome. The default for everything.
+    seal    something was measured. Interactive elements, because clicking is
+            how you ask for a measurement.
+    signal  a mark was actually found. Never decorative, never a highlight
+            colour, never used because a section needed some warmth.
+  A reader who learns those three rules on the homepage can read a result.
 */
 
 @theme {
@@ -22,22 +36,39 @@
 
   --color-seal-50: #eef4f7;
   --color-seal-100: #d6e5ed;
+  --color-seal-200: #b4d0de;
   --color-seal-300: #8bb3c9;
   --color-seal-500: #3d7595;
   --color-seal-600: #2f5c76;
   --color-seal-700: #244557;
+  --color-seal-900: #162c38;
 
   --color-signal-100: #f6ead6;
+  --color-signal-200: #ecd5ad;
+  --color-signal-400: #c99339;
   --color-signal-500: #b0741f;
   --color-signal-700: #7d5115;
 
   --font-serif: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif;
   --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+
+  /* One rhythm for vertical space, so section padding stops being a per-page
+     guess. Every marketing section uses --space-section through <Section>. */
+  --space-section: 5.5rem;
+  --space-section-tight: 3.5rem;
+
+  /* Three surfaces, not one. A page has a floor, panels that sit on it, and
+     exhibits that lift off it, and a reader can tell which is which. */
+  --shadow-panel: 0 1px 2px rgba(20, 20, 18, 0.04), 0 1px 1px rgba(20, 20, 18, 0.03);
+  --shadow-raised: 0 2px 4px rgba(20, 20, 18, 0.05), 0 8px 20px -12px rgba(20, 20, 18, 0.16);
+  --shadow-exhibit: 0 1px 2px rgba(20, 20, 18, 0.05), 0 18px 40px -20px rgba(20, 20, 18, 0.28),
+    0 60px 90px -60px rgba(36, 69, 87, 0.3);
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -47,22 +78,159 @@ body {
   font-feature-settings: 'kern', 'liga';
 }
 
+/* ------------------------------------------------------------------ type */
+
+/* A deliberate five-step scale rather than a per-section pick. Display and
+   title tiers are serif because they carry the argument; the eyebrow tier is
+   monospace and letterspaced because it labels measurements. */
+.t-display {
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 5.4vw, 4.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.021em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+.t-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.t-heading {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  line-height: 1.25;
+  letter-spacing: -0.008em;
+}
+
+.t-lead {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.t-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
 /* A measured figure always renders in the monospace face, so a reader can tell
    at a glance which parts of a result were computed and which are prose. */
 .figure {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 .prose-body p {
   line-height: 1.75;
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------- surfaces */
+
+.hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    currentColor 0 1px,
+    transparent 1px 5px
+  );
+}
+
+/* The paper the exhibits sit on. Very low contrast rule grid, the texture of a
+   measurement sheet rather than a decorative pattern. */
+.paper {
+  background-image:
+    linear-gradient(to right, rgba(36, 69, 87, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(36, 69, 87, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ------------------------------------------------------------ interaction */
+
+/* Every interactive element in the product routes through one focus treatment,
+   so keyboard users get the same affordance everywhere. */
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--color-seal-500);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.link-quiet {
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-ink-300);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 150ms ease, color 150ms ease;
+}
+.link-quiet:hover {
+  color: var(--color-seal-600);
+  text-decoration-color: var(--color-seal-500);
+}
+
+/* ---------------------------------------------------------------- motion */
+
+/* Motion is only ever a measurement settling into place. Nothing bounces,
+   nothing loops, nothing draws attention to itself after the first paint. */
+@keyframes mw-settle {
+  from {
+    transform: scaleX(0.001);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes mw-mark-in {
+  from {
+    transform: translateX(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes mw-rise {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.mw-settle {
+  transform-origin: left center;
+  animation: mw-settle 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
+}
+.mw-mark-in {
+  animation: mw-mark-in 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
+}
+.mw-rise {
+  animation: mw-rise 520ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

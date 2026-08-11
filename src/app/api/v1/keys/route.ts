@@ -6,7 +6,7 @@ import { databaseConfigured } from '@/lib/db'
 
 export const runtime = 'nodejs'
 
-/** API key management for a signed-in account. Session-authenticated only —
+/** API key management for a signed-in account. Session-authenticated only,
  *  an API key may not mint further API keys, so a leaked key cannot be used to
  *  establish persistence beyond its own revocation. */
 async function requireAccount() {

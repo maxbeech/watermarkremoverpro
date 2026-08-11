@@ -32,8 +32,8 @@ const read = (file: string) => readFileSync(file, 'utf8')
 
 describe('constraint: no mark removal capability, anywhere', () => {
   /**
-   * The permanent constraint. It must hold on every surface — free, Pro, API,
-   * MCP — so this scans the whole source tree rather than a route list.
+   * The permanent constraint. It must hold on every surface, free, Pro, API and
+   * MCP, so this scans the whole source tree rather than a route list.
    *
    * The check is for a capability, not for a word: the guides discuss how
    * editing degrades a mark, which is legitimate explanation. What must not
@@ -85,14 +85,14 @@ describe('constraint: no mark removal capability, anywhere', () => {
 describe('constraint: the free check never transmits the document', () => {
   /**
    * The on-device promise. The engine and the components on the free path must
-   * contain no network call whatsoever — if one appeared, the marketing claim
+   * contain no network call whatsoever. If one appeared, the marketing claim
    * ("open your network tab and watch") would become false, and it would be
    * false in a way no user could easily detect.
    */
   /**
    * Matches an invocation, not a mention. These files discuss fetching
    * baselines in their comments, and a test that fails on the word would
-   * either be muted or would push the explanation out of the code — both
+   * either be muted or would push the explanation out of the code, and both
    * worse outcomes than a slightly more careful regex.
    */
   const NETWORK_CALL = /(^|[^.\w])(fetch\s*\(|new\s+XMLHttpRequest|navigator\s*\.\s*sendBeacon|new\s+WebSocket|new\s+EventSource)/
@@ -132,7 +132,7 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
     expect(layout).toContain('MirrorBanner')
 
     // The banner reads the destination from the shared constant rather than
-    // hardcoding it, which is the correct design — so assert the wiring here
+    // hardcoding it, which is the correct design, so assert the wiring here
     // and the value at its source.
     const banner = read(join(ROOT, 'src/components/mirror-banner.tsx'))
     expect(banner).toContain('MIRROR_PRODUCT.url')
@@ -151,16 +151,32 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
 describe('constraint: no fabricated figures', () => {
   it('never renders a null statistic as a number', () => {
     // The formatters are the last line of defence between a null and a reader.
-    const resultView = read(join(ROOT, 'src/components/checker/result-view.tsx'))
-    expect(resultView).toContain("'not computed'")
-    // A `?? 0` on a statistic would silently turn "not measured" into "zero".
-    expect(resultView).not.toMatch(/(greenRate|compositeDeviation|watermarkZ|pValue)\s*\?\?\s*0/)
+    // They live in measures.tsx, which is the shared rendering vocabulary used by
+    // BOTH the app result view and the marketing exhibits, so this asserts
+    // against that module rather than against whichever page happens to import
+    // it today.
+    const measures = read(join(ROOT, 'src/components/checker/measures.tsx'))
+    expect(measures).toContain("'not computed'")
+
+    // Every surface that renders a statistic must go through those formatters
+    // rather than reimplementing them, and none of them may coerce a null.
+    const renderers = [
+      'src/components/checker/measures.tsx',
+      'src/components/checker/result-view.tsx',
+      'src/components/checker/passage-breakdown.tsx',
+      'src/components/marketing/exhibit.tsx',
+    ].map((f) => read(join(ROOT, f)))
+
+    for (const source of renderers) {
+      // A `?? 0` on a statistic would silently turn "not measured" into "zero".
+      expect(source).not.toMatch(/(greenRate|compositeDeviation|watermarkZ|pValue)\s*\?\?\s*0/)
+    }
   })
 
   it('ships a measured baseline for every language it claims to support', async () => {
     const { SUPPORTED_LANGUAGES } = await import('../src/lib/detector/languages')
     // Loaded through the real loader rather than read off disk, so this also
-    // proves the loader resolves in a plain Node context — the MCP server runs
+    // proves the loader resolves in a plain Node context, and the MCP server runs
     // there, and a baseline that only loads under the bundler is a baseline the
     // MCP server silently does without.
     const { loadBaseline } = await import('../src/lib/detector/baselines')

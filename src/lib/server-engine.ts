@@ -36,7 +36,7 @@ export async function analyzeOnServer(
       baselines[language] = await loadBaseline(language)
     } catch {
       // The style channel reports 'no_baseline' with its reason. The watermark
-      // test is unaffected and still runs — refusing the whole request because
+      // test is unaffected and still runs. Refusing the whole request because
       // one channel is unavailable would withhold a result we can compute.
     }
   }

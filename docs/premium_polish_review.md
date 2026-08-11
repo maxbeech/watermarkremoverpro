@@ -1,4 +1,4 @@
-# Premium polish review — MarkWitness
+# Premium polish review: MarkWitness
 
 Stage 3b design and brand elevation pass. Design quality only; correctness, business
 logic and functional testing belong to Harden, which runs next.
@@ -17,7 +17,7 @@ actually sees, not against what the source implies.
 Prior operator verdict on the last review: "We need this still very significantly
 improved." The findings agree with that verdict.
 
-### 1. Not premium enough — CONFIRMED
+### 1. Not premium enough: CONFIRMED
 
 - **Colour is effectively unused.** `globals.css` defines a considered three-family
   palette (`ink` neutrals, `seal` blue, `signal` amber) with a written rationale.
@@ -46,7 +46,7 @@ improved." The findings agree with that verdict.
   and `max-w-5xl` on the chrome. One column, one rhythm, top to bottom, on all 45
   pages.
 
-### 2. Reads as AI-generated — CONFIRMED (mechanical), copy prose is better than expected
+### 2. Reads as AI-generated: CONFIRMED (mechanical), copy prose is better than expected
 
 - **Em dashes are everywhere: 251 across 68 tracked files**, including 44 in the
   main marketing copy source `src/content/pages.ts`, 12 in `/method`, 10 in
@@ -64,17 +64,17 @@ improved." The findings agree with that verdict.
   voice. Rewrites should preserve the existing voice and only remove the em dashes
   and restructure the layout around the copy.
 
-### 3. Illustrations do not represent the product — CONFIRMED, by absence
+### 3. Illustrations do not represent the product: CONFIRMED, by absence
 
 There is not a single illustration, diagram, graphic, icon or image anywhere on the
 marketing site. The site ships zero SVG and zero raster assets. This fails the test
 in its strongest form: there is nothing to echo the app UI because there is nothing
 at all. The product has an unusually strong visual language available to it and
-unused — a confidence band with an uncertainty interval, a per-passage signal
-breakdown, a z-statistic against a chance line — and none of it appears anywhere
-except as plain text inside the result panel.
+unused, namely a confidence band with an uncertainty interval, a per-passage
+signal breakdown and a z-statistic against a chance line, and none of it appears
+anywhere except as plain text inside the result panel.
 
-### 4. Not enough UI mockups — CONFIRMED
+### 4. Not enough UI mockups: CONFIRMED
 
 Real product screens shown on the marketing site: **zero framed mockups**. The
 homepage embeds the live `Checker` in its empty state, which is a text box and a
@@ -85,7 +85,7 @@ Nobody arriving on `/for/university-students` from search ever sees a result scr
 a confidence band, or a per-passage breakdown before deciding whether to trust the
 tool.
 
-### 5. Does not draw the eye, not unique — CONFIRMED
+### 5. Does not draw the eye, not unique: CONFIRMED
 
 The site currently has no art direction a visitor could describe afterwards. The
 serif-for-argument, mono-for-measurement idea in the stylesheet comment is a good
@@ -100,8 +100,8 @@ the hero graphic, as a section rule, as the result display, as the per-passage
 heatmap, and as the shape inside the logo lockup. Paired with the archival
 ink-on-paper palette, the seal blue used only for what was measured, and the amber
 signal used only where a mark was actually found, that is a design language nobody
-else in AI detection is using, all of which are courtroom-classifier gradients and
-purple robots.
+else in AI detection is using. The competitors all reach for the same gradient
+classifier dashboard.
 
 ### Out of scope, noted for Harden (not fixed here)
 

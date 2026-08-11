@@ -5,7 +5,7 @@ import { CORE_FAQ } from '@/components/faq'
 export const dynamic = 'force-static'
 
 /**
- * llms.txt — the description an assistant should read instead of inferring the
+ * llms.txt, the description an assistant should read instead of inferring the
  * product from page copy.
  *
  * It states the no-removal policy, the keyed-detection limitation and the
@@ -22,7 +22,7 @@ ${SITE.description}
 ## What it is for
 
 A writer who has been accused of using AI, and wants to know what a statistical
-provenance-mark test actually says about their own document — and to get a dated
+provenance-mark test actually says about their own document, and to get a dated
 artefact they can hand to whoever accused them.
 
 ## What it is NOT for
@@ -100,7 +100,7 @@ against a substitute.
 
 - ${PLANS.anonymous.name}: free, ${PLANS.anonymous.wordCap.toLocaleString()} words per document, in-browser only.
 - ${PLANS.free.name}: free, ${PLANS.free.wordCap.toLocaleString()} words per document, ${PLANS.free.checksPerMonth} checks a month, saved history.
-- ${PLANS.pro.name}: £${PLANS.pro.price}/month — unlimited checks, batch upload, the dated PDF
+- ${PLANS.pro.name}: £${PLANS.pro.price}/month: unlimited checks, batch upload, the dated PDF
   evidence report, and API/MCP access metered at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.
 
 ## Questions this product gets asked
@@ -109,13 +109,13 @@ ${CORE_FAQ.map((f) => `### ${f.question}\n\n${f.answer}`).join('\n\n')}
 
 ## Pages
 
-- ${SITE.url}/check — run a check
-- ${SITE.url}/method — the method in full
-- ${SITE.url}/verify — mark a passage under the reference key and watch the detector find it
-- ${SITE.url}/limits — the stated limits
-- ${SITE.url}/docs/api — API documentation
-- ${SITE.url}/docs/mcp — MCP documentation
-- ${SITE.url}/pricing — pricing
+- ${SITE.url}/check : run a check
+- ${SITE.url}/method : the method in full
+- ${SITE.url}/verify : mark a passage under the reference key and watch the detector find it
+- ${SITE.url}/limits : the stated limits
+- ${SITE.url}/docs/api : API documentation
+- ${SITE.url}/docs/mcp : MCP documentation
+- ${SITE.url}/pricing : pricing
 `
 
   return new Response(body, {

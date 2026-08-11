@@ -4,7 +4,7 @@
  * Each language's baseline is loaded through a dynamic import so the browser
  * downloads only the one it needs. A user checking an English document should
  * not pay to download the German, Spanish, French and Portuguese reference
- * statistics — and on the free path the whole analysis happens in their browser,
+ * statistics, and on the free path the whole analysis happens in their browser,
  * so bundle weight is a real cost to a real person, not a build-time nicety.
  *
  * A language whose baseline file is missing is UNSUPPORTED. It is never
@@ -48,7 +48,7 @@ export async function loadBaseline(language: LanguageCode): Promise<Baseline> {
  * Refuse a baseline that cannot support a measurement.
  *
  * A malformed or empty baseline file would otherwise produce z scores against
- * zeros and NaNs — numbers that render perfectly and mean nothing.
+ * zeros and NaNs, numbers that render perfectly and mean nothing.
  */
 function assertUsable(baseline: Baseline, language: LanguageCode): void {
   if (!baseline || typeof baseline !== 'object') {

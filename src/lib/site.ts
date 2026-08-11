@@ -1,13 +1,13 @@
 /**
  * Site-wide constants. Single source of truth for anything that appears in more
- * than one place — metadata, JSON-LD, llms.txt, the OpenAPI document and the
+ * than one place: metadata, JSON-LD, llms.txt, the OpenAPI document and the
  * evidence report all read from here, so a change to the product's name or
  * pricing cannot end up half-applied.
  */
 
 export const SITE = {
   name: 'MarkWitness',
-  tagline: 'Check your own writing for an AI provenance mark — on your device.',
+  tagline: 'Check your own writing for an AI provenance mark, on your device.',
   description:
     'MarkWitness tells you whether your own text carries a statistical AI provenance mark, how strong the signal is, and which passages carry it. The free check runs entirely in your browser: the document never leaves your device.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://markwitness.helm7.com',
@@ -35,7 +35,7 @@ export const PLANS = {
     checksPerMonth: null,
     features: [
       'One document at a time, up to 1,500 words',
-      'Runs entirely in your browser — the document is never uploaded',
+      'Runs entirely in your browser, and the document is never uploaded',
       'Confidence band, per-passage breakdown and stated limits on screen',
     ],
   },
@@ -60,7 +60,7 @@ export const PLANS = {
     checksPerMonth: null,
     features: [
       'Unlimited checks and batch upload',
-      'The dated evidence report as a PDF — signal strength, per-passage breakdown, stated limits, document hash',
+      'The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash',
       'API and MCP access with metered credits',
     ],
   },

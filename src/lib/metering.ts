@@ -5,7 +5,7 @@ import { API_PRICE_PENCE_PER_1K_WORDS, PLANS } from '@/lib/site'
  * Usage metering for programmatic callers.
  *
  * The billable unit is 1,000 words, rounded up, which is the unit the pricing
- * page and pricing.json both quote. One constant, three surfaces — a metered
+ * page and pricing.json both quote. One constant, three surfaces, because a metered
  * product whose code and price list disagree is one that overcharges or
  * undercharges silently.
  */
@@ -91,7 +91,7 @@ export async function checkAllowance(
     return {
       ...decision,
       allowed: false,
-      reason: `This document is ${words.toLocaleString()} words; the ${spec.name} plan allows ${spec.wordCap.toLocaleString()} per document. The document was not analysed — a result measured on part of a document would not describe the document.`,
+      reason: `This document is ${words.toLocaleString()} words; the ${spec.name} plan allows ${spec.wordCap.toLocaleString()} per document. The document was not analysed, because a result measured on part of a document would not describe the document.`,
     }
   }
 

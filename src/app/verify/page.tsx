@@ -6,7 +6,7 @@ import { OPEN_REFERENCE_KEY } from '@/lib/detector/keys'
 export const metadata: Metadata = {
   title: 'Verify the detector',
   description:
-    'Mark a passage under the published reference key in your own browser and watch the MarkWitness detector find it — then watch the same text score at chance under a different key.',
+    'Mark a passage under the published reference key in your own browser and watch the MarkWitness detector find it, then watch the same text score at chance under a different key.',
   alternates: { canonical: '/verify' },
 }
 
@@ -16,7 +16,7 @@ export default function VerifyPage() {
       <h1 className="font-serif text-3xl text-ink-900">Verify the detector</h1>
       <p className="mt-4 text-lg leading-relaxed text-ink-600">
         You should not have to take our word for it. This page marks text under our published
-        reference key, runs the detector on it, and shows you both numbers — in your browser, with
+        reference key, runs the detector on it, and shows you both numbers, in your browser, with
         the same code the real check uses.
       </p>
 
@@ -27,7 +27,7 @@ export default function VerifyPage() {
       <section className="mt-12">
         <h2 className="font-serif text-2xl text-ink-900">Why the second panel is the important one</h2>
         <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
-          A large z on marked text proves less than it appears to on its own — any function that
+          A large z on marked text proves less than it appears to on its own, because any function that
           returns a big number for text produced by a particular generator would pass that test. The
           control is the same text scored under a <em>different</em> key. If the detector were
           responding to something about how the text reads, it would light up there too. It does not,
@@ -56,7 +56,7 @@ export default function VerifyPage() {
           </div>
         </dl>
         <p className="mt-4 text-[15px] leading-relaxed text-ink-600">
-          This key is public on purpose — it exists to make the method auditable, not to detect any
+          This key is public on purpose. It exists to make the method auditable, not to detect any
           real model’s output. It detects text marked under this published scheme and nothing else.
           What it demonstrates is that the machinery works, so that when a vendor or institution key
           is configured you know what it is doing.{' '}

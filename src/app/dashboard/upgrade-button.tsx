@@ -9,7 +9,7 @@ export function UpgradeButton({ billingLive }: { billingLive: boolean }) {
   if (!billingLive) {
     return (
       <span className="text-sm text-ink-400">
-        Pro is not purchasable on this deployment — no payment processor is configured.
+        Pro is not purchasable on this deployment, because no payment processor is configured.
       </span>
     )
   }

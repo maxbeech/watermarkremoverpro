@@ -2,8 +2,8 @@
  * End-to-end validation against a real browser and a real deployment.
  *
  * The unit suite proves the engine computes correctly. It cannot prove that the
- * deployed page loads the engine, that the check button produces a result, or —
- * most importantly — that the document is genuinely not transmitted. That last
+ * deployed page loads the engine, that the check button produces a result, and,
+ * most importantly, that the document is genuinely not transmitted. That last
  * one is the product's central promise and it is only checkable by watching the
  * network from outside the page, which is what this does.
  *
@@ -67,7 +67,7 @@ try {
   check(true, 'a result is rendered')
 
   // innerText returns text AFTER CSS text-transform, and the stat labels are
-  // rendered uppercase — so these two must be case-insensitive or they assert
+  // rendered uppercase, so these two must be case-insensitive or they assert
   // against a stylesheet rather than against the product.
   const body = await page.locator('body').innerText()
   check(/Green-list rate/i.test(body), 'the green-list rate is reported')

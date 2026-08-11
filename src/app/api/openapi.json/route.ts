@@ -118,7 +118,7 @@ export function GET() {
                   coverageNotice: {
                     type: 'string',
                     description:
-                      'Names the keys tested. A null result applies ONLY to these keys — no vendor publishes a detection key, so this qualifier is load-bearing and must not be dropped when summarising.',
+                      'Names the keys tested. A null result applies ONLY to these keys, and no vendor publishes a detection key, so this qualifier is load-bearing and must not be dropped when summarising.',
                   },
                 },
               },

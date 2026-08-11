@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — 2026-08-11
+## 0.1.0, 2026-08-11
 
 First build. Everything below was verified by the checks in `npm run check`
 unless explicitly marked otherwise.
@@ -19,7 +19,7 @@ unless explicitly marked otherwise.
 - Synchronous SHA-256 / HMAC-SHA256 in-repo, verified against `node:crypto` and
   the RFC 4231 vectors, so browser and server produce byte-identical results and
   a saved evidence report reproduces exactly.
-- Every statistic typed `number | null` beside a status and a reason — "not
+- Every statistic typed `number | null` beside a status and a reason, so "not
   computed" is unrepresentable as a number.
 - **Positive control in the test suite:** text marked under a key is detected at
   z > 8, p < 1e-6, and the same text sits at chance under a different key.
@@ -38,19 +38,19 @@ unless explicitly marked otherwise.
 
 - Free no-signup check running entirely in the browser, capped at 1,500 words,
   with confidence band, per-passage heatmap and stated limits.
-- `/verify` — mark a passage under the published reference key in your own
+- `/verify`: mark a passage under the published reference key in your own
   browser and watch the detector find it, with a different-key control.
-- `/method`, `/limits` — the full method and the stated limits, read from the
+- `/method`, `/limits`: the full method and the stated limits, read from the
   engine so they cannot drift from what a result says.
 - 20 long-tail pages across audience, comparison, guide and language axes, each
   with FAQPage and SoftwareApplication JSON-LD.
 - `llms.txt`, `pricing.json`, OpenAPI 3.1, sitemap and robots.
 - Accounts (Better Auth + Neon), saved check history, API key issue/revoke.
-- `POST /api/v1/check` — API-key authenticated, metered per 1,000 words, 402
+- `POST /api/v1/check`: API-key authenticated, metered per 1,000 words, 402
   naming the exact limit reached, 503 rather than serving unmetered.
 - MCP server with `check_document` and `describe_method`, local or hosted mode,
   smoke-tested over the real protocol in `npm test`.
-- `POST /api/v1/report` — the dated PDF evidence report, anchored to the document
+- `POST /api/v1/report`: the dated PDF evidence report, anchored to the document
   by SHA-256, with the stated limits printed in full on the document itself.
 
 ### Constraints enforced as tests
@@ -66,14 +66,14 @@ unless explicitly marked otherwise.
 - **Stripe billing.** No payment processor is configured on this deployment (the
   only available Stripe connection belonged to a different product). The billing
   code is real and typechecked, not a stub, but no end-to-end purchase has been
-  made — so the pricing page shows paid plans as unavailable rather than a button
+  made, so the pricing page shows paid plans as unavailable rather than a button
   that fails, and `/api/billing/checkout` returns 503.
 
-## 2026-08-11 — deployed
+## 2026-08-11: deployed
 
 - Live at <https://markwitness.helm7.com>; every sampled route returns 200
   serving this product.
-- `src/lib/evidence-report.test.ts` — the paid wedge is now covered by tests that
+- `src/lib/evidence-report.test.ts`: the paid wedge is now covered by tests that
   build real PDFs and read the text back out of the compressed content streams,
   rather than asserting the function returned bytes. It is unreachable through
   the UI while billing is off, so nothing else exercised it.

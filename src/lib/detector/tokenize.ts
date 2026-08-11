@@ -2,7 +2,7 @@
  * Deterministic tokenisation and passage segmentation.
  *
  * Intl.Segmenter is deliberately NOT used. It is ICU-backed, so its word
- * boundaries can shift between browser versions and Node releases — and a check
+ * boundaries can shift between browser versions and Node releases, and a check
  * that segments differently on two machines produces two different z scores for
  * the same document, which would quietly destroy the reproducibility an evidence
  * report depends on. The regexes below are fixed and behave identically anywhere
@@ -12,7 +12,7 @@
 export interface Token {
   /** Surface form as it appeared in the document. */
   raw: string
-  /** Lowercased, apostrophes normalised — the form used for all keyed lookups. */
+  /** Lowercased, apostrophes normalised: the form used for all keyed lookups. */
   norm: string
   /** Character offset of the token in the source text. */
   start: number
@@ -63,7 +63,7 @@ export function countWords(text: string): number {
 /**
  * Abbreviations that end in a period without ending a sentence. Splitting after
  * these inflates the sentence count and deflates measured sentence-length
- * variance, which is one of the distributional features — so getting this wrong
+ * variance, which is one of the distributional features, so getting this wrong
  * would bias a reported statistic, not just the display.
  */
 const ABBREVIATIONS = new Set([
@@ -101,7 +101,7 @@ export function splitSentences(text: string): Passage[] {
   return passages
 }
 
-/** Split into paragraphs on blank lines — the coarser attribution granularity. */
+/** Split into paragraphs on blank lines, the coarser attribution granularity. */
 export function splitParagraphs(text: string): Passage[] {
   const passages: Passage[] = []
   const re = /\n\s*\n/g
@@ -138,7 +138,7 @@ export function punctuationCounts(text: string): Record<string, number> {
       case ',': counts.comma++; break
       case ';': counts.semicolon++; break
       case ':': counts.colon++; break
-      case '-': case '–': case '—': counts.dash++; break
+      case '-': case '\u2013': case '\u2014': counts.dash++; break
       case '"': case '“': case '”': case '«': case '»': counts.quote++; break
       case '!': counts.exclamation++; break
       case '?': counts.question++; break

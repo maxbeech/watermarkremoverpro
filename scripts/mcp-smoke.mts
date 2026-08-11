@@ -12,7 +12,7 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 
 /**
  * Long enough to clear the 120-word floor the style channel requires. That
- * floor is real and deliberate — below it the variance estimates are noise — so
+ * floor is real and deliberate, since below it the variance estimates are noise, so
  * the sample has to clear it for this test to exercise the channel rather than
  * exercise the refusal. SHORT_SAMPLE below checks the refusal on purpose.
  */

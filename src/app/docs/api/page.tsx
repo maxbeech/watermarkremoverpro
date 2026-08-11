@@ -45,7 +45,7 @@ export default function ApiDocsPage() {
     "granularity": "sentence"
   }'`}</Code>
         <p className="mt-3">
-          <code className="figure">language</code> is optional — omit it and the engine identifies it,
+          <code className="figure">language</code> is optional. Omit it and the engine identifies it,
           or returns <code className="figure">language_undetermined</code> rather than guessing.
           Supported: {SUPPORTED_LANGUAGES.join(', ')}.
         </p>
@@ -86,7 +86,7 @@ export default function ApiDocsPage() {
 }`}</Code>
         <p className="mt-3">
           <code className="figure">coverageNotice</code> and <code className="figure">limits</code> are
-          part of the result, not decoration. If you surface this data to a user, surface those too —
+          part of the result, not decoration. If you surface this data to a user, surface those too, because
           a null watermark result quoted without its coverage notice says something the measurement
           does not support.
         </p>
@@ -94,7 +94,7 @@ export default function ApiDocsPage() {
 
       <Section title="Status codes">
         <ul className="mt-2 space-y-2">
-          <Status code="200">Analysis complete. Note that a successful call can still carry a result whose status is <code className="figure">language_undetermined</code> — the request worked, the measurement declined.</Status>
+          <Status code="200">Analysis complete. Note that a successful call can still carry a result whose status is <code className="figure">language_undetermined</code> , because the request worked and the measurement declined.</Status>
           <Status code="400">Body was not valid JSON, or failed validation. <code className="figure">issues</code> names the fields.</Status>
           <Status code="401">Missing, unknown or revoked key.</Status>
           <Status code="402">Outside your plan allowance. The message names the exact limit reached and when it resets.</Status>

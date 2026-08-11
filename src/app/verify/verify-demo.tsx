@@ -13,7 +13,7 @@ import type { DetectionKey } from '@/lib/detector/keys'
  *
  * A detector you cannot test is a detector you have to take on faith. This runs
  * the real marker and the real detector, in the visitor's own browser, on text
- * generated in front of them — and crucially shows the SAME text scored under a
+ * generated in front of them, and crucially shows the SAME text scored under a
  * different key, which is what separates "this tool does arithmetic" from "this
  * tool returns a big number when we tell it to".
  */
@@ -105,8 +105,8 @@ export function VerifyDemo() {
               result={outcome.underCorrectKey}
               expectation={
                 outcome.wasMarked
-                  ? 'Expect a large z and a very small p — the mark is present and the test finds it.'
-                  : 'Expect z near zero — there is no mark to find.'
+                  ? 'Expect a large z and a very small p. The mark is present and the test finds it.'
+                  : 'Expect z near zero. There is no mark to find.'
               }
             />
             <Panel

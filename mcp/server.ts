@@ -72,13 +72,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         'Check a document for a statistical AI provenance mark (green-list watermark) and report ' +
         'the signal strength with a confidence band, a per-passage breakdown, and the stated ' +
         'limits of the method.\n\n' +
-        'Call this before handing text to a person or system that cares how it was produced — ' +
+        'Call this before handing text to a person or system that cares how it was produced. ' +
         'disclosing provenance up front is cheaper than being asked afterwards.\n\n' +
         'READ THE LIMITS IN THE RESPONSE BEFORE ACTING ON IT. Two of them decide how the result ' +
         'may be used: a detected mark is NOT proof of authorship, and an absent mark is NOT proof ' +
         'of human authorship. A green-list mark is keyed, and no model vendor publishes its ' +
         'detection key, so "no mark detected" always means "under the keys this deployment holds" ' +
-        '— which the response lists explicitly. Do not report this result as a verdict on who ' +
+        'which the response lists explicitly. Do not report this result as a verdict on who ' +
         'wrote something.\n\n' +
         (API_KEY
           ? `Configured with an API key: calls go to ${API_BASE}, which applies any vendor keys that deployment holds, saves the check to the account history, and meters it at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.`
@@ -89,7 +89,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       name: 'describe_method',
       description:
         'Describe what MarkWitness measures, which detection keys are available in the current ' +
-        'mode, which languages have measured baselines, and the stated limits — without sending ' +
+        'mode, which languages have measured baselines, and the stated limits, without sending ' +
         'any document. Call this first if you need to decide whether a check_document result ' +
         'will answer your question.',
       inputSchema: { type: 'object', properties: {}, additionalProperties: false },

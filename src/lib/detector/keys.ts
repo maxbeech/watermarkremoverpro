@@ -5,7 +5,7 @@
  *
  * A green-list provenance mark is a KEYED construction. Whoever generated the
  * text partitioned the vocabulary with a secret, and without that secret the
- * partition is unknowable — no amount of analysis recovers it. That is the
+ * partition is unknowable, and no amount of analysis recovers it. That is the
  * point of the design, and it is not a limitation MarkWitness can engineer
  * around.
  *
@@ -19,7 +19,7 @@
  * Inventing a key and reporting the resulting z score as though it tested for a
  * vendor's mark would be the single most dishonest thing this product could do.
  * It would produce a real-looking number, computed by real code, that is
- * evidence of nothing at all — and it would be indistinguishable from a working
+ * evidence of nothing at all, and it would be indistinguishable from a working
  * detector right up until someone relied on it in an appeal.
  */
 
@@ -28,7 +28,7 @@ import { utf8 } from './crypto'
 export interface DetectionKey {
   id: string
   label: string
-  /** Partition scheme identifier — part of the PRF input, so schemes never collide. */
+  /** Partition scheme identifier, part of the PRF input, so schemes never collide. */
   scheme: 'greenlist-bigram-v1'
   /** Expected green-list fraction under the null hypothesis. */
   gamma: number
@@ -56,7 +56,7 @@ export const OPEN_REFERENCE_KEY: DetectionKey = {
   gamma: 0.5,
   secret: utf8('markwitness/open-reference-key/v1'),
   provenance:
-    'Published by MarkWitness for verification and self-test. Not a model vendor key — it detects text marked under this published scheme only.',
+    'Published by MarkWitness for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.',
   vendorPublished: false,
 }
 
@@ -74,7 +74,7 @@ export interface KeyRegistryEntry {
  * Additional keys are supplied through MARKWITNESS_DETECTION_KEYS as a JSON
  * array of { id, label, secret, gamma?, provenance }. This is the path a model
  * vendor publishing a detection key, or an institution issued one under NDA,
- * plugs into — the engine needs no change to test against it.
+ * plugs into. The engine needs no change to test against it.
  */
 export function loadDetectionKeys(env: Record<string, string | undefined> = {}): DetectionKey[] {
   const keys: DetectionKey[] = [OPEN_REFERENCE_KEY]

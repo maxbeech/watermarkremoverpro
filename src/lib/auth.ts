@@ -83,7 +83,7 @@ export async function ensureAccount(userId: string, email: string, name?: string
  * Returns ANONYMOUS when there is no session OR when the database is
  * unavailable. That second case is deliberate: with no database we cannot
  * establish entitlement, and the safe reading of "cannot establish" is "not
- * entitled" — never "assume Pro".
+ * entitled", never "assume Pro".
  */
 export async function currentEntitlements(): Promise<Entitlements> {
   if (!process.env.DATABASE_URL) return ANONYMOUS

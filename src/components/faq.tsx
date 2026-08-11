@@ -1,21 +1,39 @@
+import { Section, SectionHead, Wrap } from '@/components/brand/ui'
+
 export interface FaqItem {
   question: string
   answer: string
 }
 
-export function Faq({ items, title = 'Questions people actually ask' }: { items: FaqItem[]; title?: string }) {
+export function Faq({
+  items,
+  title = 'Questions people actually ask',
+}: {
+  items: FaqItem[]
+  title?: string
+}) {
   return (
-    <section className="mx-auto max-w-3xl px-5 py-12">
-      <h2 className="font-serif text-2xl text-ink-900">{title}</h2>
-      <dl className="mt-6 divide-y divide-ink-200 border-t border-ink-200">
-        {items.map((item) => (
-          <div key={item.question} className="py-5">
-            <dt className="font-medium text-ink-900">{item.question}</dt>
-            <dd className="mt-2 text-[15px] leading-relaxed text-ink-600">{item.answer}</dd>
-          </div>
-        ))}
-      </dl>
-    </section>
+    <Section surface="panel" tight>
+      <Wrap>
+        <SectionHead eyebrow="Answers, in full" title={title} />
+        <dl className="mt-10 divide-y divide-ink-200 border-t border-ink-300">
+          {items.map((item, i) => (
+            <div
+              key={item.question}
+              className="group grid gap-x-8 gap-y-2 py-6 transition-colors duration-150 sm:grid-cols-[2.5rem_minmax(0,1fr)]"
+            >
+              <span className="figure hidden pt-1 text-xs text-ink-300 transition-colors duration-150 group-hover:text-seal-500 sm:block">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <dt className="font-medium text-ink-900">{item.question}</dt>
+                <dd className="mt-2.5 text-[15px] leading-relaxed text-ink-600">{item.answer}</dd>
+              </div>
+            </div>
+          ))}
+        </dl>
+      </Wrap>
+    </Section>
   )
 }
 
@@ -34,12 +52,12 @@ export const CORE_FAQ: FaqItem[] = [
   {
     question: 'Can this tool remove or reduce a mark?',
     answer:
-      'No, and it never will. There is no removal, substitution, paraphrase, rewrite or "lower your score" capability on any tier — free, Pro, API or MCP — and none is planned. MarkWitness is a diagnostic. A tool that removed provenance marks would be an evasion service for the compliance mechanism the EU AI Act relies on, which is a different product and not one we will build.',
+      'No, and it never will. There is no removal, substitution, paraphrase, rewrite or "lower your score" capability on any tier, whether free, Pro, API or MCP, and none is planned. MarkWitness is a diagnostic. A tool that removed provenance marks would be an evasion service for the compliance mechanism the EU AI Act relies on, which is a different product and not one we will build.',
   },
   {
     question: 'Does my document ever leave my device?',
     answer:
-      'Not on the free check. The analysis runs in your browser: the detection engine is downloaded to your device and the text is measured there. You can confirm it by opening your browser network tab and watching while the check runs. The API, the MCP server and the PDF evidence report necessarily run on our servers, because a programmatic caller has no browser — those paths are documented separately and are opt-in.',
+      'Not on the free check. The analysis runs in your browser: the detection engine is downloaded to your device and the text is measured there. You can confirm it by opening your browser network tab and watching while the check runs. The API, the MCP server and the PDF evidence report necessarily run on our servers, because a programmatic caller has no browser, and those paths are documented separately and are opt-in.',
   },
   {
     question: 'Which languages are supported at launch?',
@@ -47,7 +65,7 @@ export const CORE_FAQ: FaqItem[] = [
       'English, Spanish, French, German and Portuguese. Each has its own reference baseline measured from real contemporary prose in that language; a language without a measured baseline is reported as unsupported rather than analysed against a substitute, because comparing Portuguese text to a Spanish reference produces deviations that look like findings and are artefacts.',
   },
   {
-    question: 'An absent mark — does that prove I wrote it myself?',
+    question: 'An absent mark: does that prove I wrote it myself?',
     answer:
       'No, and this matters as much as the first answer. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them. No model vendor publishes its detection key. MarkWitness tests the keys it holds and names them, so "no mark detected" always means "under these keys" and never "this document is clean".',
   },

@@ -44,7 +44,7 @@ export interface ReportFonts {
 
 export async function buildEvidenceReport(result: AnalysisResult): Promise<Uint8Array> {
   const pdf = await PDFDocument.create()
-  pdf.setTitle(`${SITE.name} evidence report — ${result.documentHash.slice(0, 16)}`)
+  pdf.setTitle(`${SITE.name} evidence report ${result.documentHash.slice(0, 16)}`)
   pdf.setSubject('Statistical AI provenance-mark analysis')
   pdf.setProducer(SITE.name)
   pdf.setCreationDate(new Date(result.analyzedAt))
@@ -129,7 +129,7 @@ export async function buildEvidenceReport(result: AnalysisResult): Promise<Uint8
       `${num(dist.compositeDeviation, 2)} SD${
         dist.compositeInterval
           ? ` (90% bootstrap interval ${num(dist.compositeInterval.low, 2)} to ${num(dist.compositeInterval.high, 2)})`
-          : ', no interval — too few sentences to resample'
+          : ', no interval, too few sentences to resample'
       }`,
     )
     keyValue(cursor, pdf, fonts, 'Function-word distance', `${num(dist.functionWordDeviation, 2)} SD`)
@@ -179,7 +179,7 @@ export async function buildEvidenceReport(result: AnalysisResult): Promise<Uint8
           cursor,
           pdf,
           fonts,
-          `Passage ${p.index + 1} (${p.words} words) — z ${num(p.watermarkZ, 2)}, p ${pval(p.watermarkP)}`,
+          `Passage ${p.index + 1} (${p.words} words), z ${num(p.watermarkZ, 2)}, p ${pval(p.watermarkP)}`,
           9,
           INK,
           fonts.bold,
@@ -216,7 +216,7 @@ export async function buildEvidenceReport(result: AnalysisResult): Promise<Uint8
 }
 
 // ---------------------------------------------------------------------------
-// Layout primitives. Deliberately small — a report that silently drops a limit
+// Layout primitives. Deliberately small, because a report that silently drops a limit
 // off the bottom of a page would be worse than an ugly one.
 
 function ensureRoom(cursor: Cursor, pdf: PDFDocument, needed: number): void {
@@ -334,7 +334,7 @@ function sanitize(value: string): string {
   return value
     .replace(/[‘’]/g, "'")
     .replace(/[“”]/g, '"')
-    .replace(/[–—]/g, '-')
+    .replace(/[\u2013\u2014]/g, '-')
     .replace(/…/g, '...')
     .replace(/[^\x20-\x7E\xA0-\xFF]/g, '?')
 }

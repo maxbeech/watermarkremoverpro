@@ -2,16 +2,25 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Faq } from '@/components/faq'
 import { JsonLd, breadcrumbLd, faqPageLd, softwareApplicationLd } from '@/components/json-ld'
+import { BandRule } from '@/components/brand/band'
+import { ButtonLink, Eyebrow, LimitNote, Wrap } from '@/components/brand/ui'
+import { ExhibitFrame, ResultExhibit } from '@/components/marketing/exhibit'
+import { Reveal } from '@/components/marketing/parallax'
+import { markedSpecimenResult } from '@/components/marketing/specimen'
 import { findPage, type LongTailPage } from '@/content/pages'
-import { SITE } from '@/lib/site'
+import { PLANS, SITE } from '@/lib/site'
 
 /**
  * One renderer for every long-tail page.
  *
- * The disclaimer block, the structured data and the call to action live here
- * rather than in twenty page files, so they cannot drift apart. A programmatic
- * SEO set whose pages disagree about what the product does is worse than no set
- * at all.
+ * The disclaimer block, the structured data, the exhibit and the call to action
+ * live here rather than in twenty page files, so they cannot drift apart. A
+ * programmatic SEO set whose pages disagree about what the product does is worse
+ * than no set at all.
+ *
+ * Every one of these pages carries a real result screen. Someone arriving from
+ * search on the worst day of their term should be able to see what the tool
+ * actually produces without first having to trust it enough to paste in an essay.
  */
 
 const GROUP_LABELS: Record<LongTailPage['group'], string> = {
@@ -37,7 +46,9 @@ export function longTailMetadata(group: LongTailPage['group'], slug: string): Me
   }
 }
 
-export function LongTailPageView({ page }: { page: LongTailPage }) {
+export async function LongTailPageView({ page }: { page: LongTailPage }) {
+  const specimen = await markedSpecimenResult()
+
   return (
     <>
       <JsonLd
@@ -52,48 +63,74 @@ export function LongTailPageView({ page }: { page: LongTailPage }) {
         ]}
       />
 
-      <article className="mx-auto max-w-3xl px-5 pt-12">
-        <nav className="text-xs text-ink-400">
-          <Link href="/" className="hover:text-ink-700">Home</Link>
-          <span className="mx-2">/</span>
-          <Link href={`/${page.group}`} className="hover:text-ink-700">{GROUP_LABELS[page.group]}</Link>
-        </nav>
+      <div className="paper border-b border-ink-200">
+        <Wrap className="pt-10 pb-12">
+          <nav className="t-eyebrow text-ink-400">
+            <Link href="/" className="transition-colors hover:text-seal-600">
+              Home
+            </Link>
+            <span className="mx-2 text-ink-300">/</span>
+            <Link href={`/${page.group}`} className="transition-colors hover:text-seal-600">
+              {GROUP_LABELS[page.group]}
+            </Link>
+          </nav>
 
-        <h1 className="mt-4 font-serif text-3xl leading-snug text-ink-900 sm:text-4xl">{page.title}</h1>
-        <p className="mt-5 text-lg leading-relaxed text-ink-600">{page.intro}</p>
+          <h1 className="t-title mt-6 text-ink-900">{page.title}</h1>
+          <BandRule at={58} className="mt-6 max-w-[9rem]" />
+          <p className="t-lead mt-6 text-ink-600">{page.intro}</p>
+        </Wrap>
+      </div>
 
-        <div className="prose-body mt-10 space-y-10">
-          {page.sections.map((section) => (
-            <section key={section.heading}>
-              <h2 className="font-serif text-2xl text-ink-900">{section.heading}</h2>
-              {section.body.map((paragraph, i) => (
-                <p key={i} className="mt-3 text-[15px] leading-relaxed text-ink-600">
-                  {paragraph}
-                </p>
-              ))}
-            </section>
-          ))}
+      <article className="mx-auto w-full max-w-6xl px-5 py-14">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:gap-14">
+          <div className="prose-body max-w-2xl space-y-10">
+            {page.sections.map((section) => (
+              <section key={section.heading}>
+                <h2 className="t-heading text-ink-900">{section.heading}</h2>
+                <BandRule at={28} className="mt-4 max-w-[5rem]" tone="muted" />
+                {section.body.map((paragraph, i) => (
+                  <p key={i} className="mt-4 text-[15px] leading-relaxed text-ink-600">
+                    {paragraph}
+                  </p>
+                ))}
+              </section>
+            ))}
+          </div>
+
+          {/* The product, on the page, at real size. */}
+          <aside className="lg:sticky lg:top-8 lg:self-start">
+            <Eyebrow className="mb-4">What a result looks like</Eyebrow>
+            <Reveal>
+              <ExhibitFrame
+                url="markwitness.helm7.com/check"
+                tilt
+                caption="A real analysis of a specimen paragraph carrying a mark under the open reference key this product publishes. The figures were computed by the engine, not written here."
+              >
+                <ResultExhibit result={specimen} passages={1} />
+              </ExhibitFrame>
+            </Reveal>
+
+            <div className="mt-8 rounded-[4px] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
+              <h2 className="t-heading text-ink-900">Check a document now</h2>
+              <p className="mt-2.5 text-sm leading-relaxed text-ink-600">
+                Up to {PLANS.anonymous.wordCap.toLocaleString()} words without an account, analysed
+                in your browser. The document is not uploaded, and you can watch the network tab
+                while it runs.
+              </p>
+              <ButtonLink href="/check" className="mt-5">
+                Run a check
+              </ButtonLink>
+            </div>
+          </aside>
         </div>
 
-        <aside className="mt-12 rounded-lg border border-ink-200 bg-white p-6">
-          <h2 className="font-serif text-xl text-ink-900">Check a document now</h2>
-          <p className="mt-2 text-[15px] leading-relaxed text-ink-600">
-            Up to 1,500 words without an account, analysed in your browser. The document is not
-            uploaded — you can watch the network tab while it runs.
-          </p>
-          <Link
-            href="/check"
-            className="mt-4 inline-block rounded bg-ink-900 px-5 py-2 text-sm font-medium text-ink-50"
-          >
-            Run a check
-          </Link>
-        </aside>
-
-        <p className="mt-8 rounded border-l-2 border-ink-300 bg-ink-100/60 px-4 py-3 text-sm leading-relaxed text-ink-600">
-          Wherever this page describes a result: a detected mark is not proof of authorship, and an
-          absent mark is not proof of human authorship. MarkWitness has no feature that removes,
-          weakens or rewrites around a provenance mark, on any tier.
-        </p>
+        <div className="mt-14 max-w-2xl">
+          <LimitNote>
+            Wherever this page describes a result: a detected mark is not proof of authorship, and
+            an absent mark is not proof of human authorship. {SITE.name} has no feature that
+            removes, weakens or rewrites around a provenance mark, on any tier.
+          </LimitNote>
+        </div>
       </article>
 
       <Faq items={page.faq} />

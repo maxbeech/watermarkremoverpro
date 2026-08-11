@@ -7,7 +7,7 @@ import { PUBLIC_DETECTION_KEYS } from './detector/public-keys'
 import { generateMarkedText } from './detector/simulate'
 
 /**
- * The evidence report is the paid wedge — the artefact someone hands to whoever
+ * The evidence report is the paid wedge, the artefact someone hands to whoever
  * accused them. On this deployment it is unreachable through the UI, because it
  * requires a Pro plan and no payment processor is configured, so nothing else
  * exercises it. That makes these tests the only thing standing between "the
@@ -47,7 +47,7 @@ const VOCABULARY = [
  * Read the words back OUT of the finished PDF.
  *
  * pdf-lib flate-compresses its content streams, so searching the raw bytes for
- * a phrase finds nothing whether or not the phrase is there — which would make
+ * a phrase finds nothing whether or not the phrase is there, which would make
  * every assertion below pass or fail for the wrong reason. This inflates every
  * compressed stream and pulls the text-showing operands out, so the tests read
  * what a person opening the report would actually see.
@@ -73,7 +73,7 @@ function extractPdfText(bytes: Uint8Array): string {
     from = end + 9
   }
 
-  // pdf-lib writes text as HEX strings — <48656C6C6F> Tj — not as (literal) Tj.
+  // pdf-lib writes text as HEX strings, <48656C6C6F> Tj, not as (literal) Tj.
   // Both forms are handled so this keeps working if that ever changes.
   const content = chunks.join('\n')
   const shown: string[] = []
@@ -108,7 +108,7 @@ describe('evidence report', () => {
 
     // The hash is what makes the artefact evidence rather than an assertion.
     // A 64-character hash wraps across lines in the layout, so the line breaks
-    // come out before comparing — the bytes on the page are what matter.
+    // come out before comparing, because the bytes on the page are what matter.
     expect(result.documentHash).toMatch(/^[0-9a-f]{64}$/)
     expect(pdf.replace(/\s+/g, '')).toContain(result.documentHash)
   })

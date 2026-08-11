@@ -1,18 +1,19 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { MirrorBanner } from '@/components/mirror-banner'
+import { BandRule } from '@/components/brand/band'
 import { SITE } from '@/lib/site'
 import './globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: `${SITE.name} — ${SITE.tagline}`,
-    template: `%s — ${SITE.name}`,
+    default: `${SITE.name} · ${SITE.tagline}`,
+    template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
   openGraph: {
-    title: `${SITE.name} — ${SITE.tagline}`,
+    title: `${SITE.name} · ${SITE.tagline}`,
     description: SITE.description,
     url: SITE.url,
     siteName: SITE.name,
@@ -21,57 +22,90 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
+const NAV = [
+  { href: '/check', label: 'Check', always: true },
+  { href: '/method', label: 'Method', always: false },
+  { href: '/verify', label: 'Verify', always: false },
+  { href: '/docs/api', label: 'API', always: false },
+  { href: '/pricing', label: 'Pricing', always: true },
+]
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">
         <MirrorBanner />
-        <header className="border-b border-ink-200 bg-white">
-          <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
-            <Link href="/" className="group flex items-baseline gap-2">
-              <span className="font-serif text-xl font-semibold tracking-tight text-ink-900">
-                {SITE.name}
+
+        <header className="sticky top-0 z-40 border-b border-ink-200 bg-white/85 backdrop-blur-md">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-5 py-3.5">
+            <Link href="/" className="group flex items-center gap-3">
+              {/* The logo lockup is the signature band, at type size. */}
+              <span className="hidden w-8 shrink-0 sm:block">
+                <BandRule at={70} />
               </span>
-              <span className="hidden text-xs text-ink-400 sm:inline">provenance-mark diagnostic</span>
+              <span className="flex items-baseline gap-2">
+                <span className="font-serif text-lg font-semibold tracking-tight text-ink-900 transition-colors group-hover:text-seal-700">
+                  {SITE.name}
+                </span>
+                <span className="t-eyebrow hidden text-ink-400 md:inline">
+                  provenance-mark diagnostic
+                </span>
+              </span>
             </Link>
-            <nav className="flex items-center gap-5 text-sm text-ink-600">
-              <Link href="/check" className="hover:text-ink-900">Check</Link>
-              <Link href="/method" className="hidden hover:text-ink-900 sm:inline">Method</Link>
-              <Link href="/verify" className="hidden hover:text-ink-900 sm:inline">Verify</Link>
-              <Link href="/docs/api" className="hidden hover:text-ink-900 sm:inline">API</Link>
-              <Link href="/pricing" className="hover:text-ink-900">Pricing</Link>
+
+            <nav className="flex items-center gap-1 text-sm">
+              {NAV.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={
+                    'rounded-[3px] px-2.5 py-1.5 text-ink-600 transition-colors duration-150 ' +
+                    'hover:bg-seal-50 hover:text-seal-700 ' +
+                    (item.always ? '' : 'hidden sm:inline-block')
+                  }
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
         </header>
 
         <main>{children}</main>
 
-        <footer className="mt-20 border-t border-ink-200 bg-white">
-          <div className="mx-auto max-w-5xl px-5 py-10 text-sm text-ink-500">
-            <div className="grid gap-8 sm:grid-cols-3">
-              <div>
-                <p className="font-serif text-base text-ink-800">{SITE.name}</p>
-                <p className="mt-2 max-w-xs leading-relaxed">
+        <footer className="border-t border-ink-200 bg-ink-900 text-ink-300">
+          <div className="mx-auto max-w-6xl px-5 py-14 text-sm">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="lg:col-span-2">
+                <p className="font-serif text-lg text-white">{SITE.name}</p>
+                <BandRule at={70} tone="signal" className="mt-4 max-w-[6rem]" />
+                <p className="mt-5 max-w-sm leading-relaxed text-ink-400">
                   A diagnostic for your own writing. It never removes, weakens or rewrites around a
-                  provenance mark — on any tier, for any caller.
+                  provenance mark, on any tier, for any caller.
                 </p>
               </div>
-              <div className="space-y-2">
-                <p className="font-medium text-ink-700">Product</p>
-                <p><Link href="/check" className="hover:text-ink-900">Run a check</Link></p>
-                <p><Link href="/method" className="hover:text-ink-900">How it works</Link></p>
-                <p><Link href="/verify" className="hover:text-ink-900">Verify the detector</Link></p>
-                <p><Link href="/limits" className="hover:text-ink-900">Stated limits</Link></p>
+              <div className="space-y-2.5">
+                <p className="t-eyebrow text-ink-500">Product</p>
+                <FooterLink href="/check">Run a check</FooterLink>
+                <FooterLink href="/method">How it works</FooterLink>
+                <FooterLink href="/verify">Verify the detector</FooterLink>
+                <FooterLink href="/limits">Stated limits</FooterLink>
+                <FooterLink href="/pricing">Pricing</FooterLink>
               </div>
-              <div className="space-y-2">
-                <p className="font-medium text-ink-700">For machines</p>
-                <p><Link href="/docs/api" className="hover:text-ink-900">JSON API</Link></p>
-                <p><Link href="/docs/mcp" className="hover:text-ink-900">MCP server</Link></p>
-                <p><a href="/llms.txt" className="hover:text-ink-900">llms.txt</a></p>
-                <p><a href="/pricing.json" className="hover:text-ink-900">pricing.json</a></p>
+              <div className="space-y-2.5">
+                <p className="t-eyebrow text-ink-500">For machines</p>
+                <FooterLink href="/docs/api">JSON API</FooterLink>
+                <FooterLink href="/docs/mcp">MCP server</FooterLink>
+                <FooterLink href="/llms.txt" external>
+                  llms.txt
+                </FooterLink>
+                <FooterLink href="/pricing.json" external>
+                  pricing.json
+                </FooterLink>
               </div>
             </div>
-            <p className="mt-10 border-t border-ink-100 pt-6 text-xs text-ink-400">
+
+            <p className="mt-12 border-t border-ink-800 pt-6 text-xs leading-relaxed text-ink-500">
               A detected mark is not proof of authorship. An absent mark is not proof of human
               authorship. {SITE.name} reports what it measured and names what it could not measure.
             </p>
@@ -79,5 +113,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </footer>
       </body>
     </html>
+  )
+}
+
+function FooterLink({
+  href,
+  children,
+  external = false,
+}: {
+  href: string
+  children: React.ReactNode
+  external?: boolean
+}) {
+  const className =
+    'block text-ink-400 transition-colors duration-150 hover:text-white focus-visible:text-white'
+  return external ? (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
   )
 }

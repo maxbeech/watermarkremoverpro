@@ -8,7 +8,7 @@ import type { ApiKeyRecord } from '@/lib/api-keys'
  *
  * The full key is shown exactly once, at creation, and the UI says so before
  * the user clicks away. Only its SHA-256 is stored, so "show it again later" is
- * not a feature we are withholding — it is genuinely unrecoverable.
+ * not a feature we are withholding. It is genuinely unrecoverable.
  */
 export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[]; pro: boolean }) {
   const [keys, setKeys] = useState(initialKeys)
@@ -80,7 +80,7 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
         {issued && (
           <div className="mt-4 rounded border border-signal-500 bg-signal-100 p-3">
             <p className="text-sm font-medium text-signal-700">
-              Copy this now — it is not stored and cannot be shown again.
+              Copy this now. It is not stored and cannot be shown again.
             </p>
             <p className="figure mt-2 break-all rounded bg-white px-3 py-2 text-sm text-ink-900">{issued}</p>
           </div>
