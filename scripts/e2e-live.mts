@@ -66,9 +66,12 @@ try {
   await page.waitForSelector('text=/Provenance mark/', { timeout: 30_000 })
   check(true, 'a result is rendered')
 
+  // innerText returns text AFTER CSS text-transform, and the stat labels are
+  // rendered uppercase — so these two must be case-insensitive or they assert
+  // against a stylesheet rather than against the product.
   const body = await page.locator('body').innerText()
-  check(/Green-list rate/.test(body), 'the green-list rate is reported')
-  check(/Expected by chance/.test(body), 'the null expectation is shown beside it')
+  check(/Green-list rate/i.test(body), 'the green-list rate is reported')
+  check(/Expected by chance/i.test(body), 'the null expectation is shown beside it')
   check(/band \d/.test(body), 'the rate is reported as a band, not a bare number')
   check(/no vendor publishes one/.test(body), 'the coverage notice is attached to the result')
   check(/Style measurement/.test(body), 'the style channel is reported')

@@ -125,3 +125,57 @@ package** rather than from documentation, so they match the version actually
 running. The Better Auth CLI could not be used: it requires the auth instance to
 be exported as a value, and ours is built lazily so `next build` needs no live
 database.
+
+## Checkpoint 5 — deployed, and verified against the deployment (2026-08-11 23:00Z)
+
+Live at <https://markwitness.helm7.com> (Vercel production, aliased). Every route
+sampled returns 200 and serves *this* product — checked by title and brand, not
+by status code alone.
+
+**Project checks.** `npm run check` passes end to end: typecheck, lint, 47 unit
+tests across 5 files, the MCP protocol smoke test, and `next build` (45 static
+pages generated).
+
+**The on-device promise, proven from outside the page.** `scripts/e2e-live.mts`
+drives the real deployment in a real browser and watches the network from
+outside the document. With a distinctive canary phrase in the text: zero
+POST/PUT/PATCH requests during a check, the canary appears in no request body
+and no URL, and no third-party request is made at all. This is the one claim
+that cannot be established by unit tests, because it is a claim about what the
+page *doesn't* do.
+
+**The detector demonstrably detects, live.** The /verify page scored marked text
+at z = 20.45 under the correct key and the *same text* at z = 0.1 under a
+different key, in the deployed build.
+
+**The metered moat, exercised with a real account.** Signed up on the live site
+against the real Neon database, issued a real API key from the dashboard, and
+called `POST /api/v1/check` with it: a real analysis came back (110 words, 105
+distinct pairs scored, green rate 42.9% against 50% expected), metered as
+`x-markwitness-billable-units: 1` with a GBP billing block. A one-word document
+returned `language_undetermined` rather than guessing.
+
+**Evidence report now has real coverage.** It is the paid wedge and it is
+unreachable through the UI while billing is off, so nothing was exercising it —
+`src/lib/evidence-report.test.ts` now builds actual PDFs, inflates the content
+streams and reads the text back out, asserting the document hash, the stated
+limits, the measured figures, and that a detected mark reads differently from an
+undetected one. Without that, "the wedge works" and "the wedge compiles" were
+indistinguishable.
+
+**One test was wrong and was fixed, not worked around.** Two live assertions
+searched for `Green-list rate` and `Expected by chance` case-sensitively, while
+`innerText` returns text *after* CSS `text-transform: uppercase`. The product was
+correct; the test was asserting against a stylesheet. Both are now
+case-insensitive.
+
+### Still not verified live
+
+- **Stripe.** Unchanged and unchangeable in this run: no payment processor is
+  configured, `/api/billing/checkout` returns 503 with a plain message, and the
+  pricing page and dashboard both say Pro is not purchasable here. The code path
+  is real — a genuine checkout session and a signature-verified webhook that
+  drives plan state — but no purchase has been made against a live account.
+  Because Pro is unreachable, `POST /api/v1/report` (402 `pro_required`) has not
+  been exercised over HTTP either; the generator underneath it is covered by the
+  tests above.

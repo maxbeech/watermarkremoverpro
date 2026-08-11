@@ -68,3 +68,15 @@ unless explicitly marked otherwise.
   code is real and typechecked, not a stub, but no end-to-end purchase has been
   made — so the pricing page shows paid plans as unavailable rather than a button
   that fails, and `/api/billing/checkout` returns 503.
+
+## 2026-08-11 — deployed
+
+- Live at <https://markwitness.helm7.com>; every sampled route returns 200
+  serving this product.
+- `src/lib/evidence-report.test.ts` — the paid wedge is now covered by tests that
+  build real PDFs and read the text back out of the compressed content streams,
+  rather than asserting the function returned bytes. It is unreachable through
+  the UI while billing is off, so nothing else exercised it.
+- Fixed two live E2E assertions that searched for stat labels case-sensitively
+  while `innerText` returns them uppercased by CSS. The product was correct; the
+  assertions were checking a stylesheet.
