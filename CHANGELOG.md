@@ -69,6 +69,28 @@ unless explicitly marked otherwise.
   made, so the pricing page shows paid plans as unavailable rather than a button
   that fails, and `/api/billing/checkout` returns 503.
 
+## 2026-08-12: premium polish pass (design and brand only)
+
+Design quality only. No functional, pricing or business-logic change.
+
+- A real design system in `globals.css` and `components/brand`: five type tiers,
+  one vertical rhythm, three surface elevations, one focus treatment, hover and
+  active states everywhere. `seal` now means "measured" and `signal` means "a
+  mark was found", so colour carries meaning rather than decoration.
+- The measurement band is the signature shape, used in the logo lockup, under
+  every heading, in the pricing tiers, in the result view and in every exhibit.
+- `components/checker/measures.tsx` is the single rendering vocabulary for a
+  measurement, shared by the app and the marketing site, so a marketing panel
+  cannot show something the product does not produce.
+- The homepage hero is the same paragraph measured twice, marked and unmarked,
+  analysed by the real engine at build time. Every long-tail page carries a real
+  result screen.
+- 251 em dashes removed across 68 files by rewriting the sentences.
+  `tests/house-style.test.ts` guards that and the filler vocabulary.
+- Fixed: the reveal-on-scroll wrapper could leave content permanently invisible
+  if its observer never fired. It now starts visible and only ever adds motion.
+- Full review, with findings and evidence: `docs/premium_polish_review.md`.
+
 ## 2026-08-11: deployed
 
 - Live at <https://markwitness.helm7.com>; every sampled route returns 200

@@ -113,25 +113,61 @@ classifier dashboard.
 
 ## Fixes applied 2026-08-12
 
-Recorded after implementation; see `CHANGELOG.md` for the shipped commits.
+Verified on the redeployed live site, not just locally. Before and after
+screenshots of the same routes are under `.polish-shots/before/` and
+`.polish-shots/after/` (git-ignored; evidence for this pass, not source).
 
-1. **Design system landed** (`src/app/globals.css`, `src/components/brand/*`). A
-   real type scale with a display tier, an eyebrow/label tier and tabular measured
-   figures; a spacing rhythm applied through shared section primitives; the
-   `seal`/`signal` families put to work with an assigned meaning each (`seal` =
-   measured, `signal` = a mark was found, `ink` = everything else); three surface
-   elevations instead of one; and hover, active and `focus-visible` states on every
-   interactive element.
-2. **Every em dash removed** across all 68 files, rewriting each sentence rather
-   than substituting a semicolon or a colon crutch, preserving the existing voice.
-   Guarded by a test so a future edit cannot reintroduce one.
-3. **The measurement band became the signature.** New `Band`, `Hatch`, `Eyebrow`
-   and `Rule` brand primitives, used in the hero, in section dividers, in the
-   result view and in the per-passage breakdown, so the marketing site and the app
-   share one shape language.
-4. **Real framed product mockups** on the homepage hero, on each feature section and
-   at the foot of every pSEO page, rendered from the real result components against
-   a real analysis rather than pasted-in images, inside a browser chrome frame.
-5. **Light interactivity**: parallax drift on the hero exhibit, hover-reactive
-   passage rows, and a band that settles into position on first paint, all disabled
-   under `prefers-reduced-motion`.
+**1. A design system, landed rather than described** (`src/app/globals.css`,
+`src/components/brand/ui.tsx`). Five type tiers with real ratios, including a
+monospace letterspaced eyebrow tier that labels measurements and a display tier
+for the hero. One vertical rhythm applied through a shared `Section`, so no page
+picks its own padding. Three surface elevations instead of one. One
+`focus-visible` treatment across every interactive element. Hover and active
+states on every button, card, nav item, FAQ row, index row and passage row.
+`seal` and `signal` now carry an assigned meaning each: `seal` = something was
+measured, `signal` = a mark was actually found, `ink` = everything else. A
+reader who learns those three on the homepage can read a result.
+
+**2. Every em dash removed: 251 across 68 files**, each sentence rewritten rather
+than patched with a semicolon or a colon, preserving the existing voice. The two
+places the code genuinely needs the code point (the dash-rate feature the
+detector measures on submitted documents, and the WinAnsi fold in the PDF
+writer) now use `\u2014` escapes, so behaviour is identical and no literal glyph
+remains. `tests/house-style.test.ts` fails the build if one returns, and also
+bans the promotional filler vocabulary.
+
+**3. The measurement band is now the signature** (`src/components/brand/band.tsx`).
+Track, hatched uncertainty interval, chance line, hard marker. It appears in the
+logo lockup, as the rule under every heading, in the pricing tiers, in the app
+result view, in the per-passage breakdown and in every marketing exhibit, so the
+marketing site and the product are visibly the same object at two distances.
+`BandField` is the abstract graphic: the same marks, read against one shared
+chance line, hover-reactive per row.
+
+**4. Real product mockups, built from the real components.**
+`src/components/checker/measures.tsx` is now the single rendering vocabulary for
+a measurement, used by BOTH the app result view and the marketing exhibits. The
+homepage hero is the same paragraph measured twice: one copy rewritten to prefer
+green-list continuations under the open reference key this product publishes,
+one untouched, both analysed by the real engine at build time. Nothing on the
+page is a screenshot and no figure was typed by hand. Every long-tail page now
+carries a real result screen in a browser frame, so somebody arriving from search
+sees what the tool produces before deciding whether to trust it. A constraint
+test asserts the shared formatters still refuse to render a null as a number.
+
+**5. Light interactivity**: scroll-linked drift separating the two hero panels in
+depth, hover lift on exhibits and panels, hover-reactive rows in the abstract
+graphic and in the passage breakdown, and a band that settles into position on
+first paint. All of it disabled under `prefers-reduced-motion`.
+
+### One bug this pass introduced and fixed
+
+The reveal-on-scroll wrapper started hidden and waited for an
+`IntersectionObserver`, which meant anything the observer never reported stayed
+invisible. Screenshotting the deployed homepage caught the second hero panel
+missing entirely. It now starts visible, hides itself only once mounted
+JavaScript has confirmed the element is below the fold, and carries a timeout
+backstop. Motion is allowed to add something to a page; it is never allowed to be
+the reason content is not there. The screenshot harness was also wrong: a
+full-page screenshot does not scroll, so it photographs any observer-revealed
+element as a blank gap. It now browses the page before capturing.
