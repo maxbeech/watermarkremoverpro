@@ -869,4 +869,168 @@ export const BLOG_POSTS_C: BlogPost[] = [
     ],
     schemaType: 'none',
   },
+  {
+    slug: 'mcp-ai-provenance-tool-agent-disclosure',
+    title: 'MCP AI Provenance Tools: Checking Before Your Agent Hands Off',
+    h1: 'MCP AI Provenance Tools: Checking Before Your Agent Hands Off',
+    metaDescription:
+      'MCP AI provenance tools explained: how an agent checks its own output for a mark before handoff, and why that matters now. Try MarkWitness free.',
+    category: 'Academy',
+    format: 'deep-dive',
+    intent: 'informational',
+    publishedAt: '2026-08-12',
+    author: 'MarkWitness Content Team',
+    primaryKeyword: 'mcp ai provenance tool',
+    supportingKeywords: [
+      'ai agent provenance disclosure',
+      'check_document mcp tool',
+      'agent content provenance check',
+      'ai watermark mcp server',
+      'eu ai act article 50 agents',
+      'agentic ai transparency',
+      'mcp server ai detection',
+      'ai agent output disclosure',
+      'model context protocol watermark',
+    ],
+    longTailKeywords: [
+      'how to check ai provenance before an agent sends its output',
+      'does my ai agent need to disclose ai generated content',
+      'mcp tool for checking an ai watermark before handoff',
+    ],
+    heroImage: {
+      src: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
+      alt: 'Racks of server hardware representing the MCP AI provenance tool infrastructure agents call before handing off content',
+      unsplashId: 'M5tzZtFCOfs',
+    },
+    intro: [
+      'An agent that drafts a report, a caption or a cover letter usually just hands the text over. Nobody asks it whether that text carries a provenance mark, so it never says.',
+      'That gap is closing. Model makers are marking their own output, regulators are asking for disclosure, and a small cluster of MCP servers has appeared this year to let an agent check before it ships.',
+      'This piece looks at what "checking before handoff" actually means for an agent pipeline, where the current MCP tools sit, and where MarkWitness\'s own check_document and describe_method tools fit into that picture.',
+    ],
+    takeaways: [
+      'An agent handing off generated content is a new demand surface for provenance checks, distinct from a human checking their own essay.',
+      'The MCP ecosystem has grown from roughly 100 servers at its November 2024 launch to over 10,000 indexed across public registries in 2026.',
+      'A handful of named MCP servers now offer watermark-related capability to agents, though most focus on embedding a mark or building a compliance pack, not checking text already in hand.',
+      'MarkWitness\'s MCP server exposes check_document and describe_method as agent-callable tools, sitting behind the same Pro plan and metered pricing as its JSON API.',
+      'A pass from any of these tools tells an agent something narrow and specific, never a blanket guarantee of authorship either way.',
+      'The EU AI Act\'s Article 50 transparency rules took effect on 2 August 2026, with a grace period to 2 December 2026 for machine-readable marking on systems already live before that date.',
+    ],
+    sections: [
+      {
+        id: 'why-this-is-now-an-agent-problem',
+        heading: 'Why this is now an agent problem, not just a human one',
+        body: [
+          'Most of the writing about AI provenance marks so far has been aimed at people: a student checking an essay, a freelancer checking an invoice before a client does it for them. That is a real and pressing need, but it assumes a person is sitting at the keyboard deciding whether to check.',
+          'An agent assembling a deliverable on someone else\'s behalf has no such moment of reflection built in, unless a developer wires one in deliberately. If that agent\'s output happens to carry a provenance mark from the model that generated a paragraph of it, and it hands that paragraph off without saying so, the disclosure obligation has quietly gone missing, not because anyone decided to skip it, but because nobody built the step.',
+          'That is a structurally different problem from the human-facing one. It needs a tool an agent can call directly, mid-pipeline, without a person in the loop for every check.',
+        ],
+      },
+      {
+        id: 'what-checking-before-handoff-actually-means',
+        heading: 'What "checking before handoff" actually means',
+        body: [
+          'Concretely, it means one more tool call before the final response goes out: pass the assembled text to a provenance check, read back a signal strength and a confidence band, and decide what to do with that information, whether that is appending a disclosure line, logging the result, or simply making the check available to whoever reviews the agent\'s output later.',
+          'It is not about blocking output that scores highly, and it should not be sold as a filter. A detected mark is a signal worth surfacing, not a verdict that should silently stop a pipeline, and the tool that pretends otherwise is overstating what a statistical check can responsibly claim.',
+        ],
+      },
+      {
+        id: 'the-mcp-ecosystem-this-sits-inside',
+        heading: 'The MCP ecosystem this sits inside',
+        body: [
+          'The Model Context Protocol itself is barely two years old, and the growth curve behind it is one reason a provenance-check tool now makes sense as an MCP server rather than a bespoke integration for every framework. The protocol launched in November 2024 with a modest handful of servers; by 2026 that had grown to more than 10,000 indexed across public registries.',
+          'That scale matters here for a simple reason: an agent framework does not need a custom integration for every provenance vendor it might want to call. It needs the vendor to speak MCP, the same way it already expects a search tool or a file-reader to speak MCP, so the provenance check becomes one more entry in a tool list rather than a one-off plumbing job.',
+        ],
+      },
+      {
+        id: 'the-tools-that-already-exist-and-what-they-actually-do',
+        heading: 'The tools that already exist, and what they actually do',
+        body: [
+          'A small cluster of MCP servers touching this space has appeared over the past year, and it is worth being precise about what each one actually does, since "watermarking MCP server" covers more than one job. ForensicMark ships an MCP server that embeds an invisible forensic watermark into an image and attaches a C2PA manifest, callable directly from an agent, but its job is images, and its job is embedding a mark, not checking text a model has already produced.',
+          'MEOK\'s Watermark Attest MCP is closer in spirit: it bundles a C2PA manifest, a SynthID-style invisible watermark and a signed attestation into a single agent-callable tool, built explicitly around the EU AI Act\'s Article 50 compliance timeline. Its own documentation frames that as a 2 November 2026 target, which is worth reading as that vendor\'s own internal deadline rather than the statute\'s exact date, since the regulation\'s primary transparency obligations took effect on 2 August 2026, with a grace period to 2 December 2026 for machine-readable marking specifically on systems already on the market before that date.',
+          'What neither tool does is the specific job this piece is about: taking a piece of text an agent already has in hand, text it did not itself embed a mark into, and checking whether a statistical signal is present. That is a detection job, not an embedding job, and it is the gap MarkWitness\'s MCP server sits in.',
+        ],
+      },
+      {
+        id: 'where-markwitness-fits-check-document-and-describe-method',
+        heading: 'Where MarkWitness fits: check_document and describe_method',
+        body: [
+          'MarkWitness\'s MCP server exposes two tools an agent can call directly. check_document runs the keyed statistical watermark check against a passed-in document and returns a signal strength, a confidence band and a per-passage breakdown, the same underlying method behind the browser-based Check page, just reachable as a tool call instead of a page load. describe_method returns the check\'s own description and stated limits as structured data, so an agent (or whoever built it) can surface exactly what the check can and cannot establish, rather than guessing at how to phrase a disclosure.',
+          'Both tools sit behind the same Pro plan as the JSON API, £19 a month, metered at 2p per 1,000 words on top for programmatic use. That is a deliberate design choice: the free, browser-only Check page cannot become an agent-callable tool without an account behind it, because someone has to pay for the compute a machine caller uses on demand, unlike a human checking one document by hand.',
+        ],
+      },
+      {
+        id: 'a-worked-example-wiring-the-check-into-a-pipeline',
+        heading: 'A worked example: wiring the check into a pipeline',
+        body: [
+          'Picture an agent that drafts marketing copy on a client\'s behalf, using a mix of the client\'s own notes and generated text to fill gaps. Before the final draft goes back to the client, the agent calls check_document on the assembled text. The result comes back showing a moderate signal strength in two of eleven paragraphs, the ones the agent generated outright, and nothing detected in the paragraphs drawn straight from the client\'s notes.',
+          'The agent does not need to strip those two paragraphs out, and it should not be built to. What it can do is attach that per-passage result to the deliverable, or log it against the job, so that whoever reviews the copy later, the client, an editor, a compliance step further down the chain, has the same information the agent had, rather than a document that looks uniformly authored when it was not. That is the disclosure step this whole piece has been describing, made concrete: one tool call, one structured result, attached rather than hidden.',
+        ],
+      },
+      {
+        id: 'what-the-check-can-and-cannot-tell-an-agent',
+        heading: 'What the check can and cannot tell an agent',
+        body: [
+          'A detected mark, from any tool in this category, is a signal that the marked passage was processed by a model holding the tested key. It is not proof of authorship on its own, because marks can survive into quoted, translated or lightly edited text that a human genuinely wrote around. An agent that treats a positive result as "this paragraph is definitely AI-written" is overstating the finding.',
+          'The reverse holds too, and it matters just as much for an agent as for a person: no mark detected means no mark was found under the specific keys tested, never proof the passage is human-written. MarkWitness holds one open, testable reference key plus any vendor or institution keys supplied via configuration; it does not, and cannot, claim to test against every model provider\'s private detection key, because none of those keys are published. describe_method exists precisely so an agent surfacing a result also surfaces that caveat, rather than a bare pass or fail.',
+        ],
+      },
+    ],
+    table: {
+      caption: 'MCP-callable provenance and watermarking tools active in 2026, and the specific job each one does',
+      headers: ['Tool', 'Core job', 'Content type', 'What it does NOT do'],
+      rows: [
+        ['ForensicMark', 'Embeds an invisible forensic watermark and C2PA manifest into an image', 'Images', 'Does not check text already in hand for an existing mark'],
+        ['MEOK Watermark Attest MCP', 'Bundles a C2PA manifest, invisible watermark and signed attestation for Article 50 compliance', 'Images, with a compliance-pack framing', 'Does not run a keyed statistical check on text a model has already produced'],
+        ['MarkWitness (check_document, describe_method)', 'Checks a passed-in document for a keyed statistical watermark and returns a confidence band', 'Text, five supported languages', 'Does not embed, remove or rewrite any mark'],
+      ],
+    },
+    quote: {
+      quote: 'A human decides to check their own writing. An agent has to be built to decide that, every single time, or it never happens at all. That is the whole reason this needs to be a tool call, not a habit.',
+      attribution: 'A MarkWitness detection engineer',
+      role: 'on why provenance checks belong in an agent\'s tool list',
+    },
+    pitfalls: [
+      'Treating a detected mark as proof an agent-assembled passage is entirely AI-written, rather than a signal worth attaching to the output.',
+      'Assuming an image-watermarking MCP server and a text-provenance-checking MCP server do the same job because both mention "watermark".',
+      'Building a pipeline that calls a provenance check but discards the stated limits, so a downstream reviewer sees a bare score with no context.',
+      'Waiting for a hard compliance deadline to wire in a disclosure step, rather than treating it as a normal part of an output pipeline now.',
+    ],
+    faq: [
+      {
+        question: 'What is an MCP AI provenance tool?',
+        answer: 'It is a Model Context Protocol server that exposes an AI-content provenance check, such as detecting a statistical watermark, as a tool an AI agent can call directly during its own pipeline, rather than a human running a check by hand on a website.',
+      },
+      {
+        question: 'Does MarkWitness have an MCP server agents can call?',
+        answer: 'Yes. It exposes check_document, which runs the watermark check on a passed-in document, and describe_method, which returns the method\'s description and stated limits as structured data. Both sit behind the Pro plan, metered per 1,000 words.',
+      },
+      {
+        question: 'Do image-watermarking MCP servers like ForensicMark do the same job as MarkWitness?',
+        answer: 'No. ForensicMark embeds an invisible forensic watermark into an image at the point of creation. MarkWitness checks text an agent already has in hand for a statistical mark it did not itself embed. They solve adjacent but different problems.',
+      },
+      {
+        question: 'Is my AI agent legally required to disclose AI-generated content?',
+        answer: 'The EU AI Act\'s Article 50 transparency obligations took effect on 2 August 2026, with a grace period to 2 December 2026 for machine-readable marking on systems already on the market before that date. Whether a specific agent and its output fall within scope depends on the deployment, so this is general context, not legal advice.',
+      },
+      {
+        question: 'Can an agent rely on "no mark detected" to say content is human-written?',
+        answer: 'No. It only means no mark was found under the keys tested. No independent tool can test against every model provider\'s private detection key, since none are published, so an absent mark is never proof of human authorship.',
+      },
+    ],
+    internalLinks: [
+      { href: '/docs/mcp', label: 'MarkWitness MCP server documentation' },
+      { href: '/docs/api', label: 'MarkWitness API documentation' },
+      { href: '/method', label: 'How the MarkWitness method works' },
+      { href: '/limits', label: 'Stated limits of the check' },
+      { href: '/blog/how-to-use-the-markwitness-api', label: 'How to use the MarkWitness API to check AI marks' },
+      { href: '/blog/claude-ai-watermark-anthropic-provenance-mark', label: 'Claude\'s AI watermark: what Anthropic\'s mark means' },
+    ],
+    externalLinks: [
+      { href: 'https://artificialintelligenceact.eu/transparency-rules-article-50/', label: 'EU AI Act: Article 50 transparency rules, compliance dates' },
+      { href: 'https://www.digitalapplied.com/blog/mcp-adoption-statistics-2026-model-context-protocol', label: 'MCP adoption statistics, 2026' },
+      { href: 'https://glama.ai/mcp/servers/CSOAI-ORG/meok-watermark-attest-mcp', label: 'MEOK Watermark Attest MCP listing' },
+      { href: 'https://forensicmark.com/', label: 'ForensicMark: invisible forensic watermarking API' },
+    ],
+    schemaType: 'none',
+  },
 ]
