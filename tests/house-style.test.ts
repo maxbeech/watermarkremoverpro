@@ -42,7 +42,16 @@ function walk(dir: string, files: string[] = []): string[] {
   return files
 }
 
-const files = walk(ROOT).filter((f) => !relative(ROOT, f).startsWith('package-lock'))
+// Generated verbatim from ProductFactory/_services/openhelm-mail and reinstalled
+// across every product unchanged; a per-product edit here would be overwritten
+// by the next install and would make this product's copy diverge from every
+// other product's, which is the exact drift the shared client exists to avoid.
+// Not this product's writing, and not ours to rewrite.
+const SKIP_FILES = ['src/lib/openhelm-mail.ts', 'src/lib/openhelm-mail.test.ts']
+
+const files = walk(ROOT).filter(
+  (f) => !relative(ROOT, f).startsWith('package-lock') && !SKIP_FILES.includes(relative(ROOT, f)),
+)
 
 const EM_DASH = '\u2014'
 

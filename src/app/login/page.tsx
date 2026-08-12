@@ -20,6 +20,9 @@ export default function LoginPage() {
       <p className="mt-6 text-sm text-ink-500">
         No account? <Link href="/signup" className="link-quiet">Create one</Link>
       </p>
+      <p className="mt-2 text-sm text-ink-500">
+        <Link href="/forgot-password" className="link-quiet">Forgot your password?</Link>
+      </p>
     </section>
   )
 }

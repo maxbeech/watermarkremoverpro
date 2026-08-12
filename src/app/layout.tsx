@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Analytics } from '@vercel/analytics/next'
 import { MirrorBanner } from '@/components/mirror-banner'
 import { BandRule } from '@/components/brand/band'
 import { SITE } from '@/lib/site'
@@ -113,6 +114,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </p>
           </div>
         </footer>
+
+        <Analytics />
       </body>
     </html>
   )

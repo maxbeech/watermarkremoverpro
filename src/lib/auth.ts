@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth'
 import { Pool } from '@neondatabase/serverless'
 import { headers } from 'next/headers'
 import { DatabaseUnavailableError, sql } from './db'
+import { sendEmail } from './openhelm-mail'
 import { SITE } from './site'
 
 /**
@@ -37,7 +38,11 @@ function build() {
     database: pool(),
     baseURL: SITE.url,
     secret: requireSecret(),
-    emailAndPassword: { enabled: true, minPasswordLength: 10 },
+    emailAndPassword: {
+      enabled: true,
+      minPasswordLength: 10,
+      sendResetPassword: async ({ user, url }) => sendPasswordResetEmail(user, url),
+    },
     session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
   })
 }
@@ -47,6 +52,29 @@ let instance: ReturnType<typeof build> | null = null
 export function auth(): ReturnType<typeof build> {
   if (!process.env.DATABASE_URL) throw new DatabaseUnavailableError()
   return (instance ??= build())
+}
+
+/**
+ * The password-reset email. Pulled out of the Better Auth config so it can be
+ * exercised without building a real auth instance or database pool.
+ *
+ * Throws on a failed send rather than swallowing it, so Better Auth surfaces it
+ * as a failed request-reset call. A link that was never sent must not be
+ * reported to the user as "check your email".
+ */
+export async function sendPasswordResetEmail(user: { id: string; email: string }, url: string): Promise<void> {
+  const result = await sendEmail({
+    to: user.email,
+    subject: `Reset your ${SITE.name} password`,
+    markdown:
+      `We got a request to reset the password on your ${SITE.name} account.\n\n` +
+      `[Reset your password](${url})\n\n` +
+      `This link expires in 1 hour. If you didn't request this, you can ignore this email.`,
+    clientId: `reset-password:${user.id}:${url}`,
+  })
+  if (!result.sent) {
+    throw new Error(`could not send password reset email: ${result.reason}`)
+  }
 }
 
 function requireSecret(): string {
