@@ -72,7 +72,7 @@ try {
   const body = await page.locator('body').innerText()
   check(/Green-list rate/i.test(body), 'the green-list rate is reported')
   check(/Expected by chance/i.test(body), 'the null expectation is shown beside it')
-  check(/band \d/.test(body), 'the rate is reported as a band, not a bare number')
+  check(/interval \d+(\.\d+)?% to \d+(\.\d+)?%/i.test(body), 'the rate is reported as an interval, not a bare number')
   check(/no vendor publishes one/.test(body), 'the coverage notice is attached to the result')
   check(/Style measurement/.test(body), 'the style channel is reported')
   check(/measure of register, not of provenance/.test(body), 'the style caveat travels with the number')

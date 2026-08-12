@@ -179,3 +179,61 @@ case-insensitive.
   Because Pro is unreachable, `POST /api/v1/report` (402 `pro_required`) has not
   been exercised over HTTP either; the generator underneath it is covered by the
   tests above.
+
+## Stage 4: hardening pass, 2026-08-12
+
+Ruthless-correctness QA over the built-and-polished product. Full account:
+`docs/hardening_review.md`. Summary:
+
+**`/docs` genuinely 404'd, and now doesn't.** The polish pass had already
+flagged this and left it for Harden: `src/app/docs/{api,mcp}` existed with no
+index page, so `/docs` itself served a 404 on the live deployment. Added
+`src/app/docs/page.tsx` and listed the route in `sitemap.ts`. Rebuilt and
+confirmed `/docs` renders as a static route.
+
+**A stale live-verification assertion, found and fixed. Same bug class as
+last time.** `scripts/e2e-live.mts` still asserted the pre-polish wording
+(`band 50.8%–55.6%`); the polish pass had deliberately reworded this to
+`interval 50.8% to 55.6%`, and the script isn't part of `npm run check` so
+nobody re-ran it after the copy changed. Confirmed via `git show` on the
+pre-polish commit that this was an intentional design change, not a
+regression, then fixed the assertion, this time case-insensitively, since
+the same text renders uppercase under CSS, which is exactly the bug already
+fixed once in the 2026-08-11 entry above. Re-ran against the live site after
+the fix: all 33 assertions pass, including the zero-upload canary, freshly
+reproduced rather than assumed from this file's earlier entry.
+
+**Billing plan-change logic had zero test coverage.** `applyBillingEvent`
+(the webhook handler that promotes/demotes an account's plan) is pure logic
+that doesn't need a live Stripe account to test. Added
+`src/lib/billing.test.ts`, 8 tests with `sql()` mocked, covering the upgrade
+path, both no-accountId no-ops, and the part this stage's contract
+specifically calls out: the downgrade/cancel path (`customer.subscription.
+deleted` sets the plan to free, and a lapsed `past_due` subscription does the
+same). Stripe itself remains unconfigured for this product (see "Still not
+verified live" above; unchanged, and not worked around by borrowing another
+product's live account), so this is proven at the code level, not
+end-to-end.
+
+**Hosted-mode MCP proven end-to-end for the first time.** Everything above
+proved local-mode MCP and the raw HTTP API separately, but never hosted-mode
+MCP: the actual "agent calls the tool, the tool calls the live API with a
+real key" moat scenario the Feature Spec describes. Spawned the real MCP
+server as a subprocess with a real API key issued from the live dashboard,
+pointed at the live deployment, and spoke the real MCP protocol to it:
+`describe_method` correctly reports hosted mode and the live endpoint,
+`check_document` returns a real result with a real document hash, routed
+through and metered by `POST /api/v1/check` on the live site.
+
+**Re-proven, not re-assumed.** Signup, saved history, sign-out/sign-in, the
+signed-up free-tier 5,000-word cap (UI and API), and the API's 402/400/405
+error contract were all re-exercised against the live deployment with fresh
+evidence rather than carried forward from this file's earlier entries.
+
+### Still not verified live (unchanged)
+
+Stripe remains the one gap this stage could not close: no payment processor
+is configured for this product, so an actual checkout, a real charge (even
+in test mode), a webhook firing against a real Stripe event, and a real
+downgrade after cancellation are none of them exercised end-to-end. Tracked
+by the existing task "Credentials needed before MarkWitness can launch."

@@ -15,7 +15,7 @@ import { ResultView } from './result-view'
  * EVERYTHING HERE RUNS IN THE BROWSER. There is no fetch, no server action and
  * no analytics call carrying document text anywhere in this component or in
  * anything it imports. That is the product's central promise, and it is
- * enforced by a test (src/lib/detector/privacy-contract.test.ts) that fails the
+ * enforced by a test (tests/product-constraints.test.ts) that fails the
  * build if a network call appears on this path.
  */
 

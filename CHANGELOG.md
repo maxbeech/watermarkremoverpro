@@ -1,5 +1,36 @@
 # Changelog
 
+## 2026-08-12: hardening pass (functionality, not design)
+
+Stage 4 QA: ruthlessly critical about whether it works, not how it looks.
+Full findings and journey-by-journey evidence: `docs/hardening_review.md`.
+
+- Fixed: `/docs` 404'd on the live deployment (`src/app/docs/{api,mcp}`
+  existed with no index). Added `src/app/docs/page.tsx` and listed it in
+  `sitemap.ts`.
+- Fixed: `scripts/e2e-live.mts` asserted stale copy ("band 50.8%–55.6%") left
+  over from before the premium polish pass intentionally reworded it to
+  "interval 50.8% to 55.6%", and did so case-sensitively even though the text
+  renders uppercase via CSS. That is the same class of bug fixed once before,
+  in the 2026-08-11 entry below. The product was correct; the
+  live-verification script was stale.
+- Fixed: a comment in `checker.tsx` pointed at a test file
+  (`privacy-contract.test.ts`) that no longer exists under that name. The
+  real test is `tests/product-constraints.test.ts`.
+- Added: `src/lib/billing.test.ts`, 8 tests covering the Stripe
+  webhook's plan-change logic (upgrade on checkout, retain pro while
+  active/trialing, downgrade to free on cancellation or lapse, and the two
+  no-accountId no-op paths). This was real, untested business logic that
+  didn't require live Stripe credentials to verify.
+- Proved for the first time end-to-end: **hosted-mode MCP** (a real API key,
+  the real MCP protocol, against the live deployment). Previously only
+  local-mode MCP and the raw HTTP API had been proven separately.
+- Re-verified live, with fresh evidence rather than trusting prior-stage
+  notes: the zero-upload free check, signup/login/saved-history, the
+  signed-up free-tier word cap, the 402/400/405 API error contract, and the
+  Stripe-gated revenue path (still correctly blocked on credentials for this
+  product specifically, and not worked around).
+
 ## 0.1.0, 2026-08-11
 
 First build. Everything below was verified by the checks in `npm run check`

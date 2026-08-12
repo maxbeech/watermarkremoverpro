@@ -14,6 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/verify', priority: 0.7 },
     { path: '/limits', priority: 0.7 },
     { path: '/pricing', priority: 0.7 },
+    { path: '/docs', priority: 0.6 },
     { path: '/docs/api', priority: 0.6 },
     { path: '/docs/mcp', priority: 0.6 },
     { path: '/for', priority: 0.5 },
