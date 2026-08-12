@@ -8,6 +8,9 @@ Full findings and journey-by-journey evidence: `docs/hardening_review.md`.
 - Fixed: `/docs` 404'd on the live deployment (`src/app/docs/{api,mcp}`
   existed with no index). Added `src/app/docs/page.tsx` and listed it in
   `sitemap.ts`.
+- Fixed: `/favicon.ico` 404'd (an operator change request from 2026-08-11
+  that had gone unaddressed). Generated a real icon from the product's own
+  measurement-band shape in its own brand colours, not a placeholder.
 - Fixed: `scripts/e2e-live.mts` asserted stale copy ("band 50.8%–55.6%") left
   over from before the premium polish pass intentionally reworded it to
   "interval 50.8% to 55.6%", and did so case-sensitively even though the text

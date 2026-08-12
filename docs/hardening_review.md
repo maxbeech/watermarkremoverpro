@@ -41,7 +41,21 @@ Pass's job (docs/premium_polish_review.md) and are not re-reviewed here.
    (`/docs` now appears as a static route in the build route table).
    Severity: medium. A real 404 on a linked-to surface.
 
-2. **Stale assertion in `scripts/e2e-live.mts`: "the rate is reported as a
+2. **`/favicon.ico` 404'd on the live deployment (flagged by the operator in
+   Change Requests on 2026-08-11T23:59Z, not yet addressed).** No favicon
+   file existed anywhere in the repo. **Fixed:** generated a real,
+   brand-consistent icon (`scripts/gen-favicon.mts`) reproducing the
+   product's own signature shape, the measurement band's track, hatched
+   interval and marker, in the exact `--color-seal-*` tokens from
+   `globals.css`, rasterized at 16/32/48px and packed into a spec-valid
+   multi-resolution `src/app/favicon.ico` (verified with `file`: a genuine
+   MS Windows icon resource with embedded PNGs, not a renamed PNG or a
+   placeholder). Verified 200 with the correct `image/x-icon` content type,
+   locally and live. Severity: low (cosmetic, browser-tab/bookmark surface
+   only), but it was an explicit, dated operator request that had gone
+   unaddressed for one stage, so it is fixed here rather than left again.
+
+3. **Stale assertion in `scripts/e2e-live.mts`: "the rate is reported as a
    band" failed against the live site.** The Premium Polish pass (commit
    `02276ab`) deliberately rewrote the confidence-interval copy from
    `band 50.8%-55.6%` to `interval 50.8% to 55.6%` as part of the design
@@ -59,7 +73,7 @@ Pass's job (docs/premium_polish_review.md) and are not re-reviewed here.
    worth fixing because this script is this stage's primary tool for proving
    the on-device promise, and a stale assertion in it undermines that proof.
 
-3. **Stale comment in `src/components/checker/checker.tsx`** claimed the
+4. **Stale comment in `src/components/checker/checker.tsx`** claimed the
    zero-upload promise was "enforced by a test
    (`src/lib/detector/privacy-contract.test.ts`)". That file doesn't exist;
    the real, working test lives at `tests/product-constraints.test.ts`
@@ -67,7 +81,7 @@ Pass's job (docs/premium_polish_review.md) and are not re-reviewed here.
    fails if one appears). **Fixed:** corrected the comment to point at the
    real file. Severity: trivial. Comment accuracy only, no behavior change.
 
-4. **`applyBillingEvent` (the Stripe webhook's plan-upgrade/downgrade
+5. **`applyBillingEvent` (the Stripe webhook's plan-upgrade/downgrade
    decision) had no test coverage.** It's pure business logic, an event in,
    a plan written out, that doesn't require a live Stripe account to test,
    and the CLAUDE-truths "all code needs test coverage" rule applies
@@ -228,7 +242,8 @@ nothing found that blocks operating any control.
 All PASS journeys above are genuinely proven with reproducible evidence, not
 inherited from prior-stage notes. The one REVENUE journey group remains
 honestly reported as code-complete, blocked on credentials, per this stage's
-own contract, rather than fabricated. Four real defects found and fixed (one
-medium: the `/docs` 404; two low: a stale live-verification assertion and a
-stale comment; one test-coverage gap: billing plan-change logic). Stage left
-at `built-live` per instruction (not regressed or advanced).
+own contract, rather than fabricated. Five real defects found and fixed (one
+medium: the `/docs` 404; three low: the operator-flagged `/favicon.ico` 404,
+a stale live-verification assertion, and a stale comment; one test-coverage
+gap: billing plan-change logic). Stage left at `built-live` per instruction
+(not regressed or advanced).

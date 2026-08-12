@@ -191,6 +191,18 @@ index page, so `/docs` itself served a 404 on the live deployment. Added
 `src/app/docs/page.tsx` and listed the route in `sitemap.ts`. Rebuilt and
 confirmed `/docs` renders as a static route.
 
+**`/favicon.ico` genuinely 404'd, and now doesn't.** The operator had
+already flagged this in Change Requests on 2026-08-11 (every other sampled
+route 200'd; the favicon didn't) and it had gone unaddressed for one stage.
+No favicon existed anywhere in the repo. Generated one from the product's
+own signature shape, the measurement band's track, hatched interval and
+marker, using the real `--color-seal-*` tokens from `globals.css` rather
+than a stock icon, rasterized it at 16/32/48px with `sharp` (already an
+installed dependency), and packed it into a spec-valid multi-resolution ICO
+at `src/app/favicon.ico`. Confirmed with `file` that it's a genuine MS
+Windows icon resource, not a renamed PNG, and confirmed 200 with the correct
+`image/x-icon` content type both locally and on the redeployed live site.
+
 **A stale live-verification assertion, found and fixed. Same bug class as
 last time.** `scripts/e2e-live.mts` still asserted the pre-polish wording
 (`band 50.8%–55.6%`); the polish pass had deliberately reworded this to
