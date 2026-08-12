@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { LONG_TAIL_PAGES } from '@/content/pages'
+import { BLOG_POSTS } from '@/content/blog'
 import { SITE } from '@/lib/site'
 
 /** Built from the same content source the pages render from, so a new long-tail
@@ -21,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/vs', priority: 0.5 },
     { path: '/guide', priority: 0.5 },
     { path: '/in', priority: 0.5 },
+    { path: '/blog', priority: 0.6 },
   ]
 
   return [
@@ -33,6 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...LONG_TAIL_PAGES.map((p) => ({
       url: `${SITE.url}/${p.group}/${p.slug}`,
       lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+    ...BLOG_POSTS.map((p) => ({
+      url: `${SITE.url}/blog/${p.slug}`,
+      lastModified: new Date(`${p.publishedAt}T09:00:00Z`),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     })),

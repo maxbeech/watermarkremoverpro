@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-08-12: content engine launch (15 blog posts)
+
+Stage 5: SEO/GEO content, aligned to the product's own verified keyword
+research (`docs/seo_geo_content_plan.md`, materialised this stage from the
+prep-stage research recorded in the Product Pipeline row, no invented volumes).
+
+- Added: `/blog`, a data-driven blog matching the site's existing pSEO
+  pattern (`src/content/blog-types.ts`, `src/content/blog-posts-{a,b,c}.ts`,
+  `src/components/blog-post-view.tsx`, `src/components/blog-index.tsx`).
+  Category filtering (Academy / News / Reviews) via `?category=`.
+- Added: `blogPostingLd`, `howToLd`, `reviewLd` to `src/components/json-ld.tsx`.
+  Every post carries BlogPosting + FAQPage; how-to and review posts add the
+  matching schema type.
+- Added: 15 posts, published dates spread across 2026-08-06 to 2026-08-12,
+  varied across category, format (how-to, deep-dive, listicle, review,
+  data-study, case-study, skyscraper) and intent. Each carries a featured
+  image (Unsplash, keyword-bearing alt text), a TL;DR box, a table of
+  contents, 3-5 FAQs, a data table, one attributed quote (role-based or
+  clearly-anonymised, never a fabricated quote from a named real company),
+  common pitfalls, and internal/external links. External links are drawn only
+  from a pool of independently verified sources (EUR-Lex, the European
+  Commission's AI Act page, NIST, the ICAI, two arXiv papers, and the
+  detector vendors' own published figures).
+  Zero content anywhere describes detector evasion, "humanising", or
+  paraphrase-to-evade techniques: the product's own permanent no-removal
+  constraint extends to the blog's editorial line, not just the product
+  surface.
+- `src/app/sitemap.ts` now includes all 15 post URLs, read from `BLOG_POSTS`
+  rather than a hand-maintained list, so a future post cannot ship unlisted.
+- `next.config.ts`: added `images.remotePatterns` for `images.unsplash.com`
+  (blog hero images only; does not touch the free check's privacy contract).
+
 ## 2026-08-12: hardening pass (functionality, not design)
 
 Stage 4 QA: ruthlessly critical about whether it works, not how it looks.

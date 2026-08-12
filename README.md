@@ -123,6 +123,18 @@ npm run mcp                  # run the MCP server over stdio
 protocol. A claim that a product "has an MCP server" is worth exactly as much as
 the last time someone actually connected to it.
 
+## Content
+
+`/blog` is 15 posts across three categories (Academy, News, Reviews), sourced
+entirely from `docs/seo_geo_content_plan.md`. Posts are data, not MDX files:
+one typed schema in `src/content/blog-types.ts`, three content files
+(`src/content/blog-posts-{a,b,c}.ts`), and one renderer
+(`src/components/blog-post-view.tsx`), the same pattern the pSEO pages in
+`src/content/pages.ts` already use. Every post ships BlogPosting + FAQPage
+JSON-LD (plus HowTo or Review where the format calls for it), a featured image
+with keyword-bearing alt text, and is listed in `sitemap.ts` automatically
+because the sitemap reads from `BLOG_POSTS` rather than a hand-maintained list.
+
 ## Interfaces for machines
 
 | Surface | Path |

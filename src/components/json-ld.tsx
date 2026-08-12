@@ -85,3 +85,65 @@ export function breadcrumbLd(trail: { name: string; url: string }[]) {
     })),
   }
 }
+
+export function blogPostingLd(post: {
+  slug: string
+  title: string
+  metaDescription: string
+  publishedAt: string
+  author: string
+  heroImageSrc: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.metaDescription,
+    image: [post.heroImageSrc],
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    author: { '@type': 'Organization', name: post.author },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE.name,
+      url: SITE.url,
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE.url}/blog/${post.slug}` },
+  }
+}
+
+export function howToLd(post: { title: string; metaDescription: string; steps: { heading: string; body: string }[] }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: post.title,
+    description: post.metaDescription,
+    step: post.steps.map((step, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: step.heading,
+      text: step.body,
+    })),
+  }
+}
+
+export function reviewLd(rating: {
+  itemName: string
+  ratingValue: number
+  bestRating: number
+  summary: string
+  author: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    itemReviewed: { '@type': 'SoftwareApplication', name: rating.itemName },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: rating.ratingValue,
+      bestRating: rating.bestRating,
+    },
+    reviewBody: rating.summary,
+    author: { '@type': 'Organization', name: rating.author },
+  }
+}

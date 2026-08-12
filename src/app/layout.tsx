@@ -26,6 +26,7 @@ const NAV = [
   { href: '/check', label: 'Check', always: true },
   { href: '/method', label: 'Method', always: false },
   { href: '/verify', label: 'Verify', always: false },
+  { href: '/blog', label: 'Blog', always: false },
   { href: '/docs/api', label: 'API', always: false },
   { href: '/pricing', label: 'Pricing', always: true },
 ]
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <FooterLink href="/verify">Verify the detector</FooterLink>
                 <FooterLink href="/limits">Stated limits</FooterLink>
                 <FooterLink href="/pricing">Pricing</FooterLink>
+                <FooterLink href="/blog">Blog</FooterLink>
               </div>
               <div className="space-y-2.5">
                 <p className="t-eyebrow text-ink-500">For machines</p>
