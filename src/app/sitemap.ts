@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const fixed = [
     { path: '', priority: 1 },
     { path: '/check', priority: 0.9 },
+    { path: '/calibrator', priority: 0.85 },
     { path: '/method', priority: 0.8 },
     { path: '/verify', priority: 0.7 },
     { path: '/limits', priority: 0.7 },

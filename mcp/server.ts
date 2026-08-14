@@ -38,6 +38,7 @@ import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES, type LanguageCode } from '../src/l
 import type { Baseline } from '../src/lib/detector/distributional'
 import { countWords } from '../src/lib/detector/tokenize'
 import { API_PRICE_PENCE_PER_1K_WORDS } from '../src/lib/site'
+import { calibrateText } from '../src/lib/calibrate'
 
 const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://markwitness.helm7.com').replace(/\/$/, '')
 const API_KEY = process.env.MARKWITNESS_API_KEY || ''
@@ -93,6 +94,36 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         'any document. Call this first if you need to decide whether a check_document result ' +
         'will answer your question.',
       inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    },
+    {
+      name: 'calibrate_text',
+      description:
+        'Calibrate text for statistical profile adjustment. This tool helps writers understand ' +
+        'which word-frequency patterns trigger statistical AI detection, and suggests synonym ' +
+        'replacements to adjust the statistical profile.\n\n' +
+        'This is NOT a watermark removal tool. It is a companion to detection that helps ' +
+        'users understand their writing. All processing is local to this process; no text ' +
+        'leaves the machine.\n\n' +
+        'Returns suggested substitutions with before/after metrics, so the writer can decide ' +
+        'which changes to accept.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          text: { type: 'string', description: 'The text to calibrate.' },
+          language: {
+            type: 'string',
+            enum: [...SUPPORTED_LANGUAGES],
+            description: 'Language (optional; auto-detected if omitted).',
+          },
+          mode: {
+            type: 'string',
+            enum: ['preview', 'apply'],
+            description: 'Preview mode returns suggestions without commitment; apply mode applies them.',
+          },
+        },
+        required: ['text'],
+        additionalProperties: false,
+      },
     },
   ],
 }))
@@ -183,6 +214,31 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result,
         mode: 'local',
         note: `Run locally against the open reference key only (${countWords(text)} words). No vendor detection key was applied, nothing was recorded, and nothing was billed.`,
+      })
+    }
+
+    if (name === 'calibrate_text') {
+      const text = typeof args?.text === 'string' ? args.text : ''
+      if (text.trim().length === 0) {
+        throw new Error('calibrate_text requires a non-empty "text" argument.')
+      }
+      const language = typeof args?.language === 'string' ? args.language : undefined
+      const mode = args?.mode === 'apply' ? 'apply' : 'preview'
+
+      const result = await calibrateText({
+        text,
+        language,
+        mode,
+        config: {
+          confidenceThreshold: 0.7,
+          maxRepeats: 3,
+        },
+      })
+
+      return json({
+        result,
+        mode: 'local',
+        note: `Calibration completed locally (${countWords(text)} words). No data was sent to external servers. This is a companion to the provenance-mark detector, not a mark removal tool.`,
       })
     }
 
