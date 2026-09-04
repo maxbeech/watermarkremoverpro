@@ -3,9 +3,10 @@ import { RewriteTool } from '@/components/rewrite/rewrite-tool'
 import { PageHeader, Wrap } from '@/components/brand/ui'
 
 export const metadata: Metadata = {
-  title: 'Rewrite | MarkWitness',
+  title: 'Free On-Device AI Text Rewriter',
   description:
-    'Reduce detectable AI-style evidence in your writing: statistical watermark signal where structurally possible, and AI tells like em dashes and stock phrasing. Runs entirely on your device.',
+    'Free, unlimited, on-device rewrite: reduce detectable AI-style evidence in your own writing, both statistical watermark signal where structurally possible and AI tells like em dashes and stock phrasing. No signup, no upload, no "undetectable" claim; see what it does and does not promise below.',
+  alternates: { canonical: '/rewrite' },
 }
 
 export default function RewritePage() {

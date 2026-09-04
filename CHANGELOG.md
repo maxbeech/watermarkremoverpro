@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-09-04: close out the humanizer-cluster SEO backlog
+
+- Added: `/guide/does-an-ai-humanizer-help-with-turnitin` (targets
+  `turnitin ai humanizer`, 480/mo; serves `/for/university-students`
+  directly). Careful on the framing: answers the legitimate "will my own
+  honest writing get flagged" question, and is explicit that reducing
+  detectable evidence is not the same question as academic-integrity
+  compliance, consistent with the existing disclosure guidance on the
+  university-students audience page.
+- Retitled `/rewrite` to target `ai humanizer free` (90,500/mo, the
+  cluster's second-highest-volume term) directly, rather than building a
+  near-duplicate second guide page that would risk cannibalising
+  `/guide/ai-humanizer-how-it-actually-works`'s near-identical intent: the
+  free, unlimited, on-device tool the search intent actually wants is
+  `/rewrite` itself.
+- Fixed: `/rewrite` and `/calibrator` page titles rendered a doubled
+  "MarkWitness" suffix (`"X | MarkWitness · MarkWitness"`), since the root
+  layout's title template already appends `· MarkWitness` and both pages'
+  own titles redundantly included it too.
+
 ## 2026-09-04: fix ungrammatical rewrite output from auxiliary-verb substitution
 
 Real, reported bug: at higher rewrite strength, "no final decision has

@@ -702,6 +702,51 @@ const GUIDES: LongTailPage[] = [
     ],
   },
   {
+    slug: 'does-an-ai-humanizer-help-with-turnitin',
+    group: 'guide',
+    title: 'Does an "AI humanizer" help with Turnitin?',
+    metaTitle: 'AI Humanizer and Turnitin: What Actually Changes, Honestly',
+    metaDescription:
+      'What an AI humanizer or rewrite tool actually changes about a Turnitin AI-writing score, why that is not the same question as academic-integrity compliance, and where MarkWitness draws the line.',
+    intro:
+      'This question gets asked with two different situations behind it, and they deserve two different answers. One is a student worried their own honestly-written work will be misread as AI. The other is asking how to make AI-generated coursework pass a check it was written to fail. This page answers the first and is explicit about why it will not help with the second.',
+    sections: [
+      {
+        heading: 'What Turnitin\'s AI indicator actually measures',
+        body: [
+          'Turnitin\'s AI writing indicator is a classifier: it was trained to separate human-written from machine-written text and reports a confidence score, not a deliberate statistical mark placed at generation time. See /vs/turnitin-ai-detector for the fuller comparison.',
+          'A rewrite tool that changes word choice, sentence rhythm and punctuation habits can measurably shift the statistical patterns a classifier keys on. That is a real, falsifiable effect. It is also not something any tool, MarkWitness included, can turn into a guaranteed outcome against a specific institution\'s specific classifier, which is trained on its own data and never disclosed in detail.',
+        ],
+      },
+      {
+        heading: 'Why this is not the same question as academic integrity',
+        body: [
+          'Reducing detectable evidence and being allowed to submit the work are separate questions, and only one of them is answerable by a rewrite tool. If AI-generated content was used somewhere your institution\'s policy required disclosure or prohibited it outright, running it through a humanizer changes whether a specific tool flags it; it does not change what happened, and it does not make an undisclosed use compliant.',
+          'MarkWitness\'s rewrite is built and described as a final-pass editing tool for writing you produced yourself, the same framing used throughout /for/university-students. It is not marketed, and should not be used, as a way to make disclosure-worthy AI use invisible.',
+        ],
+      },
+      {
+        heading: 'The legitimate use this page is actually for',
+        body: [
+          'Second-language phrasing, an unusually formal register, or just an editing pass that happens to read as "smooth" can trigger a classifier\'s false positives on writing a person genuinely wrote themselves. That is the well-documented failure mode /guide/ai-detection-false-positive covers, and it is where a rewrite of your own honest draft is a reasonable, defensible thing to do before submitting.',
+          'If that is your situation: check first (/check, free, no account, nothing uploaded), see what is actually flagged, and use /rewrite\'s "preserve" strength, which only touches passages a real check would flag, rather than rewriting the whole document.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Will this guarantee Turnitin doesn\'t flag my work?',
+        answer:
+          'No, and treat any tool that promises that with suspicion. Turnitin\'s classifier is not published, so no outside tool can guarantee a specific score against it. What a rewrite can do is measurably reduce the statistical patterns classifiers generally key on.',
+      },
+      {
+        question: 'I used AI for parts of this and need it to pass. Can this help?',
+        answer:
+          'This tool will not help you conceal an undisclosed use your institution\'s policy prohibits, and using it that way does not make the underlying use compliant. If assisted writing is permitted with disclosure, disclose it; see /for/university-students for the honest version of this answer.',
+      },
+    ],
+  },
+  {
     slug: 'what-a-confidence-band-means',
     group: 'guide',
     title: 'What a confidence band means on a detector result',

@@ -100,12 +100,22 @@ to humanizer competitors instead.
   fixed "neither can prove who wrote a document" template text assumed a
   classifier competitor.
 
-Not yet shipped from this cluster, left as real, honest backlog rather than
-padded out: a dedicated `ai humanizer free` / pricing-angle page, and a
-`turnitin ai humanizer` page for the `/for/university-students` audience
-(480/mo, directly on-audience). The plan's original "8-10 new pages" scope
-for this cluster is not fully built; two pages targeting the highest-value,
-lowest-competition terms are.
+Also shipped: `/guide/does-an-ai-humanizer-help-with-turnitin` (targets
+`turnitin ai humanizer`, 480/mo; serves the existing `/for/university-students`
+audience directly, and is explicit that reducing detectable evidence is not
+the same question as academic-integrity compliance, consistent with the
+FAQ answer already on that audience page). `ai humanizer free` (90,500/mo)
+deliberately did not get its own page: it is the second-highest-volume term
+in this cluster, but a near-duplicate second guide page targeting
+near-identical intent to `/guide/ai-humanizer-how-it-actually-works` risks
+cannibalisation rather than helping. Instead `/rewrite` itself (the actual
+free, unlimited, on-device tool the search intent wants) was retitled to
+target this phrase directly ("Free On-Device AI Text Rewriter").
+
+The plan's original "8-10 new pages" scope for this cluster is not fully
+built; three real, non-duplicate pages targeting the highest-value terms
+(by volume or by audience fit) are, plus the product page itself retargeted
+for the highest-volume transactional term.
 
 ## Priority order (from prep)
 
