@@ -22,7 +22,7 @@
     }
   },
   "bin": {
-    "markwitness-rewrite": "./dist/cli.js"
+    "markwitness-rewrite": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -39,7 +39,7 @@
   "homepage": "https://markwitness.helm7.com/rewrite",
   "repository": {
     "type": "git",
-    "url": "https://github.com/maxbeech/markwitness",
+    "url": "git+https://github.com/maxbeech/markwitness.git",
     "directory": "packages/rewrite-engine"
   },
   "engines": {
