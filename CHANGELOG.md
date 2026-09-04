@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-09-04: zero npm audit vulnerabilities
+
+Next.js bumped 16.2.10 -> 16.3.4 (patch-level within the same major;
+resolves the postcss XSS/path-traversal and several Next.js CVEs:
+middleware/proxy bypass, SSRF in Server Actions, cache confusion, DoS).
+Verified with a full typecheck/lint/test/build pass plus a live browser
+check of `/check` (paste text, run a real check, confirm the honest
+"insufficient data" result for a short passage) since a framework version
+bump is exactly the kind of change that needs more than a green CI run.
+
+`sharp` (libvips CVEs, no next/`@huggingface/transformers` fix yet in
+their own declared ranges), `adm-zip` (a 4GB-allocation DoS via
+`onnxruntime-node`, pulled in by this session's `@huggingface/transformers`
+addition) and `esbuild` (a Windows-only dev-server file-read, pulled in by
+`tsup`) needed `package.json` `overrides` entries rather than a version
+bump, since none of their parent packages had moved their own declared
+range yet. `npm audit` now reports 0 vulnerabilities (was 9).
+
+Next.js 16.3 auto-generates `AGENTS.md`/`CLAUDE.md` on `next dev`/`next
+build` (agent-guidance boilerplate). Gitignored rather than committed,
+consistent with how this project already treats other tool-generated
+files (`next-env.d.ts`); excluded from `tests/house-style.test.ts`'s scan
+via the existing `SKIP_FILES` mechanism, since the generated text isn't
+this product's writing.
+
 ## 2026-09-04: fix /api/v1/calibrate crashing on every call, and repo-wide lint cleanup
 
 Two pre-existing bugs, unrelated to the rewrite-engine pivot, found via
