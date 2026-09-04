@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-09-04: fix ungrammatical rewrite output from auxiliary-verb substitution
+
+Real, reported bug: at higher rewrite strength, "no final decision has
+been made" became "no final decision possesses existed made". Root cause:
+`src/lib/calibrate/dictionary.ts`'s `EN_SYNONYMS` treated auxiliary/modal
+verbs (is/was/have/has/been/can/would/...) as plain substitutable words
+("has" -> "possesses", "been" -> "existed"), but this is a flat word-list
+substituter with no grammar model, so swapping an auxiliary out of its
+verb phrase produces a broken double-verb construction. Removed all 19
+auxiliary/modal entries from the dictionary (documented in place: a
+future part-of-speech-aware substituter could safely reintroduce them; a
+flat one cannot); ordinary content-word verbs (make, get, go, ...) are
+unaffected. This is the shared dictionary behind both `/calibrator` and
+the rewrite engine's rule-based backend, so the fix applies to both.
+
+Added `src/lib/calibrate/dictionary.test.ts` (20 tests asserting every
+removed word has no dictionary entry) and an engine-level regression test
+reproducing the exact reported sentence. Verified live via the
+`@markwitness/rewrite-engine` CLI at "aggressive" strength: the sentence
+now survives intact.
+
 ## 2026-09-04: zero npm audit vulnerabilities
 
 Next.js bumped 16.2.10 -> 16.3.4 (patch-level within the same major;

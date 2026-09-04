@@ -31,25 +31,18 @@ const EN_SYNONYMS: Record<string, string[]> = {
   by: ['near', 'beside'],
   from: ['starting at', 'originating in'],
   at: ['located at', 'positioned at'],
-  is: ['exists as', 'represents'],
-  was: ['existed as', 'constituted'],
-  are: ['exist as', 'represent'],
-  be: ['exist', 'occur'],
-  been: ['existed', 'occurred'],
-  being: ['existing', 'occurring'],
-  have: ['possess', 'obtain'],
-  has: ['possesses', 'obtains'],
-  had: ['possessed', 'obtained'],
-  do: ['perform', 'execute'],
-  does: ['performs', 'executes'],
-  did: ['performed', 'executed'],
-  can: ['is able to', 'is capable of'],
-  could: ['would be able to', 'might be able to'],
-  will: ['shall', 'is going to'],
-  would: ['should', 'might'],
-  should: ['ought to', 'is recommended to'],
-  may: ['might', 'is permitted to'],
-  might: ['could', 'is possible'],
+
+  // Deliberately excluded: is/was/are/be/been/being, have/has/had,
+  // do/does/did, and the modal verbs (can/could/will/would/should/
+  // may/might). These are auxiliaries: they combine with a following verb
+  // form (a participle, a bare infinitive) in ways their dictionary
+  // "synonyms" don't support, since this substituter has no grammar model
+  // and swaps a token for a fixed replacement string regardless of what
+  // surrounds it. Substituting "has" -> "possesses" inside "has been made"
+  // produces "possesses existed made" once "been" is also swapped for
+  // "existed": a real, reported bug, not a hypothetical one. A future
+  // part-of-speech- or context-aware substituter could safely reintroduce
+  // these; a flat word-list substituter cannot.
 
   // Common content words
   make: ['create', 'produce', 'establish'],
@@ -150,12 +143,9 @@ function inferPartOfSpeech(word: string): string | undefined {
   const articles = ['a', 'an', 'the']
   const conjunctions = ['and', 'or', 'but']
   const prepositions = ['in', 'on', 'of', 'to', 'for', 'with', 'by', 'from', 'at']
-  const verbs = [
-    'is', 'was', 'are', 'be', 'been', 'being',
-    'have', 'has', 'had', 'do', 'does', 'did',
-    'can', 'could', 'will', 'would', 'should', 'may', 'might',
-    'make', 'get', 'go', 'know', 'think', 'see', 'come', 'take',
-  ]
+  // Auxiliary/modal verbs (is/was/have/can/would/...) are deliberately not
+  // dictionary keys (see EN_SYNONYMS above), so they're not listed here.
+  const verbs = ['make', 'get', 'go', 'know', 'think', 'see', 'come', 'take']
 
   if (articles.includes(word)) return 'article'
   if (conjunctions.includes(word)) return 'conjunction'

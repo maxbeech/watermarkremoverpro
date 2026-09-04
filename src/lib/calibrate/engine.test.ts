@@ -235,3 +235,28 @@ describe('analyzeFrequency', () => {
     expect(thePositions[1]).toBeLessThan(thePositions[2])
   })
 })
+
+describe('calibrateText: auxiliary-verb regression', () => {
+  beforeEach(() => {
+    clearDictionaryCache()
+  })
+
+  it('never produces the reported broken output for an auxiliary-verb chain', async () => {
+    // The real reported bug: "has been made" -> "possesses existed made",
+    // from substituting "has" -> "possesses" and "been" -> "existed" with
+    // no awareness that both are auxiliaries in a single verb phrase.
+    // SAMPLE_TEXT above already contains "had been completed" / "had been
+    // circulated"; this test exercises that same construction directly and
+    // asserts none of the removed auxiliary synonyms leak into the output.
+    const text = 'The committee confirmed that no final decision has been made on the matter.'
+    const result = await calibrateText({ text, language: 'en', mode: 'apply' })
+
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    const revised = result.revised.text.toLowerCase()
+
+    for (const brokenVariant of ['possesses', 'possess', 'existed', 'occurred', 'exists as', 'represents']) {
+      expect(revised).not.toContain(brokenVariant)
+    }
+  })
+})
