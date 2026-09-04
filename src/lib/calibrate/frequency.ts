@@ -5,9 +5,9 @@
  * statistical AI detection (signature tokens).
  */
 
-import type { Token, FrequencyAnalysis } from './types'
+import type { FrequencyAnalysis } from './types'
 import type { LanguageCode } from '@/lib/detector/languages'
-import { tokenize, normalizeToken } from '@/lib/detector/tokenize'
+import { tokenize } from '@/lib/detector/tokenize'
 
 /** Common signature token patterns from watermarked text analysis */
 const SIGNATURE_PATTERNS: Record<LanguageCode, Set<string>> = {

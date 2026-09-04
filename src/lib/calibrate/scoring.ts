@@ -7,7 +7,6 @@
 import type { TextMetrics, Substitution } from './types'
 import { analyzeFrequency } from './frequency'
 import { calculateTTR, calculateAverageFrequency, calculateLexicalDiversity } from './frequency'
-import { tokenize } from '@/lib/detector/tokenize'
 import type { LanguageCode } from '@/lib/detector/languages'
 
 /**

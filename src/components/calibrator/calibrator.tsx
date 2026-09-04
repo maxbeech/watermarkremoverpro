@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { calibrateText, type CalibrationResult, type Substitution } from '@/lib/calibrate'
+import { calibrateText, type CalibrationResult } from '@/lib/calibrate'
 import { InputPanel } from './input-panel'
 import { MetricsDisplay } from './metrics-display'
 import { DiffViewer } from './diff-viewer'
@@ -31,8 +31,6 @@ export function Calibrator() {
     setIsLoading(true)
     setError(null)
     setAppliedSubstitutions(new Set())
-
-    const startTime = performance.now()
 
     try {
       const res = await calibrateText({
@@ -157,7 +155,6 @@ export function Calibrator() {
           {result.substitutions.length > 0 && (
             <DiffViewer
               original={result.original.text}
-              revised={result.revised.text}
               substitutions={result.substitutions}
               onSubstitutionChange={handleSubstitutionChange}
             />

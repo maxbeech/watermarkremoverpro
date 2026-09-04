@@ -9,16 +9,11 @@
  * 5. Compose final result
  */
 
-import type {
-  CalibrationRequest,
-  CalibrationResult,
-  CalibrationConfig,
-  Substitution,
-} from './types'
+import type { CalibrationRequest, CalibrationResult } from './types'
 import { analyzeFrequency } from './frequency'
 import { loadDictionary } from './dictionary'
 import { performSubstitution, applySubstitutions } from './substituter'
-import { calculateMetrics, calculateMetricsShift, calculateLexicalChangePercent, composeImpactReport } from './scoring'
+import { calculateMetrics, calculateMetricsShift, calculateLexicalChangePercent } from './scoring'
 import { resolveLanguage } from '@/lib/detector'
 import { tokenize } from '@/lib/detector/tokenize'
 import type { LanguageCode } from '@/lib/detector/languages'
@@ -73,7 +68,7 @@ export async function calibrateText(request: CalibrationRequest): Promise<Calibr
     let dictionary
     try {
       dictionary = await loadDictionary(targetLanguage)
-    } catch (err) {
+    } catch {
       return {
         status: 'error',
         error: `Dictionary not available for language: ${targetLanguage}`,

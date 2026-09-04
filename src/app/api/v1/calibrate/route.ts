@@ -11,19 +11,28 @@
  * claims and does not claim.
  *
  * Authentication: Optional (same as /check endpoint)
- * Metering: Counts against user's daily budget
+ * Metering: An API key gets real, tracked, database-backed metering
+ * (checkAllowance/recordUsage, the same ledger /api/v1/check uses).
+ * An anonymous call gets a per-request word cap only: there is no caller
+ * identity to track cumulative usage against in a stateless REST call, so
+ * this endpoint does not claim to enforce a "daily budget" for anonymous
+ * callers (a previous version imported the browser-only, IndexedDB-backed
+ * budget tracker from calibrate/metering.ts here, which crashed on every
+ * call, since indexedDB does not exist in a server runtime; that tracker is
+ * for src/components/calibrator/budget-status.tsx, a client component,
+ * only).
  * Rate Limiting: Inherited from API key verification
  */
 
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { calibrateText, type CalibrationRequest } from '@/lib/calibrate'
-import { checkDailyBudget, recordCalibration } from '@/lib/calibrate/metering'
 import { countWords } from '@/lib/detector/tokenize'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import { verifyApiKey, type VerifiedKey } from '@/lib/api-keys'
 import { databaseConfigured } from '@/lib/db'
-import { checkAllowance, recordUsage, billableUnits } from '@/lib/metering'
+import { checkAllowance, recordUsage, billableUnits, unitsToPence } from '@/lib/metering'
+import { PLANS } from '@/lib/site'
 
 export const runtime = 'nodejs'
 
@@ -57,7 +66,7 @@ export async function POST(request: Request) {
     let body: unknown
     try {
       body = await request.json()
-    } catch (err) {
+    } catch {
       return NextResponse.json(
         {
           error: 'invalid_json',
@@ -120,32 +129,38 @@ export async function POST(request: Request) {
     const wordCount = countWords(text)
     const billableWords = billableUnits(wordCount)
 
-    // Check daily budget (free tier if no API key)
-    const budgetStatus = await checkDailyBudget(wordCount, !!apiKey)
-    if (!budgetStatus.allowed) {
+    // Anonymous calls get a per-request word cap, the same no-account cap
+    // the browser check uses (PLANS.anonymous.wordCap), not a tracked daily
+    // budget: there is no caller identity in a stateless REST call to track
+    // cumulative usage against, so this is the honest limit this endpoint
+    // can actually enforce without an API key.
+    const anonymousWordCap = PLANS.anonymous.wordCap
+    if (!apiKey && wordCount > anonymousWordCap) {
       return NextResponse.json(
         {
-          error: 'daily_limit_exceeded',
-          message: `Daily calibration limit reached. You've processed ${budgetStatus.used} of ${budgetStatus.limit} words today. Resets at ${budgetStatus.resetTime}.`,
-          usage: {
-            used: budgetStatus.used,
-            limit: budgetStatus.limit,
-            remaining: budgetStatus.remaining,
-          },
+          error: 'request_too_large',
+          message: `Anonymous requests are capped at ${anonymousWordCap.toLocaleString()} words per call; this text is ${wordCount.toLocaleString()} words. Provide a MarkWitness API key for a higher, metered limit.`,
+          limit: anonymousWordCap,
         },
-        { status: 429 },
+        { status: 413 },
       )
     }
 
-    // If API key provided, check database metering
+    // Real, database-backed allowance for API-key callers, the same
+    // checkAllowance/recordUsage ledger /api/v1/check uses.
+    let allowance: Awaited<ReturnType<typeof checkAllowance>> | null = null
     if (apiKey && databaseConfigured()) {
       try {
-        const allowance = await checkAllowance(apiKey.accountId, 'free', billableWords)
+        allowance = await checkAllowance(apiKey.accountId, 'free', billableWords)
         if (!allowance.allowed) {
           return NextResponse.json(
             {
               error: 'insufficient_allowance',
               message: allowance.reason || 'Account does not have sufficient calibration allowance. Please check your account plan or contact support.',
+              plan: allowance.plan,
+              wordCap: allowance.wordCap,
+              checksThisMonth: allowance.checksThisMonth,
+              checksPerMonth: allowance.checksPerMonth,
             },
             { status: 402 },
           )
@@ -165,22 +180,30 @@ export async function POST(request: Request) {
     } as CalibrationRequest)
 
     if (result.status !== 'ok') {
+      // These are foreseeable, documented conditions (whitespace-only text
+      // that passed the schema's non-empty check; a language the calibrate
+      // dictionary doesn't cover yet, currently English only, see
+      // calibrate/dictionary.ts), not an unexpected server malfunction, so
+      // they get a 4xx that names the real cause rather than an opaque 500.
+      const isEmptyText = result.error === 'Text is empty'
+      const isUnsupportedLanguage = result.error?.startsWith('Dictionary not available for language')
       return NextResponse.json(
         {
-          error: 'calibration_failed',
+          error: isEmptyText ? 'validation_error' : isUnsupportedLanguage ? 'language_not_supported' : 'calibration_failed',
           message: result.error || 'Calibration could not be completed',
           result,
         },
-        { status: 500 },
+        // Matches the 400 this route already uses for every other input
+        // problem (invalid JSON, schema failures): these are foreseeable
+        // input issues too, not an unexpected server-side failure.
+        { status: isEmptyText || isUnsupportedLanguage ? 400 : 500 },
       )
     }
 
-    // Record usage (local and server-side if API key)
-    await recordCalibration(wordCount, result.substitutions.length)
-
+    let billableUnitsRecorded = 0
     if (apiKey && databaseConfigured()) {
       try {
-        await recordUsage({
+        billableUnitsRecorded = await recordUsage({
           accountId: apiKey.accountId,
           apiKeyId: apiKey.id,
           surface: 'api',
@@ -193,22 +216,28 @@ export async function POST(request: Request) {
       }
     }
 
-    // Build response
-    const API_PRICE_PENCE_PER_1K_WORDS = 1 // Placeholder; use real value from site config if needed
+    // Build response. Every figure here is real: computed from this
+    // request, or (for an API-key caller) read back from the same ledger
+    // /api/v1/check bills against, never a fabricated placeholder.
     const response = {
       result,
       usage: {
         tokens: wordCount,
         billableWords,
-        billableCost: apiKey ? `${billableWords * API_PRICE_PENCE_PER_1K_WORDS}p` : null,
+        billableCost: apiKey ? `${unitsToPence(billableUnitsRecorded || billableWords)}p` : null,
       },
       mode: apiKey ? 'authenticated' : 'anonymous',
-      limits: {
-        daily: budgetStatus.limit,
-        used: budgetStatus.used,
-        remaining: budgetStatus.remaining,
-        resetAt: budgetStatus.resetTime,
-      },
+      limits: apiKey
+        ? {
+            plan: allowance?.plan ?? null,
+            wordCap: allowance?.wordCap ?? null,
+            checksThisMonth: allowance?.checksThisMonth ?? null,
+            checksPerMonth: allowance?.checksPerMonth ?? null,
+          }
+        : {
+            requestWordCap: anonymousWordCap,
+            note: 'Anonymous calls are capped per request; daily usage is not tracked server-side without an API key.',
+          },
     }
 
     return NextResponse.json(response, { status: 200 })
@@ -229,7 +258,7 @@ export async function POST(request: Request) {
  *
  * CORS preflight
  */
-export async function OPTIONS(request: Request) {
+export async function OPTIONS(_request: Request) {
   return new NextResponse(null, {
     status: 200,
     headers: {

@@ -58,7 +58,25 @@ describe('POST /api/v1/calibrate', () => {
     expect(data.result.comparison).toBeDefined()
   })
 
-  it('respects language parameter', async () => {
+  it('respects language parameter for a language the calibrate dictionary covers', async () => {
+    const text = 'The analysis shows that the results are clear.'
+
+    const response = await fetch(`${BASE_URL}/api/v1/calibrate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, language: 'en' }),
+    })
+
+    expect(response.status).toBe(200)
+    const data = await response.json()
+    expect(data.result.language).toBe('en')
+  })
+
+  it('honestly rejects a schema-valid language the calibrate dictionary does not cover yet', async () => {
+    // 'es' passes SUPPORTED_LANGUAGES validation (the detector supports it),
+    // but the calibrate synonym dictionary is English-only today
+    // (src/lib/calibrate/dictionary.ts). This must be a clear 400, not a
+    // 500 that reads as an unrelated server malfunction.
     const text = 'El análisis muestra que los resultados son claros.'
 
     const response = await fetch(`${BASE_URL}/api/v1/calibrate`, {
@@ -67,9 +85,9 @@ describe('POST /api/v1/calibrate', () => {
       body: JSON.stringify({ text, language: 'es' }),
     })
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(400)
     const data = await response.json()
-    expect(data.result.language).toBe('es')
+    expect(data.error).toBe('language_not_supported')
   })
 
   it('rejects invalid language codes', async () => {
@@ -148,11 +166,28 @@ describe('POST /api/v1/calibrate', () => {
     expect(response.status).toBe(200)
     const data = await response.json()
 
+    // Anonymous calls report a real per-request word cap (the same
+    // PLANS.anonymous.wordCap the browser check uses), not a fabricated
+    // "daily usage" figure: there is no caller identity in a stateless REST
+    // call to track cumulative usage against.
     expect(data.limits).toBeDefined()
-    expect(data.limits.daily).toBe(5000) // Free tier limit
-    expect(data.limits.used).toBeGreaterThanOrEqual(0)
-    expect(data.limits.remaining).toBeGreaterThanOrEqual(0)
-    expect(data.limits.resetAt).toBeDefined()
+    expect(data.limits.requestWordCap).toBe(1500)
+    expect(typeof data.limits.note).toBe('string')
+  })
+
+  it('rejects an anonymous request over the per-request word cap', async () => {
+    const words = Array(1600).fill('word').join(' ')
+
+    const response = await fetch(`${BASE_URL}/api/v1/calibrate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: words }),
+    })
+
+    expect(response.status).toBe(413)
+    const data = await response.json()
+    expect(data.error).toBe('request_too_large')
+    expect(data.limit).toBe(1500)
   })
 
   it('preserves token count', async () => {
@@ -193,9 +228,11 @@ describe('POST /api/v1/calibrate', () => {
     expect(metrics.averageTokenFrequency).toBeGreaterThan(0)
   })
 
-  it('handles very long text', async () => {
-    // Generate 1000-word text
-    const words = Array(1000).fill('The quick brown fox jumps over the lazy dog.').join(' ')
+  it('handles long text up to the anonymous word cap', async () => {
+    // 150 repeats of a 9-word sentence = 1,350 words, under the 1,500-word
+    // anonymous cap (PLANS.anonymous.wordCap) so this exercises a large
+    // document without tripping the 413 rejection tested separately above.
+    const words = Array(150).fill('The quick brown fox jumps over the lazy dog.').join(' ')
 
     const response = await fetch(`${BASE_URL}/api/v1/calibrate`, {
       method: 'POST',

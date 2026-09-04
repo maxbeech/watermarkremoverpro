@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-09-04: fix /api/v1/calibrate crashing on every call, and repo-wide lint cleanup
+
+Two pre-existing bugs, unrelated to the rewrite-engine pivot, found via
+testing during that work and fixed here.
+
+- Fixed: `POST /api/v1/calibrate` crashed with a 500 on every single call.
+  Root cause: the route imported `checkDailyBudget`/`recordCalibration`
+  from `calibrate/metering.ts`, a browser-only, IndexedDB-backed daily
+  budget tracker built for `src/components/calibrator/budget-status.tsx`
+  (a client component); `indexedDB` does not exist in the Next.js server
+  runtime, so every call threw a `ReferenceError`. Replaced with: a real
+  per-request word cap for anonymous callers (`PLANS.anonymous.wordCap`,
+  the same 1,500-word cap the browser check uses, since a stateless REST
+  call has no caller identity to track cumulative daily usage against),
+  and the existing, correct, database-backed `checkAllowance`/`recordUsage`
+  ledger (the same one `/api/v1/check` bills against) for API-key callers.
+  Also fixed a hardcoded `API_PRICE_PENCE_PER_1K_WORDS = 1 // Placeholder`
+  that silently ignored the real configured price, and two error paths
+  ("Text is empty" on whitespace-only input, "Dictionary not available"
+  for a schema-valid but calibrate-unsupported language) that were wrapped
+  in a generic 500 instead of a 400 naming the real, foreseeable cause.
+  `tests/calibrator-api.test.ts`: all 18 tests pass against a real running
+  dev server (was 0 of 16 before this fix; two new tests added for the
+  corrected behavior).
+- Fixed: 16 pre-existing ESLint errors across `src/lib/calibrate/*` and
+  its callers (unused imports/vars, two unsafe non-null-assertions on an
+  optional chain). `npx eslint .` now reports zero problems.
+
 ## 2026-09-04: pivot to an on-device rewrite engine
 
 MarkWitness becomes primarily an on-device rewrite tool (reduces detectable

@@ -11,7 +11,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { calibrateText } from './engine'
 import { analyzeFrequency } from './frequency'
-import { tokenize } from '@/lib/detector/tokenize'
 import { clearDictionaryCache } from './dictionary'
 
 // Sample text for testing (long enough to have repetition)
@@ -229,9 +228,10 @@ describe('analyzeFrequency', () => {
 
     const thePositions = analysis.repetitionMap.get('the')
     expect(thePositions).toBeDefined()
-    expect(thePositions?.length).toBe(3)
+    if (!thePositions) throw new Error('unreachable: asserted defined above')
+    expect(thePositions.length).toBe(3)
     // Positions should be in order
-    expect(thePositions?.[0]).toBeLessThan(thePositions?.[1]!)
-    expect(thePositions?.[1]).toBeLessThan(thePositions?.[2]!)
+    expect(thePositions[0]).toBeLessThan(thePositions[1])
+    expect(thePositions[1]).toBeLessThan(thePositions[2])
   })
 })

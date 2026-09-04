@@ -12,12 +12,10 @@ import { SubstitutionDetail } from './substitution-detail'
  */
 export function DiffViewer({
   original,
-  revised,
   substitutions,
   onSubstitutionChange,
 }: {
   original: string
-  revised: string
   substitutions: Substitution[]
   onSubstitutionChange?: (index: number, newReplacement: string) => void
 }) {

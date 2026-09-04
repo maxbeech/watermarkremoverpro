@@ -116,7 +116,7 @@ export async function loadDictionary(language: LanguageCode): Promise<SynonymDic
     index.set(canonical, {
       id: id++,
       canonical,
-      variants: variants.map((variant, idx) => ({
+      variants: variants.map((variant) => ({
         id: id++,
         term: variant,
         confidence: 0.8, // Default confidence for built-in synonyms
