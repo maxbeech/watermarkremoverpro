@@ -279,6 +279,14 @@ interface ComparisonSeed {
   metaTitle: string
   whatItIs: string[]
   keyDifference: string[]
+  /**
+   * 'detector' (the default): an accuser-side classifier or provenance check,
+   * the shape all three original comparisons target. 'humanizer': a rewrite/
+   * paraphrase competitor, which needs different fixed template text since
+   * "neither can prove who wrote a document" and "will X's classifier flag
+   * me" don't apply to a tool that doesn't classify anything.
+   */
+  kind?: 'detector' | 'humanizer'
 }
 
 const COMPARISON_SEEDS: ComparisonSeed[] = [
@@ -324,38 +332,88 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
       'If your job genuinely is screening other people’s work, MarkWitness is the wrong tool and we say so on every page. Learnaway is built for that.',
     ],
   },
+  {
+    slug: 'ai-humanizer-tools',
+    competitor: 'AI humanizer tools like QuillBot, Undetectable.ai and StealthGPT',
+    metaTitle: 'MarkWitness vs AI Humanizer Tools: On-Device, No "Undetectable" Claim',
+    kind: 'humanizer',
+    whatItIs: [
+      'QuillBot, Undetectable.ai, StealthGPT and a large field of similar products rewrite text to reduce the patterns an AI detector keys on. Most run the rewrite on their own servers, meaning your document is uploaded to a third party to be processed, and most advertise a permanent, universal escape from every detector in their marketing copy.',
+      'That marketing claim is not something the underlying method can support. A keyed statistical mark is designed so only the party holding the key can reliably test for it, so no outside tool, including this one, can honestly promise a specific outcome against a specific vendor\'s undisclosed watermark.',
+    ],
+    keyDifference: [
+      'MarkWitness\'s rewrite runs entirely on your device or in your own process, on every tier: nothing about the document is ever sent to a MarkWitness-operated server, and there is no REST endpoint for it by design. Most humanizer tools are the opposite: a cloud service you paste your draft into.',
+      'The claim is the other real difference. MarkWitness states a reduction, not a guarantee: the same conservative language used everywhere else on this site. It also shows the before/after evidence delta using the same arithmetic its own detector uses, so the change is something you can verify rather than take on faith.',
+      'Free and Pro are both unlimited-use here, because the computation runs on your device either way rather than metering server compute.',
+    ],
+  },
 ]
 
-const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => ({
-  slug: seed.slug,
-  group: 'vs' as const,
-  title: `MarkWitness vs ${seed.competitor}`,
-  metaTitle: seed.metaTitle,
-  metaDescription: `How MarkWitness differs from ${seed.competitor}: a keyed provenance-mark test you run on your own writing, versus a detector that judges whether text reads as machine-generated.`,
-  intro: `These tools get compared constantly and they are not substitutes. ${seed.competitor} and MarkWitness measure different things for different people, and the most useful thing this page can do is be precise about which.`,
-  sections: [
-    { heading: `What ${seed.competitor} is`, body: seed.whatItIs },
-    { heading: 'How MarkWitness differs', body: seed.keyDifference },
-    {
-      heading: 'What neither of them can do',
-      body: [
-        'Neither tool can prove who wrote a document. A detector reports a model’s confidence; a provenance-mark test reports whether a statistical signature is present. Both are evidence, and neither is authorship.',
-        `Nor can either of them guarantee a result against an undisclosed watermark. ${seed.competitor} cannot guarantee its confidence score is right, and MarkWitness's own on-device rewrite feature cannot guarantee defeating a model vendor's undisclosed watermark either, since nobody outside that vendor holds the key it was applied with.`,
+const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => {
+  if (seed.kind === 'humanizer') {
+    return {
+      slug: seed.slug,
+      group: 'vs' as const,
+      title: `MarkWitness vs ${seed.competitor}`,
+      metaTitle: seed.metaTitle,
+      metaDescription: `How MarkWitness's on-device rewrite differs from ${seed.competitor}: no server upload, and a stated reduction in evidence rather than an "undetectable" promise.`,
+      intro: `${seed.competitor} and MarkWitness's own rewrite feature are the same category of tool, word-choice and style changes that reduce detectable AI-style evidence. What differs is where the processing happens and what claim is attached to the result.`,
+      sections: [
+        { heading: `What ${seed.competitor} typically offer`, body: seed.whatItIs },
+        { heading: 'How MarkWitness differs', body: seed.keyDifference },
+        {
+          heading: 'What neither of them can do',
+          body: [
+            `Neither MarkWitness nor ${seed.competitor} can guarantee a result against a specific vendor's undisclosed watermark. A keyed statistical mark is designed so only the party holding the key can reliably test for it, so no outside tool can honestly promise otherwise, whatever a competitor's marketing page claims.`,
+            'A rewrite that reduces measurable evidence is a real, falsifiable effect. A rewrite that is marketed as a permanent, universal escape from every detector is describing something outside what the underlying method supports.',
+          ],
+        },
       ],
-    },
-  ],
-  faq: [
-    {
-      question: `Can MarkWitness tell me what ${seed.competitor} will say about my document?`,
-      answer: `No. ${seed.competitor}'s model is theirs, and nothing outside it can predict its output. MarkWitness reports its own measurement and names its own method, which is a different and more defensible claim than guessing at somebody else's classifier.`,
-    },
-    {
-      question: 'Which should I use if I have been accused?',
-      answer:
-        'If the accusation came from a classifier, understanding that tool’s false positive rate is usually more useful than running another classifier. MarkWitness adds a different kind of evidence, a named and keyed test on your exact file with its limits stated and a hash anchoring it, plus a document you can actually submit.',
-    },
-  ],
-}))
+      faq: [
+        {
+          question: `Is it safe to paste an unpublished draft into ${seed.competitor}?`,
+          answer: `That depends on their privacy terms and where processing happens, which is worth checking directly on their site. MarkWitness's rewrite runs entirely on your device or your own process, on every tier, so the question does not apply here: nothing about the document is ever sent to a MarkWitness-operated server.`,
+        },
+        {
+          question: 'Will either of these guarantee my writing is not flagged?',
+          answer:
+            'No, and treat any tool that claims that with suspicion. What a rewrite can do is measurably reduce detectable statistical patterns; whether a specific institution\'s specific process flags a document depends on things outside any rewrite tool\'s knowledge.',
+        },
+      ],
+    }
+  }
+
+  return {
+    slug: seed.slug,
+    group: 'vs' as const,
+    title: `MarkWitness vs ${seed.competitor}`,
+    metaTitle: seed.metaTitle,
+    metaDescription: `How MarkWitness differs from ${seed.competitor}: a keyed provenance-mark test you run on your own writing, versus a detector that judges whether text reads as machine-generated.`,
+    intro: `These tools get compared constantly and they are not substitutes. ${seed.competitor} and MarkWitness measure different things for different people, and the most useful thing this page can do is be precise about which.`,
+    sections: [
+      { heading: `What ${seed.competitor} is`, body: seed.whatItIs },
+      { heading: 'How MarkWitness differs', body: seed.keyDifference },
+      {
+        heading: 'What neither of them can do',
+        body: [
+          'Neither tool can prove who wrote a document. A detector reports a model’s confidence; a provenance-mark test reports whether a statistical signature is present. Both are evidence, and neither is authorship.',
+          `Nor can either of them guarantee a result against an undisclosed watermark. ${seed.competitor} cannot guarantee its confidence score is right, and MarkWitness's own on-device rewrite feature cannot guarantee defeating a model vendor's undisclosed watermark either, since nobody outside that vendor holds the key it was applied with.`,
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: `Can MarkWitness tell me what ${seed.competitor} will say about my document?`,
+        answer: `No. ${seed.competitor}'s model is theirs, and nothing outside it can predict its output. MarkWitness reports its own measurement and names its own method, which is a different and more defensible claim than guessing at somebody else's classifier.`,
+      },
+      {
+        question: 'Which should I use if I have been accused?',
+        answer:
+          'If the accusation came from a classifier, understanding that tool’s false positive rate is usually more useful than running another classifier. MarkWitness adds a different kind of evidence, a named and keyed test on your exact file with its limits stated and a hash anchoring it, plus a document you can actually submit.',
+      },
+    ],
+  }
+})
 
 // ---------------------------------------------------------------------------
 // Guides

@@ -44,7 +44,26 @@ Claims stay conservative throughout: "reduces detectable evidence," never
   not just the code: `README.md`, `llms.txt`, `pricing.json`, `pricing/page`,
   the FAQ, `openapi.json`, `json-ld.tsx`, the evidence-report PDF footer,
   the mirror-banner, and several pSEO/blog pages that argued from the old
-  policy.
+  policy. A second sweep, triggered by live-testing a new page and noticing
+  a leftover disclaimer, found and fixed several more high-visibility
+  survivors: the homepage's "It will never remove a mark" section, a whole
+  `/limits` section, `/docs/mcp`, `/docs/api`, the EU AI Act guide, and the
+  shared `LimitNote` boilerplate in `long-tail-page.tsx` and
+  `blog-post-view.tsx` that rendered on every `/for/*`, `/vs/*`, `/guide/*`,
+  `/in/*` and blog page.
+- Fixed a real correctness bug in `effectiveRewriteModel` (`models.ts`):
+  the Node/MCP/CLI advanced backend was silently downgrading every Pro-tier
+  call to the Free-tier model, because the "no WebGPU, use the smaller
+  model" rule (correct for a weak browser) was also firing for
+  `onnxruntime-node`, which never reports WebGPU. Fixed by making the rule
+  environment-aware (`device: 'webgpu' | 'wasm' | 'cpu'`); verified live
+  that Pro now genuinely resolves to the 1.5B model on Node.
+- Re-verified the "ai humanizer" keyword cluster live via Google Ads
+  (`docs/seo_geo_content_plan.md`) and shipped two pages grounded in that
+  data: `/guide/ai-humanizer-how-it-actually-works` and
+  `/vs/ai-humanizer-tools` (a new `kind: 'humanizer'` branch in the
+  `/vs/*` comparison template, alongside the original detector-competitor
+  shape).
 
 ## 2026-08-12: content engine launch (15 blog posts)
 

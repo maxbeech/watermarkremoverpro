@@ -89,6 +89,24 @@ explain what is actually being measured and changed. This is the same
 pattern already used for `/vs/*` pages against detector competitors, applied
 to humanizer competitors instead.
 
+### Shipped from this cluster (2026-09-04)
+
+- `/guide/ai-humanizer-how-it-actually-works` (targets `ai humanizer`,
+  `humanize ai text`).
+- `/vs/ai-humanizer-tools` (targets `best ai humanizer`; names QuillBot,
+  Undetectable.ai and StealthGPT as the real, well-known products in this
+  category). `COMPARISON_SEEDS` in `src/content/pages.ts` gained a `kind:
+  'humanizer'` branch alongside the original `'detector'` template, since the
+  fixed "neither can prove who wrote a document" template text assumed a
+  classifier competitor.
+
+Not yet shipped from this cluster, left as real, honest backlog rather than
+padded out: a dedicated `ai humanizer free` / pricing-angle page, and a
+`turnitin ai humanizer` page for the `/for/university-students` audience
+(480/mo, directly on-audience). The plan's original "8-10 new pages" scope
+for this cluster is not fully built; two pages targeting the highest-value,
+lowest-competition terms are.
+
 ## Priority order (from prep)
 
 1. Seed pSEO pages targeting the verified cluster (`/for/*`, `/vs/*`, `/guide/*`, `/in/*`, shipped in earlier stages).
