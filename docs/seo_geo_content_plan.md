@@ -36,9 +36,58 @@ primary buyer keyword:
 
 | Keyword | Volume (mo) | Why disqualified |
 |---|---|---|
-| ai humanizer | 823,000 | Evasion intent, disqualified by design (MarkWitness has no removal/rewrite feature, ever) |
 | gptzero | 450,000 | Competitor brand term |
 | ai content detector | 18,100 | Accuser-side screening-of-others, which is Learnaway's job, not this product's |
+
+`ai humanizer` moved out of this table on 2026-09-04 (see below): the product
+pivoted to offer a real, honestly-described evidence-reduction feature, so
+the term is no longer disqualified by product scope, only by the specific
+"guaranteed undetectable" framing competitors use for it, which this
+product's claims policy rules out regardless of keyword.
+
+## 2026-09-04: the "ai humanizer" cluster, re-verified live
+
+Materialised for the rewrite-engine pivot (`docs/REWRITE_PHILOSOPHY.md`).
+Source: Google Ads Keyword Planner (`google_ads_keyword_metrics` /
+`google_ads_keyword_ideas`), US geo target, queried live this session. Every
+figure below is `avgMonthlySearches` from that live call, not carried over
+from the 2026-08-11 research or invented. The old August figure for `ai
+humanizer` (823,000) is independently reconfirmed by this call, not assumed.
+
+| Keyword | Volume (mo) | Competition | Note |
+|---|---|---|---|
+| ai humanizer | 823,000 | Medium | The head term. Real intent: avoid a false-positive AI-detection flag. Competitors overclaim "100% undetectable" here; this product's claims policy (`tests/product-constraints.test.ts`) forbids that framing regardless of the keyword's own intent, so any page targeting this term must name and defuse the overclaim, not repeat it. |
+| ai humanizer free | 90,500 | Medium | Pairs with the Free tier's unlimited-use, no-signup rewrite. |
+| humanize ai text | 33,100 | Low | Lower competition than the head term; a genuine secondary-page target. |
+| ai writing detector | 27,100 | Medium | Detection-side variant of the existing verified cluster; already implicitly covered by `/check` and `/method`. |
+| best ai humanizer | 12,100 | Medium | Comparison-intent; a `/vs/*`-shaped page is the right format. |
+| ai paraphrasing tool | 1,600 | Low | Adjacent job; lowest competition in this set. |
+| ai text humanizer free | 1,000 | Medium | Long-tail of `ai humanizer free`. |
+| bypass ai detector | 880 | Medium | Evasion-framed; a page targeting this must reframe toward the honest job (reduce false-positive risk on your own writing), consistent with the conservative-claims decision, not chase the evasion framing itself. |
+| ai detector bypass | 480 | Medium | Same term, reordered; not a separate page. |
+| remove ai detection | 480 | Medium | "Remove" is banned from this product's own claims vocabulary (`REWRITE_LIMITS` says "reduce," never "remove"); a page can target the keyword in its SEO metadata while the on-page copy still says "reduce." |
+| turnitin ai humanizer | 480 | Medium | Directly serves the existing `/for/university-students` audience; natural internal link target. |
+| make ai text undetectable | 260 | Medium | "Undetectable" is exactly the claim this product's tests forbid; a page here must lead by naming and rejecting that promise (the plan's "defuse the overclaim in the H1" pattern), not use it as the H1 itself. |
+| reduce ai detection | 40 | Medium | Smallest volume, but the only phrase in this table that already matches the product's own claims language verbatim; good internal-anchor-text target even without being a standalone page. |
+| chatgpt detector bypass, ai humanizer online, undetectable ai, stealthgpt | ~10-50 or no data | n/a | Too small or brand terms (competitor names); not page targets. |
+
+Combined re-verified cluster actually worth a page: **~130,000/mo**
+(`ai humanizer` + `ai humanizer free` + `humanize ai text` + `best ai
+humanizer`, the four terms over 10,000/mo with real, own-writing intent this
+product can honestly serve), separate from the existing verified detection
+cluster (~630/mo, EU AI Act-driven) documented above, which is unaffected by
+this addition.
+
+### Honest-claims pattern for this cluster specifically
+
+Every page targeting a term in this table follows the same rule already used
+for the head term: name the competitor overclaim in the page itself (most
+competitors in this space explicitly promise "100% undetectable" or
+"guaranteed to pass," which `docs/REWRITE_PHILOSOPHY.md` and
+`tests/product-constraints.test.ts` forbid this product from claiming), then
+explain what is actually being measured and changed. This is the same
+pattern already used for `/vs/*` pages against detector competitors, applied
+to humanizer competitors instead.
 
 ## Priority order (from prep)
 

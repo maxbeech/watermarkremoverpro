@@ -15,3 +15,6 @@ corpus/
 
 # Design-audit screenshots. Evidence for a polish pass, not source.
 .polish-shots/
+
+# Built from src/lib/rewrite via tsup.rewrite-engine.config.ts (npm run build:rewrite-engine).
+packages/rewrite-engine/dist/

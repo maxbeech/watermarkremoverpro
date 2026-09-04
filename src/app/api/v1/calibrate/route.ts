@@ -4,8 +4,11 @@
  * Text calibration endpoint: helps users understand their text's statistical
  * profile and suggest synonym replacements to adjust word frequencies.
  *
- * This is NOT a mark removal tool. It helps writers understand patterns
- * that might trigger statistical AI detection, and suggests natural rewrites.
+ * The lighter, deterministic layer behind the fuller on-device rewrite engine
+ * (src/lib/rewrite, exposed as reduce_ai_evidence): suggests substitutions
+ * with before/after metrics rather than producing a finished, targeted
+ * rewrite. See docs/REWRITE_PHILOSOPHY.md for what the rewrite capability
+ * claims and does not claim.
  *
  * Authentication: Optional (same as /check endpoint)
  * Metering: Counts against user's daily budget

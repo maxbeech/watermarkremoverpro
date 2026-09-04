@@ -50,14 +50,19 @@ export const CORE_FAQ: FaqItem[] = [
       'No. A detected mark is not proof of authorship. Marks can appear in text that was quoted, translated, edited, or written with assistance, and a statistical test reports a probability rather than a fact about a person. MarkWitness reports the strength of the signal and the passages carrying it, and states this limit on every result and every exported report.',
   },
   {
-    question: 'Can this tool remove or reduce a mark?',
+    question: 'Can this tool guarantee my writing won\'t be flagged?',
     answer:
-      'No, and it never will. There is no removal, substitution, paraphrase, rewrite or "lower your score" capability on any tier, whether free, Pro, API or MCP, and none is planned. MarkWitness is a diagnostic. A tool that removed provenance marks would be an evasion service for the compliance mechanism the EU AI Act relies on, which is a different product and not one we will build.',
+      'No, and any tool that claims a 100% or guaranteed result is overselling a probabilistic process. MarkWitness can reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. It cannot guarantee defeating a model vendor\'s undisclosed watermark, because nobody outside that vendor holds the key it was applied with, and no honest tool can promise otherwise. The rewrite runs entirely on your device, on every tier, and shows you the before/after evidence so you can judge the result yourself rather than take a guarantee on faith.',
+  },
+  {
+    question: 'What\'s the difference between the free and Pro rewrite?',
+    answer:
+      'Both run the same on-device engine with unlimited use: there is no word cap or monthly limit on rewriting, because the computation happens on your device, not our servers. Pro generates more candidate rewrites per passage, giving a better result to choose from, and uses the extended AI-tell library. Neither tier ever sends your text anywhere.',
   },
   {
     question: 'Does my document ever leave my device?',
     answer:
-      'Not on the free check. The analysis runs in your browser: the detection engine is downloaded to your device and the text is measured there. You can confirm it by opening your browser network tab and watching while the check runs. The API, the MCP server and the PDF evidence report necessarily run on our servers, because a programmatic caller has no browser, and those paths are documented separately and are opt-in.',
+      'Not on the free check, and never on the rewrite feature, on any tier or surface. Checking runs in your browser: the detection engine is downloaded to your device and the text is measured there; you can confirm it by opening your browser network tab and watching while the check runs. The API, the MCP server and the PDF evidence report necessarily run on our servers for CHECKING, because a programmatic caller has no browser, and those paths are documented separately and are opt-in. Rewriting is different and stricter: it runs entirely on-device or in-process everywhere, in the browser, the API package, and the MCP server alike, with no hosted mode at all, on any tier.',
   },
   {
     question: 'Which languages are supported at launch?',

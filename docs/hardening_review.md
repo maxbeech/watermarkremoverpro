@@ -1,5 +1,15 @@
 # Stage 4: post-build hardening & QA
 
+**2026-09-04 note:** this review predates the pivot to an on-device rewrite
+engine (`docs/REWRITE_PHILOSOPHY.md`). Every reference below to "the
+permanent no-removal constraint" or "no mark-removal tool exposed" describes
+the product as it stood on 2026-08-12, not its current state: MarkWitness now
+ships a real, honestly-described evidence-reduction feature (`/rewrite`,
+`reduce_ai_evidence`), with a different, narrower absolute (strictly
+on-device, no unverifiable guarantee) replacing the old one. Kept as-is
+below for an accurate historical record of what was checked at the time,
+rather than silently edited to look prescient.
+
 Run started 2026-08-12T00:00Z. Product: MarkWitness. Workspace resolved per the
 Product Pipeline Notes pointer (list_products carries a stale, non-existent
 `/cloud/...` workspacePath for this slug): `/Users/maxbeech/Documents/Beech/Development/ProductFactory/markwitness`.

@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/brand/ui'
 export const metadata: Metadata = {
   title: 'MCP server',
   description:
-    'Expose the MarkWitness provenance-mark check to an agent as an MCP tool. Runs locally with no API key, or hosted with one.',
+    'Expose MarkWitness to an agent as an MCP tool: check_document for the provenance-mark check (local or hosted), plus reduce_ai_evidence and calibrate_text for on-device rewriting, which has no hosted mode on any tier.',
   alternates: { canonical: '/docs/mcp' },
 }
 
@@ -64,8 +64,30 @@ export default function McpDocsPage() {
         <h3 className="mt-5 font-medium text-ink-800">describe_method</h3>
         <p>
           Takes nothing and sends no document. Returns what is measured, which keys are available in
-          the current mode, which languages have baselines, and the limits, so an agent can decide
-          whether a check will answer its question before sending anything.
+          the current mode, which languages have baselines, the limits, and the rewrite
+          capability&apos;s own stated limits, so an agent can decide whether a check will answer its
+          question before sending anything.
+        </p>
+        <h3 className="mt-5 font-medium text-ink-800">reduce_ai_evidence</h3>
+        <p>
+          Takes <code className="figure">text</code>, and optionally{' '}
+          <code className="figure">language</code>, <code className="figure">strength</code>{' '}
+          (<code className="figure">preserve</code> / <code className="figure">balanced</code> /{' '}
+          <code className="figure">aggressive</code> / <code className="figure">regenerate</code>),{' '}
+          <code className="figure">tier</code> (<code className="figure">free</code> /{' '}
+          <code className="figure">pro</code>), and <code className="figure">model</code>{' '}
+          (<code className="figure">standard</code>, the default rule-based engine, or{' '}
+          <code className="figure">advanced</code>, a real local LLM downloaded and cached on first
+          use). Rewrites the passages a real per-passage check flags, on-device, and returns the
+          revised text alongside the same stated limits every surface carries: it cannot guarantee
+          defeating an undisclosed vendor watermark, on any tier.
+        </p>
+        <h3 className="mt-5 font-medium text-ink-800">calibrate_text</h3>
+        <p>
+          A lighter, fully deterministic synonym-substitution pass over a document&apos;s word
+          frequencies, returning suggested substitutions with before/after metrics rather than a
+          finished rewrite. For the fuller pass that also targets flagged passages and removes
+          stylistic AI tells, use <code className="figure">reduce_ai_evidence</code> instead.
         </p>
       </Section>
 
@@ -83,11 +105,17 @@ export default function McpDocsPage() {
         </p>
       </Section>
 
-      <Section title="What is not exposed">
+      <Section title="What has no hosted mode, on any tier">
         <p>
-          No tool that removes, weakens, paraphrases around or reduces a provenance mark, and no
-          parameter that approximates one. An agent-callable mark remover is precisely the bulk
-          laundering surface that would turn an individual diagnostic into an evasion service.
+          <code className="figure">reduce_ai_evidence</code> and{' '}
+          <code className="figure">calibrate_text</code>{' '}
+          always run in this server&apos;s own process, unlike{' '}
+          <code className="figure">check_document</code>. There is no{' '}
+          <code className="figure">MARKWITNESS_API_KEY</code>{' '}
+          branch for either, no REST endpoint, and no parameter that sends the document anywhere:
+          rewriting is more sensitive than measuring, and gets no exception to the on-device
+          guarantee. See <code className="figure">docs/REWRITE_PHILOSOPHY.md</code>{' '}
+          in the repository for what the rewrite tools claim and do not claim.
         </p>
         <p className="text-sm">
           <Link href="/limits" className="link-quiet">The full stated limits</Link>

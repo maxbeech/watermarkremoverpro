@@ -25,7 +25,8 @@ export function MirrorBanner() {
           >
             {MIRROR_PRODUCT.name}
           </a>{' '}
-          does that. MarkWitness checks writing you wrote yourself.
+          does that. MarkWitness checks and edits writing <strong className="font-semibold text-white">you</strong> wrote
+          yourself, not work someone else handed you to submit.
         </span>
       </div>
     </div>

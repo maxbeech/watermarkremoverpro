@@ -16,9 +16,13 @@ export const runtime = 'nodejs'
  * the numbers an agent gets are the numbers a person would get on the same text,
  * plus the keys only a server can hold.
  *
- * Note what this endpoint does NOT offer, on any plan: any form of mark removal,
- * reduction, paraphrase or rewrite. There is no parameter for it and no sibling
- * route that does it.
+ * Note what this endpoint does NOT offer, on any plan: any form of rewriting.
+ * There is no parameter for it and no sibling REST route that does it, by
+ * design: rewriting is on-device only, on every tier, and a REST endpoint
+ * that accepted document text would break that guarantee. It is exposed
+ * instead via the MCP server's reduce_ai_evidence tool and the published
+ * local package/CLI, both of which run in the caller's own process. See
+ * docs/REWRITE_PHILOSOPHY.md.
  */
 
 const BodySchema = z.object({

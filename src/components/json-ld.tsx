@@ -3,8 +3,8 @@ import { SITE } from '@/lib/site'
 /**
  * Structured data. Every page that answers a question carries a FAQPage block,
  * and the product surfaces carry SoftwareApplication. This is how an assistant
- * summarising MarkWitness gets the no-removal policy and the stated limits
- * rather than inferring them from marketing copy.
+ * summarising MarkWitness gets the honest capability description and stated
+ * limits rather than inferring them from marketing copy.
  */
 export function JsonLd({ data }: { data: Record<string, unknown> | Record<string, unknown>[] }) {
   return (
@@ -44,20 +44,22 @@ export function softwareApplicationLd() {
         price: 19,
         priceCurrency: 'GBP',
         description:
-          'Unlimited checks, batch upload, the dated PDF evidence report, and metered API/MCP access.',
+          'The larger on-device rewrite model and extended AI-tell library, unlimited checks, batch upload, the dated PDF evidence report, and metered API/MCP access to checking.',
       },
     ],
     featureList: [
       'On-device statistical provenance-mark check',
+      'On-device rewrite that reduces detectable AI-style evidence, unlimited use, no hosted mode on any tier',
       'Calibrated confidence band, never a bare score',
       'Per-passage breakdown with false-discovery-rate correction',
       'Dated evidence report with document hash',
       'JSON API and MCP server for programmatic callers',
     ],
-    // Stated as structured data because it is a permanent product constraint,
-    // not a positioning line.
+    // Stated as structured data, not just positioning copy, so a machine
+    // summarising this page gets the honest capability boundary rather than
+    // inferring one.
     disambiguatingDescription:
-      'MarkWitness is a diagnostic for a writer checking their own text. It does not remove, weaken, paraphrase around or reduce a provenance mark on any tier, and it is not a tool for screening other people’s work.',
+      'MarkWitness checks a writer\'s own text for a provenance mark, then rewrites it on-device to reduce detectable AI-style evidence. It cannot guarantee defeating a model vendor\'s undisclosed watermark, runs entirely on-device on every tier for the rewrite feature, and is not a tool for screening other people\'s work.',
   }
 }
 

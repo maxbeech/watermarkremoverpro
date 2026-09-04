@@ -89,9 +89,7 @@ export function MetricsDisplay({
       <div className="space-y-2 border-l-2 border-ink-300 bg-ink-50 px-4 py-3">
         <p className="text-sm font-medium text-ink-900">What this means</p>
         <ul className="space-y-1 text-sm text-ink-700">
-          {diversityChange > 0 && (
-            <li>✓ Vocabulary diversity increased (good for evading statistical detection)</li>
-          )}
+          {diversityChange > 0 && <li>✓ Vocabulary diversity increased</li>}
           {freqChange < 0 && (
             <li>✓ Token frequencies became more balanced (less overrepresented words)</li>
           )}

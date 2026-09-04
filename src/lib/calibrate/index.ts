@@ -4,11 +4,12 @@
  * A local-first, deterministic text normalization utility that helps writers
  * understand which word-frequency patterns trigger statistical AI detection.
  *
- * This engine is NOT a watermark removal tool. It's a companion to the detection
- * engine, helping users understand their writing's statistical profile and
- * suggesting natural rewrites that adjust word frequencies without altering voice.
+ * The lighter, deterministic layer behind the fuller on-device rewrite engine
+ * (../rewrite), which also targets the passages a real check flags and scores
+ * candidates against the detector's own arithmetic. This module suggests
+ * substitutions with before/after metrics; it does not itself score or target.
  *
- * 100% local processing: no text ever leaves the device.
+ * All processing is local: no text ever leaves the device.
  */
 
 export * from './types'

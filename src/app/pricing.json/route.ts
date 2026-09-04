@@ -26,8 +26,9 @@ export function GET() {
           wordsPerDocument: PLANS.anonymous.wordCap,
           checksPerMonth: null,
           machineCallable: false,
+          rewrite: { ...PLANS.anonymous.rewrite, onDevice: true },
           notes:
-            'Runs entirely in the browser. The document is not uploaded, so there is no server-side path for a programmatic caller to use.',
+            'Checking runs entirely in the browser and the document is not uploaded, so there is no server-side path for a programmatic caller to use. Rewriting is unlimited-use and always on-device, on every plan.',
         },
         {
           id: PLANS.free.id,
@@ -37,6 +38,7 @@ export function GET() {
           wordsPerDocument: PLANS.free.wordCap,
           checksPerMonth: PLANS.free.checksPerMonth,
           machineCallable: false,
+          rewrite: { ...PLANS.free.rewrite, onDevice: true },
         },
         {
           id: PLANS.pro.id,
@@ -46,6 +48,7 @@ export function GET() {
           wordsPerDocument: PLANS.pro.wordCap,
           checksPerMonth: null,
           machineCallable: true,
+          rewrite: { ...PLANS.pro.rewrite, onDevice: true },
           includes: [...PLANS.pro.features],
         },
       ],
@@ -60,12 +63,21 @@ export function GET() {
         billingNote:
           'Metered on words submitted. A document too short for a statistic to be computed still consumes one unit, because the work of measuring it was still done.',
       },
-      // Stated here as well as in llms.txt because an agent reading pricing to
-      // decide what it can buy should learn in the same document that the
-      // obvious adjacent capability is not for sale here at any price.
-      notOffered: {
-        markRemoval:
-          'MarkWitness does not remove, weaken, paraphrase around or reduce a provenance mark. There is no tier, endpoint, MCP tool or parameter that does this, and none will be added.',
+      // Stated here as well as in llms.txt and the FAQ so an agent reading
+      // pricing to decide what it can buy learns the honest limits in the
+      // same document, not just the capability.
+      rewriteCapability: {
+        summary:
+          'Reduces detectable AI-style evidence (statistical watermark signal, where structurally possible, and human-perceptible AI tells). Always on-device, unlimited use, on every plan.',
+        limitations: [
+          'Cannot guarantee defeating a model vendor\'s undisclosed watermark. Nobody outside that vendor holds the key it was applied with.',
+          'Heavier rewriting trades fidelity to the original wording for a larger evidence reduction.',
+          'No server ever receives the document for this feature, on any tier or surface. There is no hosted endpoint for it.',
+        ],
+        interfaces: {
+          mcp: `${SITE.url}/docs/mcp`,
+          note: 'No REST endpoint exists for rewriting, by design (see limitations above). Use the MCP server or the local package/CLI, both of which run the identical engine in the caller\'s own process.',
+        },
       },
     },
     { headers: { 'Cache-Control': 'public, max-age=3600' } },

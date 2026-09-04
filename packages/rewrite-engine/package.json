@@ -1,0 +1,56 @@
+{
+  "name": "@markwitness/rewrite-engine",
+  "version": "0.1.0",
+  "description": "Reduce detectable AI-style evidence in text, entirely on-device. The same engine MarkWitness's browser UI and MCP server use, runnable in your own process. No REST endpoint by design: this never sends your document to a server, on any tier.",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "cd ../.. && npm run build:rewrite-engine"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.mjs",
+      "require": "./dist/node.js"
+    }
+  },
+  "bin": {
+    "markwitness-rewrite": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "ai-detection",
+    "ai-humanizer",
+    "watermark",
+    "text-rewriting",
+    "on-device",
+    "privacy"
+  ],
+  "homepage": "https://markwitness.helm7.com/rewrite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxbeech/markwitness",
+    "directory": "packages/rewrite-engine"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@huggingface/transformers": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@huggingface/transformers": {
+      "optional": true
+    }
+  }
+}

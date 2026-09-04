@@ -33,12 +33,14 @@ export default function CalibratorPage() {
 
             <details className="cursor-pointer rounded-lg border border-ink-200 bg-white p-4">
               <summary className="font-medium text-ink-900">
-                Is this tool the same as a mark removal tool?
+                How is this different from the full Rewrite tool?
               </summary>
               <p className="mt-3 text-sm text-ink-700">
-                No. This tool is a companion to the detection engine, not an evasion service. It
-                helps you understand your text's statistical profile and suggests natural rewrites.
-                The decision to apply any change is entirely yours.
+                This is the lightweight, fully deterministic layer: synonym substitution based on
+                word frequency, no model involved. <a href="/rewrite" className="underline">Rewrite</a> also
+                targets the specific passages a real check flags, removes stylistic AI tells like em
+                dashes and stock phrasing, and generates multiple candidates scored for meaning
+                preservation. Both run entirely on your device.
               </p>
             </details>
 

@@ -112,8 +112,13 @@ export default function ApiDocsPage() {
 
       <Section title="What this API does not offer">
         <p>
-          There is no endpoint, parameter or plan that removes, weakens, paraphrases around or reduces
-          a provenance mark. This is a permanent constraint rather than an unimplemented feature.
+          There is no endpoint or parameter, on any plan, that rewrites a document to reduce
+          detectable evidence. That is a deliberate omission, not a missing feature: rewriting is
+          on-device only, on every tier, and a REST endpoint that accepted your document text would
+          break that guarantee. Call the on-device rewrite engine instead via the MCP server&apos;s{' '}
+          <Link href="/docs/mcp" className="link-quiet">reduce_ai_evidence tool</Link>, or the
+          published local package/CLI, both of which run in your own process and never transmit the
+          document.
         </p>
       </Section>
       </article>

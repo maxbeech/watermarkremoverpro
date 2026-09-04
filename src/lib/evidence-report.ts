@@ -207,7 +207,11 @@ export async function buildEvidenceReport(result: AnalysisResult): Promise<Uint8
     cursor,
     pdf,
     fonts,
-    `${SITE.name} reports what it measured and names what it could not measure. It does not remove, weaken or reduce provenance marks, on any tier. ${SITE.url}`,
+    // NOTE: this exact wording is a good-faith default, not a final legal
+    // sign-off. It is reproduced on a document users hand to third parties,
+    // so an explicit product-owner review of this specific sentence is
+    // recommended before relying on it in a real dispute.
+    `${SITE.name} reports what it measured, on the exact document hashed above, and names what it could not measure. ${SITE.url}`,
     8,
     MUTED,
   )

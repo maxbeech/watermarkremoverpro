@@ -981,7 +981,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       rows: [
         ['ForensicMark', 'Embeds an invisible forensic watermark and C2PA manifest into an image', 'Images', 'Does not check text already in hand for an existing mark'],
         ['MEOK Watermark Attest MCP', 'Bundles a C2PA manifest, invisible watermark and signed attestation for Article 50 compliance', 'Images, with a compliance-pack framing', 'Does not run a keyed statistical check on text a model has already produced'],
-        ['MarkWitness (check_document, describe_method)', 'Checks a passed-in document for a keyed statistical watermark and returns a confidence band', 'Text, five supported languages', 'Does not embed, remove or rewrite any mark'],
+        ['MarkWitness (check_document, reduce_ai_evidence, describe_method)', 'Checks a passed-in document for a keyed statistical watermark and returns a confidence band; separately, rewrites it on-device to reduce detectable evidence', 'Text, five supported languages', 'Cannot guarantee defeating an undisclosed vendor watermark; the rewrite tool has no hosted mode, on any tier'],
       ],
     },
     quote: {

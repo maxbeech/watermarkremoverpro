@@ -157,7 +157,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
       },
       {
         question: "Does editing a document remove the watermark?",
-        answer: "Sometimes, and sometimes not. Marks generally survive light editing poorly and heavy rewriting even worse, but there's no reliable rule that guarantees removal, which is exactly why MarkWitness never builds features aimed at defeating a mark.",
+        answer: "Sometimes, and sometimes not. Marks generally survive light editing poorly and heavy rewriting even worse, but there's no reliable rule that guarantees removal against a specific vendor's undisclosed watermark, which is exactly why MarkWitness's own on-device rewrite feature states that limit on every result rather than promising a guarantee it cannot verify.",
       },
       {
         question: "Can MarkWitness detect every AI watermark that exists?",

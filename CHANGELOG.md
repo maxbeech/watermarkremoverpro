@@ -1,5 +1,51 @@
 # Changelog
 
+## 2026-09-04: pivot to an on-device rewrite engine
+
+MarkWitness becomes primarily an on-device rewrite tool (reduces detectable
+AI-style evidence in text a user wrote themselves), with detection kept as a
+complementary, honest entry point. Full reasoning: `docs/REWRITE_PHILOSOPHY.md`
+(supersedes `docs/NO_REMOVAL.md`, archived at `docs/archive/NO_REMOVAL.md`).
+Claims stay conservative throughout: "reduces detectable evidence," never
+"100% undetectable" or "guaranteed to pass," enforced by
+`tests/product-constraints.test.ts` scanning the whole source tree.
+
+- Added: `src/lib/rewrite/`, an isomorphic rewrite engine (targeting, scoring,
+  fact-lock, orchestrator) reusing the detector's own watermark arithmetic to
+  score candidates. Two real backends behind one `RewriteBackend` interface:
+  - **Standard** (`backend/rule-based.ts`): deterministic dictionary/AI-tell
+    substitution, zero download, ships today on every tier.
+  - **Advanced** (`backend/browser.ts`, `backend/node.ts`,
+    `backend/transformers-shared.ts`): a real local LLM (Qwen2.5, pinned by
+    exact repo + commit revision in `models.ts`) run via Transformers.js,
+    WebGPU/WASM in the browser or onnxruntime-node in the MCP server/CLI.
+    Downloads weights straight from the Hugging Face CDN on first use, never
+    from a MarkWitness-operated server; falls back to Standard automatically,
+    with the fallback reason surfaced, if the device can't run it.
+- Added: `src/lib/calibrate/ai-tells.ts` + `patterns.ts`, the deterministic
+  em-dash/stock-phrase pass shared by the rewrite engine and the existing
+  calibrator.
+- Added: `/rewrite`, the browser UI (`src/components/rewrite/rewrite-tool.tsx`)
+  with a strength slider, tier/model selection, live model-download progress,
+  and a trust indicator that splits network calls by destination (same-origin,
+  which must always read zero, versus the model-weight CDN when Advanced is
+  downloading).
+- Added: `reduce_ai_evidence` MCP tool (`mcp/server.ts`), with a `model`
+  parameter (`standard`/`advanced`). Unlike `check_document`, this has no
+  hosted branch at all, on any tier: always runs in-process.
+- Added: `@markwitness/rewrite-engine` (`packages/rewrite-engine`), the
+  standalone npm package/CLI (`markwitness-rewrite`) publishing the same
+  engine for third-party callers, since rewriting has no REST endpoint by
+  design. Built from `src/lib/rewrite` via `npm run build:rewrite-engine`
+  (tsup), verified end-to-end against a real file (rule-based) and against
+  real downloaded model weights + inference (`npm run test:models`, opt-in,
+  not part of default CI).
+- Every surface that previously stated the no-removal policy was rewritten,
+  not just the code: `README.md`, `llms.txt`, `pricing.json`, `pricing/page`,
+  the FAQ, `openapi.json`, `json-ld.tsx`, the evidence-report PDF footer,
+  the mirror-banner, and several pSEO/blog pages that argued from the old
+  policy.
+
 ## 2026-08-12: content engine launch (15 blog posts)
 
 Stage 5: SEO/GEO content, aligned to the product's own verified keyword

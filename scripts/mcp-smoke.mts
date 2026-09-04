@@ -57,11 +57,34 @@ try {
   const names = tools.map((t) => t.name).sort()
   assert(names.includes('check_document'), 'check_document is advertised')
   assert(names.includes('describe_method'), 'describe_method is advertised')
+  assert(names.includes('reduce_ai_evidence'), 'reduce_ai_evidence is advertised')
 
-  // The one tool that must NOT exist, asserted rather than assumed.
+  // Honesty constraint, asserted at runtime rather than assumed from the
+  // static description string: the rewrite tool must disclose its
+  // limitation, not just claim a capability.
+  const rewriteTool = tools.find((t) => t.name === 'reduce_ai_evidence')
   assert(
-    !names.some((n) => /remove|strip|reduce|paraphrase|humanis|humaniz|rewrite/i.test(n)),
-    'no mark-removal tool is exposed',
+    typeof rewriteTool?.description === 'string' && /cannot guarantee/i.test(rewriteTool.description),
+    'reduce_ai_evidence discloses that it cannot guarantee defeating an undisclosed watermark',
+  )
+  assert(
+    !tools.some((t) => /\b100%\s*(undetectable|guaranteed)\b/i.test(t.description ?? '')),
+    'no tool description makes an unverifiable 100%-style guarantee',
+  )
+
+  // The advanced (real local-LLM) engine is opt-in and undiscoverable by
+  // default, so this only checks the schema advertises it correctly. It
+  // never invokes model: 'advanced' here: doing so would download real
+  // weights, which this fast/default smoke test must not require. See
+  // `npm run test:models` for that.
+  const rewriteInputSchema = rewriteTool?.inputSchema as
+    | { properties?: Record<string, { enum?: string[] }> }
+    | undefined
+  assert(
+    Array.isArray(rewriteInputSchema?.properties?.model?.enum) &&
+      rewriteInputSchema!.properties!.model!.enum!.includes('standard') &&
+      rewriteInputSchema!.properties!.model!.enum!.includes('advanced'),
+    'reduce_ai_evidence advertises both the standard and advanced model options',
   )
 
   const described = await client.callTool({ name: 'describe_method', arguments: {} })
@@ -70,8 +93,8 @@ try {
   assert(method.mode === 'local', 'describe_method reports local mode with no API key')
   assert(Array.isArray(method.languages) && method.languages.length === 5, 'five languages are reported')
   assert(
-    typeof method.removalCapability === 'string' && /none/i.test(method.removalCapability),
-    'describe_method states the no-removal policy',
+    method.rewriteCapability?.tool === 'reduce_ai_evidence' && Array.isArray(method.rewriteCapability?.limits),
+    'describe_method describes the rewrite capability and its stated limits',
   )
 
   const checked = await client.callTool({ name: 'check_document', arguments: { text: SAMPLE } })
@@ -105,6 +128,24 @@ try {
   assert(
     shortPayload.result.distribution.compositeDeviation === null,
     'the uncomputed statistic is null, not zero',
+  )
+
+  const rewritten = await client.callTool({
+    name: 'reduce_ai_evidence',
+    arguments: { text: SAMPLE, strength: 'balanced', tier: 'free' },
+  })
+  assert(rewritten.isError !== true, 'reduce_ai_evidence returned without error')
+  const rewritePayload = JSON.parse((rewritten.content as Array<{ text: string }>)[0].text)
+  assert(rewritePayload.result.status === 'ok', 'the rewrite completed')
+  assert(typeof rewritePayload.result.revisedText === 'string' && rewritePayload.result.revisedText.length > 0,
+    'a revised document was returned')
+  assert(
+    Array.isArray(rewritePayload.result.limits) && rewritePayload.result.limits.some((l: string) => /cannot guarantee/i.test(l)),
+    'the rewrite result states its own limits, not just the tool description',
+  )
+  assert(
+    typeof rewritePayload.model === 'string' && /standard/.test(rewritePayload.model),
+    'the default call reports it ran the standard (rule-based, no download) engine',
   )
 
   console.log('\nMCP smoke test passed.')

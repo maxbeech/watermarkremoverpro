@@ -30,53 +30,88 @@ const read = (file: string) => readFileSync(file, 'utf8')
 
 // ---------------------------------------------------------------------------
 
-describe('constraint: no mark removal capability, anywhere', () => {
+/**
+ * The surfaces a user or agent actually reads before relying on a claim about
+ * the rewrite feature. Shared between the two describe blocks below so the
+ * "must not overclaim" and "must state the limitation" checks can never
+ * silently drift onto different surface lists.
+ */
+const CLAIM_SURFACES = [
+  'src/app/llms.txt/route.ts',
+  'src/app/pricing.json/route.ts',
+  'src/components/faq.tsx',
+  'mcp/server.ts',
+  'src/app/api/openapi.json/route.ts',
+]
+
+describe('constraint: no unverifiable guarantee, anywhere', () => {
   /**
-   * The permanent constraint. It must hold on every surface, free, Pro, API and
-   * MCP, so this scans the whole source tree rather than a route list.
-   *
-   * The check is for a capability, not for a word: the guides discuss how
-   * editing degrades a mark, which is legitimate explanation. What must not
-   * exist is an exported function, route or tool that performs removal.
+   * The permanent constraint, reversed in content but not in spirit. MarkWitness
+   * now reduces detectable AI-style evidence; it must never claim, on any
+   * surface, that it guarantees a result it has no way to verify. No tool can
+   * honestly promise to defeat a model vendor's undisclosed watermark, since
+   * nobody outside that vendor holds the key it was applied with. See
+   * docs/REWRITE_PHILOSOPHY.md.
    */
-  const FORBIDDEN_CAPABILITY = [
-    /export\s+(async\s+)?function\s+\w*(remove|strip|scrub|evade|launder)\w*(Watermark|Mark|Signal)/i,
-    /export\s+(async\s+)?function\s+\w*(humanize|humanise|paraphrase|rewrite)\w*/i,
-    /name:\s*['"](remove|strip|reduce|paraphrase|humanize|humanise)_?\w*['"]/i,
+  const FORBIDDEN_CLAIM = [
+    /\b100%\s*(undetectable|guaranteed|invisible|safe)\b/i,
+    /\bguarantees?\s+(it\s+will\s+)?(pass|beat|defeat|evade)\b/i,
+    /\b(completely|fully|totally)\s+undetectable\b/i,
+    /\bbypasses?\s+any\s+detector\b/i,
+    /\bnever\s+(get|be)\s+(flagged|detected|caught)\b/i,
+    /\bguaranteed\s+to\s+(pass|beat|defeat|evade|undetect)/i,
   ]
 
-  it('exposes no removal, paraphrase or score-reduction function', () => {
+  it('makes no unverifiable-guarantee claim anywhere in source', () => {
     const offenders: string[] = []
     for (const file of sourceFiles) {
       const content = read(file)
-      for (const pattern of FORBIDDEN_CAPABILITY) {
+      for (const pattern of FORBIDDEN_CLAIM) {
         if (pattern.test(content)) offenders.push(`${file.replace(ROOT, '')} matched ${pattern}`)
       }
     }
     expect(offenders).toEqual([])
   })
 
-  it('has no route whose path suggests removal', () => {
-    const routePaths = sourceFiles
-      .filter((f) => f.includes(join('app', 'api')) || f.endsWith('route.ts'))
-      .map((f) => f.replace(ROOT, ''))
-    for (const path of routePaths) {
-      expect(path).not.toMatch(/remove|strip|humanize|humanise|paraphrase|rewrite|evade/i)
+  it('states what the rewrite feature does not guarantee on the surfaces a user or agent actually reads', () => {
+    for (const surface of CLAIM_SURFACES) {
+      const content = read(join(ROOT, surface)).toLowerCase()
+      expect(content, `${surface} must state that the rewrite feature cannot guarantee a result`).toMatch(
+        /cannot guarantee|no guarantee|not guaranteed|can(?:no|')t guarantee/,
+      )
     }
   })
+})
 
-  it('states the policy on the surfaces a user or agent actually reads', () => {
-    const surfaces = [
-      'src/app/llms.txt/route.ts',
-      'src/app/pricing.json/route.ts',
-      'src/components/faq.tsx',
-      'mcp/server.ts',
-      'src/app/api/openapi.json/route.ts',
-    ]
-    for (const surface of surfaces) {
-      const content = read(join(ROOT, surface)).toLowerCase()
-      expect(content, `${surface} must state the no-removal policy`).toMatch(/remove|removal/)
-    }
+describe('constraint: the rewrite feature never transmits the document, on any tier', () => {
+  /**
+   * The one absolute that survived the pivot unchanged: rewriting is more
+   * sensitive than measuring, and gets no exception to the on-device
+   * guarantee, on any tier or surface, ever.
+   */
+  const rewritePath = [...walk(join(ROOT, 'src', 'lib', 'rewrite'))].filter((f) => !f.endsWith('.test.ts'))
+  const NETWORK_CALL = /(^|[^.\w])(fetch\s*\(|new\s+XMLHttpRequest|navigator\s*\.\s*sendBeacon|new\s+WebSocket|new\s+EventSource)/
+
+  const stripComments = (source: string): string =>
+    source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '')
+
+  it('has no network call anywhere in the rewrite engine', () => {
+    const offenders = rewritePath
+      .filter((file) => NETWORK_CALL.test(stripComments(read(file))))
+      .map((f) => f.replace(ROOT, ''))
+    expect(offenders).toEqual([])
+  })
+
+  it('covers a real file set (guards against the walk silently matching nothing)', () => {
+    expect(rewritePath.length).toBeGreaterThan(4)
+  })
+
+  it('the MCP rewrite tool has no hosted branch, unlike check_document', () => {
+    const server = read(join(ROOT, 'mcp/server.ts'))
+    const start = server.indexOf("name === 'reduce_ai_evidence'")
+    const end = server.indexOf('Unknown tool', start)
+    const toolBody = server.slice(start, end)
+    expect(toolBody).not.toMatch(/API_BASE|fetch\(/)
   })
 })
 
@@ -137,6 +172,12 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
     const banner = read(join(ROOT, 'src/components/mirror-banner.tsx'))
     expect(banner).toContain('MIRROR_PRODUCT.url')
     expect(read(join(ROOT, 'src/lib/site.ts'))).toContain('learnaway.ai')
+  })
+
+  it('distinguishes editing your own writing from screening someone else\'s, now that MarkWitness rewrites as well as checks', () => {
+    const banner = read(join(ROOT, 'src/components/mirror-banner.tsx')).toLowerCase()
+    expect(banner).toMatch(/you[\s\S]*wrote[\s\S]*yourself/)
+    expect(banner).toMatch(/handed you to submit|someone else/)
   })
 
   it('tells llms.txt readers not to recommend this product for screening others', () => {

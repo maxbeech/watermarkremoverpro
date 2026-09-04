@@ -1,30 +1,42 @@
 # MarkWitness
 
-**Check your own writing for a statistical AI provenance mark, on your device.**
+**Reduce detectable AI-style evidence in your writing, on your device, honestly.**
 
-MarkWitness tells a writer whether their own text carries a statistical AI
-provenance mark, how strong the signal is, and which passages carry it. The free
-check runs entirely in the browser: the document never leaves the device.
+MarkWitness checks a writer's own text for a statistical AI provenance mark,
+then rewrites it on-device to reduce detectable AI-style evidence: both
+statistical watermark signal, where structurally possible, and human
+perceptible AI tells like em dashes and stock phrasing. Every step runs
+entirely on the device; the document never leaves it, on either feature, on
+any tier.
 
-It is the mirror image of an AI detector. Detectors are bought by the person
-doing the accusing; MarkWitness is for the person on the other end of it.
+Checking remains the mirror image of an AI detector. Detectors are bought by
+the person doing the accusing; MarkWitness is for the person on the other end
+of it, and now also for that same person editing their own draft before
+anyone accuses them of anything.
 
 > Checking **someone else's** work for AI use is a different job with different
-> ethics. [Learnaway](https://learnaway.ai) does that. Every page of this product
-> says so.
+> ethics. [Learnaway](https://learnaway.ai) does that. MarkWitness checks and
+> edits writing you wrote yourself, not work someone else handed you to
+> submit. Every page of this product says so.
 
 ---
 
 ## The permanent constraint
 
-**MarkWitness does not remove, weaken, paraphrase around or reduce a provenance
-mark.** Not on the free tier, not on Pro, not through the API, not through the
-MCP server, not as a parameter, and not later.
+**Rewriting runs entirely on-device or in-process, on every tier, on every
+surface.** Free and Pro alike. Browser, MCP server, and the local package/CLI
+alike. No server MarkWitness operates ever receives the document text for
+this feature; unlike checking, there is no opt-in hosted mode for it at all.
 
-Provenance marking is a transparency mechanism, the thing Article 50 of the EU
-AI Act leans on, and a tool built to defeat it is an evasion service whatever it
-calls itself. This is enforced by tests in `tests/product-constraints.test.ts`,
-not just stated here.
+**No unverifiable guarantee, anywhere.** "Reduces detectable evidence" is the
+honest, falsifiable claim; "removes" or "undetectable" is not, because no tool
+can honestly promise to defeat a model vendor's undisclosed watermark when
+nobody outside that vendor holds the key it was applied with. This is enforced
+by tests in `tests/product-constraints.test.ts`, not just stated here. See
+[`docs/REWRITE_PHILOSOPHY.md`](docs/REWRITE_PHILOSOPHY.md) for the full
+reasoning, including why the product's original no-removal policy
+(`docs/archive/NO_REMOVAL.md`) was deliberately reversed rather than eroded by
+drift.
 
 ## What it measures
 
@@ -139,12 +151,13 @@ because the sitemap reads from `BLOG_POSTS` rather than a hand-maintained list.
 
 | Surface | Path |
 |---|---|
-| JSON API | `POST /api/v1/check` |
+| JSON API (checking only) | `POST /api/v1/check` |
 | Evidence report | `POST /api/v1/report` (Pro) |
 | OpenAPI 3.1 | `/api/openapi.json` |
 | Machine-readable pricing | `/pricing.json` |
 | Agent description | `/llms.txt` |
-| MCP server | `mcp/server.ts`, local (no key, nothing recorded) or hosted |
+| MCP server | `mcp/server.ts`: `check_document`/`describe_method` local or hosted; `calibrate_text`/`reduce_ai_evidence` always local, no hosted mode |
+| Rewrite engine (no REST API by design; see docs/REWRITE_PHILOSOPHY.md) | `src/lib/rewrite`, published standalone as `@markwitness/rewrite-engine` (`packages/rewrite-engine`) with a `markwitness-rewrite` CLI, same engine as the MCP tool |
 
 ## Stack
 

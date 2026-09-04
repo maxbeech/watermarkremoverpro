@@ -27,8 +27,9 @@ import type { LanguageCode } from '@/lib/detector/languages'
  * Main calibration function.
  *
  * Performs deterministic, local-only text normalization via synonym substitution.
- * This is NOT a watermark removal tool. It helps writers understand their
- * statistical profile and suggests natural rewrites.
+ * The lighter layer behind the fuller on-device rewrite engine (src/lib/rewrite):
+ * suggests substitutions with before/after metrics rather than a targeted,
+ * scored rewrite. See docs/REWRITE_PHILOSOPHY.md.
  *
  * All processing is local (no network calls, no text upload).
  *

@@ -268,8 +268,9 @@ export function BlogPostView({ post }: { post: BlogPost }) {
             <div className="mt-10 max-w-2xl">
               <LimitNote>
                 A detected mark is not proof of authorship, and an absent mark is not proof of
-                human authorship. {SITE.name} has no feature that removes, weakens or rewrites
-                around a provenance mark, on any tier.
+                human authorship. {SITE.name}&apos;s on-device rewrite can reduce detectable
+                evidence but cannot guarantee defeating a vendor&apos;s undisclosed watermark, on
+                any tier.
               </LimitNote>
             </div>
 

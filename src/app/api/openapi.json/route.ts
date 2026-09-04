@@ -14,7 +14,9 @@ export function GET() {
         version: '1.0.0',
         description:
           'Check a document for a statistical AI provenance mark. Returns the signal strength with a confidence band, a per-passage breakdown corrected for multiple comparisons, and the stated limits of the method.\n\n' +
-          'There is no endpoint that removes, weakens or reduces a provenance mark, and none will be added.',
+          'MarkWitness also reduces detectable AI-style evidence in a document, but not through this REST API: that feature is strictly on-device on every tier, so there is no hosted endpoint for it here. Use the MCP server or the published local package/CLI instead, both of which run the identical engine in your own process. It cannot guarantee defeating a model vendor\'s undisclosed watermark. See ' +
+          SITE.url +
+          '/docs/mcp.',
         contact: { email: SITE.contactEmail },
       },
       servers: [{ url: SITE.url }],

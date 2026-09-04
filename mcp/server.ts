@@ -1,9 +1,12 @@
 /**
  * MarkWitness MCP server.
  *
- * Exposes the provenance-mark check as an agent-callable capability, so an agent
- * assembling a deliverable can disclose the provenance of text BEFORE handing it
- * over, rather than the recipient discovering it afterwards.
+ * Exposes two complementary capabilities: checking a document for a
+ * provenance mark, and reducing the detectable AI-style evidence in one (both
+ * statistical watermark signal, where structurally possible, and human
+ * perceptible "AI tells" like em dashes and stock phrasing). See
+ * docs/REWRITE_PHILOSOPHY.md for what the second capability does and does not
+ * claim.
  *
  * Run it over stdio:
  *   npx tsx mcp/server.ts
@@ -13,20 +16,21 @@
  *       "args": ["-y", "tsx", "/path/to/mcp/server.ts"],
  *       "env": { "MARKWITNESS_API_KEY": "mw_live_…" } } } }
  *
- * Two modes, deliberately:
- *  - With no API key, `check_document` runs the engine LOCALLY, in this process,
- *    against the published reference key. Nothing leaves the machine and nothing
- *    is recorded or billed.
+ * check_document has two modes:
+ *  - With no API key, it runs the engine LOCALLY, in this process, against the
+ *    published reference key. Nothing leaves the machine and nothing is
+ *    recorded or billed.
  *  - With MARKWITNESS_API_KEY set, calls go to the hosted endpoint, which adds
- *    any vendor or institution detection keys that deployment holds, records the
- *    check against the account's history, and meters it.
+ *    any vendor or institution detection keys that deployment holds, records
+ *    the check against the account's history, and meters it.
  *
- * WHAT THIS SERVER WILL NEVER EXPOSE: any tool that removes, weakens,
- * paraphrases around, or reduces a provenance mark. There is no such tool, no
- * parameter that approximates one, and none will be added. An agent-callable
- * mark remover would be exactly the bulk laundering surface that turns an
- * individual diagnostic into an evasion service, and it is the one thing this
- * product is defined by not doing.
+ * reduce_ai_evidence and calibrate_text have ONE mode, always: they run
+ * entirely in this process. There is no hosted branch for either, on any
+ * tier, ever. Unlike check_document, they never send document text
+ * anywhere, because reducing evidence is more sensitive than measuring it and
+ * gets no exception to the on-device guarantee. The first call may download
+ * this process's own (small) rule tables the first time; it never uploads
+ * anything.
  */
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
@@ -39,6 +43,9 @@ import type { Baseline } from '../src/lib/detector/distributional'
 import { countWords } from '../src/lib/detector/tokenize'
 import { API_PRICE_PENCE_PER_1K_WORDS } from '../src/lib/site'
 import { calibrateText } from '../src/lib/calibrate'
+import { reduceEvidence, rewriteDocument, REWRITE_LIMITS } from '../src/lib/rewrite'
+import type { Strength, Tier } from '../src/lib/rewrite'
+import { createTransformersNodeBackend } from '../src/lib/rewrite/backend/node'
 
 const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://markwitness.helm7.com').replace(/\/$/, '')
 const API_KEY = process.env.MARKWITNESS_API_KEY || ''
@@ -98,12 +105,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: 'calibrate_text',
       description:
-        'Calibrate text for statistical profile adjustment. This tool helps writers understand ' +
-        'which word-frequency patterns trigger statistical AI detection, and suggests synonym ' +
-        'replacements to adjust the statistical profile.\n\n' +
-        'This is NOT a watermark removal tool. It is a companion to detection that helps ' +
-        'users understand their writing. All processing is local to this process; no text ' +
-        'leaves the machine.\n\n' +
+        'A lightweight, fully deterministic synonym-substitution pass over a document\'s word ' +
+        'frequencies. For a fuller pass that also targets the passages a real check flags and ' +
+        'removes stylistic AI tells (em dashes, stock phrasing), use reduce_ai_evidence instead. ' +
+        'All processing is local to this process; no text leaves the machine.\n\n' +
         'Returns suggested substitutions with before/after metrics, so the writer can decide ' +
         'which changes to accept.',
       inputSchema: {
@@ -119,6 +124,64 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             type: 'string',
             enum: ['preview', 'apply'],
             description: 'Preview mode returns suggestions without commitment; apply mode applies them.',
+          },
+        },
+        required: ['text'],
+        additionalProperties: false,
+      },
+    },
+    {
+      name: 'reduce_ai_evidence',
+      description:
+        'Rewrite a document, on-device, to reduce detectable AI-style evidence: both the ' +
+        'statistical watermark signal the checker measures (where structurally possible) and ' +
+        'human-perceptible AI tells such as em dashes and stock phrasing ("delve into", ' +
+        '"moreover", triadic lists). Only rewrites the passages that actually carry evidence, ' +
+        'using the same per-passage findings check_document would report. A passage with no safe ' +
+        'candidate (one that preserves its numbers, negations and named entities, and stays ' +
+        'above the similarity floor for the requested strength) is left completely unchanged ' +
+        'rather than replaced with something unsafe.\n\n' +
+        'CANNOT GUARANTEE defeating a specific model vendor\'s undisclosed watermark. Nobody ' +
+        'outside that vendor holds the key it was applied with, so no tool honestly can. Heavier ' +
+        'strengths trade fidelity to the original wording for a larger evidence reduction, so ' +
+        'review the diff before relying on the result. This always runs entirely in this process: ' +
+        'there is no hosted mode, on any tier, unlike check_document. See docs/REWRITE_PHILOSOPHY.md.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          text: { type: 'string', description: 'The document to rewrite. Processed locally; never transmitted.' },
+          language: {
+            type: 'string',
+            enum: [...SUPPORTED_LANGUAGES],
+            description: 'Language (optional; auto-detected if omitted).',
+          },
+          strength: {
+            type: 'string',
+            enum: ['preserve', 'balanced', 'aggressive', 'regenerate'],
+            description:
+              'How much change to allow, in exchange for a larger evidence reduction. "preserve" only ' +
+              'touches passages a real check would flag as a finding; "regenerate" rewrites every ' +
+              'passage regardless of measured evidence. Defaults to "balanced".',
+          },
+          tier: {
+            type: 'string',
+            enum: ['free', 'pro'],
+            description:
+              'Free generates fewer candidates per passage with the core AI-tell library; pro generates ' +
+              'more candidates for a better result and uses the extended tell library. Both run the same ' +
+              'on-device engine, unlimited use either way. Defaults to "free".',
+          },
+          model: {
+            type: 'string',
+            enum: ['standard', 'advanced'],
+            description:
+              '"standard" (default) is the deterministic rule-based engine: instant, no download. ' +
+              '"advanced" runs a real small local LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) via ' +
+              'onnxruntime-node, downloaded from the Hugging Face CDN and cached under ' +
+              '~/.cache/markwitness/models on first use, never from a MarkWitness-operated server, and ' +
+              'still on-device only. First call with "advanced" can take a while (model download); later ' +
+              'calls reuse the cache. If the model cannot be loaded (offline, unsupported platform), this ' +
+              'automatically falls back to "standard" and the response says so in `model`.',
           },
         },
         required: ['text'],
@@ -190,8 +253,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           'No model vendor publishes a detection key, so results apply only to the keys listed in the response.',
           'The test operates on word pairs, not a model’s own subword vocabulary; a vendor’s own detector can reach a different conclusion.',
         ],
-        removalCapability:
-          'None. MarkWitness does not remove, weaken, paraphrase around or reduce a provenance mark on any tier or surface, and no such tool will be added.',
+        rewriteCapability: {
+          tool: 'reduce_ai_evidence',
+          summary:
+            'Reduces detectable AI-style evidence (statistical and stylistic). Always runs on-device, ' +
+            'in this process, on every tier. There is no hosted mode for this tool, unlike check_document.',
+          limits: REWRITE_LIMITS,
+        },
         pricing:
           API_KEY
             ? `${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words, rounded up, billed per call.`
@@ -238,7 +306,44 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return json({
         result,
         mode: 'local',
-        note: `Calibration completed locally (${countWords(text)} words). No data was sent to external servers. This is a companion to the provenance-mark detector, not a mark removal tool.`,
+        note: `Calibration completed locally (${countWords(text)} words). No data was sent to external servers.`,
+      })
+    }
+
+    if (name === 'reduce_ai_evidence') {
+      const text = typeof args?.text === 'string' ? args.text : ''
+      if (text.trim().length === 0) {
+        throw new Error('reduce_ai_evidence requires a non-empty "text" argument.')
+      }
+      const language = typeof args?.language === 'string' ? args.language : undefined
+      const strength = (typeof args?.strength === 'string' ? args.strength : 'balanced') as Strength
+      const tier = (typeof args?.tier === 'string' ? args.tier : 'free') as Tier
+      const modelChoice = (typeof args?.model === 'string' ? args.model : 'standard') as 'standard' | 'advanced'
+
+      let result
+      let model = 'standard (rule-based, no download)'
+      if (modelChoice === 'advanced') {
+        try {
+          const backend = createTransformersNodeBackend(tier)
+          result = await rewriteDocument({ text, language, strength, tier }, backend, [OPEN_REFERENCE_KEY])
+          model = `advanced (${backend.id}; cached under ~/.cache/markwitness/models)`
+        } catch (err) {
+          // Real failure state, not a silent downgrade: the advanced model
+          // genuinely could not load (offline on first use, unsupported
+          // platform, out of memory), so this falls back to the
+          // always-available rule-based engine and says exactly why.
+          result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY])
+          model = `standard (rule-based); advanced model unavailable: ${(err as Error).message}`
+        }
+      } else {
+        result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY])
+      }
+
+      return json({
+        result,
+        mode: 'local',
+        model,
+        note: `Rewrite completed entirely in this process (${countWords(text)} words). Nothing was transmitted. This tool has no hosted mode on any tier.`,
       })
     }
 

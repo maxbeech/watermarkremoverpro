@@ -225,12 +225,13 @@ export default async function HomePage() {
 
             <Position
               index="03"
-              title="It will never remove a mark"
+              title="It rewrites without overclaiming"
               band={<Band value={null} min={0.25} max={0.85} reference={0.5} tone="muted" />}
             >
-              No removal, no paraphrase, no rewriting, no “lower your score”, on any tier, for any
-              caller, ever. That is a permanent constraint on what this product is allowed to be,
-              not a roadmap position waiting for demand.
+              The on-device rewrite reduces detectable evidence in writing you produced yourself.
+              It never claims “undetectable” and never promises a specific outcome, because no
+              tool, including this one, can honestly guarantee defeating a vendor’s undisclosed
+              watermark, on any tier.
             </Position>
           </div>
         </Wrap>

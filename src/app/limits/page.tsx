@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { statedLimits } from '@/lib/detector'
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { JsonLd, faqPageLd } from '@/components/json-ld'
@@ -67,12 +68,21 @@ export default function LimitsPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="t-heading text-ink-900">One thing this product will never do</h2>
+          <h2 className="t-heading text-ink-900">Two things this product will never do</h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
-            Remove, weaken, paraphrase around or reduce a provenance mark. Not on the free tier, not
-            on Pro, not through the API, not through the MCP server, not as a parameter, and not
-            later. Provenance marking is a transparency mechanism, and a tool built to defeat it is
-            an evasion service whatever it calls itself.
+            Claim a rewrite guarantees defeating a specific vendor&apos;s undisclosed watermark. No
+            tool honestly can, since nobody outside that vendor holds the key it was applied with.
+            The rewrite feature reduces detectable evidence and states that limit alongside every
+            result, never &ldquo;undetectable&rdquo; and never a promise that it will clear any
+            specific check.
+          </p>
+          <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
+            Send your document to a MarkWitness-operated server while rewriting it. Not on the free
+            tier, not on Pro, not through the MCP server, not through the published package/CLI, and
+            not later: there is no REST endpoint for rewriting, by design. Checking has an opt-in
+            hosted mode for API/MCP callers; rewriting gets no exception to the on-device guarantee,
+            because reducing evidence is more sensitive than measuring it. See{' '}
+            <Link href="/rewrite" className="link-quiet">/rewrite</Link>.
           </p>
         </section>
       </article>

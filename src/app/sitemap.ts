@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const fixed = [
     { path: '', priority: 1 },
+    { path: '/rewrite', priority: 0.95 },
     { path: '/check', priority: 0.9 },
     { path: '/calibrator', priority: 0.85 },
     { path: '/method', priority: 0.8 },

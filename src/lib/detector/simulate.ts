@@ -15,10 +15,10 @@
  *  - The /verify page uses it so a user can watch the same thing happen with
  *    their own eyes, on the open reference key, in their own browser.
  *
- * NOTE ON SCOPE: this adds a mark. There is no inverse anywhere in this
- * codebase and there will not be one. Removing, weakening or paraphrasing
- * around a provenance mark is the one thing MarkWitness does not do, on any
- * tier, for any caller. See docs/NO_REMOVAL.md.
+ * NOTE ON SCOPE: this adds a mark, for testing the detector. The engine's
+ * rewrite feature (src/lib/rewrite) reduces detectable evidence through its
+ * own targeted, fact-locked pipeline, entirely separate from this simulator;
+ * see docs/REWRITE_PHILOSOPHY.md for what it does and does not claim.
  */
 
 import type { DetectionKey } from './keys'

@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 }
 
 const NAV = [
+  { href: '/rewrite', label: 'Rewrite', always: true },
   { href: '/check', label: 'Check', always: true },
   { href: '/method', label: 'Method', always: false },
   { href: '/verify', label: 'Verify', always: false },
@@ -50,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {SITE.name}
                 </span>
                 <span className="t-eyebrow hidden text-ink-400 md:inline">
-                  provenance-mark diagnostic
+                  on-device rewrite &amp; provenance diagnostic
                 </span>
               </span>
             </Link>
@@ -82,12 +83,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <p className="font-serif text-lg text-white">{SITE.name}</p>
                 <BandRule at={70} tone="signal" className="mt-4 max-w-[6rem]" />
                 <p className="mt-5 max-w-sm leading-relaxed text-ink-400">
-                  A diagnostic for your own writing. It never removes, weakens or rewrites around a
-                  provenance mark, on any tier, for any caller.
+                  Checks your own writing for a provenance mark, then rewrites it on your device to
+                  reduce detectable AI-style evidence. It cannot guarantee defeating a model
+                  vendor&apos;s undisclosed watermark; nothing here is sent to a server, on any tier.
                 </p>
               </div>
               <div className="space-y-2.5">
                 <p className="t-eyebrow text-ink-500">Product</p>
+                <FooterLink href="/rewrite">Reduce evidence</FooterLink>
                 <FooterLink href="/check">Run a check</FooterLink>
                 <FooterLink href="/method">How it works</FooterLink>
                 <FooterLink href="/verify">Verify the detector</FooterLink>

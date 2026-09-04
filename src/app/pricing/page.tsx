@@ -13,7 +13,7 @@ import { stripeConfigured } from '@/lib/billing'
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Free on-device checks with no signup, a free account tier, and Pro with the dated PDF evidence report plus metered API and MCP access.',
+    'Unlimited on-device rewriting on every tier, free or Pro. Free on-device checks with no signup, a free account tier, and Pro with the larger rewrite model, the dated PDF evidence report, and metered API/MCP access to checking.',
   alternates: { canonical: '/pricing' },
 }
 
@@ -21,7 +21,7 @@ const FAQ = [
   {
     question: 'What does Pro give me that free does not?',
     answer:
-      'The dated evidence report, which the free tier structurally cannot produce: the free check runs in your browser and deliberately leaves nothing behind, so there is no stored record to date, anchor or hand to anyone. Pro also runs the analysis server-side against every detection key the deployment holds, including any vendor key that cannot be shipped to a browser without publishing it, plus batch upload and metered API and MCP access.',
+      "For rewriting: a larger on-device model with more candidates generated per passage, and the extended AI-tell library. Both tiers are unlimited-use, since the computation runs on your device either way. For checking: the dated evidence report, which the free tier structurally cannot produce, since the free check runs in your browser and deliberately leaves nothing behind. Pro also runs checks server-side against every detection key the deployment holds, plus batch upload and metered API/MCP access to checking.",
   },
   {
     question: 'Is the API billed separately from the subscription?',
@@ -43,9 +43,9 @@ export default async function PricingPage() {
       <JsonLd data={[softwareApplicationLd(), faqPageLd(FAQ)]} />
       <PageHeader
         eyebrow="Pricing"
-        title="The measurement is the same on every tier."
+        title="Rewriting is unlimited on every tier."
         wide
-        lead="What you pay for is the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else."
+        lead="On-device rewriting has no server cost, so it's unlimited whether you pay or not. What you pay for is Pro's larger rewrite model, and, for checking, the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else."
       />
 
       <Section tight>
@@ -103,8 +103,9 @@ export default async function PricingPage() {
               SHA-256 hash tying it to the exact file you checked.
             </p>
             <p className="mt-5 text-sm leading-relaxed text-ink-500">
-              Not sold at any price, on any tier: removal, reduction, paraphrase or rewriting to
-              weaken a provenance mark.
+              Rewriting itself is <Link href="/rewrite" className="link-quiet">a separate feature</Link>,
+              unlimited on every tier and always on-device. It cannot guarantee defeating a model
+              vendor&apos;s undisclosed watermark, on any tier, at any price.
             </p>
           </div>
 
@@ -123,10 +124,12 @@ export default async function PricingPage() {
           <Eyebrow tone="ink">For programmatic callers</Eyebrow>
           <h2 className="t-heading mt-4 text-ink-900">The same engine, metered</h2>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-ink-600">
-            The JSON API and the MCP server expose the same engine, metered at{' '}
+            The JSON API and the MCP server expose the same checking engine, metered at{' '}
             <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words. An agent
             assembling a deliverable can disclose provenance before handoff rather than leaving the
-            recipient to discover it.
+            recipient to discover it. Rewriting has no REST endpoint by design (it is strictly
+            on-device on every tier); call it via the MCP server or the local package/CLI, both
+            unmetered.
           </p>
           <p className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-500">
             <Link href="/docs/api" className="link-quiet">API documentation</Link>

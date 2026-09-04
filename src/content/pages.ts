@@ -84,7 +84,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         question: 'I did use AI for some parts. What now?',
         answer:
-          'MarkWitness will not help you conceal that, by design. There is no removal or rewriting feature on any tier. If your institution permits assisted writing with disclosure, disclose it. If it does not, an honest conversation earlier is almost always treated better than a discovered concealment later.',
+          "MarkWitness's rewrite feature is a final-pass editing tool for your own drafting, not a substitute for disclosure your institution requires. It cannot guarantee a document won't be flagged, and it doesn't change what happened to a document that already went through an assisted-writing process your institution's policy required you to disclose. If your institution permits assisted writing with disclosure, disclose it. If it does not, an honest conversation earlier is almost always treated better than a discovered concealment later.",
       },
     ],
   },
@@ -340,7 +340,7 @@ const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => ({
       heading: 'What neither of them can do',
       body: [
         'Neither tool can prove who wrote a document. A detector reports a model’s confidence; a provenance-mark test reports whether a statistical signature is present. Both are evidence, and neither is authorship.',
-        'Nor can any of them remove a mark, and MarkWitness will not: there is no removal, paraphrase or score-reduction feature on any tier, and none is planned.',
+        `Nor can either of them guarantee a result against an undisclosed watermark. ${seed.competitor} cannot guarantee its confidence score is right, and MarkWitness's own on-device rewrite feature cannot guarantee defeating a model vendor's undisclosed watermark either, since nobody outside that vendor holds the key it was applied with.`,
       ],
     },
   ],
@@ -533,9 +533,10 @@ const GUIDES: LongTailPage[] = [
         ],
       },
       {
-        heading: 'Why marking makes removal tools a compliance problem',
+        heading: 'Why a tool sold as reliably defeating the mechanism is a compliance problem',
         body: [
-          'Once marking is a legal transparency mechanism, a tool whose function is to strip the mark is a tool for defeating that mechanism. That is the line MarkWitness sits firmly on one side of: it is a diagnostic, and no tier, endpoint or MCP tool removes, weakens or paraphrases around a mark.',
+          'Once marking is a legal transparency mechanism, a tool marketed as reliably stripping it is marketed as defeating that mechanism, which is a different thing from a writer editing their own text. Article 50 obligates the provider of a generative system, not someone editing a document they wrote.',
+          'MarkWitness draws that line by what it claims, not by refusing to offer editing: the on-device rewrite reduces detectable evidence in your own writing and says exactly that, never "undetectable" and never a promised outcome against a watermark it holds no key for. See /rewrite and docs/REWRITE_PHILOSOPHY.md for the exact claim and its limit.',
         ],
       },
     ],
@@ -577,10 +578,10 @@ const GUIDES: LongTailPage[] = [
         ],
       },
       {
-        heading: 'What this product will not do',
+        heading: 'What editing can and cannot promise',
         body: [
-          'MarkWitness has no removal, paraphrase, rewrite or score-reduction feature, on any tier, through any interface, and will not gain one. Explaining how a mechanism works is not the same as operating it, and a tool that removed provenance marks would be an evasion service for a compliance mechanism.',
-          'If you edited generated text and want to know whether a signal remains, that is a diagnostic question and this tool answers it. If you want the signal gone, this is the wrong product.',
+          'MarkWitness does now offer an on-device rewrite feature (see /rewrite), and it is bound by the same physics this page describes: it can reduce detectable evidence, and it cannot fabricate certainty about a watermark it has no key for. No tool, including this one, can honestly guarantee defeating a specific vendor\'s undisclosed watermark.',
+          'If you edited generated text and want to know whether a signal remains, that is a diagnostic question and this tool answers it, directly and for free, with no account required.',
         ],
       },
     ],
@@ -594,6 +595,51 @@ const GUIDES: LongTailPage[] = [
         question: 'Does translation remove it?',
         answer:
           'Effectively, yes. A translation is a different set of word choices, so a mark applied in the source language does not survive into the target. This is a known limitation of text watermarking, not a trick.',
+      },
+    ],
+  },
+  {
+    slug: 'ai-humanizer-how-it-actually-works',
+    group: 'guide',
+    title: 'What an "AI humanizer" actually does, and cannot promise',
+    metaTitle: 'AI Humanizer Tools: What They Actually Do (No "Undetectable" Claim)',
+    metaDescription:
+      'How AI humanizer and paraphrasing tools actually work, why "your output will always slip past every detector" is not a claim anyone can honestly make, and what an on-device rewrite can and cannot deliver instead.',
+    intro:
+      'Most pages selling an AI humanizer promise a permanent escape from detection. That promise is not something any tool, including this one, can honestly make. Here is what these tools actually do, and what MarkWitness offers instead.',
+    sections: [
+      {
+        heading: 'What "humanizing" text actually changes',
+        body: [
+          'A humanizer rewrites word choice, sentence rhythm and punctuation habits (the em dash used as a clause connector, stock phrases like "delve into" or "moreover") that occur more often in generated text than in ordinary prose, and that also happen to sit inside a statistical watermark\'s scored positions. Changing enough of them measurably reduces the evidence a detector or a watermark test finds.',
+          'That is a real, falsifiable effect: you can measure a before-and-after delta with the same arithmetic a detector uses. What it is not is a certainty. A vendor\'s own watermark key is not published anywhere, so no outside tool can confirm it has fully cleared a specific detector\'s specific test.',
+        ],
+      },
+      {
+        heading: 'Why the "always passes" promise does not hold up',
+        body: [
+          'A keyed statistical mark is designed so that only the party holding the key can reliably test for it. That is the entire point of a keyed test, in the same way a locked door does not care how confidently a locksmith\'s advert reads. Anyone advertising a permanent, universal escape from every detector is describing something outside what the underlying method can support, not a feature they have built.',
+          'The honest version of this claim is a reduction, not an erasure: fewer of the statistical patterns a detector keys on, measured against the same detector arithmetic doing the checking. That is what "reduce detectable evidence" means on this site, and it is the strongest claim the underlying method supports.',
+        ],
+      },
+      {
+        heading: 'What MarkWitness\'s rewrite actually does',
+        body: [
+          'Two mechanisms, run together, entirely on your device: a deterministic pass over AI-tell punctuation and phrasing, and targeted candidate rewrites of the specific passages a real per-passage check flags, gated so a candidate that changes a number, a name or a negation is rejected outright rather than used. See /rewrite.',
+          'Free and Pro are both unlimited-use, because the computation runs on your device either way; Pro adds more candidates per passage and the extended AI-tell library, and can optionally run a larger local model. Nothing about the document is ever sent anywhere, on any tier: see docs/REWRITE_PHILOSOPHY.md for exactly what is and is not claimed.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Is an "AI humanizer" the same thing as MarkWitness\'s rewrite tool?',
+        answer:
+          'The mechanism (word-choice and style changes that reduce detectable statistical patterns) is the same category of technique. The difference is the claim attached to it: MarkWitness states the reduction, not an outcome it cannot verify, and processes everything on-device rather than on a server.',
+      },
+      {
+        question: 'Will this stop my writing from ever being flagged?',
+        answer:
+          'No tool can promise that, and treat any that does with suspicion. What this reduces is measurable statistical evidence; whether a specific institution\'s specific process flags a document depends on things outside any rewrite tool\'s knowledge, including detectors this product has never tested against.',
       },
     ],
   },
