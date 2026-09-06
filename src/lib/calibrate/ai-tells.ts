@@ -13,7 +13,24 @@
  * own that a passage no longer needs a heavier rewrite.
  */
 
-import { DASH_CLAUSE_PATTERN, STOCK_PHRASES, TRIADIC_LIST_PATTERN } from './patterns'
+import {
+  CORE_STOCK_PHRASES,
+  DASH_CLAUSE_PATTERN,
+  ELEVATED_VOCABULARY,
+  EXTENDED_STOCK_PHRASES,
+  NEGATIVE_PARALLELISM_PATTERN,
+  TRIADIC_LIST_PATTERN,
+} from './patterns'
+
+/**
+ * Which phrase table to run.
+ *
+ * 'core' ships on every tier. 'extended' is the Pro tier's deeper coverage
+ * (PLANS.pro.rewrite.tellLibrary in src/lib/site.ts) and adds the
+ * announcement/marketing register current models actually write in.
+ */
+export type TellLibrary = 'core' | 'extended'
+
 
 export interface TellChange {
   /**
@@ -32,11 +49,29 @@ export interface TellChange {
   note: string
 }
 
+export interface FlaggedStructure {
+  start: number
+  end: number
+  text: string
+  kind: 'triadic-list' | 'negative-parallelism'
+  note: string
+}
+
 export interface DeterministicPassResult {
   text: string
   changes: TellChange[]
-  /** Sentences flagged as templated triadic lists, for the UI/targeting to surface, not auto-rewritten. */
-  flaggedStructures: Array<{ start: number; end: number; text: string }>
+  /**
+   * Constructions detected but deliberately not auto-rewritten, because the
+   * right rewrite depends on what the sentence is actually saying and a
+   * find/replace cannot know that. Surfaced for the reader to act on.
+   */
+  flaggedStructures: FlaggedStructure[]
+  /**
+   * Words whose frequency rises sharply in LLM-assisted prose but which are
+   * ordinary English on their own. Counted, never replaced: the density
+   * across a document is the signal, not any single occurrence.
+   */
+  elevatedVocabulary: Array<{ word: string; count: number }>
 }
 
 /**
@@ -92,17 +127,18 @@ function swapDashes(text: string): { text: string; changes: TellChange[] } {
  * doesn't collapse to the same replacement three times, which would just
  * install a new, equally detectable tic.
  */
-function swapStockPhrases(text: string): { text: string; changes: TellChange[] } {
+function swapStockPhrases(text: string, library: TellLibrary): { text: string; changes: TellChange[] } {
   const changes: TellChange[] = []
   const usage = new Map<string, number>()
+  const table = library === 'extended' ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES
   let result = text
 
   // Longest phrases first, so "it's important to note that" matches before a
   // shorter substring of itself could.
-  const phrases = Object.keys(STOCK_PHRASES).sort((a, b) => b.length - a.length)
+  const phrases = Object.keys(table).sort((a, b) => b.length - a.length)
 
   for (const phrase of phrases) {
-    const alternatives = STOCK_PHRASES[phrase]
+    const alternatives = table[phrase]
     const re = new RegExp(escapeRegExp(phrase), 'gi')
     let match: RegExpExecArray | null
     // Rebuild result incrementally; offsets below are into `result` as it
@@ -145,14 +181,50 @@ function applyCase(original: string, replacement: string): string {
   return replacement
 }
 
-function flagTriadicLists(text: string): Array<{ start: number; end: number; text: string }> {
-  const flagged: Array<{ start: number; end: number; text: string }> = []
+function flagStructures(text: string): FlaggedStructure[] {
+  const flagged: FlaggedStructure[] = []
+
   TRIADIC_LIST_PATTERN.lastIndex = 0
   let match: RegExpExecArray | null
   while ((match = TRIADIC_LIST_PATTERN.exec(text)) !== null) {
-    flagged.push({ start: match.index, end: match.index + match[0].length, text: match[0] })
+    flagged.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+      kind: 'triadic-list',
+      note: 'Three-item list. Ordinary once; a recognisable tic when it recurs through a document.',
+    })
   }
-  return flagged
+
+  NEGATIVE_PARALLELISM_PATTERN.lastIndex = 0
+  while ((match = NEGATIVE_PARALLELISM_PATTERN.exec(text)) !== null) {
+    flagged.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+      kind: 'negative-parallelism',
+      note: '"Not just X, but Y" construction, one of the most reliable structural tells in current model output.',
+    })
+  }
+
+  return flagged.sort((a, b) => a.start - b.start)
+}
+
+/**
+ * Counts high-frequency "AI vocabulary" without touching it.
+ *
+ * Whole-word, case-insensitive. A single "robust" means nothing; six of them
+ * in eight hundred words is worth telling a writer about, and that judgement
+ * belongs to the writer rather than to a find/replace.
+ */
+function countElevatedVocabulary(text: string): Array<{ word: string; count: number }> {
+  const counts: Array<{ word: string; count: number }> = []
+  for (const word of ELEVATED_VOCABULARY) {
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
+    const found = text.match(re)
+    if (found && found.length > 0) counts.push({ word, count: found.length })
+  }
+  return counts.sort((a, b) => b.count - a.count)
 }
 
 /**
@@ -161,12 +233,16 @@ function flagTriadicLists(text: string): Array<{ start: number; end: number; tex
  * any semantic-preservation check: every possible output is pre-approved by
  * the pattern table itself.
  */
-export function applyDeterministicPass(text: string, strength: TellStrength = 'balanced'): DeterministicPassResult {
+export function applyDeterministicPass(
+  text: string,
+  strength: TellStrength = 'balanced',
+  library: TellLibrary = 'core',
+): DeterministicPassResult {
   let current = text
   const allChanges: TellChange[] = []
 
   if (shouldSwapPhrases()) {
-    const { text: swapped, changes } = swapStockPhrases(current)
+    const { text: swapped, changes } = swapStockPhrases(current, library)
     current = swapped
     allChanges.push(...changes)
   }
@@ -177,7 +253,10 @@ export function applyDeterministicPass(text: string, strength: TellStrength = 'b
     allChanges.push(...changes)
   }
 
-  const flaggedStructures = flagTriadicLists(current)
-
-  return { text: current, changes: allChanges, flaggedStructures }
+  return {
+    text: current,
+    changes: allChanges,
+    flaggedStructures: flagStructures(current),
+    elevatedVocabulary: countElevatedVocabulary(current),
+  }
 }

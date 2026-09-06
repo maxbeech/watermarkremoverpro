@@ -48,3 +48,70 @@ describe('applyDeterministicPass', () => {
     expect(changes).toEqual([])
   })
 })
+
+describe('tell library tiers', () => {
+  // The announcement register is the single most recognisable block of
+  // generated copy on the public web, and it is what an assistant actually
+  // produces when asked for a launch post. The core library deliberately
+  // does not carry it; the extended (Pro) library does. This is the tier
+  // difference the pricing page promises, asserted rather than described.
+  const ANNOUNCEMENT = "We're thrilled to announce our new platform."
+
+  it('core leaves the announcement register alone', () => {
+    const { changes } = applyDeterministicPass(ANNOUNCEMENT, 'balanced', 'core')
+    expect(changes).toEqual([])
+  })
+
+  it('extended catches the announcement register', () => {
+    const { text, changes } = applyDeterministicPass(ANNOUNCEMENT, 'balanced', 'extended')
+    expect(changes.length).toBeGreaterThan(0)
+    expect(text.toLowerCase()).not.toContain('thrilled to announce')
+  })
+
+  it('extended is a superset of core, never a replacement for it', () => {
+    const coreOnlyTell = 'We should delve into the data.'
+    const core = applyDeterministicPass(coreOnlyTell, 'balanced', 'core')
+    const extended = applyDeterministicPass(coreOnlyTell, 'balanced', 'extended')
+    expect(core.changes.length).toBeGreaterThan(0)
+    expect(extended.changes.length).toBeGreaterThanOrEqual(core.changes.length)
+  })
+
+  it('defaults to core when no library is named', () => {
+    const withDefault = applyDeterministicPass(ANNOUNCEMENT, 'balanced')
+    const withCore = applyDeterministicPass(ANNOUNCEMENT, 'balanced', 'core')
+    expect(withDefault.changes.length).toBe(withCore.changes.length)
+  })
+})
+
+describe('structural tells and elevated vocabulary', () => {
+  it('flags negative parallelism without rewriting it', () => {
+    const input = "It's not just a database, it's a platform for your whole team."
+    const { text, flaggedStructures } = applyDeterministicPass(input, 'balanced', 'extended')
+    expect(text).toBe(input) // structure is reported, never auto-rewritten
+    expect(flaggedStructures.some((f) => f.kind === 'negative-parallelism')).toBe(true)
+  })
+
+  it('labels what kind of structure each flag is', () => {
+    const input = 'The plan was bold, ambitious, and risky.'
+    const { flaggedStructures } = applyDeterministicPass(input, 'balanced')
+    expect(flaggedStructures[0].kind).toBe('triadic-list')
+    expect(flaggedStructures[0].note.length).toBeGreaterThan(0)
+  })
+
+  it('counts elevated vocabulary without replacing any of it', () => {
+    const input =
+      'The robust framework offers a robust approach. This pivotal work is meticulous in its detail.'
+    const { text, elevatedVocabulary } = applyDeterministicPass(input, 'aggressive', 'extended')
+    expect(text).toBe(input) // ordinary English; counted, never swapped
+    const robust = elevatedVocabulary.find((v) => v.word === 'robust')
+    expect(robust?.count).toBe(2)
+    expect(elevatedVocabulary.map((v) => v.word)).toContain('pivotal')
+  })
+
+  it('reports nothing for prose that carries none of these habits', () => {
+    const input = 'The committee met on Tuesday and asked whether the survey had been completed.'
+    const { flaggedStructures, elevatedVocabulary } = applyDeterministicPass(input, 'balanced', 'extended')
+    expect(flaggedStructures).toEqual([])
+    expect(elevatedVocabulary).toEqual([])
+  })
+})

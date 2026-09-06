@@ -30,6 +30,10 @@ const SKIP_DIRS = [
   // Vendored third-party tooling documentation. Not this product's writing, and
   // not ours to rewrite.
   '.claude',
+  // Build output, including the committed plugin bundle. Generated from
+  // source this walk already scans, so scanning it again proves nothing, and
+  // regex-scanning a 700 KB bundle line by line costs real time.
+  'dist',
 ]
 
 function walk(dir: string, files: string[] = []): string[] {

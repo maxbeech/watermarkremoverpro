@@ -1,5 +1,72 @@
 # Changelog
 
+## 2026-09-06: zero-install distribution, a real AI-tell library, and ISR
+
+Three gaps against the original brief, closed.
+
+### The MCP server is now installable in one command
+
+Using it previously meant cloning the repository, running `npm install`, and
+pointing a client at `npx tsx /absolute/path/to/mcp/server.ts`. That is not a
+thing anyone adds to a workflow, and it ruled out every agent not already
+holding a checkout.
+
+- Added: `plugins/markwitness`, a Claude Code plugin carrying the MCP server,
+  a skill telling the agent when to use it, and a `PostToolUse` hook.
+  `claude plugin marketplace add maxbeech/markwitness` then
+  `claude plugin install markwitness@markwitness`. Verified installed and
+  `✔ Connected` on a real machine.
+- Added: `tsup.mcp.config.ts` (`npm run build:plugin`) bundling the server to
+  one committed 704 KB file that runs under plain `node` with nothing
+  installed. Verified by running it in an empty directory with no
+  `node_modules` anywhere and calling `check_document` against the bundled
+  language baselines.
+- Fixed: the MCP server statically imported the advanced (local LLM) backend,
+  dragging 1.3 MB of onnxruntime native binaries into the bundle and slowing
+  every cold start for a code path most calls never reach. Now imported
+  lazily, inside the one branch that uses it.
+- Added: a hook that measures public-facing content the agent writes
+  (markdown, HTML, anything under `content/`, `posts/`, `blog/`) and reports
+  what it found. It never edits the file, ignores source code, and stays
+  silent on clean prose and on anything under 120 words.
+
+### The AI-tell library now covers how models actually write
+
+A headless Claude Code session was asked to write a launch post; the hook
+found nothing in it. The copy was full of tells ("we're thrilled to
+announce", three-item lists throughout), but the library only carried the
+2023-era set: "delve into", "moreover", em dashes.
+
+- Added: the extended library, grounded in published work rather than
+  invented (Wikipedia's "Signs of AI writing", the Science Advances excess
+  vocabulary study, the systematic analysis of verbal tics across frontier
+  models). Announcement register, copula avoidance ("serves as a" for "is
+  a"), and promotional vocabulary.
+- Added: structural detection for negative parallelism ("not just X, but Y")
+  and three-item lists, and frequency counts for AI-associated vocabulary
+  ("robust", "pivotal", "meticulous"). All reported, none auto-rewritten:
+  each is ordinary English on its own and the right fix depends on what the
+  sentence is saying.
+- Added: `core` / `extended` tiering, wired to `PLANS.*.rewrite.tellLibrary`.
+  This is the tier difference the pricing page promises, now applied in code
+  and asserted in tests rather than described in copy.
+- Added: `additionalTellsInExtendedLibrary`, which measures on the user's
+  actual document how many further phrases the Pro library would have
+  swapped. An upgrade prompt that is a real count, not an estimate.
+- Fixed: the result panel could say "No detectable AI-style evidence found"
+  directly above a list of findings.
+
+### Vercel: ISR, and `/blog` no longer costs a function call per visit
+
+- Fixed: `/blog` read `searchParams` for its category filter, making it
+  dynamic. Every visit invoked a function to render a page that only changes
+  at deploy time. Categories now have prerendered routes at
+  `/blog/category/[category]`, which is cheaper to serve and separately
+  indexable. Listed in the sitemap.
+- Added: one-week `revalidate` on every prerendered content route, with
+  `STATIC_REVALIDATE_SECONDS` in `src/lib/site.ts` as the documented source
+  of truth.
+
 ## 2026-09-04: close out the humanizer-cluster SEO backlog
 
 - Added: `/guide/does-an-ai-humanizer-help-with-turnitin` (targets

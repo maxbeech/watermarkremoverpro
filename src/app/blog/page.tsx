@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { BlogIndex } from '@/components/blog-index'
-import type { BlogCategory } from '@/content/blog-types'
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -9,14 +8,17 @@ export const metadata: Metadata = {
   alternates: { canonical: '/blog' },
 }
 
-const VALID_CATEGORIES: BlogCategory[] = ['Academy', 'News', 'Reviews']
+// One week. Source of truth: STATIC_REVALIDATE_SECONDS in src/lib/site.ts;
+// Next requires this to be a statically analysable literal.
+export const revalidate = 604800
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>
-}) {
-  const { category } = await searchParams
-  const selected = VALID_CATEGORIES.find((c) => c === category)
-  return <BlogIndex category={selected} />
+/**
+ * Deliberately reads no search params. Filtering used to be `?category=`,
+ * which made this page dynamic: a function invocation on every visit, on a
+ * page whose content only changes when the site is deployed. Each category
+ * now has its own prerendered route under /blog/category/[category], which
+ * is cheaper to serve and separately indexable.
+ */
+export default function Page() {
+  return <BlogIndex />
 }

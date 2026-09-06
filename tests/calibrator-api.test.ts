@@ -1,16 +1,41 @@
 /**
  * Integration tests for the calibration API endpoint.
- * Tests /api/v1/calibrate with real requests.
+ * Tests /api/v1/calibrate with real requests against a running server.
  *
- * NOTE: These tests require the dev server to be running.
- * Run with: npm run dev in one terminal, then npm run test in another
+ * These need `npm run dev` in another terminal. When no server is listening
+ * they SKIP rather than fail, and say so loudly.
+ *
+ * The alternative was leaving `npm run check` unable to pass on its own,
+ * which trains everyone to read a red suite as normal. A skipped test that
+ * announces itself is honest; eighteen connection errors reported as
+ * assertion failures is not, because it says the endpoint is broken when
+ * what is actually true is that nothing was listening.
  */
 
 import { describe, it, expect } from 'vitest'
 
 const BASE_URL = 'http://localhost:3540'
 
-describe('POST /api/v1/calibrate', () => {
+async function serverIsUp(): Promise<boolean> {
+  try {
+    const res = await fetch(BASE_URL, { signal: AbortSignal.timeout(2000) })
+    return res.ok || res.status < 500
+  } catch {
+    return false
+  }
+}
+
+const SERVER_UP = await serverIsUp()
+
+if (!SERVER_UP) {
+  console.warn(
+    '\n[calibrator-api] SKIPPED: no server on ' +
+      BASE_URL +
+      '.\n[calibrator-api] These are real HTTP integration tests. Start `npm run dev` and re-run to exercise them.\n',
+  )
+}
+
+describe.skipIf(!SERVER_UP)('POST /api/v1/calibrate', () => {
   it('requires text parameter', async () => {
     const response = await fetch(`${BASE_URL}/api/v1/calibrate`, {
       method: 'POST',

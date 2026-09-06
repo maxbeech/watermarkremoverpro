@@ -15,7 +15,10 @@ import type { LanguageCode } from '@/lib/detector/languages'
 import type { RewriteRequest, RewriteResult } from './types'
 
 export async function reduceEvidence(request: RewriteRequest, keys: DetectionKey[]): Promise<RewriteResult> {
-  const backend = createRuleBasedBackend((request.language as LanguageCode) ?? 'en')
+  const backend = createRuleBasedBackend(
+    (request.language as LanguageCode) ?? 'en',
+    request.tier === 'pro' ? 'extended' : 'core',
+  )
   return rewriteDocument(request, backend, keys)
 }
 

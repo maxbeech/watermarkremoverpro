@@ -384,14 +384,40 @@ function RewriteResultView({ result, backendUsed }: { result: RewriteResult; bac
           {result.roundsUsed} round{result.roundsUsed !== 1 ? 's' : ''}
         </p>
         {backendUsed && <p className="mt-1 text-xs text-seal-700">Engine: {backendUsed}</p>}
-        {touchedPassages.length === 0 && result.tellChangeCount === 0 && (
+        {/* Only claim "nothing found" when nothing was found. The judgement-call
+            panel below reports structures and vocabulary this pass deliberately
+            did not rewrite, and saying "no evidence" above a list of evidence is
+            the kind of contradiction that costs a reader their trust. */}
+        {touchedPassages.length === 0 &&
+          result.tellChangeCount === 0 &&
+          result.flaggedStructures.length === 0 &&
+          result.elevatedVocabulary.length === 0 && (
+            <p className="mt-2 text-sm text-seal-800">
+              No detectable AI-style evidence found to reduce at this strength. Try a higher
+              strength, or this passage may already read as ordinary prose.
+            </p>
+          )}
+        {touchedPassages.length === 0 &&
+          result.tellChangeCount === 0 &&
+          (result.flaggedStructures.length > 0 || result.elevatedVocabulary.length > 0) && (
+            <p className="mt-2 text-sm text-seal-800">
+              Nothing was safe to rewrite automatically at this strength, but the pass did find
+              habits worth your judgement. They are listed below.
+            </p>
+          )}
+        {result.additionalTellsInExtendedLibrary > 0 && (
           <p className="mt-2 text-sm text-seal-800">
-            No detectable AI-style evidence found to reduce at this strength. Try a higher strength,
-            or this passage may already read as ordinary prose.
+            The extended AI-tell library would have swapped{' '}
+            <span className="figure">{result.additionalTellsInExtendedLibrary}</span> further{' '}
+            {result.additionalTellsInExtendedLibrary === 1 ? 'phrase' : 'phrases'} in this document,
+            mostly the announcement and marketing register. That library is what the Pro tier adds;
+            this is a count measured on your actual text, not an estimate.
           </p>
         )}
         <EvidenceComparison result={result} />
       </div>
+
+      <JudgementCalls result={result} />
 
       <div className="rounded-lg border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
         <p className="t-eyebrow mb-2">Result</p>
@@ -439,6 +465,72 @@ function RewriteResultView({ result, backendUsed }: { result: RewriteResult; bac
           <p key={limit}>&bull; {limit}</p>
         ))}
       </div>
+    </div>
+  )
+}
+
+/**
+ * Findings the engine deliberately did not act on.
+ *
+ * A three-item list, a "not just X, but Y" sentence, and a word like
+ * "robust" are all ordinary English on their own; the right fix depends on
+ * what the sentence is actually saying, which a find/replace cannot know.
+ * Reporting them and leaving them alone is more useful than a confident
+ * automated rewrite that damages the writing, so the panel says plainly
+ * that these were not changed.
+ */
+function JudgementCalls({ result }: { result: RewriteResult }) {
+  const triadic = result.flaggedStructures.filter((f) => f.kind === 'triadic-list')
+  const parallelism = result.flaggedStructures.filter((f) => f.kind === 'negative-parallelism')
+  const vocabulary = result.elevatedVocabulary.slice(0, 8)
+
+  // One three-item list is just a sentence. Three of them is a habit.
+  const showTriadic = triadic.length >= 3
+  const showParallelism = parallelism.length > 0
+  const showVocabulary = vocabulary.length >= 2
+  if (!showTriadic && !showParallelism && !showVocabulary) return null
+
+  return (
+    <div className="rounded-lg border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+      <p className="t-eyebrow mb-2">Left for you to judge</p>
+      <p className="mb-4 text-sm text-ink-600">
+        These read as machine-written habits, but the right fix depends on what the sentence is
+        saying. They were measured and left alone rather than rewritten automatically.
+      </p>
+      <ul className="space-y-3 text-sm text-ink-700">
+        {showTriadic && (
+          <li>
+            <span className="font-medium text-ink-900">
+              {triadic.length} three-item lists
+            </span>{' '}
+            <span className="text-ink-500">
+              (&ldquo;X, Y, and Z&rdquo;), for example {triadic.slice(0, 2).map((t) => `“${t.text}”`).join(', ')}.
+              Ordinary once; a tic when it recurs.
+            </span>
+          </li>
+        )}
+        {showParallelism && (
+          <li>
+            <span className="font-medium text-ink-900">
+              {parallelism.length} &ldquo;not just X, but Y&rdquo; construction
+              {parallelism.length === 1 ? '' : 's'}
+            </span>{' '}
+            <span className="text-ink-500">
+              for example &ldquo;{parallelism[0].text.trim()}&rdquo;. One of the most reliable
+              structural tells in current model output.
+            </span>
+          </li>
+        )}
+        {showVocabulary && (
+          <li>
+            <span className="font-medium text-ink-900">Elevated AI-associated vocabulary</span>{' '}
+            <span className="text-ink-500">
+              {vocabulary.map((v) => `${v.word} (${v.count})`).join(', ')}. Each is ordinary English;
+              the density across a document is what reads as generated.
+            </span>
+          </li>
+        )}
+      </ul>
     </div>
   )
 }

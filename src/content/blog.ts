@@ -28,3 +28,20 @@ export const findPost = (slug: string) => BLOG_POSTS.find((p) => p.slug === slug
 
 export const postsByCategory = (category: (typeof BLOG_POSTS)[number]['category']) =>
   BLOG_POSTS.filter((p) => p.category === category)
+
+/**
+ * The categories, and the URL slug each one is served at.
+ *
+ * One mapping, used by the category route's generateStaticParams, by the
+ * index's filter links and by the sitemap, so a category cannot end up
+ * linked at a URL that doesn't render or prerendered at a URL nothing links
+ * to.
+ */
+export const BLOG_CATEGORIES = ['Academy', 'News', 'Reviews'] as const
+
+export const categorySlug = (category: BlogCategoryName): string => category.toLowerCase()
+
+export const categoryFromSlug = (slug: string): BlogCategoryName | undefined =>
+  BLOG_CATEGORIES.find((c) => categorySlug(c) === slug)
+
+type BlogCategoryName = (typeof BLOG_CATEGORIES)[number]

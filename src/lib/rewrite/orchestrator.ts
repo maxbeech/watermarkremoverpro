@@ -59,6 +59,9 @@ export async function rewriteDocument(
       passages: [],
       revisedText: '',
       tellChangeCount: 0,
+      flaggedStructures: [],
+      elevatedVocabulary: [],
+      additionalTellsInExtendedLibrary: 0,
       roundsUsed: 0,
       tier: request.tier,
       strength: request.strength,
@@ -67,7 +70,32 @@ export async function rewriteDocument(
     }
   }
 
-  const { text: afterTells, changes: tellChanges } = applyDeterministicPass(request.text, request.strength)
+  // Pro gets the extended AI-tell library (PLANS.pro.rewrite.tellLibrary in
+  // src/lib/site.ts). This is the tier difference the product actually
+  // promises, applied here rather than described in marketing copy only.
+  const {
+    text: afterTells,
+    changes: tellChanges,
+    flaggedStructures,
+    elevatedVocabulary,
+  } = applyDeterministicPass(
+    request.text,
+    request.strength,
+    request.tier === 'pro' ? 'extended' : 'core',
+  )
+
+  // What the extended library would additionally have caught here. Measured
+  // on this document rather than claimed in the abstract, so the free tier
+  // can be told the truth about what it is and isn't catching instead of
+  // being shown a marketing number.
+  const additionalTellsInExtendedLibrary =
+    request.tier === 'pro'
+      ? 0
+      : Math.max(
+          0,
+          applyDeterministicPass(request.text, request.strength, 'extended').changes.length -
+            tellChanges.length,
+        )
 
   let currentText = afterTells
   let analysis = await checkDocument(currentText, { keys, language: request.language })
@@ -142,6 +170,9 @@ export async function rewriteDocument(
     passages: [...passageResults.values()].sort((a, b) => a.index - b.index),
     revisedText: currentText,
     tellChangeCount: tellChanges.length,
+    flaggedStructures: flaggedStructures.map((f) => ({ kind: f.kind, text: f.text, note: f.note })),
+    elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
+    additionalTellsInExtendedLibrary,
     roundsUsed: round,
     tier: request.tier,
     strength: request.strength,

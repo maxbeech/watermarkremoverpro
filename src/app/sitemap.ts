@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { LONG_TAIL_PAGES } from '@/content/pages'
-import { BLOG_POSTS } from '@/content/blog'
+import { BLOG_CATEGORIES, BLOG_POSTS, categorySlug } from '@/content/blog'
 import { SITE } from '@/lib/site'
 
 /** Built from the same content source the pages render from, so a new long-tail
@@ -39,6 +39,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
+    })),
+    ...BLOG_CATEGORIES.map((c) => ({
+      url: `${SITE.url}/blog/category/${categorySlug(c)}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
     })),
     ...BLOG_POSTS.map((p) => ({
       url: `${SITE.url}/blog/${p.slug}`,

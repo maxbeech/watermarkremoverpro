@@ -45,7 +45,11 @@ import { API_PRICE_PENCE_PER_1K_WORDS } from '../src/lib/site'
 import { calibrateText } from '../src/lib/calibrate'
 import { reduceEvidence, rewriteDocument, REWRITE_LIMITS } from '../src/lib/rewrite'
 import type { Strength, Tier } from '../src/lib/rewrite'
-import { createTransformersNodeBackend } from '../src/lib/rewrite/backend/node'
+// The advanced (local LLM) backend is imported lazily, inside the one branch
+// that uses it. A static import pulls onnxruntime's native binaries into the
+// bundled, zero-install server (about 1.3 MB of .node files nobody who never
+// asks for model: "advanced" will ever execute) and slows every cold start
+// for a capability most calls do not use.
 
 const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://markwitness.helm7.com').replace(/\/$/, '')
 const API_KEY = process.env.MARKWITNESS_API_KEY || ''
@@ -324,6 +328,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       let model = 'standard (rule-based, no download)'
       if (modelChoice === 'advanced') {
         try {
+          const { createTransformersNodeBackend } = await import('../src/lib/rewrite/backend/node')
           const backend = createTransformersNodeBackend(tier)
           result = await rewriteDocument({ text, language, strength, tier }, backend, [OPEN_REFERENCE_KEY])
           model = `advanced (${backend.id}; cached under ~/.cache/markwitness/models)`

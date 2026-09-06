@@ -30,6 +30,38 @@ the result. It CANNOT guarantee defeating a model vendor's undisclosed
 watermark, and states so on every result. Verify this yourself: nothing in
 this path makes a network call with document text, on any tier.
 
+## Install (copy this, it is the whole setup)
+
+Claude Code, including an agent skill and a hook that checks public-facing
+content before it ships:
+
+    claude plugin marketplace add maxbeech/markwitness
+    claude plugin install markwitness@markwitness
+
+Any other MCP client, over stdio, with nothing installed:
+
+    {"mcpServers":{"markwitness":{"command":"node",
+      "args":["/path/to/markwitness/plugins/markwitness/dist/mcp-server.mjs"]}}}
+
+The server is one committed, self-contained file. No npm install, no build
+step, no API key, no account. Tools: \`check_document\`, \`reduce_ai_evidence\`,
+\`calibrate_text\`, \`describe_method\`.
+
+## The workflow this is built for
+
+An agent generating text that will be published (a blog post, docs, landing
+page, README) should:
+
+1. \`check_document\` on the prose before publishing.
+2. If passages survive false-discovery-rate correction, or the AI-tell count
+   is high, call \`reduce_ai_evidence\` at strength "preserve", which only
+   touches the passages a real check flags.
+3. \`check_document\` again and report the before/after delta.
+4. Pass the \`limits\` array through to whoever reads the result. Never
+   describe the output as undetectable, or as certain to clear any specific
+   check: nobody outside a model vendor holds the key its mark was applied
+   with.
+
 ## What it is for
 
 A writer who wants their own document to carry less detectable AI-style

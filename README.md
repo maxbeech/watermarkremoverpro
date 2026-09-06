@@ -149,8 +149,29 @@ because the sitemap reads from `BLOG_POSTS` rather than a hand-maintained list.
 
 ## Interfaces for machines
 
+Adding this to an agent workflow is two commands:
+
+```bash
+claude plugin marketplace add maxbeech/markwitness
+claude plugin install markwitness@markwitness
+```
+
+That installs the MCP server, a skill telling the agent when to use it, and a
+`PostToolUse` hook that checks public-facing content the agent writes before
+it ships. The server is one committed, self-contained file
+(`plugins/markwitness/dist/mcp-server.mjs`) that runs under plain `node` with
+nothing installed, which is what makes the two-command version possible;
+rebuild it with `npm run build:plugin` after changing `mcp/` or `src/lib/`.
+
+For any other MCP client:
+
+```bash
+claude mcp add markwitness -- node /path/to/plugins/markwitness/dist/mcp-server.mjs
+```
+
 | Surface | Path |
 |---|---|
+| Claude Code plugin (MCP + skill + hook) | `plugins/markwitness`, listed by `.claude-plugin/marketplace.json` |
 | JSON API (checking only) | `POST /api/v1/check` |
 | Evidence report | `POST /api/v1/report` (Pro) |
 | OpenAPI 3.1 | `/api/openapi.json` |

@@ -3,6 +3,9 @@ import { BlogPostView, blogPostMetadata } from '@/components/blog-post-view'
 import { BLOG_POSTS, findPost } from '@/content/blog'
 
 export const dynamicParams = false
+// One week. Source of truth: STATIC_REVALIDATE_SECONDS in src/lib/site.ts;
+// Next requires this to be a statically analysable literal.
+export const revalidate = 604800
 
 export function generateStaticParams() {
   return BLOG_POSTS.map((p) => ({ slug: p.slug }))

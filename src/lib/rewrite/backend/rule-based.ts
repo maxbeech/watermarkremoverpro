@@ -21,7 +21,7 @@ import { tokenize } from '@/lib/detector/tokenize'
 import type { LanguageCode } from '@/lib/detector/languages'
 import { loadDictionary } from '@/lib/calibrate/dictionary'
 import { preserveCase } from '@/lib/calibrate/substituter'
-import { applyDeterministicPass } from '@/lib/calibrate/ai-tells'
+import { applyDeterministicPass, type TellLibrary } from '@/lib/calibrate/ai-tells'
 import type { GenerateOptions, RewriteBackend } from './types'
 
 const EMBED_DIMS = 256
@@ -36,8 +36,14 @@ function fnv1a(s: string): number {
   return h >>> 0
 }
 
-async function generateCandidate(passage: string, language: LanguageCode, seed: number, strength: GenerateOptions['strength']): Promise<string> {
-  const { text: tellSwapped } = applyDeterministicPass(passage, strength)
+async function generateCandidate(
+  passage: string,
+  language: LanguageCode,
+  seed: number,
+  strength: GenerateOptions['strength'],
+  library: TellLibrary,
+): Promise<string> {
+  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library)
 
   let dictionary
   try {
@@ -90,14 +96,23 @@ function hashedBagOfWordsEmbed(text: string): number[] {
   return norm === 0 ? vec : vec.map((v) => v / norm)
 }
 
-export function createRuleBasedBackend(language: LanguageCode = 'en'): RewriteBackend {
+/**
+ * @param library which AI-tell table per-passage candidates use. Pro passes
+ *   'extended' (PLANS.pro.rewrite.tellLibrary), free gets 'core'.
+ */
+export function createRuleBasedBackend(
+  language: LanguageCode = 'en',
+  library: TellLibrary = 'core',
+): RewriteBackend {
   return {
     id: 'rule-based',
     modelTier: 'rule-based',
     async generate(passage, options: GenerateOptions) {
       const count = Math.max(1, options.count)
       const candidates = await Promise.all(
-        Array.from({ length: count }, (_, i) => generateCandidate(passage, (options.language as LanguageCode) ?? language, i, options.strength)),
+        Array.from({ length: count }, (_, i) =>
+          generateCandidate(passage, (options.language as LanguageCode) ?? language, i, options.strength, library),
+        ),
       )
       // De-duplicate: a passage with no dictionary hits produces identical
       // candidates across seeds, and the caller shouldn't see false diversity.

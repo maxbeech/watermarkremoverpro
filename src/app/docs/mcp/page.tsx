@@ -25,17 +25,63 @@ export default function McpDocsPage() {
       />
       <article className="mx-auto max-w-3xl px-5 pt-12 pb-16">
 
-      <Section title="Configuration">
-        <p>Point your client at the server over stdio:</p>
+      <Section title="Claude Code: one command">
+        <p>
+          Installs the MCP server, a skill telling the agent when to reach for it, and a hook
+          that checks public-facing content the agent writes before it ships:
+        </p>
+        <Code>{`claude plugin marketplace add maxbeech/markwitness
+claude plugin install markwitness@markwitness`}</Code>
+        <p>
+          The server is a single committed file that runs under plain{' '}
+          <code className="figure">node</code>. There is nothing to install, no build step and no
+          checkout to keep current, which is the only version of this that survives contact with a
+          real workflow.
+        </p>
+      </Section>
+
+      <Section title="Any other MCP client">
+        <p>
+          Clone the repository (or copy{' '}
+          <code className="figure">plugins/markwitness/dist/mcp-server.mjs</code> out of it) and
+          point your client at the bundled server over stdio:
+        </p>
         <Code>{`{
   "mcpServers": {
     "markwitness": {
-      "command": "npx",
-      "args": ["-y", "tsx", "/path/to/markwitness/mcp/server.ts"],
+      "command": "node",
+      "args": ["/path/to/markwitness/plugins/markwitness/dist/mcp-server.mjs"],
       "env": { "MARKWITNESS_API_KEY": "mw_live_..." }
     }
   }
 }`}</Code>
+        <p>
+          Or, for Claude Code without the plugin:{' '}
+          <code className="figure">
+            claude mcp add markwitness -- node /path/to/plugins/markwitness/dist/mcp-server.mjs
+          </code>
+        </p>
+        <p className="text-sm">
+          The <code className="figure">MARKWITNESS_API_KEY</code> line is optional and only affects{' '}
+          <code className="figure">check_document</code>. Leave it out and everything runs locally.
+        </p>
+      </Section>
+
+      <Section title="What the hook does">
+        <p>
+          After the agent writes or edits a file that looks like public web content (markdown,
+          HTML, or anything under a <code className="figure">content/</code>,{' '}
+          <code className="figure">posts/</code> or <code className="figure">blog/</code> path), the
+          hook measures the prose and reports what it found: AI tells, three-item-list and
+          &ldquo;not just X, but Y&rdquo; constructions, elevated AI-associated vocabulary, and any
+          passage carrying watermark signal that survives correction.
+        </p>
+        <p>
+          It never edits the file. A hook that silently rewrites what an agent just wrote is a hook
+          that makes changes nobody reviewed. It also stays completely silent on clean prose, on
+          source code, and on anything under 120 words, because a check that fires on every write
+          gets muted within a day.
+        </p>
       </Section>
 
       <Section title="Two modes">

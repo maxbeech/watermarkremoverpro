@@ -52,6 +52,20 @@ export interface RewriteResult {
   revisedText: string
   /** Punctuation/phrase swaps made by the deterministic AI-tell pass, before any passage-level rewriting. Applies even when no passage was targeted for a full rewrite. */
   tellChangeCount: number
+  /**
+   * Constructions detected but deliberately not auto-rewritten (three-item
+   * lists, "not just X, but Y"), and AI-associated vocabulary counted but
+   * never replaced. Both are things the writer should judge, not things a
+   * find/replace should decide, so they travel with the result as findings.
+   */
+  flaggedStructures: Array<{ kind: string; text: string; note: string }>
+  elevatedVocabulary: Array<{ word: string; count: number }>
+  /**
+   * How many further tells the extended (Pro) library would have swapped on
+   * this exact document, measured rather than asserted. Zero on the Pro
+   * tier, because the extended library already ran.
+   */
+  additionalTellsInExtendedLibrary: number
   roundsUsed: number
   tier: Tier
   strength: Strength

@@ -17,6 +17,7 @@
     "corpus": "tsx scripts/fetch-corpus.ts",
     "mcp": "tsx mcp/server.ts",
     "build:rewrite-engine": "tsup --config tsup.rewrite-engine.config.ts",
+    "build:plugin": "tsup --config tsup.mcp.config.ts",
     "db:push": "tsx scripts/db-push.ts"
   },
   "dependencies": {

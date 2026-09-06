@@ -2,10 +2,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BandRule } from '@/components/brand/band'
 import { PageHeader, Section, Wrap } from '@/components/brand/ui'
-import { BLOG_POSTS, type BlogPost } from '@/content/blog'
+import { BLOG_CATEGORIES, BLOG_POSTS, categorySlug, type BlogPost } from '@/content/blog'
 import { readingMinutes } from '@/components/blog-post-view'
 
-const CATEGORIES: (BlogPost['category'] | 'All')[] = ['All', 'Academy', 'News', 'Reviews']
+const CATEGORIES: (BlogPost['category'] | 'All')[] = ['All', ...BLOG_CATEGORIES]
 
 const CATEGORY_TONE: Record<BlogPost['category'], string> = {
   Academy: 'bg-seal-50 text-seal-700 border-seal-200',
@@ -39,7 +39,12 @@ export function BlogIndex({ category }: { category?: BlogPost['category'] }) {
           <nav aria-label="Filter by category" className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => {
               const active = c === 'All' ? !category : category === c
-              const href = c === 'All' ? '/blog' : `/blog?category=${c}`
+              // Real routes, not a ?category= query string: a search param
+              // makes this page dynamic (a function invocation on every
+              // visit, on a page that only changes at deploy time), and a
+              // query-string filter is not separately indexable. Both are
+              // fixed by giving each category its own prerendered URL.
+              const href = c === 'All' ? '/blog' : `/blog/category/${categorySlug(c)}`
               return (
                 <Link
                   key={c}

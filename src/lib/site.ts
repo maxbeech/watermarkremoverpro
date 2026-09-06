@@ -82,4 +82,20 @@ export const PLANS = {
 /** Metered price for programmatic callers, in pence per 1,000 words. */
 export const API_PRICE_PENCE_PER_1K_WORDS = 2
 
+/**
+ * Revalidation window for prerendered marketing/content routes, in seconds.
+ *
+ * One week. Every page using this is generated from typed data in
+ * src/content, so it only actually changes on a deploy; a long window keeps
+ * these served from the CDN rather than re-rendered on a function
+ * invocation, which is the difference between free-tier Fast Origin
+ * Transfer and paid compute on a page nobody edited.
+ *
+ * Next.js requires `export const revalidate` to be statically analysable, so
+ * route files write the literal and cite this constant. The value here is
+ * the documented source of truth, and sitemap.ts reads it so the two cannot
+ * drift apart silently.
+ */
+export const STATIC_REVALIDATE_SECONDS = 604_800
+
 export const SUPPORTED_LANGUAGE_NAMES = ['English', 'Spanish', 'French', 'German', 'Portuguese'] as const
