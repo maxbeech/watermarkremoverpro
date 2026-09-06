@@ -23,6 +23,18 @@ real check flags. Takes `strength` (`preserve` | `balanced` | `aggressive` |
 Start at `preserve`. It only touches passages the checker actually flags,
 which is almost always what a user editing their own writing wants; higher
 strengths trade fidelity to the original wording for a larger reduction.
+`preserve` deliberately leaves dash punctuation alone, so use `balanced` when
+em dashes used as clause connectors are among what you want fixed.
+
+### The `tier` parameter, which is easy to miss
+
+`tier` defaults to `"free"`, which runs the core AI-tell library. `"pro"`
+runs the extended one, and that is where the announcement and marketing
+register lives ("we're thrilled to announce", "serves as a", promotional
+vocabulary). If a result comes back with `tellChangeCount: 0` but a non-zero
+`additionalTellsInExtendedLibrary`, that number is exactly how many further
+phrases `tier: "pro"` would have swapped on this document. Re-running with
+`tier: "pro"` is usually what the user wants at that point.
 
 ## The publishing workflow this is for
 

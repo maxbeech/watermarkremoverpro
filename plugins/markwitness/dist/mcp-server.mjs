@@ -21416,7 +21416,7 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
           tier: {
             type: "string",
             enum: ["free", "pro"],
-            description: 'Free generates fewer candidates per passage with the core AI-tell library; pro generates more candidates for a better result and uses the extended tell library. Both run the same on-device engine, unlimited use either way. Defaults to "free".'
+            description: `Free generates fewer candidates per passage with the core AI-tell library; pro generates more candidates for a better result and uses the extended tell library, which is where the announcement and marketing register lives ("we're thrilled to announce", "serves as a", promotional vocabulary). Both run the same on-device engine, unlimited use either way. Defaults to "free". If a result comes back with tellChangeCount 0 and a non-zero additionalTellsInExtendedLibrary, that number is how many further phrases tier "pro" would have swapped on this exact document, and re-running with it is usually what the user wants.`
           },
           model: {
             type: "string",
