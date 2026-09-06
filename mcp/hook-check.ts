@@ -195,13 +195,28 @@ async function main(): Promise<void> {
 
   if (findings.length === 0) return
 
+  // Recommend a strength that will actually fix what was found. "preserve"
+  // deliberately leaves dash punctuation alone, so recommending it after
+  // reporting em dashes sends the agent to a setting that cannot address the
+  // finding. That happened in testing; the agent fixed the dashes by hand and
+  // said so.
+  const foundDashes = changes.some((c) => c.category === 'punctuation')
+  const strength = foundDashes ? 'balanced' : 'preserve'
+  const strengthReason = foundDashes
+    ? '"balanced" is the lowest strength that swaps dash punctuation; "preserve" deliberately leaves it'
+    : '"preserve" only touches passages a real check flags'
+
   const lines = [
     `MarkWitness checked ${filePath} before it ships as public content:`,
     ...findings.map((f) => `  - ${f}`),
     '',
-    'To reduce this, call the reduce_ai_evidence MCP tool on the file\'s prose',
-    '(strength "preserve" only touches passages a real check flags). It runs',
-    'on this machine; no document text is transmitted.',
+    `To reduce this, call the reduce_ai_evidence MCP tool on the file's prose at`,
+    `strength "${strength}" (${strengthReason}). It runs on this machine; no`,
+    'document text is transmitted.',
+    '',
+    'Structures and vocabulary above are reported, not rewritten: each is',
+    'ordinary English on its own, and the right fix depends on what the',
+    'sentence is saying.',
     '',
     'This is a report, not a verdict: a detected mark is not proof of authorship,',
     'and an absent one is not proof of human authorship.',
