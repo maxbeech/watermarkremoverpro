@@ -25,6 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/guide', priority: 0.5 },
     { path: '/in', priority: 0.5 },
     { path: '/blog', priority: 0.6 },
+    { path: '/privacy', priority: 0.2 },
+    { path: '/terms', priority: 0.2 },
   ]
 
   return [

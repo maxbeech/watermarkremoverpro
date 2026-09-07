@@ -115,6 +115,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               A detected mark is not proof of authorship. An absent mark is not proof of human
               authorship. {SITE.name} reports what it measured and names what it could not measure.
             </p>
+
+            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-ink-500">
+              <FooterLink href="/privacy">Privacy policy</FooterLink>
+              <FooterLink href="/terms">Terms of service</FooterLink>
+              <span>&copy; {new Date().getFullYear()} {SITE.name}</span>
+            </div>
           </div>
         </footer>
 

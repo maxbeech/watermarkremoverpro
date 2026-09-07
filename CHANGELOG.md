@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-07: privacy policy and terms of service
+
+Added `/privacy` and `/terms`, linked from the footer and listed in the
+sitemap at low priority. Neither existed before; both were reachable only as
+a 404. Written from what the code actually does rather than a generic
+template: the privacy policy is specific about which surfaces never see your
+document (the on-device checker and rewriter) versus which do (a saved check
+or evidence report persists the analysed passages against your account; a
+metered API/MCP check stores only a word count and a document hash), and the
+terms describe the real plan limits, billing behaviour and stated detection
+limits read from `PLANS` and the engine rather than restated by hand. Both
+carry an explicit note that they are not a substitute for a lawyer's review.
+
 ## 2026-09-07: production readiness - billing live, repo public
 
 Two gaps recorded in the rebrand entry below are closed:
