@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyDeterministicPass } from './ai-tells'
+import { applyDeterministicPass, measureStyleTells } from './ai-tells'
 
 describe('applyDeterministicPass', () => {
   it('swaps an em dash clause connector for a comma or period', () => {
@@ -91,6 +91,23 @@ describe('structural tells and elevated vocabulary', () => {
     expect(flaggedStructures.some((f) => f.kind === 'negative-parallelism')).toBe(true)
   })
 
+  it('flags negative parallelism written out in full, not only contracted', () => {
+    // Real output from the engine's own end-to-end run went unflagged here:
+    // the pattern only closed on "but", "it's" or "its", so the uncontracted
+    // "it is" half of the construction slipped through.
+    for (const input of [
+      'It is not just a tool, it is a complete solution.',
+      'These are not just features, they are the whole product.',
+      "It's not just fast, it's reliable.",
+    ]) {
+      const { flaggedStructures } = applyDeterministicPass(input, 'balanced', 'extended')
+      expect(
+        flaggedStructures.some((f) => f.kind === 'negative-parallelism'),
+        `unflagged: ${input}`,
+      ).toBe(true)
+    }
+  })
+
   it('labels what kind of structure each flag is', () => {
     const input = 'The plan was bold, ambitious, and risky.'
     const { flaggedStructures } = applyDeterministicPass(input, 'balanced')
@@ -98,14 +115,79 @@ describe('structural tells and elevated vocabulary', () => {
     expect(flaggedStructures[0].note.length).toBeGreaterThan(0)
   })
 
-  it('counts elevated vocabulary without replacing any of it', () => {
+  it('leaves elevated vocabulary alone at "preserve", and only counts it', () => {
     const input =
       'The robust framework offers a robust approach. This pivotal work is meticulous in its detail.'
-    const { text, elevatedVocabulary } = applyDeterministicPass(input, 'aggressive', 'extended')
-    expect(text).toBe(input) // ordinary English; counted, never swapped
-    const robust = elevatedVocabulary.find((v) => v.word === 'robust')
-    expect(robust?.count).toBe(2)
+    const { text, elevatedVocabulary } = applyDeterministicPass(input, 'preserve', 'extended')
+    expect(text).toBe(input)
+    expect(elevatedVocabulary.find((v) => v.word === 'robust')?.count).toBe(2)
     expect(elevatedVocabulary.map((v) => v.word)).toContain('pivotal')
+  })
+
+  it('rewrites a recurring elevated word at "balanced", but leaves a one-off alone', () => {
+    // "robust" twice is over REGISTER_DENSITY_THRESHOLD; "pivotal" once is not.
+    const input = 'The robust framework offers a robust approach. This pivotal work stands out.'
+    const { text, changes, elevatedVocabulary } = applyDeterministicPass(input, 'balanced', 'extended')
+
+    expect(text).not.toContain('robust')
+    expect(text).toContain('pivotal')
+    expect(changes.filter((c) => c.category === 'vocabulary')).toHaveLength(2)
+    // Counts are measured after the pass, so a word this run fixed is not also
+    // reported as still outstanding.
+    expect(elevatedVocabulary.map((v) => v.word)).not.toContain('robust')
+    expect(elevatedVocabulary.map((v) => v.word)).toContain('pivotal')
+  })
+
+  it('rewrites even a single occurrence at "aggressive"', () => {
+    const { text } = applyDeterministicPass('This pivotal work stands out.', 'aggressive', 'extended')
+    expect(text).not.toContain('pivotal')
+  })
+
+  it('rotates alternatives so a repeated word does not become a repeated replacement', () => {
+    const input = 'A robust plan, a robust team, and a robust budget all matter here.'
+    const { text } = applyDeterministicPass(input, 'balanced', 'extended')
+    const replacements = ['strong', 'reliable', 'sturdy'].filter((w) => text.includes(w))
+    expect(replacements.length).toBeGreaterThan(1)
+  })
+
+  it('leaves vocabulary it has no safe same-slot replacement for', () => {
+    // "align" governs a preposition and "tapestry" is a metaphor: both are
+    // deliberately absent from REGISTER_DOWNSHIFT, so both stay reported only.
+    const input = 'We align with the tapestry of goals, and we align with the tapestry of needs.'
+    const { text, elevatedVocabulary } = applyDeterministicPass(input, 'regenerate', 'extended')
+    expect(text).toContain('align')
+    expect(text).toContain('tapestry')
+    expect(elevatedVocabulary.map((v) => v.word)).toEqual(expect.arrayContaining(['align', 'tapestry']))
+  })
+
+  it('preserves the case of the word it replaces', () => {
+    const { text } = applyDeterministicPass('Robust systems need robust tests.', 'balanced', 'extended')
+    expect(text).toMatch(/^[A-Z]/)
+    expect(text).not.toMatch(/robust/i)
+  })
+
+  it('measures style-tell pressure so the rewrite engine can route on it', () => {
+    const heavy =
+      "It's not just fast, it's reliable. The design is bold, modern, and robust, with a robust core."
+    const plain = 'The committee met on Tuesday and asked whether the survey had been completed.'
+
+    expect(measureStyleTells(heavy).pressure).toBeGreaterThanOrEqual(2)
+    expect(measureStyleTells(plain)).toEqual({ structures: 0, vocabulary: 0, pressure: 0 })
+  })
+
+  it('counts two elevated words as one unit of pressure, so a single one cannot trigger a rewrite', () => {
+    expect(measureStyleTells('A robust plan.').pressure).toBe(0)
+    expect(measureStyleTells('A robust plan with a robust budget.').pressure).toBe(1)
+  })
+
+  it('weights negative parallelism above a three-item list, since one of it is already a tell', () => {
+    const parallelism = measureStyleTells('It is not just a tool, it is a platform.')
+    const triadic = measureStyleTells('The plan was bold, ambitious, and risky.')
+
+    // A single "not just X, but Y" must clear the balanced-strength threshold
+    // on its own; a single three-item list must not.
+    expect(parallelism.pressure).toBe(2)
+    expect(triadic.pressure).toBe(1)
   })
 
   it('reports nothing for prose that carries none of these habits', () => {

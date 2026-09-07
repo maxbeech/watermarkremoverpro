@@ -18,7 +18,7 @@
 import { checkDocument } from '@/lib/detector'
 import type { DetectionKey } from '@/lib/detector/keys'
 import type { PassageFinding } from '@/lib/detector'
-import { applyDeterministicPass } from '@/lib/calibrate/ai-tells'
+import { applyDeterministicPass, measureStyleTells } from '@/lib/calibrate/ai-tells'
 import type { RewriteBackend } from './backend/types'
 import { candidateCount, minSimilarity, targetPassages, MAX_ROUNDS } from './targeting'
 import { scoreCandidates, pickBest } from './scoring'
@@ -114,7 +114,15 @@ export async function rewriteDocument(
   let round = 0
 
   for (; round < MAX_ROUNDS; round++) {
-    const targets = targetPassages(analysis.passages, request.strength).filter((p) => !attempted.has(p.index))
+    // Style-tell pressure per passage, so a passage whose only problem is how
+    // it reads gets targeted too. The watermark z-score and the register
+    // deviation are both silent about a three-item list.
+    const tellPressure = new Map<number, number>(
+      analysis.passages.map((p) => [p.index, measureStyleTells(p.text).pressure]),
+    )
+    const targets = targetPassages(analysis.passages, request.strength, tellPressure).filter(
+      (p) => !attempted.has(p.index),
+    )
     if (targets.length === 0) break
 
     const replacements: Array<{ start: number; end: number; text: string; index: number }> = []

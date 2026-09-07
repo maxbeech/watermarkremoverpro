@@ -380,8 +380,8 @@ function RewriteResultView({ result, backendUsed }: { result: RewriteResult; bac
         <p className="text-sm font-medium text-seal-900">
           {touchedPassages.length} of {result.passages.length} targeted passage
           {result.passages.length !== 1 ? 's' : ''} rewritten, plus {result.tellChangeCount} AI-tell
-          swap{result.tellChangeCount !== 1 ? 's' : ''} (em dashes, stock phrasing), in{' '}
-          {result.roundsUsed} round{result.roundsUsed !== 1 ? 's' : ''}
+          swap{result.tellChangeCount !== 1 ? 's' : ''} (em dashes, stock phrasing, recurring
+          AI vocabulary), in {result.roundsUsed} round{result.roundsUsed !== 1 ? 's' : ''}
         </p>
         {backendUsed && <p className="mt-1 text-xs text-seal-700">Engine: {backendUsed}</p>}
         {/* Only claim "nothing found" when nothing was found. The judgement-call
@@ -470,14 +470,15 @@ function RewriteResultView({ result, backendUsed }: { result: RewriteResult; bac
 }
 
 /**
- * Findings the engine deliberately did not act on.
+ * What survived the pass, and why.
  *
- * A three-item list, a "not just X, but Y" sentence, and a word like
- * "robust" are all ordinary English on their own; the right fix depends on
- * what the sentence is actually saying, which a find/replace cannot know.
- * Reporting them and leaving them alone is more useful than a confident
- * automated rewrite that damages the writing, so the panel says plainly
- * that these were not changed.
+ * These lists are measured on the FINAL text, so a recurring word the
+ * vocabulary pass already fixed does not appear here. What is left is what the
+ * engine genuinely could not fix on its own: a construction whose rewrite
+ * depends on what the sentence is saying, a word with no same-slot plain
+ * equivalent, or a single occurrence that is a word choice rather than a tell.
+ * Naming them beats both a false all-clear and a confident automated rewrite
+ * that damages the writing.
  */
 function JudgementCalls({ result }: { result: RewriteResult }) {
   const triadic = result.flaggedStructures.filter((f) => f.kind === 'triadic-list')
@@ -494,8 +495,10 @@ function JudgementCalls({ result }: { result: RewriteResult }) {
     <div className="rounded-lg border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
       <p className="t-eyebrow mb-2">Left for you to judge</p>
       <p className="mb-4 text-sm text-ink-600">
-        These read as machine-written habits, but the right fix depends on what the sentence is
-        saying. They were measured and left alone rather than rewritten automatically.
+        Still present after the rewrite. Either the fix depends on what the sentence is actually
+        saying, or the word has no plain equivalent that drops into the same slot. Raising the
+        strength rewrites more of the vocabulary below; the constructions need you, or the
+        advanced local model.
       </p>
       <ul className="space-y-3 text-sm text-ink-700">
         {showTriadic && (

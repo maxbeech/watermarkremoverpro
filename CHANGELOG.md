@@ -1,5 +1,65 @@
 # Changelog
 
+## 2026-09-06: the rewrite engine now acts on what it reports
+
+The engine measured structural tells and AI-associated vocabulary, printed
+them, and then did nothing with either. A passage thick with "not just X, but
+Y" and six occurrences of "comprehensive" was never sent to the rewriter unless
+it independently tripped a watermark or register threshold, which is a
+different measurement entirely. Reporting was a dead-end channel.
+
+### Findings now route into the rewrite
+
+- Added: `measureStyleTells()`, a weighted per-passage score. Negative
+  parallelism counts 2 (a single occurrence is already a tell), a three-item
+  list counts 1 (one is ordinary English), every two elevated words count 1.
+- Changed: `targetPassages()` takes that score, so a passage whose only problem
+  is how it reads gets rewritten at `balanced` and above. `preserve` is
+  deliberately unchanged: it promises to touch only what a real check flags.
+- Changed: candidate scoring rewards a candidate for removing the findings the
+  passage was targeted for. Previously the ranking was blind to them and could
+  pick a candidate that reproduced the construction faithfully.
+
+### Recurring AI vocabulary is now rewritten, not just counted
+
+- Added: `REGISTER_DOWNSHIFT`, 23 same-slot plain-English replacements
+  ("robust" -> "strong", "comprehensive" -> "complete"). `balanced` rewrites a
+  word once it RECURS, since a single occurrence is a word choice rather than a
+  tell; `aggressive` rewrites single occurrences too; `preserve` leaves all of
+  it alone.
+- Seven counted words are deliberately absent from that table, because no
+  context-free replacement is safe: "delve", "leverage", "align", "resonate"
+  and "illuminate" govern a preposition, and "tapestry" and "testament" are
+  metaphors. They stay reported.
+
+### Two real defects found by running the engine on its own output
+
+- Fixed: the synonym dictionary substituted articles, conjunctions and
+  prepositions. "a reliable set" came back as "some reliable set", "for the
+  modern enterprise" as "for that modern enterprise", and "to run" would have
+  become "toward run". Same failure mode as the auxiliary-verb fix: a flat
+  word-list substituter cannot see the slot it is writing into. All 15 function
+  words removed, with a test asserting they stay out.
+- Fixed: `use` -> `utilize` was in that dictionary, so the tool installed one
+  of the best-known marks of machine prose while claiming to remove them. Every
+  register-raising variant is gone, now asserted against the elevated-vocabulary
+  list itself.
+- Fixed: negative parallelism written out in full ("It is not just a tool, it
+  is a platform") went unflagged. The pattern only closed on "but", "it's" or
+  "its".
+
+### The MCP response no longer costs 14,000 tokens a call
+
+Measured on a 612-word document: the full result was about 40 KB of JSON, 31 KB
+of it the before/after `AnalysisResult` pair whose per-passage arrays a caller
+almost never reads. A tool meant to run on every document in a publishing
+pipeline cannot cost that much context.
+
+- Added: `detail` on `reduce_ai_evidence`, defaulting to `summary`. Same
+  document now returns about 1,500 tokens, a 9.5x reduction, keeping the
+  revised text, the change counts, the before/after headline numbers and what
+  is still present. `detail: "full"` returns the complete object unchanged.
+
 ## 2026-09-06: zero-install distribution, a real AI-tell library, and ISR
 
 Three gaps against the original brief, closed.

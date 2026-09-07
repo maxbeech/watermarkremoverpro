@@ -21,6 +21,8 @@ export interface ScoredCandidate {
   factLockDetail?: string
   /** Watermark z-score of the candidate text, using the exact same arithmetic as the detector. Null if not testable. */
   evidenceZ: number | null
+  /** Flagged constructions and elevated vocabulary remaining in this candidate (see measureStyleTells). Lower is better. */
+  tellPressure: number
   /** Combined score used to rank surviving candidates. -Infinity if the candidate was gated out. */
   paretoScore: number
 }

@@ -19,6 +19,8 @@ import {
   ELEVATED_VOCABULARY,
   EXTENDED_STOCK_PHRASES,
   NEGATIVE_PARALLELISM_PATTERN,
+  REGISTER_DENSITY_THRESHOLD,
+  REGISTER_DOWNSHIFT,
   TRIADIC_LIST_PATTERN,
 } from './patterns'
 
@@ -45,7 +47,7 @@ export interface TellChange {
   end: number
   original: string
   replacement: string
-  category: 'punctuation' | 'phrase'
+  category: 'punctuation' | 'phrase' | 'vocabulary'
   note: string
 }
 
@@ -68,8 +70,11 @@ export interface DeterministicPassResult {
   flaggedStructures: FlaggedStructure[]
   /**
    * Words whose frequency rises sharply in LLM-assisted prose but which are
-   * ordinary English on their own. Counted, never replaced: the density
-   * across a document is the signal, not any single occurrence.
+   * ordinary English on their own. Always reported. Those with a safe
+   * plain-English equivalent are also rewritten once their density crosses
+   * REGISTER_DENSITY_THRESHOLD (or at the two heaviest strengths), and the
+   * counts here are measured on the text AFTER that pass, so a word this run
+   * fixed does not also appear as an outstanding finding.
    */
   elevatedVocabulary: Array<{ word: string; count: number }>
 }
@@ -169,6 +174,79 @@ function swapStockPhrases(text: string, library: TellLibrary): { text: string; c
   return { text: result, changes }
 }
 
+/**
+ * Which elevated-vocabulary words this strength is allowed to rewrite.
+ *
+ * "preserve" rewrites none: it is the setting for someone who wants their own
+ * word choices left alone. "balanced" rewrites only words that recur, because
+ * recurrence is what turns a word choice into a tell. The two heavier
+ * strengths rewrite every covered occurrence, which is what the user is asking
+ * for by choosing them.
+ */
+function vocabularyWordsToSwap(text: string, strength: TellStrength): Set<string> {
+  const swap = new Set<string>()
+  if (strength === 'preserve') return swap
+
+  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    const count = countWholeWord(text, word)
+    if (count === 0) continue
+    if (strength === 'balanced' && count < REGISTER_DENSITY_THRESHOLD) continue
+    swap.add(word)
+  }
+  return swap
+}
+
+/**
+ * Replaces elevated vocabulary with a plainer equivalent, rotating through the
+ * alternatives so a document that used "robust" four times does not come back
+ * saying "strong" four times, which would just relocate the tic.
+ */
+function swapElevatedVocabulary(
+  text: string,
+  strength: TellStrength,
+): { text: string; changes: TellChange[] } {
+  const targets = vocabularyWordsToSwap(text, strength)
+  if (targets.size === 0) return { text, changes: [] }
+
+  const changes: TellChange[] = []
+  const usage = new Map<string, number>()
+  let result = text
+
+  for (const word of targets) {
+    const alternatives = REGISTER_DOWNSHIFT[word]
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
+    let match: RegExpExecArray | null
+    let cursor = 0
+    let next = ''
+    re.lastIndex = 0
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(word) ?? 0
+      const replacement = alternatives[idx % alternatives.length]
+      usage.set(word, idx + 1)
+
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement)
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: 'vocabulary',
+        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`,
+      })
+      cursor = match.index + match[0].length
+    }
+    next += result.slice(cursor)
+    result = next
+  }
+
+  return { text: result, changes }
+}
+
+function countWholeWord(text: string, word: string): number {
+  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
+  return text.match(re)?.length ?? 0
+}
+
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
@@ -228,6 +306,51 @@ function countElevatedVocabulary(text: string): Array<{ word: string; count: num
 }
 
 /**
+ * Style-tell pressure for a span of text: the constructions and word choices
+ * that a find/replace cannot safely fix on its own.
+ *
+ * This exists so the rewrite engine can ROUTE on these findings rather than
+ * only print them. Without it, a passage thick with "not just X, but Y" and
+ * six three-item lists is never sent to the model-backed rewriter unless it
+ * independently trips a watermark or style threshold, which is a different
+ * measurement entirely. See src/lib/rewrite/targeting.ts.
+ *
+ * `pressure` weights each finding by how much a reader would actually notice
+ * it, not by how many regexes matched:
+ *
+ * - Negative parallelism counts 2. "It's not just X, it's Y" is a strong tell
+ *   on a single occurrence; almost nobody writes it by accident.
+ * - A three-item list counts 1. One is ordinary English, so a passage needs a
+ *   second finding before it is worth rewriting.
+ * - Every two elevated words count 1, matching the same density argument the
+ *   vocabulary swap uses.
+ */
+const PARALLELISM_WEIGHT = 2
+const TRIADIC_WEIGHT = 1
+
+export interface StyleTellMeasurement {
+  structures: number
+  vocabulary: number
+  pressure: number
+}
+
+export function measureStyleTells(text: string): StyleTellMeasurement {
+  const flagged = flagStructures(text)
+  const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0)
+
+  const weighted = flagged.reduce(
+    (sum, f) => sum + (f.kind === 'negative-parallelism' ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
+    0,
+  )
+
+  return {
+    structures: flagged.length,
+    vocabulary,
+    pressure: weighted + Math.floor(vocabulary / 2),
+  }
+}
+
+/**
  * Runs the full deterministic pass. Pure function: same input always produces
  * the same output, which is what lets this run without a model and without
  * any semantic-preservation check: every possible output is pre-approved by
@@ -249,6 +372,15 @@ export function applyDeterministicPass(
 
   if (shouldSwapDashes(strength)) {
     const { text: swapped, changes } = swapDashes(current)
+    current = swapped
+    allChanges.push(...changes)
+  }
+
+  // Runs last, and on the already-swapped text, so a word introduced by a
+  // stock-phrase replacement is measured for density along with the rest
+  // rather than escaping the count on a technicality.
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength)
     current = swapped
     allChanges.push(...changes)
   }

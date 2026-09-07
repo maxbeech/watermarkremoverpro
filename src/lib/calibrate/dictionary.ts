@@ -15,23 +15,25 @@ const dictionaryCache = new Map<LanguageCode, SynonymDictionary>()
 
 /** Basic English synonym dictionary (extensible) */
 const EN_SYNONYMS: Record<string, string[]> = {
-  // Common function words with safe variants
-  the: ['this', 'that'],
-  a: ['one', 'some'],
-  an: ['one', 'some'],
-  and: ['plus', 'along with'],
-  or: ['either', 'or else'],
-  but: ['however', 'yet'],
-  in: ['within', 'inside'],
-  on: ['upon', 'at'],
-  of: ['belonging to', 'from'],
-  to: ['toward', 'up to'],
-  for: ['intended for', 'on behalf of'],
-  with: ['together with', 'alongside'],
-  by: ['near', 'beside'],
-  from: ['starting at', 'originating in'],
-  at: ['located at', 'positioned at'],
-
+  // Deliberately excluded, second pass: the function words. Articles,
+  // conjunctions and prepositions were listed here with "safe variants" and
+  // none of them were safe, for the same reason the auxiliaries below are not.
+  // A flat word-list substituter cannot see the slot it is writing into:
+  //
+  //   "to" -> "toward"          breaks every infinitive ("to run" -> "toward run")
+  //   "of" -> "belonging to"    "the set of capabilities" -> "the set belonging to capabilities"
+  //   "by" -> "near"            "written by Max" -> "written near Max", which is a different claim
+  //   "the" -> "that"           swaps a definite article for a demonstrative
+  //   "a" -> "some"             "a reliable set" -> "some reliable set"
+  //   "or" -> "either"          "A or B" -> "A either B"
+  //
+  // These were producing visibly worse English on real documents, which is the
+  // opposite of what someone reaches for this tool to do. Perturbing function
+  // words is also the least useful way to move a watermark statistic: the
+  // detector scores distinct word bigrams, and the AI-tell layer does the work
+  // a reader actually notices. Restoring any of these needs a
+  // part-of-speech-aware substituter, not a longer list.
+  //
   // Deliberately excluded: is/was/are/be/been/being, have/has/had,
   // do/does/did, and the modal verbs (can/could/will/would/should/
   // may/might). These are auxiliaries: they combine with a following verb
@@ -44,44 +46,53 @@ const EN_SYNONYMS: Record<string, string[]> = {
   // part-of-speech- or context-aware substituter could safely reintroduce
   // these; a flat word-list substituter cannot.
 
-  // Common content words
-  make: ['create', 'produce', 'establish'],
-  get: ['obtain', 'acquire', 'receive'],
-  go: ['proceed', 'travel', 'move'],
-  know: ['understand', 'recognize', 'realize'],
-  think: ['believe', 'consider', 'suppose'],
-  see: ['observe', 'notice', 'perceive'],
-  come: ['arrive', 'appear', 'approach'],
-  take: ['grab', 'seize', 'capture'],
-  give: ['provide', 'offer', 'donate'],
-  use: ['employ', 'utilize', 'apply'],
-  find: ['discover', 'locate', 'uncover'],
-  tell: ['inform', 'reveal', 'communicate'],
-  ask: ['inquire', 'question', 'request'],
-  work: ['labor', 'toil', 'function'],
-  call: ['name', 'summon', 'designate'],
-  try: ['attempt', 'endeavor', 'strive'],
-  need: ['require', 'demand', 'necessitate'],
-  feel: ['sense', 'perceive', 'experience'],
-  become: ['turn into', 'grow', 'transform'],
-  leave: ['depart', 'exit', 'abandon'],
-  put: ['place', 'set', 'position'],
-  mean: ['intend', 'signify', 'convey'],
-  keep: ['retain', 'maintain', 'hold'],
-  let: ['allow', 'permit', 'enable'],
-  begin: ['start', 'commence', 'initiate'],
-  seem: ['appear', 'look', 'sound'],
-  help: ['assist', 'aid', 'support'],
-  talk: ['speak', 'discuss', 'converse'],
-  turn: ['rotate', 'pivot', 'convert'],
-  start: ['begin', 'commence', 'initiate'],
-  show: ['display', 'demonstrate', 'reveal'],
-  hear: ['listen', 'perceive', 'learn'],
-  write: ['compose', 'author', 'draft'],
-  read: ['peruse', 'scan', 'study'],
-  look: ['gaze', 'observe', 'examine'],
-  want: ['desire', 'wish', 'crave'],
-  move: ['shift', 'transfer', 'relocate'],
+  // Common content words.
+  //
+  // Two rules govern what may be listed here, both learned from output this
+  // engine actually produced:
+  //
+  // 1. Every variant must be a near-synonym at the SAME OR LOWER register.
+  //    "use" -> "utilize" was in this table, which had the tool installing one
+  //    of the best-known marks of machine and bureaucratic prose while
+  //    claiming to remove them. Anything that raises register is working
+  //    against the product.
+  // 2. Every variant must be grammatical in the same slot, with no change to
+  //    what follows. "become" -> "turn into" gave "become clear" -> "turn into
+  //    clear"; "let" -> "enable" gave "let us know" -> "enable us know".
+  //    Verbs whose complement pattern differs from the original are out.
+  //
+  // Words with no variant that clears both rules were dropped rather than
+  // given a mediocre one: a smaller table that never damages a sentence beats
+  // a longer one that sometimes does.
+  make: ['create', 'produce'],
+  get: ['obtain', 'receive'],
+  go: ['travel', 'move'],
+  know: ['understand', 'realize'],
+  think: ['believe', 'reckon'],
+  see: ['observe', 'notice'],
+  come: ['arrive', 'appear'],
+  take: ['grab', 'seize'],
+  give: ['offer', 'hand over'],
+  find: ['discover', 'locate'],
+  tell: ['inform', 'notify'],
+  ask: ['question', 'query'],
+  call: ['name', 'summon'],
+  try: ['attempt'],
+  need: ['require'],
+  feel: ['sense'],
+  leave: ['depart', 'exit'],
+  put: ['place', 'set'],
+  keep: ['retain', 'hold'],
+  begin: ['start'],
+  seem: ['appear'],
+  help: ['assist', 'aid'],
+  talk: ['speak'],
+  start: ['begin'],
+  show: ['display', 'reveal'],
+  write: ['compose', 'draft'],
+  look: ['gaze', 'peer'],
+  want: ['wish', 'desire'],
+  move: ['shift', 'relocate'],
 }
 
 /**

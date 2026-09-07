@@ -23,8 +23,18 @@ real check flags. Takes `strength` (`preserve` | `balanced` | `aggressive` |
 Start at `preserve`. It only touches passages the checker actually flags,
 which is almost always what a user editing their own writing wants; higher
 strengths trade fidelity to the original wording for a larger reduction.
-`preserve` deliberately leaves dash punctuation alone, so use `balanced` when
-em dashes used as clause connectors are among what you want fixed.
+
+What each strength adds, since the differences are not guessable:
+
+- `preserve`: stock phrases only. Leaves dash punctuation and vocabulary alone.
+- `balanced`: adds dash punctuation, and rewrites AI-associated vocabulary
+  ("robust", "comprehensive", "pivotal") that recurs. A single occurrence is a
+  word choice, so it stays.
+- `aggressive`: rewrites that vocabulary even on a single occurrence, and
+  sends any passage carrying a flagged construction to the rewriter.
+- `regenerate`: rewrites every passage regardless of measured evidence.
+
+Use `balanced` when em dashes are among what you want fixed.
 
 ### The `tier` parameter, which is easy to miss
 

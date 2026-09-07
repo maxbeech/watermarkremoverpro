@@ -149,7 +149,7 @@ async function main(): Promise<void> {
   if (changes.length > 0) {
     const sample = changes.slice(0, 5).map((c) => `"${c.original}" -> "${c.replacement}"`)
     findings.push(
-      `${changes.length} AI-tell${changes.length === 1 ? '' : 's'} (em dashes used as clause connectors, stock phrasing): ${sample.join('; ')}${changes.length > 5 ? '; ...' : ''}`,
+      `${changes.length} AI-tell${changes.length === 1 ? '' : 's'} (em dashes used as clause connectors, stock phrasing, recurring AI vocabulary): ${sample.join('; ')}${changes.length > 5 ? '; ...' : ''}`,
     )
   }
 
@@ -169,8 +169,11 @@ async function main(): Promise<void> {
     )
   }
 
-  // Channel three: vocabulary whose frequency rises in LLM-assisted prose.
-  // Never rewritten, only counted: each of these words is ordinary English.
+  // Channel three: vocabulary the pass could NOT fix, measured on the text as
+  // it stands after the swaps above. Recurring words with a safe same-slot
+  // replacement are already counted in channel one; what lands here is the
+  // residue: words that govern a preposition or work as metaphor, where the
+  // replacement depends on the sentence.
   const heaviestVocabulary = elevatedVocabulary.filter((v) => v.count >= 2).slice(0, 6)
   if (heaviestVocabulary.length >= 2) {
     findings.push(
@@ -214,9 +217,10 @@ async function main(): Promise<void> {
     `strength "${strength}" (${strengthReason}). It runs on this machine; no`,
     'document text is transmitted.',
     '',
-    'Structures and vocabulary above are reported, not rewritten: each is',
-    'ordinary English on its own, and the right fix depends on what the',
-    'sentence is saying.',
+    'Recurring vocabulary above is rewritten by that call. The constructions',
+    'are not: the right fix depends on what the sentence is actually saying,',
+    'so either edit those yourself or pass model "advanced" to have the local',
+    'model rewrite the passages carrying them.',
     '',
     'This is a report, not a verdict: a detected mark is not proof of authorship,',
     'and an absent one is not proof of human authorship.',

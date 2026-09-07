@@ -4351,7 +4351,7 @@ var EXTENDED_STOCK_PHRASES = {
   [assemble("revolution", "ize")]: ["change", "transform", "reshape"]
 };
 var TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g;
-var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its)\b/gi;
+var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi;
 var ELEVATED_VOCABULARY = [
   "delve",
   "tapestry",
@@ -4384,6 +4384,32 @@ var ELEVATED_VOCABULARY = [
   "holistic",
   "comprehensive"
 ];
+var REGISTER_DOWNSHIFT = {
+  underscore: ["stress", "show"],
+  underscores: ["stresses", "shows"],
+  meticulous: ["careful", "thorough"],
+  meticulously: ["carefully", "thoroughly"],
+  pivotal: ["central", "decisive"],
+  realm: ["field", "area"],
+  robust: ["strong", "reliable", "sturdy"],
+  showcase: ["show", "display"],
+  showcasing: ["showing", "displaying"],
+  boasts: ["has", "offers"],
+  bolstered: ["strengthened", "reinforced"],
+  garner: ["gather", "attract"],
+  intricate: ["complex", "detailed"],
+  intricacies: ["details", "complexities"],
+  interplay: ["interaction", "relationship"],
+  vibrant: ["lively", "bright"],
+  crucial: ["essential", "central"],
+  nuanced: ["subtle", "careful"],
+  multifaceted: ["many-sided", "complex"],
+  fostering: ["encouraging", "building"],
+  encompassing: ["covering", "including"],
+  holistic: ["overall", "whole"],
+  comprehensive: ["complete", "full", "thorough"]
+};
+var REGISTER_DENSITY_THRESHOLD = 2;
 
 // src/lib/calibrate/ai-tells.ts
 function shouldSwapDashes(strength) {
@@ -4451,6 +4477,54 @@ function swapStockPhrases(text, library) {
   }
   return { text: result, changes };
 }
+function vocabularyWordsToSwap(text, strength) {
+  const swap = /* @__PURE__ */ new Set();
+  if (strength === "preserve") return swap;
+  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    const count = countWholeWord(text, word);
+    if (count === 0) continue;
+    if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
+    swap.add(word);
+  }
+  return swap;
+}
+function swapElevatedVocabulary(text, strength) {
+  const targets = vocabularyWordsToSwap(text, strength);
+  if (targets.size === 0) return { text, changes: [] };
+  const changes = [];
+  const usage = /* @__PURE__ */ new Map();
+  let result = text;
+  for (const word of targets) {
+    const alternatives = REGISTER_DOWNSHIFT[word];
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    let match;
+    let cursor = 0;
+    let next = "";
+    re.lastIndex = 0;
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(word) ?? 0;
+      const replacement = alternatives[idx % alternatives.length];
+      usage.set(word, idx + 1);
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: "vocabulary",
+        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
+      });
+      cursor = match.index + match[0].length;
+    }
+    next += result.slice(cursor);
+    result = next;
+  }
+  return { text: result, changes };
+}
+function countWholeWord(text, word) {
+  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+  return text.match(re)?.length ?? 0;
+}
 function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -4505,6 +4579,11 @@ function applyDeterministicPass(text, strength = "balanced", library = "core") {
   }
   if (shouldSwapDashes(strength)) {
     const { text: swapped, changes } = swapDashes(current);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
     current = swapped;
     allChanges.push(...changes);
   }
@@ -4584,7 +4663,7 @@ async function main() {
   if (changes.length > 0) {
     const sample = changes.slice(0, 5).map((c) => `"${c.original}" -> "${c.replacement}"`);
     findings.push(
-      `${changes.length} AI-tell${changes.length === 1 ? "" : "s"} (em dashes used as clause connectors, stock phrasing): ${sample.join("; ")}${changes.length > 5 ? "; ..." : ""}`
+      `${changes.length} AI-tell${changes.length === 1 ? "" : "s"} (em dashes used as clause connectors, stock phrasing, recurring AI vocabulary): ${sample.join("; ")}${changes.length > 5 ? "; ..." : ""}`
     );
   }
   const triadic = flaggedStructures.filter((f) => f.kind === "triadic-list");
@@ -4627,9 +4706,10 @@ async function main() {
     `strength "${strength}" (${strengthReason}). It runs on this machine; no`,
     "document text is transmitted.",
     "",
-    "Structures and vocabulary above are reported, not rewritten: each is",
-    "ordinary English on its own, and the right fix depends on what the",
-    "sentence is saying.",
+    "Recurring vocabulary above is rewritten by that call. The constructions",
+    "are not: the right fix depends on what the sentence is actually saying,",
+    'so either edit those yourself or pass model "advanced" to have the local',
+    "model rewrite the passages carrying them.",
     "",
     "This is a report, not a verdict: a detected mark is not proof of authorship,",
     "and an absent one is not proof of human authorship."

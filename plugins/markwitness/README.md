@@ -31,6 +31,31 @@ The hook never edits the file, stays silent on clean prose, ignores source
 code, and skips anything under 120 words. A check that fires on every write
 gets muted within a day.
 
+## The four strengths, since the differences are not guessable
+
+| Strength | Stock phrases | Em dashes | AI vocabulary | Passages rewritten |
+|---|---|---|---|---|
+| `preserve` | yes | no | no | only those a real check flags |
+| `balanced` (default) | yes | yes | where it recurs | those, plus any carrying a flagged construction |
+| `aggressive` | yes | yes | every occurrence | any testable passage |
+| `regenerate` | yes | yes | every occurrence | all of them |
+
+A word like "robust" or "comprehensive" is rewritten only once it recurs,
+because a single occurrence is a word choice and not a tell. Three-item lists
+and "not just X, but Y" are reported rather than find/replaced: the right fix
+depends on what the sentence is saying. At `aggressive` and above they route
+the passage to the rewriter, which is where `model: "advanced"` (a real local
+LLM, downloaded on first use) earns its download.
+
+## Cost per call
+
+`reduce_ai_evidence` returns a summary by default: about 1,500 tokens for a
+600-word document. Pass `detail: "full"` for both complete `AnalysisResult`
+objects and every scored candidate, which is roughly 14,000 tokens for the same
+document. The rewriting itself runs locally and consumes no model tokens at
+all; what you pay for is the request and the response passing through your
+agent's context.
+
 ## Nothing is transmitted
 
 Rewriting runs on-device or in-process, on every tier, with no hosted mode.

@@ -143,6 +143,36 @@ try {
     Array.isArray(rewritePayload.result.limits) && rewritePayload.result.limits.some((l: string) => /cannot guarantee/i.test(l)),
     'the rewrite result states its own limits, not just the tool description',
   )
+
+  // The compact default is a contract, not an implementation detail: a tool
+  // meant to run on every document in a publishing pipeline cannot spend the
+  // caller's whole context per call. The full object for a 612-word document
+  // measured about 40 KB, of which 31 KB was the before/after AnalysisResult
+  // pair. Asserting the shape here stops that quietly coming back.
+  assert(rewritePayload.detail === 'summary', 'reduce_ai_evidence returns the compact summary by default')
+  assert(
+    rewritePayload.result.documentBefore === undefined && rewritePayload.result.documentAfter === undefined,
+    'the summary omits the full before/after AnalysisResult pair',
+  )
+  assert(
+    rewritePayload.result.evidenceBefore !== undefined && rewritePayload.result.evidenceAfter !== undefined,
+    'the summary still carries the before/after headline evidence numbers',
+  )
+
+  const full = await client.callTool({
+    name: 'reduce_ai_evidence',
+    arguments: { text: SAMPLE, strength: 'balanced', tier: 'free', detail: 'full' },
+  })
+  const fullPayload = JSON.parse((full.content as Array<{ text: string }>)[0].text)
+  assert(fullPayload.detail === 'full', 'detail "full" is honoured')
+  assert(
+    fullPayload.result.documentBefore?.status === 'ok' && fullPayload.result.documentAfter?.status === 'ok',
+    'detail "full" returns both complete analyses',
+  )
+  assert(
+    JSON.stringify(fullPayload).length > JSON.stringify(rewritePayload).length,
+    'the full response is genuinely larger than the summary, so the default saves something real',
+  )
   assert(
     typeof rewritePayload.model === 'string' && /standard/.test(rewritePayload.model),
     'the default call reports it ran the standard (rule-based, no download) engine',

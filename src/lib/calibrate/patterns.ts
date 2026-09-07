@@ -20,9 +20,10 @@
  *
  * - SWAPPED phrases are distinctive enough that a replacement is safe. A
  *   sentence containing "delve into" almost never needs that exact phrase.
- * - FLAGGED vocabulary ("robust", "key", "landscape") is genuinely common in
- *   ordinary English. Blind-replacing it damages good writing, so it is
- *   counted and reported, never silently rewritten.
+ * - FLAGGED vocabulary ("robust", "realm", "comprehensive") is genuinely
+ *   common in ordinary English. One occurrence is not a tell, so it is counted
+ *   rather than rewritten on sight, and rewritten only once its density in a
+ *   document makes it one (see REGISTER_DOWNSHIFT).
  */
 
 /**
@@ -172,16 +173,16 @@ export const TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g
  * know.
  */
 export const NEGATIVE_PARALLELISM_PATTERN =
-  /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its)\b/gi
+  /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi
 
 /**
  * High-frequency "AI vocabulary": words whose rate rises sharply in
  * LLM-assisted text but which remain perfectly ordinary English.
  *
- * Counted and reported, never auto-replaced. Swapping "key" or "robust"
- * wherever it appears would damage good writing to chase a signal that a
- * single occurrence does not carry; the density across a document is the
- * thing worth telling a writer about.
+ * Always counted. Rewritten only when density makes the word a tell rather
+ * than a word choice: see REGISTER_DOWNSHIFT for which of these have a safe
+ * plain-English equivalent, and ai-tells.ts for the density rule that decides
+ * when one gets applied.
  */
 export const ELEVATED_VOCABULARY: readonly string[] = [
   'delve',
@@ -215,3 +216,63 @@ export const ELEVATED_VOCABULARY: readonly string[] = [
   'holistic',
   'comprehensive',
 ] as const
+
+/**
+ * Plain-English equivalents for the elevated vocabulary above.
+ *
+ * Every entry here is a same-part-of-speech, same-argument-structure swap: the
+ * replacement drops into the slot the original occupied without the sentence
+ * around it needing to change. That is the whole admission criterion, and it
+ * is why this table is deliberately smaller than ELEVATED_VOCABULARY.
+ *
+ * Seven words are counted but NOT listed here, on purpose:
+ *
+ * - "delve", "leverage", "align", "resonate", "illuminate" govern a
+ *   preposition or take an object whose shape decides the right replacement.
+ *   "align with our goals" and "aligns the columns" want different words, and
+ *   a table lookup cannot tell them apart. ("delve into" is handled as a whole
+ *   phrase in the stock-phrase table above, where the preposition is part of
+ *   the match and the swap is therefore safe.)
+ * - "tapestry" and "testament" are metaphors. "A testament to" wants the
+ *   sentence rebuilt, not a word substituted, so they stay flagged for a human
+ *   or for the model-backed pass to handle.
+ *
+ * Flagging a word this table cannot fix is still useful: it tells the writer
+ * where to look. Silently swapping one it cannot fix safely would not be.
+ */
+export const REGISTER_DOWNSHIFT: Record<string, string[]> = {
+  underscore: ['stress', 'show'],
+  underscores: ['stresses', 'shows'],
+  meticulous: ['careful', 'thorough'],
+  meticulously: ['carefully', 'thoroughly'],
+  pivotal: ['central', 'decisive'],
+  realm: ['field', 'area'],
+  robust: ['strong', 'reliable', 'sturdy'],
+  showcase: ['show', 'display'],
+  showcasing: ['showing', 'displaying'],
+  boasts: ['has', 'offers'],
+  bolstered: ['strengthened', 'reinforced'],
+  garner: ['gather', 'attract'],
+  intricate: ['complex', 'detailed'],
+  intricacies: ['details', 'complexities'],
+  interplay: ['interaction', 'relationship'],
+  vibrant: ['lively', 'bright'],
+  crucial: ['essential', 'central'],
+  nuanced: ['subtle', 'careful'],
+  multifaceted: ['many-sided', 'complex'],
+  fostering: ['encouraging', 'building'],
+  encompassing: ['covering', 'including'],
+  holistic: ['overall', 'whole'],
+  comprehensive: ['complete', 'full', 'thorough'],
+}
+
+/**
+ * How many times a word from REGISTER_DOWNSHIFT must appear in a document
+ * before the "balanced" strength will rewrite it.
+ *
+ * Two, because the argument for leaving these words alone is entirely an
+ * argument about a single occurrence. One "comprehensive" in a page of prose
+ * is a word choice; the same word three times is the writer's model reaching
+ * for its favourite adjective, and that is the thing a reader notices.
+ */
+export const REGISTER_DENSITY_THRESHOLD = 2

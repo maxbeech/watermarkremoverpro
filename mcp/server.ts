@@ -139,9 +139,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       description:
         'Rewrite a document, on-device, to reduce detectable AI-style evidence: both the ' +
         'statistical watermark signal the checker measures (where structurally possible) and ' +
-        'human-perceptible AI tells such as em dashes and stock phrasing ("delve into", ' +
-        '"moreover", triadic lists). Only rewrites the passages that actually carry evidence, ' +
-        'using the same per-passage findings check_document would report. A passage with no safe ' +
+        'human-perceptible AI tells: em dashes, stock phrasing ("delve into", "moreover"), and ' +
+        'AI-associated vocabulary that recurs ("robust", "comprehensive", "pivotal"). Rewrites ' +
+        'the passages that carry statistical evidence, using the same per-passage findings ' +
+        'check_document would report, AND passages whose only problem is how they read. Flagged ' +
+        'constructions (three-item lists, "not just X, but Y") are reported rather than ' +
+        'find/replaced, because the right rewrite depends on what the sentence says; at ' +
+        '"aggressive" and above they route the passage to the rewriter, which is where model ' +
+        '"advanced" earns its download. A passage with no safe ' +
         'candidate (one that preserves its numbers, negations and named entities, and stays ' +
         'above the similarity floor for the requested strength) is left completely unchanged ' +
         'rather than replaced with something unsafe.\n\n' +
@@ -163,9 +168,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             type: 'string',
             enum: ['preserve', 'balanced', 'aggressive', 'regenerate'],
             description:
-              'How much change to allow, in exchange for a larger evidence reduction. "preserve" only ' +
-              'touches passages a real check would flag as a finding; "regenerate" rewrites every ' +
-              'passage regardless of measured evidence. Defaults to "balanced".',
+              'How much change to allow, in exchange for a larger evidence reduction. ' +
+              '"preserve": stock phrases only, and only in passages a real check would flag as a ' +
+              'finding; leaves dash punctuation and vocabulary alone. "balanced" (the default): ' +
+              'adds dash punctuation, and rewrites AI-associated vocabulary ("robust", ' +
+              '"comprehensive", "pivotal") where it RECURS, since a single occurrence is a word ' +
+              'choice rather than a tell. "aggressive": rewrites that vocabulary on a single ' +
+              'occurrence too, and sends any passage carrying a flagged construction (three-item ' +
+              'lists, "not just X, but Y") to the rewriter. "regenerate": rewrites every passage ' +
+              'regardless of measured evidence.',
           },
           tier: {
             type: 'string',
@@ -190,6 +201,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
               'still on-device only. First call with "advanced" can take a while (model download); later ' +
               'calls reuse the cache. If the model cannot be loaded (offline, unsupported platform), this ' +
               'automatically falls back to "standard" and the response says so in `model`.',
+          },
+          detail: {
+            type: 'string',
+            enum: ['summary', 'full'],
+            description:
+              '"summary" (default) returns the revised text, the change counts, the before/after ' +
+              'headline evidence numbers, and what is still present, which is everything needed to ' +
+              'decide what to do next. "full" additionally returns both complete AnalysisResult ' +
+              'objects and every scored candidate per passage: roughly 3x the response size (about ' +
+              '14,000 tokens for a 600-word document versus about 4,000), so ask for it only when ' +
+              'you are going to read the per-passage arrays.',
           },
         },
         required: ['text'],
@@ -348,8 +370,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY])
       }
 
+      const detail = args?.detail === 'full' ? 'full' : 'summary'
+
       return json({
-        result,
+        result: detail === 'full' ? result : summarizeRewrite(result),
+        detail,
         mode: 'local',
         model,
         note: `Rewrite completed entirely in this process (${countWords(text)} words). Nothing was transmitted. This tool has no hosted mode on any tier.`,
@@ -369,6 +394,63 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 function json(payload: unknown) {
   return { content: [{ type: 'text' as const, text: JSON.stringify(payload, null, 2) }] }
+}
+
+/**
+ * The compact form of a rewrite result, and the default one.
+ *
+ * Measured, not guessed: the full object for a 612-word document is about
+ * 40 KB of JSON, roughly 14,000 tokens, and 31 KB of that is the before/after
+ * AnalysisResult pair, whose per-passage arrays an agent almost never reads.
+ * A tool meant to sit in a publishing pipeline and run on every document
+ * cannot cost that much context per call, so this keeps the numbers a caller
+ * acts on and drops the arrays it does not. `detail: "full"` returns
+ * everything, unchanged, for a caller that genuinely wants it.
+ */
+function summarizeRewrite(result: Awaited<ReturnType<typeof reduceEvidence>>) {
+  const headline = (analysis: typeof result.documentBefore) =>
+    analysis === null
+      ? null
+      : {
+          words: analysis.words,
+          markDetected: analysis.watermark.anyDetected,
+          passagesTested: analysis.passageCorrection?.tested ?? 0,
+          passagesSurvivingCorrection: analysis.passageCorrection?.survived ?? 0,
+        }
+
+  // Structures are collapsed to counts plus a couple of examples: knowing
+  // there are eleven three-item lists and what one looks like is actionable;
+  // eleven objects with character offsets is not.
+  const structureSummary = (kind: 'triadic-list' | 'negative-parallelism') => {
+    const matches = result.flaggedStructures.filter((f) => f.kind === kind)
+    if (matches.length === 0) return null
+    return { count: matches.length, examples: matches.slice(0, 2).map((m) => m.text.trim()) }
+  }
+
+  return {
+    status: result.status,
+    revisedText: result.revisedText,
+    tellChangeCount: result.tellChangeCount,
+    passagesRewritten: result.passages.filter((p) => p.chosen !== null).length,
+    passagesTargeted: result.passages.length,
+    evidenceBefore: headline(result.documentBefore),
+    evidenceAfter: headline(result.documentAfter),
+    stillPresent: {
+      triadicLists: structureSummary('triadic-list'),
+      negativeParallelism: structureSummary('negative-parallelism'),
+      elevatedVocabulary: result.elevatedVocabulary,
+      note:
+        'These were measured on the final text and NOT rewritten. Constructions need a human or ' +
+        'model: "aggressive" and above route the passages carrying them to the rewriter. ' +
+        'Vocabulary listed here has no plain equivalent that fits the same slot.',
+    },
+    additionalTellsInExtendedLibrary: result.additionalTellsInExtendedLibrary,
+    roundsUsed: result.roundsUsed,
+    tier: result.tier,
+    strength: result.strength,
+    processingTimeMs: result.processingTimeMs,
+    limits: result.limits,
+  }
 }
 
 async function main() {

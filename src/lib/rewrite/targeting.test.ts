@@ -46,6 +46,38 @@ describe('targetPassages', () => {
     expect(targets.map((p) => p.index)).toEqual([0, 1, 2, 3])
   })
 
+  // Passage 3 carries no watermark or style signal at all: without style-tell
+  // pressure it is unreachable below "regenerate". This is the routing gap the
+  // engine had, where a passage whose only problem was how it read was
+  // reported and then never rewritten.
+  const tellPressure = new Map([[3, 2]])
+
+  it('balanced: touches a passage whose only signal is style-tell pressure', () => {
+    const targets = targetPassages(passages, 'balanced', tellPressure)
+    expect(targets.map((p) => p.index)).toEqual([0, 1, 3])
+  })
+
+  it('balanced: ignores pressure below the threshold, so one three-item list is not enough', () => {
+    const targets = targetPassages(passages, 'balanced', new Map([[3, 1]]))
+    expect(targets.map((p) => p.index)).toEqual([0, 1])
+  })
+
+  it('aggressive: any pressure at all is enough', () => {
+    const targets = targetPassages(passages, 'aggressive', new Map([[3, 1]]))
+    expect(targets.map((p) => p.index)).toEqual([0, 1, 2, 3])
+  })
+
+  it('preserve: pressure never widens the selection, which is what preserve promises', () => {
+    const targets = targetPassages(passages, 'preserve', new Map([[3, 99]]))
+    expect(targets.map((p) => p.index)).toEqual([0])
+  })
+
+  it('omitting pressure entirely reads every passage as zero, changing nothing', () => {
+    expect(targetPassages(passages, 'balanced').map((p) => p.index)).toEqual(
+      targetPassages(passages, 'balanced', new Map()).map((p) => p.index),
+    )
+  })
+
   it('minSimilarity loosens monotonically from preserve to regenerate', () => {
     expect(minSimilarity('preserve')).toBeGreaterThan(minSimilarity('balanced'))
     expect(minSimilarity('balanced')).toBeGreaterThan(minSimilarity('aggressive'))

@@ -20386,22 +20386,25 @@ function calculateLexicalDiversity(tokenCounts) {
 // src/lib/calibrate/dictionary.ts
 var dictionaryCache = /* @__PURE__ */ new Map();
 var EN_SYNONYMS = {
-  // Common function words with safe variants
-  the: ["this", "that"],
-  a: ["one", "some"],
-  an: ["one", "some"],
-  and: ["plus", "along with"],
-  or: ["either", "or else"],
-  but: ["however", "yet"],
-  in: ["within", "inside"],
-  on: ["upon", "at"],
-  of: ["belonging to", "from"],
-  to: ["toward", "up to"],
-  for: ["intended for", "on behalf of"],
-  with: ["together with", "alongside"],
-  by: ["near", "beside"],
-  from: ["starting at", "originating in"],
-  at: ["located at", "positioned at"],
+  // Deliberately excluded, second pass: the function words. Articles,
+  // conjunctions and prepositions were listed here with "safe variants" and
+  // none of them were safe, for the same reason the auxiliaries below are not.
+  // A flat word-list substituter cannot see the slot it is writing into:
+  //
+  //   "to" -> "toward"          breaks every infinitive ("to run" -> "toward run")
+  //   "of" -> "belonging to"    "the set of capabilities" -> "the set belonging to capabilities"
+  //   "by" -> "near"            "written by Max" -> "written near Max", which is a different claim
+  //   "the" -> "that"           swaps a definite article for a demonstrative
+  //   "a" -> "some"             "a reliable set" -> "some reliable set"
+  //   "or" -> "either"          "A or B" -> "A either B"
+  //
+  // These were producing visibly worse English on real documents, which is the
+  // opposite of what someone reaches for this tool to do. Perturbing function
+  // words is also the least useful way to move a watermark statistic: the
+  // detector scores distinct word bigrams, and the AI-tell layer does the work
+  // a reader actually notices. Restoring any of these needs a
+  // part-of-speech-aware substituter, not a longer list.
+  //
   // Deliberately excluded: is/was/are/be/been/being, have/has/had,
   // do/does/did, and the modal verbs (can/could/will/would/should/
   // may/might). These are auxiliaries: they combine with a following verb
@@ -20413,44 +20416,53 @@ var EN_SYNONYMS = {
   // "existed": a real, reported bug, not a hypothetical one. A future
   // part-of-speech- or context-aware substituter could safely reintroduce
   // these; a flat word-list substituter cannot.
-  // Common content words
-  make: ["create", "produce", "establish"],
-  get: ["obtain", "acquire", "receive"],
-  go: ["proceed", "travel", "move"],
-  know: ["understand", "recognize", "realize"],
-  think: ["believe", "consider", "suppose"],
-  see: ["observe", "notice", "perceive"],
-  come: ["arrive", "appear", "approach"],
-  take: ["grab", "seize", "capture"],
-  give: ["provide", "offer", "donate"],
-  use: ["employ", "utilize", "apply"],
-  find: ["discover", "locate", "uncover"],
-  tell: ["inform", "reveal", "communicate"],
-  ask: ["inquire", "question", "request"],
-  work: ["labor", "toil", "function"],
-  call: ["name", "summon", "designate"],
-  try: ["attempt", "endeavor", "strive"],
-  need: ["require", "demand", "necessitate"],
-  feel: ["sense", "perceive", "experience"],
-  become: ["turn into", "grow", "transform"],
-  leave: ["depart", "exit", "abandon"],
-  put: ["place", "set", "position"],
-  mean: ["intend", "signify", "convey"],
-  keep: ["retain", "maintain", "hold"],
-  let: ["allow", "permit", "enable"],
-  begin: ["start", "commence", "initiate"],
-  seem: ["appear", "look", "sound"],
-  help: ["assist", "aid", "support"],
-  talk: ["speak", "discuss", "converse"],
-  turn: ["rotate", "pivot", "convert"],
-  start: ["begin", "commence", "initiate"],
-  show: ["display", "demonstrate", "reveal"],
-  hear: ["listen", "perceive", "learn"],
-  write: ["compose", "author", "draft"],
-  read: ["peruse", "scan", "study"],
-  look: ["gaze", "observe", "examine"],
-  want: ["desire", "wish", "crave"],
-  move: ["shift", "transfer", "relocate"]
+  // Common content words.
+  //
+  // Two rules govern what may be listed here, both learned from output this
+  // engine actually produced:
+  //
+  // 1. Every variant must be a near-synonym at the SAME OR LOWER register.
+  //    "use" -> "utilize" was in this table, which had the tool installing one
+  //    of the best-known marks of machine and bureaucratic prose while
+  //    claiming to remove them. Anything that raises register is working
+  //    against the product.
+  // 2. Every variant must be grammatical in the same slot, with no change to
+  //    what follows. "become" -> "turn into" gave "become clear" -> "turn into
+  //    clear"; "let" -> "enable" gave "let us know" -> "enable us know".
+  //    Verbs whose complement pattern differs from the original are out.
+  //
+  // Words with no variant that clears both rules were dropped rather than
+  // given a mediocre one: a smaller table that never damages a sentence beats
+  // a longer one that sometimes does.
+  make: ["create", "produce"],
+  get: ["obtain", "receive"],
+  go: ["travel", "move"],
+  know: ["understand", "realize"],
+  think: ["believe", "reckon"],
+  see: ["observe", "notice"],
+  come: ["arrive", "appear"],
+  take: ["grab", "seize"],
+  give: ["offer", "hand over"],
+  find: ["discover", "locate"],
+  tell: ["inform", "notify"],
+  ask: ["question", "query"],
+  call: ["name", "summon"],
+  try: ["attempt"],
+  need: ["require"],
+  feel: ["sense"],
+  leave: ["depart", "exit"],
+  put: ["place", "set"],
+  keep: ["retain", "hold"],
+  begin: ["start"],
+  seem: ["appear"],
+  help: ["assist", "aid"],
+  talk: ["speak"],
+  start: ["begin"],
+  show: ["display", "reveal"],
+  write: ["compose", "draft"],
+  look: ["gaze", "peer"],
+  want: ["wish", "desire"],
+  move: ["shift", "relocate"]
 };
 async function loadDictionary(language) {
   if (dictionaryCache.has(language)) {
@@ -20803,7 +20815,7 @@ var EXTENDED_STOCK_PHRASES = {
   [assemble("revolution", "ize")]: ["change", "transform", "reshape"]
 };
 var TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g;
-var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its)\b/gi;
+var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi;
 var ELEVATED_VOCABULARY = [
   "delve",
   "tapestry",
@@ -20836,6 +20848,32 @@ var ELEVATED_VOCABULARY = [
   "holistic",
   "comprehensive"
 ];
+var REGISTER_DOWNSHIFT = {
+  underscore: ["stress", "show"],
+  underscores: ["stresses", "shows"],
+  meticulous: ["careful", "thorough"],
+  meticulously: ["carefully", "thoroughly"],
+  pivotal: ["central", "decisive"],
+  realm: ["field", "area"],
+  robust: ["strong", "reliable", "sturdy"],
+  showcase: ["show", "display"],
+  showcasing: ["showing", "displaying"],
+  boasts: ["has", "offers"],
+  bolstered: ["strengthened", "reinforced"],
+  garner: ["gather", "attract"],
+  intricate: ["complex", "detailed"],
+  intricacies: ["details", "complexities"],
+  interplay: ["interaction", "relationship"],
+  vibrant: ["lively", "bright"],
+  crucial: ["essential", "central"],
+  nuanced: ["subtle", "careful"],
+  multifaceted: ["many-sided", "complex"],
+  fostering: ["encouraging", "building"],
+  encompassing: ["covering", "including"],
+  holistic: ["overall", "whole"],
+  comprehensive: ["complete", "full", "thorough"]
+};
+var REGISTER_DENSITY_THRESHOLD = 2;
 
 // src/lib/calibrate/ai-tells.ts
 function shouldSwapDashes(strength) {
@@ -20903,6 +20941,54 @@ function swapStockPhrases(text, library) {
   }
   return { text: result, changes };
 }
+function vocabularyWordsToSwap(text, strength) {
+  const swap = /* @__PURE__ */ new Set();
+  if (strength === "preserve") return swap;
+  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    const count = countWholeWord(text, word);
+    if (count === 0) continue;
+    if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
+    swap.add(word);
+  }
+  return swap;
+}
+function swapElevatedVocabulary(text, strength) {
+  const targets = vocabularyWordsToSwap(text, strength);
+  if (targets.size === 0) return { text, changes: [] };
+  const changes = [];
+  const usage = /* @__PURE__ */ new Map();
+  let result = text;
+  for (const word of targets) {
+    const alternatives = REGISTER_DOWNSHIFT[word];
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    let match;
+    let cursor = 0;
+    let next = "";
+    re.lastIndex = 0;
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(word) ?? 0;
+      const replacement = alternatives[idx % alternatives.length];
+      usage.set(word, idx + 1);
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: "vocabulary",
+        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
+      });
+      cursor = match.index + match[0].length;
+    }
+    next += result.slice(cursor);
+    result = next;
+  }
+  return { text: result, changes };
+}
+function countWholeWord(text, word) {
+  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+  return text.match(re)?.length ?? 0;
+}
 function escapeRegExp(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -20947,6 +21033,21 @@ function countElevatedVocabulary(text) {
   }
   return counts.sort((a, b) => b.count - a.count);
 }
+var PARALLELISM_WEIGHT = 2;
+var TRIADIC_WEIGHT = 1;
+function measureStyleTells(text) {
+  const flagged = flagStructures(text);
+  const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0);
+  const weighted = flagged.reduce(
+    (sum, f) => sum + (f.kind === "negative-parallelism" ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
+    0
+  );
+  return {
+    structures: flagged.length,
+    vocabulary,
+    pressure: weighted + Math.floor(vocabulary / 2)
+  };
+}
 function applyDeterministicPass(text, strength = "balanced", library = "core") {
   let current = text;
   const allChanges = [];
@@ -20957,6 +21058,11 @@ function applyDeterministicPass(text, strength = "balanced", library = "core") {
   }
   if (shouldSwapDashes(strength)) {
     const { text: swapped, changes } = swapDashes(current);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
     current = swapped;
     allChanges.push(...changes);
   }
@@ -21044,16 +21150,18 @@ function createRuleBasedBackend(language = "en", library = "core") {
 // src/lib/rewrite/targeting.ts
 var NOTABLE_Z = 2.5;
 var NOTABLE_STYLE_DEVIATION = 2;
-function targetPassages(passages, strength) {
+var NOTABLE_TELL_PRESSURE = 2;
+function targetPassages(passages, strength, tellPressure) {
+  const pressure = (p) => tellPressure?.get(p.index) ?? 0;
   switch (strength) {
     case "preserve":
       return passages.filter((p) => p.survivesCorrection);
     case "balanced":
       return passages.filter(
-        (p) => p.survivesCorrection || p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z || p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION
+        (p) => p.survivesCorrection || p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z || p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION || pressure(p) >= NOTABLE_TELL_PRESSURE
       );
     case "aggressive":
-      return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null);
+      return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null || pressure(p) > 0);
     case "regenerate":
       return passages;
   }
@@ -21166,25 +21274,32 @@ function escapeRegExp2(s) {
 }
 
 // src/lib/rewrite/scoring.ts
-async function scoreCandidate(originalText, originalFacts, candidateText, backend, options) {
+async function scoreCandidate(originalText, originalFacts, originalTellPressure, candidateText, backend, options) {
   const [origEmbed, candEmbed] = await Promise.all([backend.embed(originalText), backend.embed(candidateText)]);
   const semanticScore = cosineSimilarity(origEmbed, candEmbed);
   const factLock = verifyFacts(originalFacts, candidateText);
   const bestZ = bestWatermarkZ(candidateText, options.keys);
+  const tellPressure = measureStyleTells(candidateText).pressure;
   const gated = !factLock.passed || semanticScore < options.minSimilarity;
-  const paretoScore = gated ? -Infinity : semanticScore - normalizedZPenalty(bestZ);
+  const paretoScore = gated ? -Infinity : semanticScore - normalizedZPenalty(bestZ) + tellReductionBonus(originalTellPressure, tellPressure);
   return {
     text: candidateText,
     semanticScore,
     factLockPassed: factLock.passed,
     factLockDetail: factLock.detail,
     evidenceZ: bestZ,
+    tellPressure,
     paretoScore
   };
 }
 async function scoreCandidates(originalText, candidateTexts, backend, options) {
   const originalFacts = extractFacts(originalText);
-  return Promise.all(candidateTexts.map((c) => scoreCandidate(originalText, originalFacts, c, backend, options)));
+  const originalTellPressure = measureStyleTells(originalText).pressure;
+  return Promise.all(
+    candidateTexts.map(
+      (c) => scoreCandidate(originalText, originalFacts, originalTellPressure, c, backend, options)
+    )
+  );
 }
 function pickBest(candidates) {
   const survivors = candidates.filter((c) => c.paretoScore > -Infinity);
@@ -21205,6 +21320,10 @@ function bestWatermarkZ(text, keys) {
 function normalizedZPenalty(z) {
   if (z === null) return 0;
   return Math.max(0, z) * 0.05;
+}
+function tellReductionBonus(originalPressure, candidatePressure) {
+  const removed = originalPressure - candidatePressure;
+  return Math.max(-0.12, Math.min(0.12, removed * 0.04));
 }
 
 // src/lib/rewrite/orchestrator.ts
@@ -21267,7 +21386,12 @@ async function rewriteDocument(request, backend, keys) {
   const attempted = /* @__PURE__ */ new Set();
   let round = 0;
   for (; round < MAX_ROUNDS; round++) {
-    const targets = targetPassages(analysis.passages, request.strength).filter((p) => !attempted.has(p.index));
+    const tellPressure = new Map(
+      analysis.passages.map((p) => [p.index, measureStyleTells(p.text).pressure])
+    );
+    const targets = targetPassages(analysis.passages, request.strength, tellPressure).filter(
+      (p) => !attempted.has(p.index)
+    );
     if (targets.length === 0) break;
     const replacements = [];
     for (const passage of targets) {
@@ -21396,7 +21520,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
       name: "reduce_ai_evidence",
-      description: `Rewrite a document, on-device, to reduce detectable AI-style evidence: both the statistical watermark signal the checker measures (where structurally possible) and human-perceptible AI tells such as em dashes and stock phrasing ("delve into", "moreover", triadic lists). Only rewrites the passages that actually carry evidence, using the same per-passage findings check_document would report. A passage with no safe candidate (one that preserves its numbers, negations and named entities, and stays above the similarity floor for the requested strength) is left completely unchanged rather than replaced with something unsafe.
+      description: `Rewrite a document, on-device, to reduce detectable AI-style evidence: both the statistical watermark signal the checker measures (where structurally possible) and human-perceptible AI tells: em dashes, stock phrasing ("delve into", "moreover"), and AI-associated vocabulary that recurs ("robust", "comprehensive", "pivotal"). Rewrites the passages that carry statistical evidence, using the same per-passage findings check_document would report, AND passages whose only problem is how they read. Flagged constructions (three-item lists, "not just X, but Y") are reported rather than find/replaced, because the right rewrite depends on what the sentence says; at "aggressive" and above they route the passage to the rewriter, which is where model "advanced" earns its download. A passage with no safe candidate (one that preserves its numbers, negations and named entities, and stays above the similarity floor for the requested strength) is left completely unchanged rather than replaced with something unsafe.
 
 CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobody outside that vendor holds the key it was applied with, so no tool honestly can. Heavier strengths trade fidelity to the original wording for a larger evidence reduction, so review the diff before relying on the result. This always runs entirely in this process: there is no hosted mode, on any tier, unlike check_document. See docs/REWRITE_PHILOSOPHY.md.`,
       inputSchema: {
@@ -21411,7 +21535,7 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
           strength: {
             type: "string",
             enum: ["preserve", "balanced", "aggressive", "regenerate"],
-            description: 'How much change to allow, in exchange for a larger evidence reduction. "preserve" only touches passages a real check would flag as a finding; "regenerate" rewrites every passage regardless of measured evidence. Defaults to "balanced".'
+            description: 'How much change to allow, in exchange for a larger evidence reduction. "preserve": stock phrases only, and only in passages a real check would flag as a finding; leaves dash punctuation and vocabulary alone. "balanced" (the default): adds dash punctuation, and rewrites AI-associated vocabulary ("robust", "comprehensive", "pivotal") where it RECURS, since a single occurrence is a word choice rather than a tell. "aggressive": rewrites that vocabulary on a single occurrence too, and sends any passage carrying a flagged construction (three-item lists, "not just X, but Y") to the rewriter. "regenerate": rewrites every passage regardless of measured evidence.'
           },
           tier: {
             type: "string",
@@ -21422,6 +21546,11 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
             type: "string",
             enum: ["standard", "advanced"],
             description: '"standard" (default) is the deterministic rule-based engine: instant, no download. "advanced" runs a real small local LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) via onnxruntime-node, downloaded from the Hugging Face CDN and cached under ~/.cache/markwitness/models on first use, never from a MarkWitness-operated server, and still on-device only. First call with "advanced" can take a while (model download); later calls reuse the cache. If the model cannot be loaded (offline, unsupported platform), this automatically falls back to "standard" and the response says so in `model`.'
+          },
+          detail: {
+            type: "string",
+            enum: ["summary", "full"],
+            description: '"summary" (default) returns the revised text, the change counts, the before/after headline evidence numbers, and what is still present, which is everything needed to decide what to do next. "full" additionally returns both complete AnalysisResult objects and every scored candidate per passage: roughly 3x the response size (about 14,000 tokens for a 600-word document versus about 4,000), so ask for it only when you are going to read the per-passage arrays.'
           }
         },
         required: ["text"],
@@ -21544,8 +21673,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       } else {
         result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY]);
       }
+      const detail = args?.detail === "full" ? "full" : "summary";
       return json({
-        result,
+        result: detail === "full" ? result : summarizeRewrite(result),
+        detail,
         mode: "local",
         model,
         note: `Rewrite completed entirely in this process (${countWords(text)} words). Nothing was transmitted. This tool has no hosted mode on any tier.`
@@ -21561,6 +21692,40 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 function json(payload) {
   return { content: [{ type: "text", text: JSON.stringify(payload, null, 2) }] };
+}
+function summarizeRewrite(result) {
+  const headline = (analysis) => analysis === null ? null : {
+    words: analysis.words,
+    markDetected: analysis.watermark.anyDetected,
+    passagesTested: analysis.passageCorrection?.tested ?? 0,
+    passagesSurvivingCorrection: analysis.passageCorrection?.survived ?? 0
+  };
+  const structureSummary = (kind) => {
+    const matches = result.flaggedStructures.filter((f) => f.kind === kind);
+    if (matches.length === 0) return null;
+    return { count: matches.length, examples: matches.slice(0, 2).map((m) => m.text.trim()) };
+  };
+  return {
+    status: result.status,
+    revisedText: result.revisedText,
+    tellChangeCount: result.tellChangeCount,
+    passagesRewritten: result.passages.filter((p) => p.chosen !== null).length,
+    passagesTargeted: result.passages.length,
+    evidenceBefore: headline(result.documentBefore),
+    evidenceAfter: headline(result.documentAfter),
+    stillPresent: {
+      triadicLists: structureSummary("triadic-list"),
+      negativeParallelism: structureSummary("negative-parallelism"),
+      elevatedVocabulary: result.elevatedVocabulary,
+      note: 'These were measured on the final text and NOT rewritten. Constructions need a human or model: "aggressive" and above route the passages carrying them to the rewriter. Vocabulary listed here has no plain equivalent that fits the same slot.'
+    },
+    additionalTellsInExtendedLibrary: result.additionalTellsInExtendedLibrary,
+    roundsUsed: result.roundsUsed,
+    tier: result.tier,
+    strength: result.strength,
+    processingTimeMs: result.processingTimeMs,
+    limits: result.limits
+  };
 }
 async function main() {
   await server.connect(new StdioServerTransport());

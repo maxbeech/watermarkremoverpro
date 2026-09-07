@@ -11,19 +11,46 @@ import type { PassageFinding, Strength } from './types'
 const NOTABLE_Z = 2.5
 const NOTABLE_STYLE_DEVIATION = 2.0
 
-export function targetPassages(passages: PassageFinding[], strength: Strength): PassageFinding[] {
+/**
+ * Style-tell pressure (see measureStyleTells) at which a passage is worth
+ * rewriting on that basis alone, with no watermark or register signal.
+ *
+ * Two, so a passage needs either two flagged constructions or one construction
+ * plus a pair of elevated words. A single three-item list is ordinary English
+ * and must not drag a passage into a rewrite on its own.
+ */
+const NOTABLE_TELL_PRESSURE = 2
+
+/**
+ * @param tellPressure per-passage style-tell pressure, keyed by passage index.
+ *   Optional: callers that only care about the statistical channel can omit
+ *   it, and every passage then reads as pressure 0. The orchestrator always
+ *   supplies it, because a passage whose only problem is how it is written is
+ *   exactly the passage a user came here to fix, and the watermark z-score is
+ *   silent about that.
+ */
+export function targetPassages(
+  passages: PassageFinding[],
+  strength: Strength,
+  tellPressure?: ReadonlyMap<number, number>,
+): PassageFinding[] {
+  const pressure = (p: PassageFinding): number => tellPressure?.get(p.index) ?? 0
+
   switch (strength) {
     case 'preserve':
+      // Deliberately unchanged: "preserve" promises to touch only what a real
+      // check reports as a finding, and style tells are reported separately.
       return passages.filter((p) => p.survivesCorrection)
     case 'balanced':
       return passages.filter(
         (p) =>
           p.survivesCorrection ||
           (p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z) ||
-          (p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION),
+          (p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION) ||
+          pressure(p) >= NOTABLE_TELL_PRESSURE,
       )
     case 'aggressive':
-      return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null)
+      return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null || pressure(p) > 0)
     case 'regenerate':
       return passages
   }
