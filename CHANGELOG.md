@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-09-07: rebrand to WatermarkRemoverPro
+
+The product is now WatermarkRemoverPro at watermarkremoverpro.com (was
+MarkWitness at markwitness.helm7.com, which stays attached and now serves the
+same site rather than breaking old links). Renamed across app copy, metadata,
+docs, the `@watermarkremoverpro/rewrite-engine` npm package, and the Claude
+Code plugin (moved to `plugins/watermarkremoverpro`, version bumped so
+existing installs pick up the update). The GitHub repo moved to
+`maxbeech/watermarkremoverpro`.
+
+Left unchanged on purpose: the `MARKWITNESS_API_URL`/`MARKWITNESS_API_KEY`/
+`MARKWITNESS_DETECTION_KEYS` env var names, the `mw_live_` API key prefix
+(existing customers hold keys with this prefix), the local model cache path,
+and the watermark key's cryptographic domain-separation string — all
+internal identifiers, not user-facing brand.
+
+Known gap, not fixed here because it needs real credentials: Stripe billing
+is still not configured on this deployment (the pricing page already says so
+honestly rather than showing a checkout that fails), and neither is
+transactional email (`OPENHELM_API_KEY`), so password-reset emails fail
+loudly rather than silently. Signup, login, checking, rewriting and API-key
+issuance all work normally on every tier without either.
+
 ## 2026-09-06: the rewrite engine now acts on what it reports
 
 The engine measured structural tells and AI-associated vocabulary, printed
