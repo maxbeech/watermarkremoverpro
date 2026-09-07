@@ -210,7 +210,7 @@ async function main(): Promise<void> {
     : '"preserve" only touches passages a real check flags'
 
   const lines = [
-    `MarkWitness checked ${filePath} before it ships as public content:`,
+    `WatermarkRemoverPro checked ${filePath} before it ships as public content:`,
     ...findings.map((f) => `  - ${f}`),
     '',
     `To reduce this, call the reduce_ai_evidence MCP tool on the file's prose at`,

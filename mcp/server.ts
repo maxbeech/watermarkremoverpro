@@ -1,5 +1,5 @@
 /**
- * MarkWitness MCP server.
+ * WatermarkRemoverPro MCP server.
  *
  * Exposes two complementary capabilities: checking a document for a
  * provenance mark, and reducing the detectable AI-style evidence in one (both
@@ -12,7 +12,7 @@
  *   npx tsx mcp/server.ts
  *
  * Client configuration:
- *   { "mcpServers": { "markwitness": { "command": "npx",
+ *   { "mcpServers": { "watermarkremoverpro": { "command": "npx",
  *       "args": ["-y", "tsx", "/path/to/mcp/server.ts"],
  *       "env": { "MARKWITNESS_API_KEY": "mw_live_…" } } } }
  *
@@ -51,10 +51,10 @@ import type { Strength, Tier } from '../src/lib/rewrite'
 // asks for model: "advanced" will ever execute) and slows every cold start
 // for a capability most calls do not use.
 
-const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://markwitness.helm7.com').replace(/\/$/, '')
+const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://watermarkremoverpro.com').replace(/\/$/, '')
 const API_KEY = process.env.MARKWITNESS_API_KEY || ''
 
-const server = new Server({ name: 'markwitness', version: ENGINE_VERSION }, { capabilities: { tools: {} } })
+const server = new Server({ name: 'watermarkremoverpro', version: ENGINE_VERSION }, { capabilities: { tools: {} } })
 
 const checkDocumentSchema = {
   type: 'object',
@@ -100,7 +100,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: 'describe_method',
       description:
-        'Describe what MarkWitness measures, which detection keys are available in the current ' +
+        'Describe what WatermarkRemoverPro measures, which detection keys are available in the current ' +
         'mode, which languages have measured baselines, and the stated limits, without sending ' +
         'any document. Call this first if you need to decide whether a check_document result ' +
         'will answer your question.',
@@ -197,7 +197,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
               '"standard" (default) is the deterministic rule-based engine: instant, no download. ' +
               '"advanced" runs a real small local LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) via ' +
               'onnxruntime-node, downloaded from the Hugging Face CDN and cached under ' +
-              '~/.cache/markwitness/models on first use, never from a MarkWitness-operated server, and ' +
+              '~/.cache/markwitness/models on first use, never from a WatermarkRemoverPro-operated server, and ' +
               'still on-device only. First call with "advanced" can take a while (model download); later ' +
               'calls reuse the cache. If the model cannot be loaded (offline, unsupported platform), this ' +
               'automatically falls back to "standard" and the response says so in `model`.',
@@ -251,7 +251,7 @@ async function runHosted(text: string, language?: string, granularity?: 'sentenc
     const message =
       (body && typeof body === 'object' && 'message' in body && String((body as Record<string, unknown>).message)) ||
       `${res.status} ${res.statusText}`
-    throw new Error(`MarkWitness API: ${message}`)
+    throw new Error(`WatermarkRemoverPro API: ${message}`)
   }
   return body
 }
@@ -456,11 +456,11 @@ function summarizeRewrite(result: Awaited<ReturnType<typeof reduceEvidence>>) {
 async function main() {
   await server.connect(new StdioServerTransport())
   process.stderr.write(
-    `markwitness MCP server ready (${API_KEY ? `hosted via ${API_BASE}` : 'local mode, open reference key only'})\n`,
+    `watermarkremoverpro MCP server ready (${API_KEY ? `hosted via ${API_BASE}` : 'local mode, open reference key only'})\n`,
   )
 }
 
 main().catch((err) => {
-  process.stderr.write(`markwitness MCP server failed to start: ${err}\n`)
+  process.stderr.write(`watermarkremoverpro MCP server failed to start: ${err}\n`)
   process.exit(1)
 })

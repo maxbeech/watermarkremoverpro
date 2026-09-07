@@ -1,7 +1,7 @@
 {
-  "name": "@markwitness/rewrite-engine",
+  "name": "@watermarkremoverpro/rewrite-engine",
   "version": "0.1.0",
-  "description": "Reduce detectable AI-style evidence in text, entirely on-device. The same engine MarkWitness's browser UI and MCP server use, runnable in your own process. No REST endpoint by design: this never sends your document to a server, on any tier.",
+  "description": "Reduce detectable AI-style evidence in text, entirely on-device. The same engine WatermarkRemoverPro's browser UI and MCP server use, runnable in your own process. No REST endpoint by design: this never sends your document to a server, on any tier.",
   "license": "MIT",
   "scripts": {
     "prepublishOnly": "cd ../.. && npm run build:rewrite-engine"
@@ -22,7 +22,7 @@
     }
   },
   "bin": {
-    "markwitness-rewrite": "dist/cli.js"
+    "watermarkremoverpro-rewrite": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -36,10 +36,10 @@
     "on-device",
     "privacy"
   ],
-  "homepage": "https://markwitness.helm7.com/rewrite",
+  "homepage": "https://watermarkremoverpro.com/rewrite",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxbeech/markwitness.git",
+    "url": "git+https://github.com/maxbeech/watermarkremoverpro.git",
     "directory": "packages/rewrite-engine"
   },
   "engines": {

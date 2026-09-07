@@ -22,7 +22,7 @@ beforeEach(() => {
 
 describe('sendPasswordResetEmail', () => {
   const user = { id: 'user_1', email: 'writer@example.com' }
-  const url = 'https://markwitness.helm7.com/reset-password?token=abc'
+  const url = 'https://watermarkremoverpro.com/reset-password?token=abc'
 
   it('sends the reset link to the account email with an idempotency key', async () => {
     sendEmail.mockResolvedValue({ sent: true, id: 'msg_1', status: 'sent', threadId: null, replyTo: null, suppressed: [] })

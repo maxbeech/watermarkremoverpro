@@ -1,13 +1,13 @@
 # What Rewrite does, and what it does not claim
 
-MarkWitness reduces detectable AI-style evidence in a document. This document
+WatermarkRemoverPro reduces detectable AI-style evidence in a document. This document
 replaces `docs/NO_REMOVAL.md` (kept at `docs/archive/NO_REMOVAL.md` for
 history) as the source of truth for what that means, why, and where the line
 still sits.
 
 ## What changed, and why
 
-MarkWitness launched as a detection-only diagnostic with a permanent
+WatermarkRemoverPro launched as a detection-only diagnostic with a permanent
 no-removal policy. That policy was reconsidered deliberately, not eroded by
 drift: the product now offers on-device rewriting as its primary feature,
 alongside detection, which continues as a complementary, honest entry point
@@ -45,7 +45,7 @@ product ships two real ones behind the same `RewriteBackend` interface
   WebGPU or WASM in the browser (`backend/browser.ts`), onnxruntime-node in
   the MCP server and CLI (`backend/node.ts`). Weights are downloaded straight
   from the Hugging Face CDN and cached locally on first use, never from a
-  MarkWitness-operated server, and this download never carries the document
+  WatermarkRemoverPro-operated server, and this download never carries the document
   being rewritten. If the device can't run it (no WebGPU/WASM support, a
   blocked download, insufficient memory), every caller falls back to
   Standard automatically and says so, rather than failing silently or
@@ -66,7 +66,7 @@ product ships two real ones behind the same `RewriteBackend` interface
   "aggressive" and "regenerate" strengths touch more of the document and
   allow more semantic drift from the original wording. Review the diff.
 - **Not a claim about detectors trained after today, or not in the tested
-  set.** The evidence scores shown are computed with MarkWitness's own
+  set.** The evidence scores shown are computed with WatermarkRemoverPro's own
   detector arithmetic, against the keys this deployment holds.
 
 "Reduce" is the honest verb. It is falsifiable (you can measure a before/after
@@ -77,7 +77,7 @@ way "remove" or "undetectable" would.
 
 **Rewriting runs entirely on-device or in-process, on every tier, on every
 surface, with no exception.** Free and Pro alike. Browser, MCP server, and the
-published local package/CLI alike. No server MarkWitness operates ever
+published local package/CLI alike. No server WatermarkRemoverPro operates ever
 receives the document text for this feature. Unlike checking, which does
 have an opt-in hosted mode for API/MCP callers. This is the direct
 replacement for the old "permanent constraint," carrying the same weight:

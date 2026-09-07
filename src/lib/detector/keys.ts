@@ -6,10 +6,10 @@
  * A green-list provenance mark is a KEYED construction. Whoever generated the
  * text partitioned the vocabulary with a secret, and without that secret the
  * partition is unknowable, and no amount of analysis recovers it. That is the
- * point of the design, and it is not a limitation MarkWitness can engineer
+ * point of the design, and it is not a limitation WatermarkRemoverPro can engineer
  * around.
  *
- * So: MarkWitness tests the keys it actually holds, and says exactly which ones
+ * So: WatermarkRemoverPro tests the keys it actually holds, and says exactly which ones
  * those were. It does not hold Anthropic's key, OpenAI's key, or any other
  * model vendor's key, because none of them are public. A result of "no mark
  * detected" from this product means "no mark detected UNDER THE KEYS LISTED",
@@ -44,19 +44,19 @@ export interface DetectionKey {
  *
  * This is PUBLIC and deliberately so. It exists to make the detector auditable:
  * anyone can generate text marked under it (see simulate.ts), run it through
- * MarkWitness, and watch the statistic move. It is how a user checks that the
+ * WatermarkRemoverPro, and watch the statistic move. It is how a user checks that the
  * tool does arithmetic rather than theatre.
  *
  * It is NOT a vendor key and detects no real model's output.
  */
 export const OPEN_REFERENCE_KEY: DetectionKey = {
   id: 'openmark-ref-1',
-  label: 'MarkWitness open reference scheme',
+  label: 'WatermarkRemoverPro open reference scheme',
   scheme: 'greenlist-bigram-v1',
   gamma: 0.5,
   secret: utf8('markwitness/open-reference-key/v1'),
   provenance:
-    'Published by MarkWitness for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.',
+    'Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.',
   vendorPublished: false,
 }
 

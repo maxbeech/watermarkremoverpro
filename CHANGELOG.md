@@ -71,10 +71,10 @@ pointing a client at `npx tsx /absolute/path/to/mcp/server.ts`. That is not a
 thing anyone adds to a workflow, and it ruled out every agent not already
 holding a checkout.
 
-- Added: `plugins/markwitness`, a Claude Code plugin carrying the MCP server,
+- Added: `plugins/watermarkremoverpro`, a Claude Code plugin carrying the MCP server,
   a skill telling the agent when to use it, and a `PostToolUse` hook.
-  `claude plugin marketplace add maxbeech/markwitness` then
-  `claude plugin install markwitness@markwitness`. Verified installed and
+  `claude plugin marketplace add maxbeech/watermarkremoverpro` then
+  `claude plugin install watermarkremoverpro@watermarkremoverpro`. Verified installed and
   `✔ Connected` on a real machine.
 - Added: `tsup.mcp.config.ts` (`npm run build:plugin`) bundling the server to
   one committed 704 KB file that runs under plain `node` with nothing
@@ -143,8 +143,8 @@ announce", three-item lists throughout), but the library only carried the
   free, unlimited, on-device tool the search intent actually wants is
   `/rewrite` itself.
 - Fixed: `/rewrite` and `/calibrator` page titles rendered a doubled
-  "MarkWitness" suffix (`"X | MarkWitness · MarkWitness"`), since the root
-  layout's title template already appends `· MarkWitness` and both pages'
+  "WatermarkRemoverPro" suffix (`"X | WatermarkRemoverPro · WatermarkRemoverPro"`), since the root
+  layout's title template already appends `· WatermarkRemoverPro` and both pages'
   own titles redundantly included it too.
 
 ## 2026-09-04: fix ungrammatical rewrite output from auxiliary-verb substitution
@@ -165,7 +165,7 @@ the rewrite engine's rule-based backend, so the fix applies to both.
 Added `src/lib/calibrate/dictionary.test.ts` (20 tests asserting every
 removed word has no dictionary entry) and an engine-level regression test
 reproducing the exact reported sentence. Verified live via the
-`@markwitness/rewrite-engine` CLI at "aggressive" strength: the sentence
+`@watermarkremoverpro/rewrite-engine` CLI at "aggressive" strength: the sentence
 now survives intact.
 
 ## 2026-09-04: zero npm audit vulnerabilities
@@ -223,7 +223,7 @@ testing during that work and fixed here.
 
 ## 2026-09-04: pivot to an on-device rewrite engine
 
-MarkWitness becomes primarily an on-device rewrite tool (reduces detectable
+WatermarkRemoverPro becomes primarily an on-device rewrite tool (reduces detectable
 AI-style evidence in text a user wrote themselves), with detection kept as a
 complementary, honest entry point. Full reasoning: `docs/REWRITE_PHILOSOPHY.md`
 (supersedes `docs/NO_REMOVAL.md`, archived at `docs/archive/NO_REMOVAL.md`).
@@ -241,7 +241,7 @@ Claims stay conservative throughout: "reduces detectable evidence," never
     exact repo + commit revision in `models.ts`) run via Transformers.js,
     WebGPU/WASM in the browser or onnxruntime-node in the MCP server/CLI.
     Downloads weights straight from the Hugging Face CDN on first use, never
-    from a MarkWitness-operated server; falls back to Standard automatically,
+    from a WatermarkRemoverPro-operated server; falls back to Standard automatically,
     with the fallback reason surfaced, if the device can't run it.
 - Added: `src/lib/calibrate/ai-tells.ts` + `patterns.ts`, the deterministic
   em-dash/stock-phrase pass shared by the rewrite engine and the existing
@@ -254,8 +254,8 @@ Claims stay conservative throughout: "reduces detectable evidence," never
 - Added: `reduce_ai_evidence` MCP tool (`mcp/server.ts`), with a `model`
   parameter (`standard`/`advanced`). Unlike `check_document`, this has no
   hosted branch at all, on any tier: always runs in-process.
-- Added: `@markwitness/rewrite-engine` (`packages/rewrite-engine`), the
-  standalone npm package/CLI (`markwitness-rewrite`) publishing the same
+- Added: `@watermarkremoverpro/rewrite-engine` (`packages/rewrite-engine`), the
+  standalone npm package/CLI (`watermarkremoverpro-rewrite`) publishing the same
   engine for third-party callers, since rewriting has no REST endpoint by
   design. Built from `src/lib/rewrite` via `npm run build:rewrite-engine`
   (tsup), verified end-to-end against a real file (rule-based) and against
@@ -445,7 +445,7 @@ Design quality only. No functional, pricing or business-logic change.
 
 ## 2026-08-11: deployed
 
-- Live at <https://markwitness.helm7.com>; every sampled route returns 200
+- Live at <https://watermarkremoverpro.com>; every sampled route returns 200
   serving this product.
 - `src/lib/evidence-report.test.ts`: the paid wedge is now covered by tests that
   build real PDFs and read the text back out of the compressed content streams,

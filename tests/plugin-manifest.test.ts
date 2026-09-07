@@ -24,12 +24,12 @@ const ROOT = join(__dirname, '..')
 const readJson = (path: string) => JSON.parse(readFileSync(join(ROOT, path), 'utf8'))
 
 describe('plugin manifest', () => {
-  const plugin = readJson('plugins/markwitness/.claude-plugin/plugin.json')
+  const plugin = readJson('plugins/watermarkremoverpro/.claude-plugin/plugin.json')
   const marketplace = readJson('.claude-plugin/marketplace.json')
-  const listed = marketplace.plugins.find((p: { name: string }) => p.name === 'markwitness')
+  const listed = marketplace.plugins.find((p: { name: string }) => p.name === 'watermarkremoverpro')
 
   it('declares the same version in both manifests', () => {
-    expect(listed, 'markwitness is listed in the marketplace').toBeDefined()
+    expect(listed, 'watermarkremoverpro is listed in the marketplace').toBeDefined()
     expect(
       listed.version,
       'plugin.json and marketplace.json disagree on the version. An installed plugin updates on ' +
@@ -48,10 +48,10 @@ describe('plugin manifest', () => {
   })
 
   it('points the MCP server and hook at bundles that are actually committed', () => {
-    const mcp = readJson('plugins/markwitness/.mcp.json')
-    const hooks = readJson('plugins/markwitness/hooks/hooks.json')
+    const mcp = readJson('plugins/watermarkremoverpro/.mcp.json')
+    const hooks = readJson('plugins/watermarkremoverpro/hooks/hooks.json')
 
-    const serverArg = mcp.mcpServers.markwitness.args[0] as string
+    const serverArg = mcp.mcpServers.watermarkremoverpro.args[0] as string
     const hookCommand = hooks.hooks.PostToolUse[0].hooks[0].command as string
 
     for (const [label, reference] of [
@@ -61,7 +61,7 @@ describe('plugin manifest', () => {
       const match = reference.match(/\$\{CLAUDE_PLUGIN_ROOT\}\/(\S+?\.mjs)/)
       expect(match, `${label} does not reference a bundle under CLAUDE_PLUGIN_ROOT`).not.toBeNull()
 
-      const bundle = readFileSync(join(ROOT, 'plugins/markwitness', match![1]), 'utf8')
+      const bundle = readFileSync(join(ROOT, 'plugins/watermarkremoverpro', match![1]), 'utf8')
       // A truncated or placeholder bundle is the failure worth catching: it
       // installs fine and then cannot start.
       expect(bundle.length, `${label} bundle looks truncated`).toBeGreaterThan(50_000)

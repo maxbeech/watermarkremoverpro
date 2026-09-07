@@ -10,7 +10,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     format: 'listicle',
     intent: 'commercial',
     publishedAt: '2026-08-08',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'ai detection false positive',
     supportingKeywords: [
       'AI detector report',
@@ -35,7 +35,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     intro: [
       'A lot of AI detector reports are just one number. A percentage, a verdict, a colour. That is not enough when a grade, a job or a client contract rides on the outcome.',
       'A trustworthy report lets you check its own working, not just read its conclusion.',
-      'Here are five things worth looking for before you trust any AI detection false positive result, with MarkWitness\'s own evidence report serving as one honest example of what "good" can look like.',
+      'Here are five things worth looking for before you trust any AI detection false positive result, with WatermarkRemoverPro\'s own evidence report serving as one honest example of what "good" can look like.',
     ],
     takeaways: [
       'A single percentage score tells you almost nothing about how reliable it is.',
@@ -59,7 +59,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
         heading: '1. A confidence band, not a bare score',
         body: [
           'Every statistical test carries uncertainty. A responsible report shows that uncertainty rather than hiding it behind a tidy percentage.',
-          'MarkWitness\'s own check runs a keyed z-test over distinct bigrams, the same family of method behind Kirchenbauer et al.\'s original watermarking research, and reports a signal strength alongside a confidence band, never just a flat verdict.',
+          'WatermarkRemoverPro\'s own check runs a keyed z-test over distinct bigrams, the same family of method behind Kirchenbauer et al.\'s original watermarking research, and reports a signal strength alongside a confidence band, never just a flat verdict.',
           'If a tool only ever hands you one number with no range either side of it, treat that as a gap worth asking about, not reassurance.',
           'Picture two reports on the same 800-word passage. A weak one simply says "87% AI" and stops there, giving you no way to judge whether 87% is a strong, well-supported signal or a coin toss dressed up in decimal points. A stronger one says something closer to "signal strength z=18.2, tested against the keyed reference for this document\'s language, confidence band stated alongside the result." The second version tells you not just the direction of the finding but how much weight it can actually bear, and gives you something concrete to question if the number still looks wrong.',
         ],
@@ -86,7 +86,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
         heading: '4. Explicit stated limits: what this does NOT prove',
         body: [
           'This is the line most reports skip, because it is less flattering to the product selling the result. It is arguably the most important line on the page.',
-          'MarkWitness states its limits plainly on the /limits page: a detected mark is not proof of authorship, because marks can turn up in quoted, translated, edited or assisted text. And an absent mark is not proof of human authorship either, since no model vendor publishes its detection key, marks survive heavy editing poorly, and "no mark detected" only ever means "under the keys we hold".',
+          'WatermarkRemoverPro states its limits plainly on the /limits page: a detected mark is not proof of authorship, because marks can turn up in quoted, translated, edited or assisted text. And an absent mark is not proof of human authorship either, since no model vendor publishes its detection key, marks survive heavy editing poorly, and "no mark detected" only ever means "under the keys we hold".',
           'A report that will not say what it cannot prove is asking for more trust than the statistics behind it actually support.',
         ],
       },
@@ -103,13 +103,13 @@ export const BLOG_POSTS_B: BlogPost[] = [
         heading: 'What good looks like in practice',
         body: [
           'No single competitor ticks every one of these boxes on its marketing page, and it is worth saying that plainly rather than pretending otherwise. Turnitin publishes solid false positive research. GPTZero states a headline accuracy figure and adds the caveat that no detector is 100% accurate. Originality.ai points to third-party studies without printing a false positive percentage on the same page.',
-          'MarkWitness\'s evidence report, available on the Pro plan at £19 a month, was built around all five points at once: a confidence band, a per-passage breakdown, the keys tested, the stated method limits, and a SHA-256 hash of the document, dated and exportable as a PDF. The free Check page gives you the headline result; the evidence report is for when you need to show your working to someone else.',
+          'WatermarkRemoverPro\'s evidence report, available on the Pro plan at £19 a month, was built around all five points at once: a confidence band, a per-passage breakdown, the keys tested, the stated method limits, and a SHA-256 hash of the document, dated and exportable as a PDF. The free Check page gives you the headline result; the evidence report is for when you need to show your working to someone else.',
         ],
       },
     ],
     table: {
-      caption: 'What a trustworthy AI detection report should disclose, and where MarkWitness\'s evidence report stands on each point',
-      headers: ['Report feature', 'Why it matters', 'In MarkWitness\'s evidence report'],
+      caption: 'What a trustworthy AI detection report should disclose, and where WatermarkRemoverPro\'s evidence report stands on each point',
+      headers: ['Report feature', 'Why it matters', 'In WatermarkRemoverPro\'s evidence report'],
       rows: [
         ['Confidence band', 'Shows the uncertainty behind the score, not just the score', 'Included alongside the signal strength'],
         ['Stated false positive rate, sourced', 'Lets you judge how much weight the result deserves', 'Method limits stated with the result'],
@@ -120,7 +120,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     },
     quote: {
       quote: 'The number people fixate on is the headline score. The number that actually matters is the confidence band around it, because that is where the honest answer to "how sure are we?" lives.',
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: 'on what a trustworthy report discloses',
     },
     pitfalls: [
@@ -135,7 +135,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
         answer: 'It is stronger evidence when it includes a confidence band, stated limits and a document hash, but no single report is absolute proof on its own. It works best alongside other evidence, such as drafts or version history.',
       },
       {
-        question: 'Why does MarkWitness show a confidence band instead of a single percentage?',
+        question: 'Why does WatermarkRemoverPro show a confidence band instead of a single percentage?',
         answer: 'The underlying test is statistical, so a bare number would hide the uncertainty around it. Showing the band is more honest about how confident the result actually is.',
       },
       {
@@ -152,11 +152,11 @@ export const BLOG_POSTS_B: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/pricing', label: 'MarkWitness Pro pricing' },
-      { href: '/method', label: 'How the MarkWitness method works' },
+      { href: '/pricing', label: 'WatermarkRemoverPro Pro pricing' },
+      { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/limits', label: 'Stated limits of the check' },
       { href: '/blog/how-common-are-ai-detector-false-positives', label: 'How common are AI detector false positives?' },
-      { href: '/blog/turnitin-ai-detector-vs-markwitness', label: 'Turnitin AI detector vs MarkWitness' },
+      { href: '/blog/turnitin-ai-detector-vs-watermarkremoverpro', label: 'Turnitin AI detector vs WatermarkRemoverPro' },
     ],
     externalLinks: [
       { href: 'https://www.turnitin.com/blog/understanding-false-positives-within-our-ai-writing-detection-capabilities', label: 'Turnitin on document-level false positive rates' },
@@ -170,12 +170,12 @@ export const BLOG_POSTS_B: BlogPost[] = [
     slug: 'per-language-ai-detection-accuracy',
     title: 'Per-Language AI Detection Accuracy, Compared',
     h1: 'Per-Language AI Detection Accuracy, Compared',
-    metaDescription: 'AI detector accuracy by language is not one number. Here is why it varies, and how MarkWitness measures real per-language baselines.',
+    metaDescription: 'AI detector accuracy by language is not one number. Here is why it varies, and how WatermarkRemoverPro measures real per-language baselines.',
     category: 'Academy',
     format: 'deep-dive',
     intent: 'informational',
     publishedAt: '2026-08-08',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'ai detector accuracy by language',
     supportingKeywords: [
       'AI detection by language',
@@ -189,7 +189,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     ],
     longTailKeywords: [
       'does AI detection accuracy change by language',
-      'which languages does MarkWitness support',
+      'which languages does WatermarkRemoverPro support',
       'why AI detectors are less accurate in some languages',
     ],
     heroImage: {
@@ -200,14 +200,14 @@ export const BLOG_POSTS_B: BlogPost[] = [
     intro: [
       'Ask whether an AI detector is accurate and the honest answer is: accurate in which language?',
       'Detection tools built and tuned mostly on English text do not automatically carry that reliability into Spanish, French, German or Portuguese.',
-      'This piece looks at why AI detector accuracy by language genuinely differs, what MarkWitness measured to handle it properly, and why guessing across a language boundary is worse than saying "unsupported".',
+      'This piece looks at why AI detector accuracy by language genuinely differs, what WatermarkRemoverPro measured to handle it properly, and why guessing across a language boundary is worse than saying "unsupported".',
     ],
     takeaways: [
       'The keyed maths behind a watermark test does not care what language the text is in.',
       'But measuring typical writing style needs a reference sample in the SAME language.',
-      'MarkWitness built its five reference baselines from real, contemporary Wikipedia prose, around 597,000 words in total.',
+      'WatermarkRemoverPro built its five reference baselines from real, contemporary Wikipedia prose, around 597,000 words in total.',
       'Independent research shows detectors misjudging text across language and register lines, most sharply against non-native English writers.',
-      'MarkWitness reports "unsupported" rather than testing text against the wrong language\'s baseline.',
+      'WatermarkRemoverPro reports "unsupported" rather than testing text against the wrong language\'s baseline.',
     ],
     sections: [
       {
@@ -238,10 +238,10 @@ export const BLOG_POSTS_B: BlogPost[] = [
         id: 'how-the-five-baselines-were-built',
         heading: 'How the five language baselines were built',
         body: [
-          'MarkWitness measured a separate reference baseline for each of its five supported languages (English, Spanish, French, German and Portuguese), using real, contemporary Wikipedia prose rather than synthetic or translated text.',
+          'WatermarkRemoverPro measured a separate reference baseline for each of its five supported languages (English, Spanish, French, German and Portuguese), using real, contemporary Wikipedia prose rather than synthetic or translated text.',
           'Every source document was run through the engine\'s own language identifier before being kept, so a mislabelled or mixed-language page could not slip into the wrong baseline. In total that comes to roughly 597,000 words across the five languages, from 216,157 for English down to 76,142 for Portuguese, shown in the table below.',
-          'Corpus size and corpus quality are not the same lever, and it is worth being precise about why both matter. A baseline built from a smaller set of genuine, contemporary, verified-by-language prose is more useful than a larger one padded out with duplicate, scraped or machine-translated text, because what actually drives an accurate comparison is how well the sample represents ordinary sentence rhythm and vocabulary spread in that language today, not the raw word count sitting in a spreadsheet. That is precisely why every one of the roughly 597,000 words behind MarkWitness\'s five baselines passed through the same per-document language check before being counted, rather than simply pooling whatever text was available and hoping sheer volume would smooth out the noise on its own.',
-          'A concrete case makes the point clearer. Take a 500-word German cover letter, written formally, with the longer compound nouns and clause structures typical of that register. Checked correctly against the German baseline, those features compare against genuine German business writing, which contains plenty of the same patterns, so the letter reads as statistically unremarkable. Checked instead against the English baseline, something MarkWitness deliberately refuses to do, that same compound-noun density and clause structure would look completely alien next to typical English sentence patterns, and could produce a misleadingly unusual-looking score for writing that is, in its own language, entirely ordinary.',
+          'Corpus size and corpus quality are not the same lever, and it is worth being precise about why both matter. A baseline built from a smaller set of genuine, contemporary, verified-by-language prose is more useful than a larger one padded out with duplicate, scraped or machine-translated text, because what actually drives an accurate comparison is how well the sample represents ordinary sentence rhythm and vocabulary spread in that language today, not the raw word count sitting in a spreadsheet. That is precisely why every one of the roughly 597,000 words behind WatermarkRemoverPro\'s five baselines passed through the same per-document language check before being counted, rather than simply pooling whatever text was available and hoping sheer volume would smooth out the noise on its own.',
+          'A concrete case makes the point clearer. Take a 500-word German cover letter, written formally, with the longer compound nouns and clause structures typical of that register. Checked correctly against the German baseline, those features compare against genuine German business writing, which contains plenty of the same patterns, so the letter reads as statistically unremarkable. Checked instead against the English baseline, something WatermarkRemoverPro deliberately refuses to do, that same compound-noun density and clause structure would look completely alien next to typical English sentence patterns, and could produce a misleadingly unusual-looking score for writing that is, in its own language, entirely ordinary.',
         ],
       },
       {
@@ -253,10 +253,10 @@ export const BLOG_POSTS_B: BlogPost[] = [
         ],
       },
       {
-        id: 'why-markwitness-refuses-to-guess-with-a-substitute-language',
-        heading: 'Why MarkWitness refuses to guess with a substitute-language baseline',
+        id: 'why-watermarkremoverpro-refuses-to-guess-with-a-substitute-language',
+        heading: 'Why WatermarkRemoverPro refuses to guess with a substitute-language baseline',
         body: [
-          'Given all that, MarkWitness takes a deliberately narrow position: if a document is not written in one of the five supported languages, or the language cannot be confidently identified, the check reports "unsupported" rather than quietly substituting a different language\'s baseline and producing a number anyway.',
+          'Given all that, WatermarkRemoverPro takes a deliberately narrow position: if a document is not written in one of the five supported languages, or the language cannot be confidently identified, the check reports "unsupported" rather than quietly substituting a different language\'s baseline and producing a number anyway.',
           'A wrong-but-confident-looking result is worse than no result. Saying "unsupported" costs nothing except a slightly less satisfying screen. Saying "here\'s a score" built on the wrong reference data could cost someone their credibility.',
         ],
       },
@@ -264,13 +264,13 @@ export const BLOG_POSTS_B: BlogPost[] = [
         id: 'what-this-means-if-your-language-isnt-covered',
         heading: 'What this means if your language isn\'t covered',
         body: [
-          'If you write in a language outside the current five, MarkWitness will not force a result out of the wrong baseline. That is a limit worth knowing before you rely on the tool, not after.',
+          'If you write in a language outside the current five, WatermarkRemoverPro will not force a result out of the wrong baseline. That is a limit worth knowing before you rely on the tool, not after.',
           'Within the five supported languages (English, Spanish, French, German and Portuguese), each one gets its own measured reference, checked on the Check page or via the language-specific landing pages, so a result in French is being judged against genuine French writing, not a translated proxy for it.',
         ],
       },
     ],
     table: {
-      caption: 'MarkWitness\'s measured reference-corpus size per supported language, drawn from contemporary Wikipedia prose and verified per-document by language before inclusion',
+      caption: 'WatermarkRemoverPro\'s measured reference-corpus size per supported language, drawn from contemporary Wikipedia prose and verified per-document by language before inclusion',
       headers: ['Language', 'Reference corpus size (words)'],
       rows: [
         ['English', '216,157'],
@@ -282,7 +282,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     },
     quote: {
       quote: 'People assume a bigger model automatically means better multilingual accuracy. What actually moves the needle is whether you measured a proper same-language reference sample, or borrowed one from somewhere else and hoped for the best.',
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: 'on why each supported language gets its own reference baseline',
     },
     pitfalls: [
@@ -293,11 +293,11 @@ export const BLOG_POSTS_B: BlogPost[] = [
     ],
     faq: [
       {
-        question: 'Does MarkWitness work equally well in every language it supports?',
+        question: 'Does WatermarkRemoverPro work equally well in every language it supports?',
         answer: 'Each of the five supported languages has its own measured reference baseline, built to the same standard, so none of them is treated as a fallback or an afterthought. Accuracy still depends on document length and the usual statistical factors.',
       },
       {
-        question: 'What happens if I check a document in a language MarkWitness doesn\'t support?',
+        question: 'What happens if I check a document in a language WatermarkRemoverPro doesn\'t support?',
         answer: 'The check reports the document as unsupported rather than scoring it against the wrong language\'s baseline. That is a deliberate choice, not a bug.',
       },
       {
@@ -306,7 +306,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
       },
       {
         question: 'Is a bigger reference corpus always more accurate?',
-        answer: 'Size helps, but quality matters just as much. MarkWitness verifies every source document\'s language with its own identifier before including it, so the baseline is not just large but reliably in the right language.',
+        answer: 'Size helps, but quality matters just as much. WatermarkRemoverPro verifies every source document\'s language with its own identifier before including it, so the baseline is not just large but reliably in the right language.',
       },
       {
         question: 'Why use Wikipedia prose rather than a larger scraped dataset for each baseline?',
@@ -314,9 +314,9 @@ export const BLOG_POSTS_B: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/method', label: 'How the MarkWitness method works' },
+      { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/in/en', label: 'English-language check' },
-      { href: '/for/non-native-english-writers', label: 'MarkWitness for non-native English writers' },
+      { href: '/for/non-native-english-writers', label: 'WatermarkRemoverPro for non-native English writers' },
       { href: '/blog/what-is-an-ai-watermark-detector', label: 'What is an AI watermark?' },
       { href: '/blog/green-list-watermarking-explained', label: 'Green-list watermarking explained' },
     ],
@@ -336,14 +336,14 @@ export const BLOG_POSTS_B: BlogPost[] = [
     format: 'review',
     intent: 'navigational',
     publishedAt: '2026-08-09',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'gptzero false positive',
     supportingKeywords: [
       'GPTZero accuracy',
       'GPTZero ESL bias',
       'GPTZero review',
       'AI writing classifier',
-      'GPTZero vs MarkWitness',
+      'GPTZero vs WatermarkRemoverPro',
       'non-native English AI detection',
       'GPTZero mixed document accuracy',
       'AI detector bias',
@@ -366,7 +366,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
       'GPTZero states 99% overall accuracy and a mixed-document accuracy of 96.5%.',
       'It says it has been de-biased for ESL learners, with a stated false positive rate of around 1% for that group.',
       'Independent research on the broader class of GPT detectors found bias against non-native English writers, which is worth reading carefully for what it does and doesn\'t prove.',
-      'GPTZero is a general AI-writing classifier, a different tool from a narrow keyed-watermark test like MarkWitness.',
+      'GPTZero is a general AI-writing classifier, a different tool from a narrow keyed-watermark test like WatermarkRemoverPro.',
       'Even GPTZero says plainly that no AI detector is 100% accurate.',
     ],
     sections: [
@@ -407,8 +407,8 @@ export const BLOG_POSTS_B: BlogPost[] = [
         heading: 'How GPTZero differs from a keyed watermark test',
         body: [
           'GPTZero is guessing from style, on any text, from any source, with no need for a key. That flexibility is exactly why it can misjudge unusual but entirely human writing: a very formal essay, a non-native writer\'s careful sentence structure, a technical report written in short, plain clauses.',
-          'MarkWitness works differently and more narrowly. It checks your OWN writing for a keyed green-list watermark, the same family of technique described in Kirchenbauer et al.\'s research, entirely in the browser, up to 1,500 words for free with no signup. It cannot tell you whether unmarked text was written by a model with no watermark at all. It can tell you, with a stated confidence band, whether a specific keyed signal is present.',
-          'Two scenarios show where each tool actually earns its keep. First: a hiring manager receives a cover letter with no idea which tool, if any, produced it, and there is no key to test against. A style-based classifier like GPTZero is the only kind of check available here, weighing sentence structure and predictability against patterns learned from many documents. Second: a student wants to check their own essay before submitting it, and knows the specific reference their check will be judged against. Here a keyed test like MarkWitness\'s is the more precise instrument, because it is not guessing from style at all, it is checking for a defined statistical signal and reporting a confidence band around that specific question. Neither tool is simply the better one; they are built for different starting points, one where the source is unknown and one where a specific mark is being tested for.',
+          'WatermarkRemoverPro works differently and more narrowly. It checks your OWN writing for a keyed green-list watermark, the same family of technique described in Kirchenbauer et al.\'s research, entirely in the browser, up to 1,500 words for free with no signup. It cannot tell you whether unmarked text was written by a model with no watermark at all. It can tell you, with a stated confidence band, whether a specific keyed signal is present.',
+          'Two scenarios show where each tool actually earns its keep. First: a hiring manager receives a cover letter with no idea which tool, if any, produced it, and there is no key to test against. A style-based classifier like GPTZero is the only kind of check available here, weighing sentence structure and predictability against patterns learned from many documents. Second: a student wants to check their own essay before submitting it, and knows the specific reference their check will be judged against. Here a keyed test like WatermarkRemoverPro\'s is the more precise instrument, because it is not guessing from style at all, it is checking for a defined statistical signal and reporting a confidence band around that specific question. Neither tool is simply the better one; they are built for different starting points, one where the source is unknown and one where a specific mark is being tested for.',
         ],
       },
       {
@@ -416,7 +416,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
         heading: 'When GPTZero is the right tool, and when it isn\'t',
         body: [
           'Reach for GPTZero when you want a general read on a document with no known watermark key involved, a classic classifier job.',
-          'Reach for a keyed test like MarkWitness when you specifically want to check your own writing for a known, testable statistical mark, or when you want a dated evidence report with stated limits attached to it, not just a percentage.',
+          'Reach for a keyed test like WatermarkRemoverPro when you specifically want to check your own writing for a known, testable statistical mark, or when you want a dated evidence report with stated limits attached to it, not just a percentage.',
         ],
       },
       {
@@ -455,8 +455,8 @@ export const BLOG_POSTS_B: BlogPost[] = [
         answer: 'Independent research found that class of detector generally more likely to misjudge non-native English writing. GPTZero states it has since taken steps to reduce that specific risk, though that is its own claim rather than an independently published replication.',
       },
       {
-        question: 'Can I use GPTZero and MarkWitness together?',
-        answer: 'Yes, and they answer different questions. GPTZero gives a style-based classifier read; MarkWitness checks your own writing for a specific keyed statistical mark, with a confidence band and stated limits.',
+        question: 'Can I use GPTZero and WatermarkRemoverPro together?',
+        answer: 'Yes, and they answer different questions. GPTZero gives a style-based classifier read; WatermarkRemoverPro checks your own writing for a specific keyed statistical mark, with a confidence band and stated limits.',
       },
       {
         question: 'Does GPTZero admit its own limits anywhere?',
@@ -467,15 +467,15 @@ export const BLOG_POSTS_B: BlogPost[] = [
         answer: 'Keep your drafts and version history, consider a second, differently-built check for corroboration, and read the stated limits on the report rather than treating the single score as final.',
       },
       {
-        question: 'Should I pick GPTZero or MarkWitness if I only have time for one check?',
+        question: 'Should I pick GPTZero or WatermarkRemoverPro if I only have time for one check?',
         answer: 'It depends what you actually know going in. If you have no idea which tool, if any, produced a piece of text, a style-based classifier like GPTZero is the only kind of check that applies. If you specifically want to know whether your own writing carries a known, testable statistical mark, a keyed test is the more precise question to ask. Where time allows, running both and reading them as two separate data points rather than a single verdict is the more careful approach.',
       },
     ],
     internalLinks: [
-      { href: '/vs/gptzero', label: 'MarkWitness vs GPTZero' },
-      { href: '/method', label: 'How the MarkWitness method works' },
+      { href: '/vs/gptzero', label: 'WatermarkRemoverPro vs GPTZero' },
+      { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/verify', label: 'Live watermark detection demo' },
-      { href: '/for/non-native-english-writers', label: 'MarkWitness for non-native English writers' },
+      { href: '/for/non-native-english-writers', label: 'WatermarkRemoverPro for non-native English writers' },
       { href: '/blog/how-common-are-ai-detector-false-positives', label: 'How common are AI detector false positives?' },
     ],
     externalLinks: [
@@ -500,7 +500,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     format: 'review',
     intent: 'commercial',
     publishedAt: '2026-08-09',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'originality ai false positive',
     supportingKeywords: [
       'Originality.ai accuracy',
@@ -531,7 +531,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
       'It does not publish a specific false-positive percentage on the pages you can point to.',
       'That gap makes it harder to judge exactly how much risk a single flagged score represents.',
       'If a client withholds payment over a flagged score, ask for the report itself and offer independent corroborating evidence.',
-      'A MarkWitness evidence report is complementary evidence of your own process, not a rebuttal of Originality.ai\'s specific number.',
+      'A WatermarkRemoverPro evidence report is complementary evidence of your own process, not a rebuttal of Originality.ai\'s specific number.',
     ],
     sections: [
       {
@@ -569,10 +569,10 @@ export const BLOG_POSTS_B: BlogPost[] = [
         ],
       },
       {
-        id: 'how-a-markwitness-evidence-report-helps-and-what-it-doesnt-prove',
-        heading: 'How a MarkWitness evidence report helps, and what it doesn\'t prove',
+        id: 'how-a-watermarkremoverpro-evidence-report-helps-and-what-it-doesnt-prove',
+        heading: 'How a WatermarkRemoverPro evidence report helps, and what it doesn\'t prove',
         body: [
-          'A MarkWitness evidence report is not a rebuttal of Originality.ai\'s specific score, and it would be dishonest to sell it as one, because the two tools test for different things entirely. Originality.ai is a style-based classifier; MarkWitness checks your own writing for a specific keyed statistical mark.',
+          'A WatermarkRemoverPro evidence report is not a rebuttal of Originality.ai\'s specific score, and it would be dishonest to sell it as one, because the two tools test for different things entirely. Originality.ai is a style-based classifier; WatermarkRemoverPro checks your own writing for a specific keyed statistical mark.',
           'What the evidence report does give you is a dated, exportable PDF, with a SHA-256 hash tying it to the exact file, a stated confidence band, and the method\'s stated limits printed alongside the result. It is an "I can show what I actually did" artefact you generate yourself, on your own document, rather than something aimed at arguing a client\'s tool was wrong.',
         ],
       },
@@ -610,7 +610,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     pitfalls: [
       'Assuming a 97.8% accuracy claim tells you the false-positive rate: it does not, since they are different measurements.',
       'Disputing a client\'s flagged score with nothing but a denial, instead of drafts, timestamps or an independent check of your own.',
-      'Not keeping a MarkWitness evidence report or equivalent on file until after a dispute has already started.',
+      'Not keeping a WatermarkRemoverPro evidence report or equivalent on file until after a dispute has already started.',
       'Assuming every client runs the same settings or document type through Originality.ai, when comparison baselines can differ.',
     ],
     faq: [
@@ -623,7 +623,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
         answer: 'Its FAQ says it transparently shares false-positive rates from its own accuracy study, but a specific numeric figure is not printed on the page making the accuracy claim itself.',
       },
       {
-        question: 'Can a MarkWitness report overturn an Originality.ai result?',
+        question: 'Can a WatermarkRemoverPro report overturn an Originality.ai result?',
         answer: 'No, and it is not designed to. It checks a different thing entirely, your own writing against a keyed statistical mark, and works as complementary evidence of your process, not a rebuttal of another tool\'s specific score.',
       },
       {
@@ -636,10 +636,10 @@ export const BLOG_POSTS_B: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/vs/originality-ai', label: 'MarkWitness vs Originality.ai' },
-      { href: '/for/freelance-writers', label: 'MarkWitness for freelance writers' },
-      { href: '/pricing', label: 'MarkWitness Pro pricing' },
-      { href: '/docs/api', label: 'MarkWitness API documentation' },
+      { href: '/vs/originality-ai', label: 'WatermarkRemoverPro vs Originality.ai' },
+      { href: '/for/freelance-writers', label: 'WatermarkRemoverPro for freelance writers' },
+      { href: '/pricing', label: 'WatermarkRemoverPro Pro pricing' },
+      { href: '/docs/api', label: 'WatermarkRemoverPro API documentation' },
       { href: '/blog/5-things-ai-detector-report-should-tell-you', label: '5 things an AI detector report should tell you' },
     ],
     externalLinks: [
@@ -664,7 +664,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     format: 'case-study',
     intent: 'informational',
     publishedAt: '2026-08-10',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'claude ai watermark',
     supportingKeywords: [
       'Anthropic provenance mark',
@@ -694,7 +694,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
       'A provenance mark is a statistical signal built into generated text, designed to be detectable later without needing access to the original model.',
       'The best-documented technique in this family is green-list watermarking, from Kirchenbauer et al.\'s 2023 research.',
       'The EU AI Act\'s Article 50 transparency rules are a major reason adoption of this kind of marking is accelerating, with enforcement beginning 2 August 2026.',
-      'MarkWitness holds one open, testable reference key plus support for vendor or institution keys supplied via configuration, never a claim to hold every vendor\'s private key.',
+      'WatermarkRemoverPro holds one open, testable reference key plus support for vendor or institution keys supplied via configuration, never a claim to hold every vendor\'s private key.',
       '"No mark detected" always means "under the keys we hold", never proof that a document is human-written.',
     ],
     sections: [
@@ -740,11 +740,11 @@ export const BLOG_POSTS_B: BlogPost[] = [
         ],
       },
       {
-        id: 'how-markwitness-handles-this-honestly',
-        heading: 'How MarkWitness handles this honestly',
+        id: 'how-watermarkremoverpro-handles-this-honestly',
+        heading: 'How WatermarkRemoverPro handles this honestly',
         body: [
-          'MarkWitness ships one public, open reference key it can test against directly, which is why its own /verify demo can show a real, live result: a specimen of marked text scoring z=20.45 under the correct key, against z=0.1 for the identical text checked under a different key. That is not a claim made in the abstract; it is demonstrated on the page.',
-          'Beyond that open key, MarkWitness supports vendor or institution keys supplied via configuration, where one has been made available. What it will not do is claim broad access to every model provider\'s private detection key, because no such access exists publicly for any independent tool. That is precisely why the product states, plainly and permanently, that "no mark detected" only ever means "under the keys we hold", never proof that a document is human-written.',
+          'WatermarkRemoverPro ships one public, open reference key it can test against directly, which is why its own /verify demo can show a real, live result: a specimen of marked text scoring z=20.45 under the correct key, against z=0.1 for the identical text checked under a different key. That is not a claim made in the abstract; it is demonstrated on the page.',
+          'Beyond that open key, WatermarkRemoverPro supports vendor or institution keys supplied via configuration, where one has been made available. What it will not do is claim broad access to every model provider\'s private detection key, because no such access exists publicly for any independent tool. That is precisely why the product states, plainly and permanently, that "no mark detected" only ever means "under the keys we hold", never proof that a document is human-written.',
         ],
       },
       {
@@ -758,17 +758,17 @@ export const BLOG_POSTS_B: BlogPost[] = [
       },
     ],
     table: {
-      caption: 'What MarkWitness can and can\'t test for, by key type',
-      headers: ['Key type', 'Does MarkWitness hold it?', 'What a check under this key can tell you'],
+      caption: 'What WatermarkRemoverPro can and can\'t test for, by key type',
+      headers: ['Key type', 'Does WatermarkRemoverPro hold it?', 'What a check under this key can tell you'],
       rows: [
-        ['MarkWitness\'s own open reference key', 'Yes, public and testable', 'A real, auditable positive control: the /verify demo scores z=20.45 under this key on a marked specimen, versus z=0.1 for the identical text under a different key'],
+        ['WatermarkRemoverPro\'s own open reference key', 'Yes, public and testable', 'A real, auditable positive control: the /verify demo scores z=20.45 under this key on a marked specimen, versus z=0.1 for the identical text under a different key'],
         ['Vendor or institution key supplied via configuration', 'Only where supplied', 'A check specific to that vendor\'s or institution\'s own mark, where configured'],
         ['A model vendor\'s private detection key it hasn\'t shared', 'No', 'Nothing conclusive: "no mark detected" here only ever means "under the keys we hold", never proof of human authorship'],
       ],
     },
     quote: {
       quote: 'We\'re open about exactly which keys we can test against. Claiming to see every vendor\'s private mark would be a bigger promise than any independent tool can honestly make.',
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: 'on the product\'s open reference key and its stated limits',
     },
     pitfalls: [
@@ -779,12 +779,12 @@ export const BLOG_POSTS_B: BlogPost[] = [
     ],
     faq: [
       {
-        question: 'Does MarkWitness know exactly how Claude\'s watermark works, if it has one?',
-        answer: 'No, and it does not claim to. MarkWitness describes the general, publicly documented category of watermarking technique the field uses, without asserting inside knowledge of any specific provider\'s implementation.',
+        question: 'Does WatermarkRemoverPro know exactly how Claude\'s watermark works, if it has one?',
+        answer: 'No, and it does not claim to. WatermarkRemoverPro describes the general, publicly documented category of watermarking technique the field uses, without asserting inside knowledge of any specific provider\'s implementation.',
       },
       {
-        question: 'Can I check my own writing for a Claude-specific watermark on MarkWitness?',
-        answer: 'MarkWitness tests against its own open reference key, which is publicly verifiable on the /verify page, plus any vendor or institution keys supplied via configuration. It does not claim broad access to every provider\'s private key.',
+        question: 'Can I check my own writing for a Claude-specific watermark on WatermarkRemoverPro?',
+        answer: 'WatermarkRemoverPro tests against its own open reference key, which is publicly verifiable on the /verify page, plus any vendor or institution keys supplied via configuration. It does not claim broad access to every provider\'s private key.',
       },
       {
         question: 'Why is this connected to the EU AI Act?',

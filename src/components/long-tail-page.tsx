@@ -102,7 +102,7 @@ export async function LongTailPageView({ page }: { page: LongTailPage }) {
             <Eyebrow className="mb-4">What a result looks like</Eyebrow>
             <Reveal>
               <ExhibitFrame
-                url="markwitness.helm7.com/check"
+                url="watermarkremoverpro.com/check"
                 tilt
                 caption="A real analysis of a specimen paragraph carrying a mark under the open reference key this product publishes. The figures were computed by the engine, not written here."
               >

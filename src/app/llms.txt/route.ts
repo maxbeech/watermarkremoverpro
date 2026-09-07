@@ -35,13 +35,13 @@ this path makes a network call with document text, on any tier.
 Claude Code, including an agent skill and a hook that checks public-facing
 content before it ships:
 
-    claude plugin marketplace add maxbeech/markwitness
-    claude plugin install markwitness@markwitness
+    claude plugin marketplace add maxbeech/watermarkremoverpro
+    claude plugin install watermarkremoverpro@watermarkremoverpro
 
 Any other MCP client, over stdio, with nothing installed:
 
-    {"mcpServers":{"markwitness":{"command":"node",
-      "args":["/path/to/markwitness/plugins/markwitness/dist/mcp-server.mjs"]}}}
+    {"mcpServers":{"watermarkremoverpro":{"command":"node",
+      "args":["/path/to/watermarkremoverpro/plugins/watermarkremoverpro/dist/mcp-server.mjs"]}}}
 
 The server is one committed, self-contained file. No npm install, no build
 step, no API key, no account. Tools: \`check_document\`, \`reduce_ai_evidence\`,

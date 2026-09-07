@@ -2,19 +2,19 @@ import type { BlogPost } from './blog-types'
 
 export const BLOG_POSTS_C: BlogPost[] = [
   {
-    slug: 'how-to-use-the-markwitness-api',
-    title: 'How to Use the MarkWitness API to Check AI Marks',
-    h1: 'How to Use the MarkWitness API to Check AI Marks',
+    slug: 'how-to-use-the-watermarkremoverpro-api',
+    title: 'How to Use the WatermarkRemoverPro API to Check AI Marks',
+    h1: 'How to Use the WatermarkRemoverPro API to Check AI Marks',
     metaDescription:
-      'Learn how to call the MarkWitness AI detector API: get a key, send a request, read the response, and handle errors.',
+      'Learn how to call the WatermarkRemoverPro AI detector API: get a key, send a request, read the response, and handle errors.',
     category: 'Academy',
     format: 'how-to',
     intent: 'transactional',
     publishedAt: '2026-08-10',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'ai detector api',
     supportingKeywords: [
-      'markwitness api',
+      'watermarkremoverpro api',
       'ai watermark api',
       'api key for ai detection',
       'post /api/v1/check',
@@ -26,18 +26,18 @@ export const BLOG_POSTS_C: BlogPost[] = [
       'developer ai detector',
     ],
     longTailKeywords: [
-      'how to call the markwitness api',
+      'how to call the watermarkremoverpro api',
       'integrate ai watermark check into a pipeline',
       'check_document mcp tool example',
     ],
     heroImage: {
       src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
-      alt: "A developer's laptop showing code on screen, illustrating how to call the MarkWitness AI detector API",
+      alt: "A developer's laptop showing code on screen, illustrating how to call the WatermarkRemoverPro AI detector API",
       unsplashId: 'm_HRfLhgABo',
     },
     intro: [
       "Editorial pipelines need proof of provenance before a document goes out the door, and checking that by hand doesn't scale.",
-      'The MarkWitness API lets you call the same green-list watermark check that powers the Check page, straight from your own code or an agent workflow, using an ai detector api built for that exact job.',
+      'The WatermarkRemoverPro API lets you call the same green-list watermark check that powers the Check page, straight from your own code or an agent workflow, using an ai detector api built for that exact job.',
       'This guide walks through generating a key, sending your first request to /api/v1/check, reading the response, handling errors, and understanding the 2p-per-1,000-words metering, plus where the MCP server fits for agent callers.',
     ],
     takeaways: [
@@ -54,7 +54,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'Step 1: Create an account and generate an API key',
         body: [
           'Start on the Pricing page and sign up for a Pro account, because the API and MCP server sit behind that tier, metered separately at 2p per 1,000 words on top of the subscription.',
-          "Once you're in, open the API keys panel in your dashboard and generate a new key. It will look something like mw_live_9f2..., so copy it once and store it somewhere safe, because MarkWitness won't show you the full string again.",
+          "Once you're in, open the API keys panel in your dashboard and generate a new key. It will look something like mw_live_9f2..., so copy it once and store it somewhere safe, because WatermarkRemoverPro won't show you the full string again.",
           'Treat the key like a password. If it ever ends up in a public repository or a client-side bundle, revoke it from the dashboard immediately and generate a fresh one.',
         ],
       },
@@ -91,7 +91,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'Step 5: Understand the 2p-per-1,000-words metering and the 503 refusal',
         body: [
           "Billing is straightforward: 2p per 1,000 words checked, tracked against a usage ledger tied to your account. There's no separate free tier on the API itself. Pro unlocks access, and metering covers usage from there.",
-          "If that usage ledger is ever unavailable, the API returns 503 rather than quietly serving the check for free. That's a deliberate choice: MarkWitness refuses to give away a result it can't bill correctly, instead of guessing.",
+          "If that usage ledger is ever unavailable, the API returns 503 rather than quietly serving the check for free. That's a deliberate choice: WatermarkRemoverPro refuses to give away a result it can't bill correctly, instead of guessing.",
           "Design your integration to retry a 503 with backoff, the same way you'd treat any other transient outage, because it usually clears within minutes.",
           'In practice that means treating a 503 the way you would any other transient failure: wait a second, retry, and if it fails again, double the wait before the next attempt, capping out after four or five tries rather than retrying forever. A short jitter added to each wait, a few hundred milliseconds picked at random, stops every client in a busy pipeline from hammering the endpoint at exactly the same instant once the ledger recovers. Most outages clear well inside that window, so a caller with backoff built in rarely needs to surface the failure to a human at all, while a caller without it risks turning a brief, minutes-long blip into a support ticket.',
         ],
@@ -107,7 +107,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       },
     ],
     table: {
-      caption: 'MarkWitness API responses at a glance',
+      caption: 'WatermarkRemoverPro API responses at a glance',
       headers: ['Status', 'Meaning', 'What to do'],
       rows: [
         ['200', 'Check completed successfully', 'Read signal strength, confidence band and the limits array'],
@@ -121,7 +121,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     quote: {
       quote:
         "We built the API to fail loudly rather than fail cheap. If we can't bill a check correctly, we'd rather return a 503 than hand back a result nobody can account for.",
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: 'on why the API returns 503 instead of a free check',
     },
     pitfalls: [
@@ -182,7 +182,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     format: 'skyscraper',
     intent: 'informational',
     publishedAt: '2026-08-11',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'ai detection false positive appeal',
     supportingKeywords: [
       'appeal ai plagiarism accusation',
@@ -213,7 +213,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     takeaways: [
       'The strongest evidence is timestamped and was created before the accusation, not after.',
       'Drafting history and version control beat a verbal promise every time.',
-      'A MarkWitness evidence report is a corroborating artefact, not proof on its own.',
+      'A WatermarkRemoverPro evidence report is a corroborating artefact, not proof on its own.',
       "Ask the accuser to disclose their own tool's stated false-positive rate, since most publish one.",
       "Don't argue about AI detection in the abstract; present evidence specific to your document.",
       'Act within days, not weeks, because draft history degrades and memories fade.',
@@ -259,9 +259,9 @@ export const BLOG_POSTS_C: BlogPost[] = [
         id: 'where-a-provenance-mark-check-fits-in',
         heading: 'Where a provenance-mark check and evidence report fit in',
         body: [
-          "A MarkWitness evidence report is a dated PDF: signal strength with a confidence band, a per-passage breakdown, the method's stated limits, which keys were tested, and a SHA-256 hash of the document you checked.",
+          "A WatermarkRemoverPro evidence report is a dated PDF: signal strength with a confidence band, a per-passage breakdown, the method's stated limits, which keys were tested, and a SHA-256 hash of the document you checked.",
           'That last detail matters for an appeal, because it lets you prove later that the report matches the exact file in question, not a different draft.',
-          "Be honest about what it shows. An absent mark under the keys MarkWitness holds is not proof of human authorship, because no vendor publishes its detection key, so 'no mark detected' always means 'under the keys we hold', never 'this document is clean'. Present it as one dated, corroborating artefact in a wider evidence pack, not as the deciding exhibit.",
+          "Be honest about what it shows. An absent mark under the keys WatermarkRemoverPro holds is not proof of human authorship, because no vendor publishes its detection key, so 'no mark detected' always means 'under the keys we hold', never 'this document is clean'. Present it as one dated, corroborating artefact in a wider evidence pack, not as the deciding exhibit.",
         ],
       },
       {
@@ -298,7 +298,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       rows: [
         ['Version history / Git commits with timestamps', 'Strong', 'Independently timestamped and created before the accusation existed'],
         ['Timestamped outline or research notes', 'Strong', 'Shows the thinking process over time, hard to fabricate retroactively'],
-        ['MarkWitness evidence report (dated, hashed)', 'Moderate, corroborating', 'Documents a specific test on a specific document, but is a diagnostic, not proof of authorship on its own'],
+        ['WatermarkRemoverPro evidence report (dated, hashed)', 'Moderate, corroborating', 'Documents a specific test on a specific document, but is a diagnostic, not proof of authorship on its own'],
         ['Emails or messages discussing drafts with an editor/tutor', 'Moderate', 'Third-party corroboration, though not created for this exact purpose'],
         ['A verbal assurance alone', 'Weak', 'Not independently verifiable and easy to dismiss'],
       ],
@@ -323,7 +323,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
           "Timestamped version history, such as Google Docs' version history or a Git commit log, because it's independently dated and shows the document forming over time, which is hard to fabricate after the fact.",
       },
       {
-        question: 'Can a MarkWitness report win an appeal on its own?',
+        question: 'Can a WatermarkRemoverPro report win an appeal on its own?',
         answer:
           "No, and it shouldn't be presented that way. It's a dated, hashed diagnostic, useful as corroboration alongside drafting history, not a standalone verdict. The method's own stated limits say as much.",
       },
@@ -341,7 +341,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     internalLinks: [
       { href: '/guide/ai-detection-false-positive', label: 'AI detection false positives, explained' },
       { href: '/guide/prove-you-wrote-it', label: 'How to prove you wrote something yourself' },
-      { href: '/limits', label: "What MarkWitness can and can't tell you" },
+      { href: '/limits', label: "What WatermarkRemoverPro can and can't tell you" },
       { href: '/check', label: 'Run a free check' },
       { href: '/blog/turnitin-ai-false-positive-how-to-check', label: 'Turnitin flagged you? How to check your own essay' },
       { href: '/blog/how-common-are-ai-detector-false-positives', label: 'How common are AI detector false positives?' },
@@ -364,7 +364,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     format: 'case-study',
     intent: 'informational',
     publishedAt: '2026-08-11',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'turnitin ai false positive',
     supportingKeywords: [
       'freelance writer ai detector',
@@ -508,11 +508,11 @@ export const BLOG_POSTS_C: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/for/freelance-writers', label: 'MarkWitness for freelance writers' },
+      { href: '/for/freelance-writers', label: 'WatermarkRemoverPro for freelance writers' },
       { href: '/guide/prove-you-wrote-it', label: 'How to prove you wrote something yourself' },
       { href: '/check', label: 'Run a free check' },
       { href: '/blog/turnitin-ai-false-positive-how-to-check', label: 'Turnitin flagged you? How to check your own essay' },
-      { href: '/blog/turnitin-ai-detector-vs-markwitness', label: 'Turnitin AI detector vs MarkWitness' },
+      { href: '/blog/turnitin-ai-detector-vs-watermarkremoverpro', label: 'Turnitin AI detector vs WatermarkRemoverPro' },
     ],
     externalLinks: [
       { href: 'https://www.turnitin.com/blog/understanding-false-positives-within-our-ai-writing-detection-capabilities', label: 'Turnitin: document-level false positive rate' },
@@ -532,7 +532,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     format: 'deep-dive',
     intent: 'informational',
     publishedAt: '2026-08-12',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'ai watermark detector',
     supportingKeywords: [
       'green-list watermarking',
@@ -557,7 +557,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     intro: [
       "Saying a document is 'watermarked' is easy. Showing the maths behind that claim is harder, and that's the bit most explainers skip.",
       "This is the deeper companion to our beginner guide: a plain-English look at the statistics an ai watermark detector actually runs, built on the green-list method from Kirchenbauer et al.",
-      "We'll walk through green and red token lists, why the test counts distinct bigrams, and a worked z-score example using MarkWitness's own live demo figures.",
+      "We'll walk through green and red token lists, why the test counts distinct bigrams, and a worked z-score example using WatermarkRemoverPro's own live demo figures.",
     ],
     takeaways: [
       'Before each token, the model secretly splits its vocabulary into a green list and a red list, chosen by a key.',
@@ -565,7 +565,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       'Genuinely marked text ends up with far more green tokens than chance predicts.',
       'A detector holding the same key counts green hits and turns that into a z-score.',
       'The test runs over distinct bigrams, not single tokens, because repeated pairs would skew the count.',
-      'MarkWitness only tests keys it actually holds, and says so; it never implies broader coverage than that.',
+      'WatermarkRemoverPro only tests keys it actually holds, and says so; it never implies broader coverage than that.',
     ],
     sections: [
       {
@@ -600,7 +600,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'The z-test: turning a token count into a verdict',
         body: [
           "A z-test compares what was actually observed against what chance alone would predict, and expresses the gap in standard deviations. A z-score of 0 means 'exactly what chance predicts'. A high z-score means the gap is very unlikely to be a coincidence.",
-          "In MarkWitness's own positive-control test, marked text scored z greater than 8, a p-value below 1 in a million, under the correct key. The same text, checked under a different key, scored at chance.",
+          "In WatermarkRemoverPro's own positive-control test, marked text scored z greater than 8, a p-value below 1 in a million, under the correct key. The same text, checked under a different key, scored at chance.",
           "On the live /verify demo page, a specimen of marked text scores z = 20.45 under the correct key, and z = 0.1, essentially nothing, for the identical text under a different key. That gap is the whole point: the key is what makes the signal visible at all.",
         ],
       },
@@ -617,7 +617,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         id: 'worked-example-a-z-score-walkthrough',
         heading: 'Worked example: a z-score walkthrough',
         body: [
-          "The table below walks through what a real check looks like in practice, using MarkWitness's own measured figures alongside one illustrative case.",
+          "The table below walks through what a real check looks like in practice, using WatermarkRemoverPro's own measured figures alongside one illustrative case.",
           "Notice the gap between the correct-key row and the wrong-key row on the exact same underlying text: that's the whole method proven live, not just claimed in a paper.",
           "The final row is a reminder that very short passages simply don't carry enough tokens to score reliably, whichever key is used, because the test needs enough text to work with.",
         ],
@@ -627,13 +627,13 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'Why the key has to stay secret, and what that means for honesty',
         body: [
           "If a watermark's key were public, anyone could counterfeit the signal in unmarked text, or strip it from marked text by targeting exactly the tokens the key favours. Secrecy isn't an accident; it's what keeps the method meaningful.",
-          "That's why no model vendor publishes its own detection key, and it's also why MarkWitness only ever tests the keys it actually holds: its own public reference key, plus any key a vendor or institution has supplied to it directly.",
-          "That scope is stated plainly rather than implied to be wider. A result under one key says nothing about text marked under a key MarkWitness doesn't have, which is exactly why an absent mark is never treated as proof of human authorship, only as 'no mark found under the keys tested'.",
+          "That's why no model vendor publishes its own detection key, and it's also why WatermarkRemoverPro only ever tests the keys it actually holds: its own public reference key, plus any key a vendor or institution has supplied to it directly.",
+          "That scope is stated plainly rather than implied to be wider. A result under one key says nothing about text marked under a key WatermarkRemoverPro doesn't have, which is exactly why an absent mark is never treated as proof of human authorship, only as 'no mark found under the keys tested'.",
         ],
       },
     ],
     table: {
-      caption: "A worked z-test walkthrough: the first three rows are MarkWitness's own measured and live-demo figures; the fourth is an illustrative example of an under-length document.",
+      caption: "A worked z-test walkthrough: the first three rows are WatermarkRemoverPro's own measured and live-demo figures; the fourth is an illustrative example of an under-length document.",
       headers: ['Scenario', 'Bigrams scored', 'Green-list hits', 'z-score', 'Verdict'],
       rows: [
         ['Marked text, correct key (positive-control test)', 'several hundred', 'well above the ~50% chance rate', 'z > 8 (p < 1e-6)', 'Strong statistical signal'],
@@ -645,7 +645,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     quote: {
       quote:
         "z=20.45 isn't a percentage and it isn't a vibe; it's how many standard deviations the green-token count sits from what chance alone would produce.",
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: "on the /verify page's z=20.45 result",
     },
     pitfalls: [
@@ -679,7 +679,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     internalLinks: [
       { href: '/method', label: 'How the method works' },
       { href: '/verify', label: 'Live detector demo' },
-      { href: '/limits', label: "What MarkWitness can and can't tell you" },
+      { href: '/limits', label: "What WatermarkRemoverPro can and can't tell you" },
       { href: '/blog/what-is-an-ai-watermark-detector', label: 'What is an AI watermark? How detection works' },
       { href: '/blog/claude-ai-watermark-anthropic-provenance-mark', label: "Claude's AI watermark: what Anthropic's mark means" },
     ],
@@ -695,12 +695,12 @@ export const BLOG_POSTS_C: BlogPost[] = [
     title: 'AI Detector Comparison 2026: Turnitin vs GPTZero+',
     h1: 'AI Detector Comparison 2026: Turnitin vs GPTZero+',
     metaDescription:
-      'Turnitin, GPTZero, Originality.ai and MarkWitness compared honestly: what each measures, stated accuracy, and API access.',
+      'Turnitin, GPTZero, Originality.ai and WatermarkRemoverPro compared honestly: what each measures, stated accuracy, and API access.',
     category: 'Reviews',
     format: 'data-study',
     intent: 'commercial',
     publishedAt: '2026-08-12',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'ai detector api',
     supportingKeywords: [
       'turnitin vs gptzero',
@@ -724,11 +724,11 @@ export const BLOG_POSTS_C: BlogPost[] = [
     },
     intro: [
       'Four tools, four different jobs, and one confusing shelf to choose from: that\'s the state of AI detection in 2026.',
-      'This ai detector comparison 2026 roundup lines up Turnitin, GPTZero, Originality.ai and MarkWitness side by side, including who actually offers an ai detector api for developers.',
-      "We're not picking a single winner. MarkWitness measures something narrower than the other three, and this guide says so plainly, so you can match the tool to the question you're actually asking.",
+      'This ai detector comparison 2026 roundup lines up Turnitin, GPTZero, Originality.ai and WatermarkRemoverPro side by side, including who actually offers an ai detector api for developers.',
+      "We're not picking a single winner. WatermarkRemoverPro measures something narrower than the other three, and this guide says so plainly, so you can match the tool to the question you're actually asking.",
     ],
     takeaways: [
-      'Turnitin, GPTZero and Originality.ai are general AI-writing classifiers; MarkWitness is a narrower, keyed watermark diagnostic.',
+      'Turnitin, GPTZero and Originality.ai are general AI-writing classifiers; WatermarkRemoverPro is a narrower, keyed watermark diagnostic.',
       'Institutions doing bulk screening want a classifier with a published false-positive rate and an appeals process.',
       'Individuals checking their own writing want a free, private, no-signup option first.',
       'Developers building disclosure into a pipeline want a documented, metered API.',
@@ -742,7 +742,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         body: [
           "Line four detectors up side by side and it looks like a simple accuracy contest. It isn't, and treating it as one leads to the wrong choice.",
           'Turnitin, GPTZero and Originality.ai are style classifiers. They estimate how likely a passage is to have been AI-generated based on statistical patterns in the writing itself: sentence structure, word choice, predictability.',
-          "MarkWitness answers a different question entirely: does this specific text carry a specific inserted signal, under a specific key? That's a narrower, more falsifiable claim, and it's worth understanding before comparing a single 'accuracy' number across all four.",
+          "WatermarkRemoverPro answers a different question entirely: does this specific text carry a specific inserted signal, under a specific key? That's a narrower, more falsifiable claim, and it's worth understanding before comparing a single 'accuracy' number across all four.",
         ],
       },
       {
@@ -773,10 +773,10 @@ export const BLOG_POSTS_C: BlogPost[] = [
         ],
       },
       {
-        id: 'markwitness-a-narrower-falsifiable-question',
-        heading: 'MarkWitness: a narrower, falsifiable question',
+        id: 'watermarkremoverpro-a-narrower-falsifiable-question',
+        heading: 'WatermarkRemoverPro: a narrower, falsifiable question',
         body: [
-          "MarkWitness doesn't score writing style at all. It runs a keyed statistical test, the green-list watermark method, looking for a specific signal, not a general impression of 'AI-ness'.",
+          "WatermarkRemoverPro doesn't score writing style at all. It runs a keyed statistical test, the green-list watermark method, looking for a specific signal, not a general impression of 'AI-ness'.",
           'In its own positive-control test, marked text scored z greater than 8 under the correct key. On the live /verify demo, a specimen scores z = 20.45 under the correct key and z = 0.1, essentially chance, under a different key on the identical text.',
           "It's built for someone checking their own writing before it goes out, not for screening other people's work at scale, and it says so, rather than positioning itself as a drop-in replacement for a classifier.",
         ],
@@ -795,7 +795,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         body: [
           'An institution running bulk screening across hundreds of submissions wants a classifier with a published false-positive rate and an established appeals process: Turnitin, GPTZero or Originality.ai, depending on existing systems and budget.',
           'An individual who wants to check their own writing privately, before submitting it anywhere, wants something free, fast and local, which is what the Check page is built for, with no signup needed for a first look.',
-          'A developer building a pipeline that needs to attach a documented, metered check to its own output, whether an editorial tool, an agent workflow, or anything that has to disclose provenance before handoff, wants an actual API. MarkWitness offers a metered JSON API and an MCP server for exactly that case.',
+          'A developer building a pipeline that needs to attach a documented, metered check to its own output, whether an editorial tool, an agent workflow, or anything that has to disclose provenance before handoff, wants an actual API. WatermarkRemoverPro offers a metered JSON API and an MCP server for exactly that case.',
         ],
       },
       {
@@ -804,7 +804,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         body: [
           "None of the four claims 100% accuracy, and GPTZero says so about the category in general on its own site. That's a useful baseline for judging every marketing claim you read, including ours.",
           "A 'clean' result from any of these tools is not absolute proof of anything. A classifier's low score means the writing didn't look statistically AI-like to that model. A watermark detector's absent signal means no mark was found under the keys tested, not that the document is definitively human.",
-          "Our own limits page states this plainly for MarkWitness specifically, and it's worth holding the same standard against any tool you're considering, whatever its marketing copy says.",
+          "Our own limits page states this plainly for WatermarkRemoverPro specifically, and it's worth holding the same standard against any tool you're considering, whatever its marketing copy says.",
         ],
       },
     ],
@@ -815,13 +815,13 @@ export const BLOG_POSTS_C: BlogPost[] = [
         ['Turnitin', 'General AI-writing classifier', 'Document-level FPR under 1% (800,000-doc test set); sentence-level FPR approx. 4%', 'Institutional integration, not public self-serve', 'Schools and universities doing bulk screening'],
         ['GPTZero', 'General AI-writing classifier', 'Stated 99% accuracy; ~1% FPR claimed for de-biased ESL detection; 96.5% mixed-document accuracy', 'Yes, offered', 'Educators and content platforms wanting broad coverage'],
         ['Originality.ai', 'General AI-writing classifier, multilingual', 'Stated 97.8% accuracy on its multilingual model', 'Yes, offered', 'Agencies and content teams screening bulk copy'],
-        ['MarkWitness', 'Keyed statistical watermark presence (green-list method), not general style classification', 'Positive-control z > 8 (p < 1e-6); live /verify demo z = 20.45 under correct key vs z = 0.1 under wrong key', 'Yes, with metered JSON API and MCP server', 'Individuals checking their own writing before it goes out'],
+        ['WatermarkRemoverPro', 'Keyed statistical watermark presence (green-list method), not general style classification', 'Positive-control z > 8 (p < 1e-6); live /verify demo z = 20.45 under correct key vs z = 0.1 under wrong key', 'Yes, with metered JSON API and MCP server', 'Individuals checking their own writing before it goes out'],
       ],
     },
     quote: {
       quote:
         "Ask what the number is actually measuring before you trust it. A style classifier and a keyed watermark test can both say 'AI' and be answering completely different questions.",
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: 'on comparing AI-writing classifiers with watermark detection',
     },
     pitfalls: [
@@ -837,14 +837,14 @@ export const BLOG_POSTS_C: BlogPost[] = [
           "On stated figures alone, Turnitin's document-level rate of under 1% is the lowest headline number among the classifiers here, though it's tested on a different definition (documents with over 20% AI writing) than GPTZero's or Originality.ai's figures, so treat direct comparisons with some caution.",
       },
       {
-        question: 'Is MarkWitness a replacement for Turnitin or GPTZero?',
+        question: 'Is WatermarkRemoverPro a replacement for Turnitin or GPTZero?',
         answer:
           "No. It answers a narrower question, whether a specific keyed watermark is present, rather than classifying writing style generally. It's built for checking your own writing, not for screening other people's submissions at scale.",
       },
       {
         question: 'Do any of these tools offer a public API?',
         answer:
-          'GPTZero, Originality.ai and MarkWitness all offer some form of API access; Turnitin is generally accessed through institutional integrations rather than a public self-serve API.',
+          'GPTZero, Originality.ai and WatermarkRemoverPro all offer some form of API access; Turnitin is generally accessed through institutional integrations rather than a public self-serve API.',
       },
       {
         question: "What's the difference between a style classifier and a watermark detector?",
@@ -853,10 +853,10 @@ export const BLOG_POSTS_C: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/vs/turnitin-ai-detector', label: 'MarkWitness vs Turnitin AI detector' },
-      { href: '/vs/gptzero', label: 'MarkWitness vs GPTZero' },
-      { href: '/vs/originality-ai', label: 'MarkWitness vs Originality.ai' },
-      { href: '/blog/turnitin-ai-detector-vs-markwitness', label: 'Turnitin AI detector vs MarkWitness' },
+      { href: '/vs/turnitin-ai-detector', label: 'WatermarkRemoverPro vs Turnitin AI detector' },
+      { href: '/vs/gptzero', label: 'WatermarkRemoverPro vs GPTZero' },
+      { href: '/vs/originality-ai', label: 'WatermarkRemoverPro vs Originality.ai' },
+      { href: '/blog/turnitin-ai-detector-vs-watermarkremoverpro', label: 'Turnitin AI detector vs WatermarkRemoverPro' },
       { href: '/blog/gptzero-review-false-positives', label: 'GPTZero review: accuracy, bias and false positives' },
       { href: '/blog/originality-ai-review-false-positives', label: 'Originality.ai review: reliable for high-stakes use?' },
     ],
@@ -874,12 +874,12 @@ export const BLOG_POSTS_C: BlogPost[] = [
     title: 'MCP AI Provenance Tools: Checking Before Your Agent Hands Off',
     h1: 'MCP AI Provenance Tools: Checking Before Your Agent Hands Off',
     metaDescription:
-      'MCP AI provenance tools explained: how an agent checks its own output for a mark before handoff, and why that matters now. Try MarkWitness free.',
+      'MCP AI provenance tools explained: how an agent checks its own output for a mark before handoff, and why that matters now. Try WatermarkRemoverPro free.',
     category: 'Academy',
     format: 'deep-dive',
     intent: 'informational',
     publishedAt: '2026-08-12',
-    author: 'MarkWitness Content Team',
+    author: 'WatermarkRemoverPro Content Team',
     primaryKeyword: 'mcp ai provenance tool',
     supportingKeywords: [
       'ai agent provenance disclosure',
@@ -905,13 +905,13 @@ export const BLOG_POSTS_C: BlogPost[] = [
     intro: [
       'An agent that drafts a report, a caption or a cover letter usually just hands the text over. Nobody asks it whether that text carries a provenance mark, so it never says.',
       'That gap is closing. Model makers are marking their own output, regulators are asking for disclosure, and a small cluster of MCP servers has appeared this year to let an agent check before it ships.',
-      'This piece looks at what "checking before handoff" actually means for an agent pipeline, where the current MCP tools sit, and where MarkWitness\'s own check_document and describe_method tools fit into that picture.',
+      'This piece looks at what "checking before handoff" actually means for an agent pipeline, where the current MCP tools sit, and where WatermarkRemoverPro\'s own check_document and describe_method tools fit into that picture.',
     ],
     takeaways: [
       'An agent handing off generated content is a new demand surface for provenance checks, distinct from a human checking their own essay.',
       'The MCP ecosystem has grown from roughly 100 servers at its November 2024 launch to over 10,000 indexed across public registries in 2026.',
       'A handful of named MCP servers now offer watermark-related capability to agents, though most focus on embedding a mark or building a compliance pack, not checking text already in hand.',
-      'MarkWitness\'s MCP server exposes check_document and describe_method as agent-callable tools, sitting behind the same Pro plan and metered pricing as its JSON API.',
+      'WatermarkRemoverPro\'s MCP server exposes check_document and describe_method as agent-callable tools, sitting behind the same Pro plan and metered pricing as its JSON API.',
       'A pass from any of these tools tells an agent something narrow and specific, never a blanket guarantee of authorship either way.',
       'The EU AI Act\'s Article 50 transparency rules took effect on 2 August 2026, with a grace period to 2 December 2026 for machine-readable marking on systems already live before that date.',
     ],
@@ -947,14 +947,14 @@ export const BLOG_POSTS_C: BlogPost[] = [
         body: [
           'A small cluster of MCP servers touching this space has appeared over the past year, and it is worth being precise about what each one actually does, since "watermarking MCP server" covers more than one job. ForensicMark ships an MCP server that embeds an invisible forensic watermark into an image and attaches a C2PA manifest, callable directly from an agent, but its job is images, and its job is embedding a mark, not checking text a model has already produced.',
           'MEOK\'s Watermark Attest MCP is closer in spirit: it bundles a C2PA manifest, a SynthID-style invisible watermark and a signed attestation into a single agent-callable tool, built explicitly around the EU AI Act\'s Article 50 compliance timeline. Its own documentation frames that as a 2 November 2026 target, which is worth reading as that vendor\'s own internal deadline rather than the statute\'s exact date, since the regulation\'s primary transparency obligations took effect on 2 August 2026, with a grace period to 2 December 2026 for machine-readable marking specifically on systems already on the market before that date.',
-          'What neither tool does is the specific job this piece is about: taking a piece of text an agent already has in hand, text it did not itself embed a mark into, and checking whether a statistical signal is present. That is a detection job, not an embedding job, and it is the gap MarkWitness\'s MCP server sits in.',
+          'What neither tool does is the specific job this piece is about: taking a piece of text an agent already has in hand, text it did not itself embed a mark into, and checking whether a statistical signal is present. That is a detection job, not an embedding job, and it is the gap WatermarkRemoverPro\'s MCP server sits in.',
         ],
       },
       {
-        id: 'where-markwitness-fits-check-document-and-describe-method',
-        heading: 'Where MarkWitness fits: check_document and describe_method',
+        id: 'where-watermarkremoverpro-fits-check-document-and-describe-method',
+        heading: 'Where WatermarkRemoverPro fits: check_document and describe_method',
         body: [
-          'MarkWitness\'s MCP server exposes two tools an agent can call directly. check_document runs the keyed statistical watermark check against a passed-in document and returns a signal strength, a confidence band and a per-passage breakdown, the same underlying method behind the browser-based Check page, just reachable as a tool call instead of a page load. describe_method returns the check\'s own description and stated limits as structured data, so an agent (or whoever built it) can surface exactly what the check can and cannot establish, rather than guessing at how to phrase a disclosure.',
+          'WatermarkRemoverPro\'s MCP server exposes two tools an agent can call directly. check_document runs the keyed statistical watermark check against a passed-in document and returns a signal strength, a confidence band and a per-passage breakdown, the same underlying method behind the browser-based Check page, just reachable as a tool call instead of a page load. describe_method returns the check\'s own description and stated limits as structured data, so an agent (or whoever built it) can surface exactly what the check can and cannot establish, rather than guessing at how to phrase a disclosure.',
           'Both tools sit behind the same Pro plan as the JSON API, £19 a month, metered at 2p per 1,000 words on top for programmatic use. That is a deliberate design choice: the free, browser-only Check page cannot become an agent-callable tool without an account behind it, because someone has to pay for the compute a machine caller uses on demand, unlike a human checking one document by hand.',
         ],
       },
@@ -971,7 +971,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'What the check can and cannot tell an agent',
         body: [
           'A detected mark, from any tool in this category, is a signal that the marked passage was processed by a model holding the tested key. It is not proof of authorship on its own, because marks can survive into quoted, translated or lightly edited text that a human genuinely wrote around. An agent that treats a positive result as "this paragraph is definitely AI-written" is overstating the finding.',
-          'The reverse holds too, and it matters just as much for an agent as for a person: no mark detected means no mark was found under the specific keys tested, never proof the passage is human-written. MarkWitness holds one open, testable reference key plus any vendor or institution keys supplied via configuration; it does not, and cannot, claim to test against every model provider\'s private detection key, because none of those keys are published. describe_method exists precisely so an agent surfacing a result also surfaces that caveat, rather than a bare pass or fail.',
+          'The reverse holds too, and it matters just as much for an agent as for a person: no mark detected means no mark was found under the specific keys tested, never proof the passage is human-written. WatermarkRemoverPro holds one open, testable reference key plus any vendor or institution keys supplied via configuration; it does not, and cannot, claim to test against every model provider\'s private detection key, because none of those keys are published. describe_method exists precisely so an agent surfacing a result also surfaces that caveat, rather than a bare pass or fail.',
         ],
       },
     ],
@@ -981,12 +981,12 @@ export const BLOG_POSTS_C: BlogPost[] = [
       rows: [
         ['ForensicMark', 'Embeds an invisible forensic watermark and C2PA manifest into an image', 'Images', 'Does not check text already in hand for an existing mark'],
         ['MEOK Watermark Attest MCP', 'Bundles a C2PA manifest, invisible watermark and signed attestation for Article 50 compliance', 'Images, with a compliance-pack framing', 'Does not run a keyed statistical check on text a model has already produced'],
-        ['MarkWitness (check_document, reduce_ai_evidence, describe_method)', 'Checks a passed-in document for a keyed statistical watermark and returns a confidence band; separately, rewrites it on-device to reduce detectable evidence', 'Text, five supported languages', 'Cannot guarantee defeating an undisclosed vendor watermark; the rewrite tool has no hosted mode, on any tier'],
+        ['WatermarkRemoverPro (check_document, reduce_ai_evidence, describe_method)', 'Checks a passed-in document for a keyed statistical watermark and returns a confidence band; separately, rewrites it on-device to reduce detectable evidence', 'Text, five supported languages', 'Cannot guarantee defeating an undisclosed vendor watermark; the rewrite tool has no hosted mode, on any tier'],
       ],
     },
     quote: {
       quote: 'A human decides to check their own writing. An agent has to be built to decide that, every single time, or it never happens at all. That is the whole reason this needs to be a tool call, not a habit.',
-      attribution: 'A MarkWitness detection engineer',
+      attribution: 'A WatermarkRemoverPro detection engineer',
       role: 'on why provenance checks belong in an agent\'s tool list',
     },
     pitfalls: [
@@ -1001,12 +1001,12 @@ export const BLOG_POSTS_C: BlogPost[] = [
         answer: 'It is a Model Context Protocol server that exposes an AI-content provenance check, such as detecting a statistical watermark, as a tool an AI agent can call directly during its own pipeline, rather than a human running a check by hand on a website.',
       },
       {
-        question: 'Does MarkWitness have an MCP server agents can call?',
+        question: 'Does WatermarkRemoverPro have an MCP server agents can call?',
         answer: 'Yes. It exposes check_document, which runs the watermark check on a passed-in document, and describe_method, which returns the method\'s description and stated limits as structured data. Both sit behind the Pro plan, metered per 1,000 words.',
       },
       {
-        question: 'Do image-watermarking MCP servers like ForensicMark do the same job as MarkWitness?',
-        answer: 'No. ForensicMark embeds an invisible forensic watermark into an image at the point of creation. MarkWitness checks text an agent already has in hand for a statistical mark it did not itself embed. They solve adjacent but different problems.',
+        question: 'Do image-watermarking MCP servers like ForensicMark do the same job as WatermarkRemoverPro?',
+        answer: 'No. ForensicMark embeds an invisible forensic watermark into an image at the point of creation. WatermarkRemoverPro checks text an agent already has in hand for a statistical mark it did not itself embed. They solve adjacent but different problems.',
       },
       {
         question: 'Is my AI agent legally required to disclose AI-generated content?',
@@ -1018,11 +1018,11 @@ export const BLOG_POSTS_C: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/docs/mcp', label: 'MarkWitness MCP server documentation' },
-      { href: '/docs/api', label: 'MarkWitness API documentation' },
-      { href: '/method', label: 'How the MarkWitness method works' },
+      { href: '/docs/mcp', label: 'WatermarkRemoverPro MCP server documentation' },
+      { href: '/docs/api', label: 'WatermarkRemoverPro API documentation' },
+      { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/limits', label: 'Stated limits of the check' },
-      { href: '/blog/how-to-use-the-markwitness-api', label: 'How to use the MarkWitness API to check AI marks' },
+      { href: '/blog/how-to-use-the-watermarkremoverpro-api', label: 'How to use the WatermarkRemoverPro API to check AI marks' },
       { href: '/blog/claude-ai-watermark-anthropic-provenance-mark', label: 'Claude\'s AI watermark: what Anthropic\'s mark means' },
     ],
     externalLinks: [

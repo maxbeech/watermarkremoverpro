@@ -11,7 +11,7 @@
 
 import type { CalibrationConfig } from './types'
 
-const DB_NAME = 'markwitness_calibrator'
+const DB_NAME = 'watermarkremoverpro_calibrator'
 const DB_VERSION = 1
 
 // Store names

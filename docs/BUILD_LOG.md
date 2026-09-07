@@ -1,6 +1,6 @@
-# MarkWitness build log
+# WatermarkRemoverPro build log
 
-Checkpoints for the pipeline row `markwitness` (Product Pipeline table).
+Checkpoints for the pipeline row `watermarkremoverpro` (Product Pipeline table).
 
 **Why this file exists.** The OpenHelm data MCP token issued to this build run had
 a one-hour lifetime (issued 2026-08-11T19:27:39Z, expired 20:27:39Z) and started
@@ -15,7 +15,7 @@ file is the more recent record**.
 ## Workspace (authoritative)
 
 ```
-/Users/maxbeech/Documents/Beech/Development/ProductFactory/markwitness
+/Users/maxbeech/Documents/Beech/Development/ProductFactory/watermarkremoverpro
 ```
 
 `list_products` carries this product under its pre-rename idea slug
@@ -27,8 +27,8 @@ product in the ledger follows. `upsert_product` cannot write `workspacePath`, so
 the product record still points at the stale `/cloud/...` path. **Use the path
 above**.
 
-Repository: <https://github.com/maxbeech/markwitness> (private, `main`).
-Vercel project: `markwitness` in `max-beechs-projects`.
+Repository: <https://github.com/maxbeech/watermarkremoverpro> (private, `main`).
+Vercel project: `watermarkremoverpro` in `max-beechs-projects`.
 Database: Neon resource `neon-champagne-forest`, connected to the Vercel project.
 
 ---
@@ -128,7 +128,7 @@ database.
 
 ## Checkpoint 5: deployed, and verified against the deployment (2026-08-11 23:00Z)
 
-Live at <https://markwitness.helm7.com> (Vercel production, aliased). Every route
+Live at <https://watermarkremoverpro.com> (Vercel production, aliased). Every route
 sampled returns 200 and serves *this* product, checked by title and brand, not
 by status code alone.
 
@@ -152,7 +152,7 @@ different key, in the deployed build.
 against the real Neon database, issued a real API key from the dashboard, and
 called `POST /api/v1/check` with it: a real analysis came back (110 words, 105
 distinct pairs scored, green rate 42.9% against 50% expected), metered as
-`x-markwitness-billable-units: 1` with a GBP billing block. A one-word document
+`x-watermarkremoverpro-billable-units: 1` with a GBP billing block. A one-word document
 returned `language_undetermined` rather than guessing.
 
 **Evidence report now has real coverage.** It is the paid wedge and it is
@@ -248,4 +248,4 @@ Stripe remains the one gap this stage could not close: no payment processor
 is configured for this product, so an actual checkout, a real charge (even
 in test mode), a webhook firing against a real Stripe event, and a real
 downgrade after cancellation are none of them exercised end-to-end. Tracked
-by the existing task "Credentials needed before MarkWitness can launch."
+by the existing task "Credentials needed before WatermarkRemoverPro can launch."

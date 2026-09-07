@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'unauthorized',
-        message: 'Sign in, or present a MarkWitness API key as "Authorization: Bearer mw_live_...".',
+        message: 'Sign in, or present a WatermarkRemoverPro API key as "Authorization: Bearer mw_live_...".',
       },
       { status: 401 },
     )
@@ -135,8 +135,8 @@ export async function POST(request: Request) {
     status: 200,
     headers: {
       'content-type': 'application/pdf',
-      'content-disposition': `attachment; filename="markwitness-evidence-${result.documentHash.slice(0, 12)}.pdf"`,
-      'X-MarkWitness-Billable-Units': String(billableUnits(result.words)),
+      'content-disposition': `attachment; filename="watermarkremoverpro-evidence-${result.documentHash.slice(0, 12)}.pdf"`,
+      'X-WatermarkRemoverPro-Billable-Units': String(billableUnits(result.words)),
       'Cache-Control': 'no-store',
     },
   })

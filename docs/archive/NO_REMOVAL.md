@@ -1,6 +1,6 @@
 # The no-removal policy
 
-MarkWitness does not remove, weaken, paraphrase around, substitute for, or
+WatermarkRemoverPro does not remove, weaken, paraphrase around, substitute for, or
 otherwise reduce a statistical AI provenance mark. Not on the free tier, not on
 Pro, not through the JSON API, not through the MCP server, not as an undocumented
 parameter, and not in a future version.
@@ -30,7 +30,7 @@ Any one of these, on its own, converts this product into something we will not
 ship:
 
 1. **Hardening against inspection.** Making the method harder for a mark's owner
-   to detect or counter. MarkWitness publishes its method in full, at `/method`,
+   to detect or counter. WatermarkRemoverPro publishes its method in full, at `/method`,
    including its weaknesses.
 2. **Deliberate unattributability.** No signup, no logging, no per-user
    accountability *for a circumventing action*. Note the free tier is anonymous
@@ -39,7 +39,7 @@ ship:
    anonymity.
 3. **Bulk or agent-callable circumvention.** Exposing removal through an API or
    MCP tool, which converts an individual remedy into automated laundering at
-   scale. MarkWitness's API and MCP surfaces expose measurement only.
+   scale. WatermarkRemoverPro's API and MCP surfaces expose measurement only.
 
 ## What we do instead
 
@@ -72,5 +72,5 @@ failing test is a conversation that has to happen before the change lands.
 ## If you are here to ask for the feature
 
 The answer is no, and it will stay no. If a user wants a mark removed,
-MarkWitness is the wrong product and no configuration of it will be the right
+WatermarkRemoverPro is the wrong product and no configuration of it will be the right
 one.

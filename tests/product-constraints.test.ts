@@ -46,7 +46,7 @@ const CLAIM_SURFACES = [
 
 describe('constraint: no unverifiable guarantee, anywhere', () => {
   /**
-   * The permanent constraint, reversed in content but not in spirit. MarkWitness
+   * The permanent constraint, reversed in content but not in spirit. WatermarkRemoverPro
    * now reduces detectable AI-style evidence; it must never claim, on any
    * surface, that it guarantees a result it has no way to verify. No tool can
    * honestly promise to defeat a model vendor's undisclosed watermark, since
@@ -174,7 +174,7 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
     expect(read(join(ROOT, 'src/lib/site.ts'))).toContain('learnaway.ai')
   })
 
-  it('distinguishes editing your own writing from screening someone else\'s, now that MarkWitness rewrites as well as checks', () => {
+  it('distinguishes editing your own writing from screening someone else\'s, now that WatermarkRemoverPro rewrites as well as checks', () => {
     const banner = read(join(ROOT, 'src/components/mirror-banner.tsx')).toLowerCase()
     expect(banner).toMatch(/you[\s\S]*wrote[\s\S]*yourself/)
     expect(banner).toMatch(/handed you to submit|someone else/)

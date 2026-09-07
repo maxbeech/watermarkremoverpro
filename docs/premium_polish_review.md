@@ -1,4 +1,4 @@
-# Premium polish review: MarkWitness
+# Premium polish review: WatermarkRemoverPro
 
 Stage 3b design and brand elevation pass. Design quality only; correctness, business
 logic and functional testing belong to Harden, which runs next.
@@ -7,7 +7,7 @@ logic and functional testing belong to Harden, which runs next.
 
 ## Review 2026-08-12
 
-Audited the live deployment at `https://markwitness.helm7.com` in a real Chromium
+Audited the live deployment at `https://watermarkremoverpro.com` in a real Chromium
 browser at 1440x900 and 390x844, full-page screenshots of `/`, `/check`, a real
 `/check` result state, `/pricing`, `/method`, `/limits`, `/for`,
 `/for/university-students`, `/vs/gptzero`, `/guide`, `/signup`. Screenshots kept

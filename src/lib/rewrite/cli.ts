@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 /**
- * The `markwitness-rewrite` CLI: the same rewrite engine the browser UI and
+ * The `watermarkremoverpro-rewrite` CLI: the same rewrite engine the browser UI and
  * MCP server use, runnable directly in a caller's own process. This is what
  * "API access" means for the rewrite feature (see docs/REWRITE_PHILOSOPHY.md
  * and README.md): there is no REST endpoint for it, on any tier, because
- * that would mean sending document text to a MarkWitness-operated server,
+ * that would mean sending document text to a WatermarkRemoverPro-operated server,
  * which this feature never does. Install and run in your own process
  * instead:
  *
- *   npx @markwitness/rewrite-engine --strength balanced input.txt
- *   cat input.txt | npx @markwitness/rewrite-engine --strength aggressive --tier pro
- *   npx @markwitness/rewrite-engine --model advanced --tier pro input.txt -o output.txt
+ *   npx @watermarkremoverpro/rewrite-engine --strength balanced input.txt
+ *   cat input.txt | npx @watermarkremoverpro/rewrite-engine --strength aggressive --tier pro
+ *   npx @watermarkremoverpro/rewrite-engine --model advanced --tier pro input.txt -o output.txt
  *
  * Reads from a file argument or stdin, writes to a file (-o) or stdout.
  * Never makes a network call with your document text, on any tier, on any
@@ -96,11 +96,11 @@ function readStdin(): Promise<string> {
   })
 }
 
-const HELP = `markwitness-rewrite: reduce detectable AI-style evidence in text, entirely on-device.
+const HELP = `watermarkremoverpro-rewrite: reduce detectable AI-style evidence in text, entirely on-device.
 
 Usage:
-  markwitness-rewrite [options] [input-file]
-  cat input.txt | markwitness-rewrite [options]
+  watermarkremoverpro-rewrite [options] [input-file]
+  cat input.txt | watermarkremoverpro-rewrite [options]
 
 Options:
   -o, --output <file>   Write the revised text here instead of stdout.
@@ -115,7 +115,7 @@ Options:
   -h, --help             Show this help.
 
 Never sends your document anywhere, on any tier, on any flag combination. See
-${'https://markwitness.helm7.com/docs/mcp'} and docs/REWRITE_PHILOSOPHY.md.
+${'https://watermarkremoverpro.com/docs/mcp'} and docs/REWRITE_PHILOSOPHY.md.
 `
 
 async function main() {

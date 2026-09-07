@@ -6,7 +6,7 @@ import { BandRule } from '@/components/brand/band'
 
 export const metadata: Metadata = {
   title: 'Create an account',
-  description: 'A free MarkWitness account raises the per-document limit, unlocks every supported language, and saves your check history.',
+  description: 'A free WatermarkRemoverPro account raises the per-document limit, unlocks every supported language, and saves your check history.',
   alternates: { canonical: '/signup' },
 }
 

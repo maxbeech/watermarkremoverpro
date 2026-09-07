@@ -14,7 +14,7 @@ export function GET() {
         version: '1.0.0',
         description:
           'Check a document for a statistical AI provenance mark. Returns the signal strength with a confidence band, a per-passage breakdown corrected for multiple comparisons, and the stated limits of the method.\n\n' +
-          'MarkWitness also reduces detectable AI-style evidence in a document, but not through this REST API: that feature is strictly on-device on every tier, so there is no hosted endpoint for it here. Use the MCP server or the published local package/CLI instead, both of which run the identical engine in your own process. It cannot guarantee defeating a model vendor\'s undisclosed watermark. See ' +
+          'WatermarkRemoverPro also reduces detectable AI-style evidence in a document, but not through this REST API: that feature is strictly on-device on every tier, so there is no hosted endpoint for it here. Use the MCP server or the published local package/CLI instead, both of which run the identical engine in your own process. It cannot guarantee defeating a model vendor\'s undisclosed watermark. See ' +
           SITE.url +
           '/docs/mcp.',
         contact: { email: SITE.contactEmail },
@@ -93,7 +93,7 @@ export function GET() {
       },
       components: {
         securitySchemes: {
-          bearerAuth: { type: 'http', scheme: 'bearer', description: 'A MarkWitness API key, "mw_live_...".' },
+          bearerAuth: { type: 'http', scheme: 'bearer', description: 'A WatermarkRemoverPro API key, "mw_live_...".' },
         },
         schemas: {
           AnalysisResult: {

@@ -2,7 +2,7 @@
  * The statistical primitives every reported number is derived from.
  *
  * Nothing in this file is a heuristic or a tuned constant standing in for a
- * calculation. If a figure appears on a MarkWitness result screen or evidence
+ * calculation. If a figure appears on a WatermarkRemoverPro result screen or evidence
  * report, it came through one of these functions from the document's own counts.
  */
 

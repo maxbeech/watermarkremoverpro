@@ -4014,11 +4014,11 @@ function hmacUnitInterval(key, message) {
 // src/lib/detector/keys.ts
 var OPEN_REFERENCE_KEY = {
   id: "openmark-ref-1",
-  label: "MarkWitness open reference scheme",
+  label: "WatermarkRemoverPro open reference scheme",
   scheme: "greenlist-bigram-v1",
   gamma: 0.5,
   secret: utf8("markwitness/open-reference-key/v1"),
-  provenance: "Published by MarkWitness for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
+  provenance: "Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
   vendorPublished: false
 };
 var describeKey = (k) => ({
@@ -4699,7 +4699,7 @@ async function main() {
   const strength = foundDashes ? "balanced" : "preserve";
   const strengthReason = foundDashes ? '"balanced" is the lowest strength that swaps dash punctuation; "preserve" deliberately leaves it' : '"preserve" only touches passages a real check flags';
   const lines = [
-    `MarkWitness checked ${filePath} before it ships as public content:`,
+    `WatermarkRemoverPro checked ${filePath} before it ships as public content:`,
     ...findings.map((f) => `  - ${f}`),
     "",
     `To reduce this, call the reduce_ai_evidence MCP tool on the file's prose at`,

@@ -5,7 +5,7 @@
  * wiki through the MediaWiki API, licensed CC BY-SA 4.0.
  *
  * Why Wikipedia rather than Project Gutenberg, which is the more usual choice:
- * the baseline's job is to describe the register MarkWitness users actually
+ * the baseline's job is to describe the register WatermarkRemoverPro users actually
  * check, meaning essays, reports, applications and articles, against a corpus of 19th century
  * novels describes something else. A student's coursework compared against Moby
  * Dick would show a large "distance" that says nothing except that they are not
@@ -29,7 +29,7 @@ import { join } from 'node:path'
 import { tokenize } from '../src/lib/detector/tokenize'
 import { identifyLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '../src/lib/detector/languages'
 
-const USER_AGENT = 'MarkWitness-baseline-builder/0.1 (https://github.com/maxbeech/markwitness; maxedbeech@gmail.com)'
+const USER_AGENT = 'WatermarkRemoverPro-baseline-builder/0.1 (https://github.com/maxbeech/watermarkremoverpro; maxedbeech@gmail.com)'
 const TARGET_TOKENS_PER_LANGUAGE = 220_000
 const MIN_DOC_CHARS = 1_500
 const BATCH = 20

@@ -29,7 +29,7 @@ export function BlogIndex({ category }: { category?: BlogPost['category'] }) {
   return (
     <>
       <PageHeader
-        eyebrow="MarkWitness Blog"
+        eyebrow="WatermarkRemoverPro Blog"
         title="Provenance marks, false positives, and what actually holds up as evidence"
         lead="News, guides and reviews for anyone who has been accused of using AI, or who has to decide whether an accusation is fair. Written by the team building the tool, and checked against what a detector can actually prove."
       />

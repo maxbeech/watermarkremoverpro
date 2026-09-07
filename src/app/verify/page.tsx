@@ -7,7 +7,7 @@ import { OPEN_REFERENCE_KEY } from '@/lib/detector/keys'
 export const metadata: Metadata = {
   title: 'Verify the detector',
   description:
-    'Mark a passage under the published reference key in your own browser and watch the MarkWitness detector find it, then watch the same text score at chance under a different key.',
+    'Mark a passage under the published reference key in your own browser and watch the WatermarkRemoverPro detector find it, then watch the same text score at chance under a different key.',
   alternates: { canonical: '/verify' },
 }
 

@@ -6,7 +6,7 @@ import { Eyebrow } from '@/components/brand/ui'
 /**
  * The presentational vocabulary for a measurement.
  *
- * These components are the single source of truth for how a MarkWitness figure
+ * These components are the single source of truth for how a WatermarkRemoverPro figure
  * looks, and they are used by BOTH the real result view in the app and the
  * specimen exhibits on the marketing site. That is deliberate: it makes it
  * impossible to show a visitor a marketing screenshot that the product cannot

@@ -55,9 +55,9 @@ const AUDIENCES: LongTailPage[] = [
         ],
       },
       {
-        heading: 'What MarkWitness checks instead',
+        heading: 'What WatermarkRemoverPro checks instead',
         body: [
-          'MarkWitness looks for a provenance mark: a deliberate statistical signature that some generation systems apply to their output so it can later be recognised. That is a different question from “does this read like AI”, and it has a cleaner answer, because a mark is either present in the statistics or it is not.',
+          'WatermarkRemoverPro looks for a provenance mark: a deliberate statistical signature that some generation systems apply to their output so it can later be recognised. That is a different question from “does this read like AI”, and it has a cleaner answer, because a mark is either present in the statistics or it is not.',
           'The honest catch, which we state on every result: a mark of this kind is keyed, and no model vendor publishes its detection key. So a null result from us means “no mark found under the keys we hold”, never “you are cleared”. We would rather give you a narrow true statement you can defend than a broad one that collapses the moment someone knowledgeable reads it.',
         ],
       },
@@ -66,13 +66,13 @@ const AUDIENCES: LongTailPage[] = [
         body: [
           'Ask the department three things in writing: which tool produced the figure, what that tool’s published false positive rate is, and what corroborating evidence exists beyond the score. Many academic misconduct policies already require more than a detector output, and asking politely for the policy tends to be more productive than arguing about the number.',
           'Bring your own process evidence: drafts, version history, notes, library loans, supervision emails. A document history is far more persuasive than any detector result in either direction.',
-          'The MarkWitness evidence report is designed to sit alongside that: it is dated, states its own limits in full on the page, lists the keys tested, and carries a SHA-256 hash of the exact file so it cannot be argued to be about a different draft.',
+          'The WatermarkRemoverPro evidence report is designed to sit alongside that: it is dated, states its own limits in full on the page, lists the keys tested, and carries a SHA-256 hash of the exact file so it cannot be argued to be about a different draft.',
         ],
       },
     ],
     faq: [
       {
-        question: 'Will a MarkWitness report clear my name?',
+        question: 'Will a WatermarkRemoverPro report clear my name?',
         answer:
           'It cannot, and any tool promising that is misleading you. No absence of evidence proves authorship. What the report does is document what a specific, named statistical test found on your exact file, with its limits stated, so the conversation moves from an unexplained percentage to something both sides can examine.',
       },
@@ -84,7 +84,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         question: 'I did use AI for some parts. What now?',
         answer:
-          "MarkWitness's rewrite feature is a final-pass editing tool for your own drafting, not a substitute for disclosure your institution requires. It cannot guarantee a document won't be flagged, and it doesn't change what happened to a document that already went through an assisted-writing process your institution's policy required you to disclose. If your institution permits assisted writing with disclosure, disclose it. If it does not, an honest conversation earlier is almost always treated better than a discovered concealment later.",
+          "WatermarkRemoverPro's rewrite feature is a final-pass editing tool for your own drafting, not a substitute for disclosure your institution requires. It cannot guarantee a document won't be flagged, and it doesn't change what happened to a document that already went through an assisted-writing process your institution's policy required you to disclose. If your institution permits assisted writing with disclosure, disclose it. If it does not, an honest conversation earlier is almost always treated better than a discovered concealment later.",
       },
     ],
   },
@@ -148,7 +148,7 @@ const AUDIENCES: LongTailPage[] = [
         heading: 'The disclosure problem',
         body: [
           'The question a standards desk actually asks is narrow: was any part of this produced by a system that marks its output, and can we show what we checked? That is answerable. “Does this feel like AI” is not.',
-          'MarkWitness answers the narrow question and refuses the broad one. The result names the keys tested and states plainly that a null result under those keys is not a statement about marks applied with a key nobody outside the vendor holds.',
+          'WatermarkRemoverPro answers the narrow question and refuses the broad one. The result names the keys tested and states plainly that a null result under those keys is not a statement about marks applied with a key nobody outside the vendor holds.',
         ],
       },
       {
@@ -200,7 +200,7 @@ const AUDIENCES: LongTailPage[] = [
         heading: 'Why this product measures something different',
         body: [
           'A provenance mark is not a fluency judgement. It is a statistical signature deliberately placed in text at generation time, and it is either present or absent regardless of how idiomatic the writing is.',
-          'MarkWitness does also report a style measurement, and we are direct about what it is worth: it says how far your writing sits from a reference corpus of contemporary prose in that language. Non-native writing often sits some distance from it. That distance is not evidence of anything about how the document was produced, and the result says so in those words, on the page, so nobody can quote the number without the caveat.',
+          'WatermarkRemoverPro does also report a style measurement, and we are direct about what it is worth: it says how far your writing sits from a reference corpus of contemporary prose in that language. Non-native writing often sits some distance from it. That distance is not evidence of anything about how the document was produced, and the result says so in those words, on the page, so nobody can quote the number without the caveat.',
         ],
       },
       {
@@ -217,7 +217,7 @@ const AUDIENCES: LongTailPage[] = [
           'No. Writing worse to satisfy an unreliable tool is a bad trade, and it is also the road toward the evasion services this product deliberately is not. The better move is to challenge the detector’s reliability, which is well documented, and to bring your drafting history.',
       },
       {
-        question: 'Does MarkWitness correct for the bias?',
+        question: 'Does WatermarkRemoverPro correct for the bias?',
         answer:
           'It avoids it rather than correcting for it. The provenance-mark test does not use fluency at all. The style measurement is reported as a distance from a reference, explicitly labelled as a statement about register rather than about provenance, and we do not turn it into a verdict, so there is no verdict to be biased.',
       },
@@ -293,57 +293,57 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
   {
     slug: 'turnitin-ai-detector',
     competitor: 'Turnitin’s AI writing indicator',
-    metaTitle: 'MarkWitness vs Turnitin’s AI detector: they answer different questions',
+    metaTitle: 'WatermarkRemoverPro vs Turnitin’s AI detector: they answer different questions',
     whatItIs: [
       'Turnitin’s AI writing indicator is an institutional product. It is bought by a university, run against work students submit, and reports a percentage to a marker. The student is the subject of the check, not its user, and generally cannot run it themselves or see how it reached its figure.',
       'It is a classifier: it was trained to separate human-written from machine-written text and outputs a confidence. That approach has a false positive rate, which is why institutions are advised not to treat the indicator as proof on its own.',
     ],
     keyDifference: [
-      'MarkWitness is the mirror image. You run it, on your own writing, and it is built around the question a person on the receiving end of an accusation actually has.',
-      'It also measures a different thing. Turnitin’s indicator judges whether text reads as machine-generated. MarkWitness tests for a provenance mark, a deliberate statistical signature placed at generation time, and reports the style measurement separately, explicitly labelled as a statement about register rather than provenance.',
-      'MarkWitness cannot tell you what Turnitin will say about your document, and does not claim to. Nothing outside Turnitin can, because their model is theirs.',
+      'WatermarkRemoverPro is the mirror image. You run it, on your own writing, and it is built around the question a person on the receiving end of an accusation actually has.',
+      'It also measures a different thing. Turnitin’s indicator judges whether text reads as machine-generated. WatermarkRemoverPro tests for a provenance mark, a deliberate statistical signature placed at generation time, and reports the style measurement separately, explicitly labelled as a statement about register rather than provenance.',
+      'WatermarkRemoverPro cannot tell you what Turnitin will say about your document, and does not claim to. Nothing outside Turnitin can, because their model is theirs.',
     ],
   },
   {
     slug: 'gptzero',
     competitor: 'GPTZero',
-    metaTitle: 'MarkWitness vs GPTZero: a provenance-mark test, not a classifier',
+    metaTitle: 'WatermarkRemoverPro vs GPTZero: a provenance-mark test, not a classifier',
     whatItIs: [
       'GPTZero is a widely used AI-text classifier. You paste text and it returns a judgement about how likely it is to be machine-generated, based largely on perplexity and burstiness, meaning how predictable the wording is and how much sentence structure varies.',
       'It is available directly to individuals, which makes it the tool many accused writers reach for first.',
     ],
     keyDifference: [
       'Both are self-serve, so the difference is in what is being measured. A perplexity-based classifier asks whether writing looks predictable. That signal is real but it is also the signal that penalises clear, plain, well-edited prose, and second-language writing in particular.',
-      'MarkWitness’s primary channel does not use fluency at all: it is a keyed test for a green-list watermark, which is present or absent independently of how the writing reads.',
+      'WatermarkRemoverPro’s primary channel does not use fluency at all: it is a keyed test for a green-list watermark, which is present or absent independently of how the writing reads.',
       'We are also explicit about a limit a classifier does not have to state: our test is keyed, and no vendor publishes its key, so we tell you exactly which keys were tested and that a null result applies only to those.',
     ],
   },
   {
     slug: 'originality-ai',
     competitor: 'Originality.ai',
-    metaTitle: 'MarkWitness vs Originality.ai: checking your own work vs screening others’',
+    metaTitle: 'WatermarkRemoverPro vs Originality.ai: checking your own work vs screening others’',
     whatItIs: [
       'Originality.ai is aimed at publishers, agencies and content buyers who want to screen work submitted to them, typically alongside plagiarism checking. Its buyer is the commissioner, and its output is a score used to accept or reject a delivery.',
       'It offers an API, and much of its use is bulk screening of freelance output.',
     ],
     keyDifference: [
-      'The audiences are opposite. Originality.ai exists to help a buyer evaluate a supplier. MarkWitness exists to help the writer on the other side of that transaction understand and respond to the result.',
-      'That shapes everything: MarkWitness runs the free check in your browser so unpublished drafts are not uploaded, and produces a report designed to be handed to someone else rather than a score designed to gate a payment.',
-      'If your job genuinely is screening other people’s work, MarkWitness is the wrong tool and we say so on every page. Learnaway is built for that.',
+      'The audiences are opposite. Originality.ai exists to help a buyer evaluate a supplier. WatermarkRemoverPro exists to help the writer on the other side of that transaction understand and respond to the result.',
+      'That shapes everything: WatermarkRemoverPro runs the free check in your browser so unpublished drafts are not uploaded, and produces a report designed to be handed to someone else rather than a score designed to gate a payment.',
+      'If your job genuinely is screening other people’s work, WatermarkRemoverPro is the wrong tool and we say so on every page. Learnaway is built for that.',
     ],
   },
   {
     slug: 'ai-humanizer-tools',
     competitor: 'AI humanizer tools like QuillBot, Undetectable.ai and StealthGPT',
-    metaTitle: 'MarkWitness vs AI Humanizer Tools: On-Device, No "Undetectable" Claim',
+    metaTitle: 'WatermarkRemoverPro vs AI Humanizer Tools: On-Device, No "Undetectable" Claim',
     kind: 'humanizer',
     whatItIs: [
       'QuillBot, Undetectable.ai, StealthGPT and a large field of similar products rewrite text to reduce the patterns an AI detector keys on. Most run the rewrite on their own servers, meaning your document is uploaded to a third party to be processed, and most advertise a permanent, universal escape from every detector in their marketing copy.',
       'That marketing claim is not something the underlying method can support. A keyed statistical mark is designed so only the party holding the key can reliably test for it, so no outside tool, including this one, can honestly promise a specific outcome against a specific vendor\'s undisclosed watermark.',
     ],
     keyDifference: [
-      'MarkWitness\'s rewrite runs entirely on your device or in your own process, on every tier: nothing about the document is ever sent to a MarkWitness-operated server, and there is no REST endpoint for it by design. Most humanizer tools are the opposite: a cloud service you paste your draft into.',
-      'The claim is the other real difference. MarkWitness states a reduction, not a guarantee: the same conservative language used everywhere else on this site. It also shows the before/after evidence delta using the same arithmetic its own detector uses, so the change is something you can verify rather than take on faith.',
+      'WatermarkRemoverPro\'s rewrite runs entirely on your device or in your own process, on every tier: nothing about the document is ever sent to a WatermarkRemoverPro-operated server, and there is no REST endpoint for it by design. Most humanizer tools are the opposite: a cloud service you paste your draft into.',
+      'The claim is the other real difference. WatermarkRemoverPro states a reduction, not a guarantee: the same conservative language used everywhere else on this site. It also shows the before/after evidence delta using the same arithmetic its own detector uses, so the change is something you can verify rather than take on faith.',
       'Free and Pro are both unlimited-use here, because the computation runs on your device either way rather than metering server compute.',
     ],
   },
@@ -354,17 +354,17 @@ const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => {
     return {
       slug: seed.slug,
       group: 'vs' as const,
-      title: `MarkWitness vs ${seed.competitor}`,
+      title: `WatermarkRemoverPro vs ${seed.competitor}`,
       metaTitle: seed.metaTitle,
-      metaDescription: `How MarkWitness's on-device rewrite differs from ${seed.competitor}: no server upload, and a stated reduction in evidence rather than an "undetectable" promise.`,
-      intro: `${seed.competitor} and MarkWitness's own rewrite feature are the same category of tool, word-choice and style changes that reduce detectable AI-style evidence. What differs is where the processing happens and what claim is attached to the result.`,
+      metaDescription: `How WatermarkRemoverPro's on-device rewrite differs from ${seed.competitor}: no server upload, and a stated reduction in evidence rather than an "undetectable" promise.`,
+      intro: `${seed.competitor} and WatermarkRemoverPro's own rewrite feature are the same category of tool, word-choice and style changes that reduce detectable AI-style evidence. What differs is where the processing happens and what claim is attached to the result.`,
       sections: [
         { heading: `What ${seed.competitor} typically offer`, body: seed.whatItIs },
-        { heading: 'How MarkWitness differs', body: seed.keyDifference },
+        { heading: 'How WatermarkRemoverPro differs', body: seed.keyDifference },
         {
           heading: 'What neither of them can do',
           body: [
-            `Neither MarkWitness nor ${seed.competitor} can guarantee a result against a specific vendor's undisclosed watermark. A keyed statistical mark is designed so only the party holding the key can reliably test for it, so no outside tool can honestly promise otherwise, whatever a competitor's marketing page claims.`,
+            `Neither WatermarkRemoverPro nor ${seed.competitor} can guarantee a result against a specific vendor's undisclosed watermark. A keyed statistical mark is designed so only the party holding the key can reliably test for it, so no outside tool can honestly promise otherwise, whatever a competitor's marketing page claims.`,
             'A rewrite that reduces measurable evidence is a real, falsifiable effect. A rewrite that is marketed as a permanent, universal escape from every detector is describing something outside what the underlying method supports.',
           ],
         },
@@ -372,7 +372,7 @@ const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => {
       faq: [
         {
           question: `Is it safe to paste an unpublished draft into ${seed.competitor}?`,
-          answer: `That depends on their privacy terms and where processing happens, which is worth checking directly on their site. MarkWitness's rewrite runs entirely on your device or your own process, on every tier, so the question does not apply here: nothing about the document is ever sent to a MarkWitness-operated server.`,
+          answer: `That depends on their privacy terms and where processing happens, which is worth checking directly on their site. WatermarkRemoverPro's rewrite runs entirely on your device or your own process, on every tier, so the question does not apply here: nothing about the document is ever sent to a WatermarkRemoverPro-operated server.`,
         },
         {
           question: 'Will either of these guarantee my writing is not flagged?',
@@ -386,30 +386,30 @@ const COMPARISONS: LongTailPage[] = COMPARISON_SEEDS.map((seed) => {
   return {
     slug: seed.slug,
     group: 'vs' as const,
-    title: `MarkWitness vs ${seed.competitor}`,
+    title: `WatermarkRemoverPro vs ${seed.competitor}`,
     metaTitle: seed.metaTitle,
-    metaDescription: `How MarkWitness differs from ${seed.competitor}: a keyed provenance-mark test you run on your own writing, versus a detector that judges whether text reads as machine-generated.`,
-    intro: `These tools get compared constantly and they are not substitutes. ${seed.competitor} and MarkWitness measure different things for different people, and the most useful thing this page can do is be precise about which.`,
+    metaDescription: `How WatermarkRemoverPro differs from ${seed.competitor}: a keyed provenance-mark test you run on your own writing, versus a detector that judges whether text reads as machine-generated.`,
+    intro: `These tools get compared constantly and they are not substitutes. ${seed.competitor} and WatermarkRemoverPro measure different things for different people, and the most useful thing this page can do is be precise about which.`,
     sections: [
       { heading: `What ${seed.competitor} is`, body: seed.whatItIs },
-      { heading: 'How MarkWitness differs', body: seed.keyDifference },
+      { heading: 'How WatermarkRemoverPro differs', body: seed.keyDifference },
       {
         heading: 'What neither of them can do',
         body: [
           'Neither tool can prove who wrote a document. A detector reports a model’s confidence; a provenance-mark test reports whether a statistical signature is present. Both are evidence, and neither is authorship.',
-          `Nor can either of them guarantee a result against an undisclosed watermark. ${seed.competitor} cannot guarantee its confidence score is right, and MarkWitness's own on-device rewrite feature cannot guarantee defeating a model vendor's undisclosed watermark either, since nobody outside that vendor holds the key it was applied with.`,
+          `Nor can either of them guarantee a result against an undisclosed watermark. ${seed.competitor} cannot guarantee its confidence score is right, and WatermarkRemoverPro's own on-device rewrite feature cannot guarantee defeating a model vendor's undisclosed watermark either, since nobody outside that vendor holds the key it was applied with.`,
         ],
       },
     ],
     faq: [
       {
-        question: `Can MarkWitness tell me what ${seed.competitor} will say about my document?`,
-        answer: `No. ${seed.competitor}'s model is theirs, and nothing outside it can predict its output. MarkWitness reports its own measurement and names its own method, which is a different and more defensible claim than guessing at somebody else's classifier.`,
+        question: `Can WatermarkRemoverPro tell me what ${seed.competitor} will say about my document?`,
+        answer: `No. ${seed.competitor}'s model is theirs, and nothing outside it can predict its output. WatermarkRemoverPro reports its own measurement and names its own method, which is a different and more defensible claim than guessing at somebody else's classifier.`,
       },
       {
         question: 'Which should I use if I have been accused?',
         answer:
-          'If the accusation came from a classifier, understanding that tool’s false positive rate is usually more useful than running another classifier. MarkWitness adds a different kind of evidence, a named and keyed test on your exact file with its limits stated and a hash anchoring it, plus a document you can actually submit.',
+          'If the accusation came from a classifier, understanding that tool’s false positive rate is usually more useful than running another classifier. WatermarkRemoverPro adds a different kind of evidence, a named and keyed test on your exact file with its limits stated and a hash anchoring it, plus a document you can actually submit.',
       },
     ],
   }
@@ -491,7 +491,7 @@ const GUIDES: LongTailPage[] = [
         body: [
           'The partition is determined by a secret. Without it, you cannot tell which words were green, so you cannot count them, so there is no test to run. This is a deliberate property, not an oversight, because a publicly checkable mark would be a publicly removable one.',
           'The practical consequence is that no third-party tool, including this one, can detect a specific vendor’s mark unless that vendor publishes a detection key or grants access to one. Any tool claiming to detect “the Claude watermark” without a key is not doing what it says.',
-          'MarkWitness therefore tests the keys it holds and names them on every result. It ships a published open reference key so the machinery is auditable, and you can mark text under it yourself on our verify page and watch the detector find it, and it accepts vendor or institution keys through configuration.',
+          'WatermarkRemoverPro therefore tests the keys it holds and names them on every result. It ships a published open reference key so the machinery is auditable, and you can mark text under it yourself on our verify page and watch the detector find it, and it accepts vendor or institution keys through configuration.',
         ],
       },
       {
@@ -504,7 +504,7 @@ const GUIDES: LongTailPage[] = [
     ],
     faq: [
       {
-        question: 'Can MarkWitness detect the Claude mark specifically?',
+        question: 'Can WatermarkRemoverPro detect the Claude mark specifically?',
         answer:
           'Not unless a detection key for it is available to the deployment, and no vendor publishes one. We say this rather than implying otherwise: the result lists exactly which keys were tested, and the engine will test a vendor key the moment one exists, without any change to the method.',
       },
@@ -559,7 +559,7 @@ const GUIDES: LongTailPage[] = [
           'Then lean on knowledge evidence and on the reliability of whatever flagged you. Going forward, draft somewhere with version history, which costs nothing and is the best insurance available.',
       },
       {
-        question: 'Is a MarkWitness report enough on its own?',
+        question: 'Is a WatermarkRemoverPro report enough on its own?',
         answer:
           'No, and the report says so in its own stated limits. It documents what one specific test found on one specific file. Use it alongside process evidence, not instead of it.',
       },
@@ -594,7 +594,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'Why a tool sold as reliably defeating the mechanism is a compliance problem',
         body: [
           'Once marking is a legal transparency mechanism, a tool marketed as reliably stripping it is marketed as defeating that mechanism, which is a different thing from a writer editing their own text. Article 50 obligates the provider of a generative system, not someone editing a document they wrote.',
-          'MarkWitness draws that line by what it claims, not by refusing to offer editing: the on-device rewrite reduces detectable evidence in your own writing and says exactly that, never "undetectable" and never a promised outcome against a watermark it holds no key for. See /rewrite and docs/REWRITE_PHILOSOPHY.md for the exact claim and its limit.',
+          'WatermarkRemoverPro draws that line by what it claims, not by refusing to offer editing: the on-device rewrite reduces detectable evidence in your own writing and says exactly that, never "undetectable" and never a promised outcome against a watermark it holds no key for. See /rewrite and docs/REWRITE_PHILOSOPHY.md for the exact claim and its limit.',
         ],
       },
     ],
@@ -605,7 +605,7 @@ const GUIDES: LongTailPage[] = [
           'It applies to providers of generative systems, not to you. Text you write yourself carries no mark. Text produced by a covered system may carry one, and it travels with the words if they end up in your document.',
       },
       {
-        question: 'Will MarkWitness detect marks required by the Act?',
+        question: 'Will WatermarkRemoverPro detect marks required by the Act?',
         answer:
           'Only where a detection key is available to the deployment. Machine-readable does not mean publicly readable, and the Act does not oblige providers to hand detection keys to third parties. We test the keys we hold and name them.',
       },
@@ -632,13 +632,13 @@ const GUIDES: LongTailPage[] = [
         heading: 'Why this matters for reading a result',
         body: [
           'This is the technical reason an absent mark cannot be treated as proof of human authorship, and it is worth stating in an appeal. Substantially edited generated text can test clean. So can text from a system that never applied a mark. So can text a person wrote.',
-          'Those three histories are indistinguishable to the test, which is exactly why MarkWitness reports what it measured rather than issuing a verdict.',
+          'Those three histories are indistinguishable to the test, which is exactly why WatermarkRemoverPro reports what it measured rather than issuing a verdict.',
         ],
       },
       {
         heading: 'What editing can and cannot promise',
         body: [
-          'MarkWitness does now offer an on-device rewrite feature (see /rewrite), and it is bound by the same physics this page describes: it can reduce detectable evidence, and it cannot fabricate certainty about a watermark it has no key for. No tool, including this one, can honestly guarantee defeating a specific vendor\'s undisclosed watermark.',
+          'WatermarkRemoverPro does now offer an on-device rewrite feature (see /rewrite), and it is bound by the same physics this page describes: it can reduce detectable evidence, and it cannot fabricate certainty about a watermark it has no key for. No tool, including this one, can honestly guarantee defeating a specific vendor\'s undisclosed watermark.',
           'If you edited generated text and want to know whether a signal remains, that is a diagnostic question and this tool answers it, directly and for free, with no account required.',
         ],
       },
@@ -664,7 +664,7 @@ const GUIDES: LongTailPage[] = [
     metaDescription:
       'How AI humanizer and paraphrasing tools actually work, why "your output will always slip past every detector" is not a claim anyone can honestly make, and what an on-device rewrite can and cannot deliver instead.',
     intro:
-      'Most pages selling an AI humanizer promise a permanent escape from detection. That promise is not something any tool, including this one, can honestly make. Here is what these tools actually do, and what MarkWitness offers instead.',
+      'Most pages selling an AI humanizer promise a permanent escape from detection. That promise is not something any tool, including this one, can honestly make. Here is what these tools actually do, and what WatermarkRemoverPro offers instead.',
     sections: [
       {
         heading: 'What "humanizing" text actually changes',
@@ -681,7 +681,7 @@ const GUIDES: LongTailPage[] = [
         ],
       },
       {
-        heading: 'What MarkWitness\'s rewrite actually does',
+        heading: 'What WatermarkRemoverPro\'s rewrite actually does',
         body: [
           'Two mechanisms, run together, entirely on your device: a deterministic pass over AI-tell punctuation and phrasing, and targeted candidate rewrites of the specific passages a real per-passage check flags, gated so a candidate that changes a number, a name or a negation is rejected outright rather than used. See /rewrite.',
           'Free and Pro are both unlimited-use, because the computation runs on your device either way; Pro adds more candidates per passage and the extended AI-tell library, and can optionally run a larger local model. Nothing about the document is ever sent anywhere, on any tier: see docs/REWRITE_PHILOSOPHY.md for exactly what is and is not claimed.',
@@ -690,9 +690,9 @@ const GUIDES: LongTailPage[] = [
     ],
     faq: [
       {
-        question: 'Is an "AI humanizer" the same thing as MarkWitness\'s rewrite tool?',
+        question: 'Is an "AI humanizer" the same thing as WatermarkRemoverPro\'s rewrite tool?',
         answer:
-          'The mechanism (word-choice and style changes that reduce detectable statistical patterns) is the same category of technique. The difference is the claim attached to it: MarkWitness states the reduction, not an outcome it cannot verify, and processes everything on-device rather than on a server.',
+          'The mechanism (word-choice and style changes that reduce detectable statistical patterns) is the same category of technique. The difference is the claim attached to it: WatermarkRemoverPro states the reduction, not an outcome it cannot verify, and processes everything on-device rather than on a server.',
       },
       {
         question: 'Will this stop my writing from ever being flagged?',
@@ -707,7 +707,7 @@ const GUIDES: LongTailPage[] = [
     title: 'Does an "AI humanizer" help with Turnitin?',
     metaTitle: 'AI Humanizer and Turnitin: What Actually Changes, Honestly',
     metaDescription:
-      'What an AI humanizer or rewrite tool actually changes about a Turnitin AI-writing score, why that is not the same question as academic-integrity compliance, and where MarkWitness draws the line.',
+      'What an AI humanizer or rewrite tool actually changes about a Turnitin AI-writing score, why that is not the same question as academic-integrity compliance, and where WatermarkRemoverPro draws the line.',
     intro:
       'This question gets asked with two different situations behind it, and they deserve two different answers. One is a student worried their own honestly-written work will be misread as AI. The other is asking how to make AI-generated coursework pass a check it was written to fail. This page answers the first and is explicit about why it will not help with the second.',
     sections: [
@@ -715,14 +715,14 @@ const GUIDES: LongTailPage[] = [
         heading: 'What Turnitin\'s AI indicator actually measures',
         body: [
           'Turnitin\'s AI writing indicator is a classifier: it was trained to separate human-written from machine-written text and reports a confidence score, not a deliberate statistical mark placed at generation time. See /vs/turnitin-ai-detector for the fuller comparison.',
-          'A rewrite tool that changes word choice, sentence rhythm and punctuation habits can measurably shift the statistical patterns a classifier keys on. That is a real, falsifiable effect. It is also not something any tool, MarkWitness included, can turn into a guaranteed outcome against a specific institution\'s specific classifier, which is trained on its own data and never disclosed in detail.',
+          'A rewrite tool that changes word choice, sentence rhythm and punctuation habits can measurably shift the statistical patterns a classifier keys on. That is a real, falsifiable effect. It is also not something any tool, WatermarkRemoverPro included, can turn into a guaranteed outcome against a specific institution\'s specific classifier, which is trained on its own data and never disclosed in detail.',
         ],
       },
       {
         heading: 'Why this is not the same question as academic integrity',
         body: [
           'Reducing detectable evidence and being allowed to submit the work are separate questions, and only one of them is answerable by a rewrite tool. If AI-generated content was used somewhere your institution\'s policy required disclosure or prohibited it outright, running it through a humanizer changes whether a specific tool flags it; it does not change what happened, and it does not make an undisclosed use compliant.',
-          'MarkWitness\'s rewrite is built and described as a final-pass editing tool for writing you produced yourself, the same framing used throughout /for/university-students. It is not marketed, and should not be used, as a way to make disclosure-worthy AI use invisible.',
+          'WatermarkRemoverPro\'s rewrite is built and described as a final-pass editing tool for writing you produced yourself, the same framing used throughout /for/university-students. It is not marketed, and should not be used, as a way to make disclosure-worthy AI use invisible.',
         ],
       },
       {
@@ -754,7 +754,7 @@ const GUIDES: LongTailPage[] = [
     metaDescription:
       'How to read a z score, a p value and a confidence interval on a provenance-mark check, and why a single percentage with no band is a warning sign.',
     intro:
-      'MarkWitness reports bands rather than single numbers, which is less punchy and considerably more honest. Here is how to read what it gives you.',
+      'WatermarkRemoverPro reports bands rather than single numbers, which is less punchy and considerably more honest. Here is how to read what it gives you.',
     sections: [
       {
         heading: 'The green-list rate and its interval',
@@ -773,7 +773,7 @@ const GUIDES: LongTailPage[] = [
       {
         heading: 'Why per-passage results are corrected',
         body: [
-          'Each passage gets its own test, so a long document runs dozens at once and some will look significant by luck. MarkWitness applies a Benjamini-Hochberg false-discovery-rate correction across all passages and reports how many were tested and how many survived.',
+          'Each passage gets its own test, so a long document runs dozens at once and some will look significant by luck. WatermarkRemoverPro applies a Benjamini-Hochberg false-discovery-rate correction across all passages and reports how many were tested and how many survived.',
           'A per-passage highlighter without that correction will confidently colour in sentences of any document you give it. If a tool shows you highlighted passages without saying how many tests it ran, that is the question to ask.',
         ],
       },
@@ -787,7 +787,7 @@ const GUIDES: LongTailPage[] = [
       {
         question: 'What p value counts as a detection?',
         answer:
-          'MarkWitness treats p below 0.01 as a detection for the headline statement, and shows you the underlying figures regardless so you can apply your own threshold.',
+          'WatermarkRemoverPro treats p below 0.01 as a detection for the headline statement, and shows you the underlying figures regardless so you can apply your own threshold.',
       },
     ],
   },
@@ -811,14 +811,14 @@ const LANGUAGES: LongTailPage[] = SUPPORTED_LANGUAGES.map((code) => ({
   title: `Check ${LANGUAGE_NAMES[code]} writing for an AI provenance mark`,
   metaTitle: `${LANGUAGE_NAMES[code]} AI watermark check, on your device`,
   metaDescription: `Check ${LANGUAGE_NAMES[code]} writing for a statistical AI provenance mark, with a reference baseline measured from real ${LANGUAGE_NAMES[code]} prose. Runs in your browser.`,
-  intro: `MarkWitness supports ${LANGUAGE_NAMES[code]} with its own measured reference baseline. ${LANGUAGE_NOTES[code]}`,
+  intro: `WatermarkRemoverPro supports ${LANGUAGE_NAMES[code]} with its own measured reference baseline. ${LANGUAGE_NOTES[code]}`,
   sections: [
     {
       heading: 'Why a per-language baseline matters',
       body: [
         'The provenance-mark test itself is language-independent, since it counts word pairs against a keyed partition, and that arithmetic does not care what language the words are in.',
         'The style measurement is a different matter. It compares your document to a reference corpus, so the reference has to be in the same language or the comparison is meaningless. Every deviation would simply be measuring the language difference.',
-        `MarkWitness measured its ${LANGUAGE_NAMES[code]} baseline from contemporary ${LANGUAGE_NAMES[code]} prose, and every document in that corpus was verified to be ${LANGUAGE_NAMES[code]} by the engine's own language identifier before it was included.`,
+        `WatermarkRemoverPro measured its ${LANGUAGE_NAMES[code]} baseline from contemporary ${LANGUAGE_NAMES[code]} prose, and every document in that corpus was verified to be ${LANGUAGE_NAMES[code]} by the engine's own language identifier before it was included.`,
       ],
     },
     {

@@ -1,5 +1,12 @@
 # Domain Shortlist for MarkWitness
 
+**Note (post-rename):** the product was later renamed to **WatermarkRemoverPro**,
+now live at **watermarkremoverpro.com**. The content below is a historical
+record of the domain-shortlisting decision as it stood on 2026-08-12, when the
+product was still called MarkWitness and live at markwitness.helm7.com;
+`markwitness.com` was shortlisted at the time but never purchased. Left as-is
+for an accurate record of what was actually considered and decided then.
+
 Availability checked: **2026-08-12**, via RDAP (`https://rdap.verisign.com/com/v1/domain/<name>.com`, where HTTP 404 means available). Availability changes fast; re-verify before purchase if this list is read more than a few days after the check date above.
 
 116 confirmed-available `.com` names (98 coined single words, 18 two-word compounds), plus 3 bonus "short word + number" names. The top 10 were additionally web-searched for an existing company or trademark in an adjacent space; none were found to be a blocking conflict as of the check date, with one adjacency noted below.

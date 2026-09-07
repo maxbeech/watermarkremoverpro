@@ -5,12 +5,12 @@ export const BLOG_POSTS_A: BlogPost[] = [
     slug: "what-is-an-ai-watermark-detector",
     title: "What Is an AI Watermark? How Detection Actually Works",
     h1: "What Is an AI Watermark? How Detection Actually Works",
-    metaDescription: "How does an AI watermark detector work? See the green-list method and real detection numbers from MarkWitness's own tests.",
+    metaDescription: "How does an AI watermark detector work? See the green-list method and real detection numbers from WatermarkRemoverPro's own tests.",
     category: "Academy",
     format: "deep-dive",
     intent: "informational",
     publishedAt: "2026-08-06",
-    author: "MarkWitness Content Team",
+    author: "WatermarkRemoverPro Content Team",
     primaryKeyword: "ai watermark detector",
     supportingKeywords: [
       "ai watermarking",
@@ -37,13 +37,13 @@ export const BLOG_POSTS_A: BlogPost[] = [
     intro: [
       "You've heard that AI writing can be 'watermarked', but what does that actually mean, and can a browser really spot it in your own words?",
       "This guide walks through the real mechanism behind an ai watermark detector, in plain English, with nothing left unexplained.",
-      "We'll show the actual numbers from MarkWitness's own positive-control test and its live /verify demo, so you can see detection working, not just take our word for it.",
+      "We'll show the actual numbers from WatermarkRemoverPro's own positive-control test and its live /verify demo, so you can see detection working, not just take our word for it.",
     ],
     takeaways: [
       "A green-list watermark works by nudging a model to prefer a hidden, key-specific set of 'green' tokens.",
       "Detection is a statistical z-test, not a magic yes/no button.",
       "You need the correct key to detect a mark reliably. A wrong key returns chance-level noise.",
-      "MarkWitness checks run entirely in your browser; your document never leaves your device for a free check.",
+      "WatermarkRemoverPro checks run entirely in your browser; your document never leaves your device for a free check.",
       "A detected mark is never proof of authorship on its own. It just shows a pattern was present under a specific key.",
       "The same logic works in reverse: no mark under your keys proves nothing about the keys you don't hold.",
     ],
@@ -54,7 +54,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         body: [
           "Picture a language model choosing its next word. At almost every point in a sentence, several words would work fine. A green-list watermark uses that wiggle room. Before it writes anything, the model quietly splits its vocabulary into two piles for that moment, a 'green' pile and a 'red' pile, based on a hidden key and whatever came just before.",
           "The model doesn't switch to nonsense. It's still nudged towards ordinary, sensible language. It just leans towards the green pile slightly more often than chance would predict. Do that over hundreds of words and a pattern builds up that a plain reader would never spot by eye.",
-          "That's the whole trick, really. Nothing is hidden inside the letters or the spacing. The pattern lives in which words got chosen, not how they're written. This is the method Kirchenbauer, Geiping, Wen, Katz, Miers and Goldstein described in their 2023 paper on watermarking large language models, and it's the same family of technique MarkWitness's check is built to detect.",
+          "That's the whole trick, really. Nothing is hidden inside the letters or the spacing. The pattern lives in which words got chosen, not how they're written. This is the method Kirchenbauer, Geiping, Wen, Katz, Miers and Goldstein described in their 2023 paper on watermarking large language models, and it's the same family of technique WatermarkRemoverPro's check is built to detect.",
         ],
       },
       {
@@ -63,7 +63,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         body: [
           "Here's the catch that trips a lot of people up: the green and red piles aren't fixed. They're generated fresh, word by word, from a secret key plus whatever text came just before. Change the key and you get a completely different green list.",
           "So a detector can't just 'look for watermarks' in general. It has to test one specific key at a time, and ask: for this passage, using this key, did green-listed words show up more often than pure chance allows?",
-          "This is also why MarkWitness never claims to catch every AI-marked document out there. Nobody outside the model vendors publishes their detection keys. A check can only test the keys it actually holds. That's a genuine, permanent limit, stated plainly on the /limits page, not a caveat buried in the small print.",
+          "This is also why WatermarkRemoverPro never claims to catch every AI-marked document out there. Nobody outside the model vendors publishes their detection keys. A check can only test the keys it actually holds. That's a genuine, permanent limit, stated plainly on the /limits page, not a caveat buried in the small print.",
         ],
       },
       {
@@ -76,10 +76,10 @@ export const BLOG_POSTS_A: BlogPost[] = [
         ],
       },
       {
-        id: "markwitness-own-numbers-a-worked-example",
-        heading: "MarkWitness's Own Numbers: A Worked Example",
+        id: "watermarkremoverpro-own-numbers-a-worked-example",
+        heading: "WatermarkRemoverPro's Own Numbers: A Worked Example",
         body: [
-          "Numbers are more convincing than descriptions, so here are real ones. In MarkWitness's own positive-control test, a passage of marked text scored z > 8, with p < 1e-6, when tested under its correct key. Tested under a different key, the exact same text scored at chance, with no signal at all.",
+          "Numbers are more convincing than descriptions, so here are real ones. In WatermarkRemoverPro's own positive-control test, a passage of marked text scored z > 8, with p < 1e-6, when tested under its correct key. Tested under a different key, the exact same text scored at chance, with no signal at all.",
           "The live /verify page shows the same thing happening in public, not just in a lab note. A specimen of marked text there scores z = 20.45 under the correct key. Run that identical text past a different key and the score drops to z = 0.1, indistinguishable from ordinary prose.",
           "That contrast is the whole demonstration. It's not 'trust us, it detects things'; it's the same words, two keys, two wildly different results, sitting on a page you can open right now.",
         ],
@@ -88,7 +88,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         id: "why-on-device-checking-matters",
         heading: "Why On-Device Checking Matters",
         body: [
-          "A lot of detection tools work by uploading your document to a server somewhere. MarkWitness's free check doesn't. The whole test, up to 1,500 words, runs inside your own browser. Your document never leaves your device.",
+          "A lot of detection tools work by uploading your document to a server somewhere. WatermarkRemoverPro's free check doesn't. The whole test, up to 1,500 words, runs inside your own browser. Your document never leaves your device.",
           "For a student worried about a false accusation, or a freelancer checking a draft before it goes near a client, that matters. You're not handing unpublished work to a third-party server just to learn whether a statistical pattern is present.",
           "A free account raises the ceiling to 5,000 words and 20 checks a month, across five supported languages: English, Spanish, French, German and Portuguese, each measured against its own reference baseline rather than a rough, English-shaped guess.",
         ],
@@ -99,7 +99,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         body: [
           "This part is worth reading twice. A detected mark is not proof of authorship. Marks can turn up in quoted text, in translations, in text that was AI-assisted then heavily rewritten by a person, or in passages copied from somewhere already marked.",
           "Equally, an absent mark isn't proof of human authorship. Marks are keyed constructions. No model vendor publishes its detection key. Marks survive editing poorly, so a lightly-touched AI passage might test clean under every key you hold. 'No mark detected' always means 'under the keys we tested', never 'this document is clean'.",
-          "That's a deliberately honest limit, and MarkWitness states it on every report it produces. A watermark check is one data point. It's not a verdict.",
+          "That's a deliberately honest limit, and WatermarkRemoverPro states it on every report it produces. A watermark check is one data point. It's not a verdict.",
         ],
       },
       {
@@ -117,12 +117,12 @@ export const BLOG_POSTS_A: BlogPost[] = [
         body: [
           "If you want to see this working on your own words, the Check page is the place to start. Paste in up to 1,500 words, free, no account needed, and the test runs there in your browser.",
           "Read the result alongside the /limits page before drawing any conclusions from it. A high z-score under a key you tested is real information. It's just not the only piece of information a fair judgement needs.",
-          "Interest in this kind of provenance checking is only growing as frameworks like the NIST AI Risk Management Framework, and transparency rules such as the EU AI Act's, put more weight on being able to show your working. For a deeper look at the statistics specifically, MarkWitness has a longer explainer on green-list watermarking.",
+          "Interest in this kind of provenance checking is only growing as frameworks like the NIST AI Risk Management Framework, and transparency rules such as the EU AI Act's, put more weight on being able to show your working. For a deeper look at the statistics specifically, WatermarkRemoverPro has a longer explainer on green-list watermarking.",
         ],
       },
     ],
     table: {
-      caption: "MarkWitness's own watermark test results, correct key vs wrong key",
+      caption: "WatermarkRemoverPro's own watermark test results, correct key vs wrong key",
       headers: ["Test", "Key used", "Result", "What it shows"],
       rows: [
         ["Positive-control test", "Correct key", "z > 8 (p < 1e-6)", "Statistically overwhelming signal"],
@@ -133,7 +133,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
     },
     quote: {
       quote: "The z-score only means something once you've named the key. Run the same passage past the wrong key and the signal disappears completely. That's not a bug; it's the whole design.",
-      attribution: "A MarkWitness detection engineer",
+      attribution: "A WatermarkRemoverPro detection engineer",
       role: "on the green-list watermark test",
     },
     pitfalls: [
@@ -157,18 +157,18 @@ export const BLOG_POSTS_A: BlogPost[] = [
       },
       {
         question: "Does editing a document remove the watermark?",
-        answer: "Sometimes, and sometimes not. Marks generally survive light editing poorly and heavy rewriting even worse, but there's no reliable rule that guarantees removal against a specific vendor's undisclosed watermark, which is exactly why MarkWitness's own on-device rewrite feature states that limit on every result rather than promising a guarantee it cannot verify.",
+        answer: "Sometimes, and sometimes not. Marks generally survive light editing poorly and heavy rewriting even worse, but there's no reliable rule that guarantees removal against a specific vendor's undisclosed watermark, which is exactly why WatermarkRemoverPro's own on-device rewrite feature states that limit on every result rather than promising a guarantee it cannot verify.",
       },
       {
-        question: "Can MarkWitness detect every AI watermark that exists?",
+        question: "Can WatermarkRemoverPro detect every AI watermark that exists?",
         answer: "No detector can. Detection only works against keys you actually hold, and no model vendor publishes its own detection key publicly.",
       },
     ],
     internalLinks: [
-      { href: "/method", label: "How MarkWitness's method works" },
+      { href: "/method", label: "How WatermarkRemoverPro's method works" },
       { href: "/verify", label: "See the live /verify demo" },
       { href: "/check", label: "Try the free Check page" },
-      { href: "/limits", label: "Read MarkWitness's stated limits" },
+      { href: "/limits", label: "Read WatermarkRemoverPro's stated limits" },
       { href: "/guide/does-editing-remove-a-watermark", label: "Guide: does editing remove a watermark?" },
       { href: "/blog/green-list-watermarking-explained", label: "Green-list watermarking, explained in more depth" },
     ],
@@ -188,7 +188,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
     format: "data-study",
     intent: "informational",
     publishedAt: "2026-08-06",
-    author: "MarkWitness Content Team",
+    author: "WatermarkRemoverPro Content Team",
     primaryKeyword: "eu ai act article 50",
     supportingKeywords: [
       "eu ai act transparency obligations",
@@ -255,7 +255,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         body: [
           "If you write for clients, this is less about panic and more about paperwork. Being able to show your process, including drafts, version history, and where relevant, a record of what a watermark check did or didn't find, is becoming a normal ask, not an unusual one.",
           "It doesn't mean every freelancer needs a lawyer on retainer. It means keeping the kind of records you'd want anyway if a client ever questioned a piece of work, AI-related or not.",
-          "MarkWitness has a dedicated page for freelance writers covering this in more detail, including how an evidence report can sit alongside a contract as a supporting record.",
+          "WatermarkRemoverPro has a dedicated page for freelance writers covering this in more detail, including how an evidence report can sit alongside a contract as a supporting record.",
         ],
       },
       {
@@ -271,7 +271,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         heading: "Why Provenance Checking Is Part of the Compliance Picture",
         body: [
           "A statistical watermark check doesn't file your compliance paperwork for you. What it can do is give you one more falsifiable, checkable data point: a z-score under a named key, run entirely on your own device, to sit alongside your own account of how a piece of writing was produced.",
-          "That's a modest, honest role, and it's the one MarkWitness is built for. It's a diagnostic, not a certificate, and it's worth treating it that way in any compliance workflow you build.",
+          "That's a modest, honest role, and it's the one WatermarkRemoverPro is built for. It's a diagnostic, not a certificate, and it's worth treating it that way in any compliance workflow you build.",
         ],
       },
       {
@@ -326,7 +326,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
       },
       {
         question: "How do I comply with EU AI Act transparency rules as a freelancer?",
-        answer: "Keep clear records of your process, including drafts, version history, and where useful, an evidence report from a tool like MarkWitness, so you can show your workings if a client or platform asks.",
+        answer: "Keep clear records of your process, including drafts, version history, and where useful, an evidence report from a tool like WatermarkRemoverPro, so you can show your workings if a client or platform asks.",
       },
       {
         question: "Is a watermark check enough to prove compliance on its own?",
@@ -334,7 +334,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: "/guide/eu-ai-act-article-50", label: "MarkWitness's EU AI Act Article 50 guide" },
+      { href: "/guide/eu-ai-act-article-50", label: "WatermarkRemoverPro's EU AI Act Article 50 guide" },
       { href: "/for/freelance-writers", label: "For freelance writers" },
       { href: "/for/journalists", label: "For journalists" },
       { href: "/check", label: "Try the free Check page" },
@@ -356,7 +356,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
     format: "how-to",
     intent: "informational",
     publishedAt: "2026-08-07",
-    author: "MarkWitness Content Team",
+    author: "WatermarkRemoverPro Content Team",
     primaryKeyword: "turnitin ai false positive",
     supportingKeywords: [
       "turnitin ai detector false positive",
@@ -386,7 +386,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
     takeaways: [
       "Turnitin's own blog states a document-level false positive rate under 1% for documents flagged with over 20% AI writing, from an 800,000-document test.",
       "At sentence level, Turnitin's own figure is closer to 4%, and errors cluster near transitions between human and AI writing.",
-      "A free MarkWitness check, done in your browser, is one extra piece of evidence, not a replacement for your own drafts and version history.",
+      "A free WatermarkRemoverPro check, done in your browser, is one extra piece of evidence, not a replacement for your own drafts and version history.",
       "Appeals go better with a dated, exportable record than with an argument alone.",
       "Save everything before you need it, not after.",
     ],
@@ -409,8 +409,8 @@ export const BLOG_POSTS_A: BlogPost[] = [
         ],
       },
       {
-        id: "step-3-run-your-essay-through-a-free-markwitness-check",
-        heading: "Step 3: Run Your Essay Through a Free MarkWitness Check",
+        id: "step-3-run-your-essay-through-a-free-watermarkremoverpro-check",
+        heading: "Step 3: Run Your Essay Through a Free WatermarkRemoverPro Check",
         body: [
           "Head to the Check page and paste in the flagged essay, or the specific flagged sections if it's long. The test runs entirely in your browser, and nothing gets uploaded anywhere, which matters when the document is still under review.",
           "The free check covers up to 1,500 words with no account. If your essay is longer, a free account raises that to 5,000 words and 20 checks a month.",
@@ -421,7 +421,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         heading: "Step 4: Understand What the Result Does and Does Not Show",
         body: [
           "Read your result against what it actually tests: a specific, keyed statistical watermark, not a general 'sounds like AI' judgement. If no mark turns up, that's honest information, but it isn't proof of human authorship on its own, because marks are keyed and no vendor publishes its detection key.",
-          "If you never used an AI writing tool, there's a good chance nothing will be found under any key MarkWitness tests, simply because there's no mark to find. Either way, treat the result as one line in your evidence pack, not the headline.",
+          "If you never used an AI writing tool, there's a good chance nothing will be found under any key WatermarkRemoverPro tests, simply because there's no mark to find. Either way, treat the result as one line in your evidence pack, not the headline.",
         ],
       },
       {
@@ -436,8 +436,8 @@ export const BLOG_POSTS_A: BlogPost[] = [
         id: "step-6-build-a-short-evidence-pack",
         heading: "Step 6: Build a Short Evidence Pack",
         body: [
-          "Put it together as one short document: original drafts with timestamps, your MarkWitness result, the specific sentences Turnitin flagged, and a brief, calm note explaining your process.",
-          "A MarkWitness Pro account can export a dated PDF evidence report with the signal strength, a confidence band, the keys tested, and a SHA-256 hash of the document, useful if you want a formal, exportable record rather than a screenshot.",
+          "Put it together as one short document: original drafts with timestamps, your WatermarkRemoverPro result, the specific sentences Turnitin flagged, and a brief, calm note explaining your process.",
+          "A WatermarkRemoverPro Pro account can export a dated PDF evidence report with the signal strength, a confidence band, the keys tested, and a SHA-256 hash of the document, useful if you want a formal, exportable record rather than a screenshot.",
         ],
       },
       {
@@ -465,14 +465,14 @@ export const BLOG_POSTS_A: BlogPost[] = [
     },
     pitfalls: [
       "Deleting or not keeping draft history because the essay's already submitted; do this before you ever need it, every time.",
-      "Treating a MarkWitness 'no mark found' result as a guaranteed clean bill of health rather than one data point.",
+      "Treating a WatermarkRemoverPro 'no mark found' result as a guaranteed clean bill of health rather than one data point.",
       "Sending an angry first email instead of requesting a calm meeting with evidence attached.",
       "Hiding legitimate AI-assisted brainstorming or grammar-checking out of fear it'll look worse; it rarely does, compared with the alternative.",
     ],
     faq: [
       {
         question: "What should I do if Turnitin flags my essay as AI?",
-        answer: "Save your original drafts and version history first, read exactly which sentences were flagged, then run the essay through a free check like MarkWitness's before requesting an appeal meeting with your evidence in hand.",
+        answer: "Save your original drafts and version history first, read exactly which sentences were flagged, then run the essay through a free check like WatermarkRemoverPro's before requesting an appeal meeting with your evidence in hand.",
       },
       {
         question: "How accurate is Turnitin's AI detector?",
@@ -496,7 +496,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
       { href: "/guide/ai-detection-false-positive", label: "Guide: AI detection false positives" },
       { href: "/for/university-students", label: "For university students" },
       { href: "/guide/prove-you-wrote-it", label: "Guide: how to prove you wrote it" },
-      { href: "/blog/turnitin-ai-detector-vs-markwitness", label: "Turnitin AI detector vs MarkWitness" },
+      { href: "/blog/turnitin-ai-detector-vs-watermarkremoverpro", label: "Turnitin AI detector vs WatermarkRemoverPro" },
       { href: "/blog/complete-guide-appealing-ai-plagiarism-accusation", label: "The complete guide to appealing an AI accusation" },
     ],
     externalLinks: [
@@ -507,18 +507,18 @@ export const BLOG_POSTS_A: BlogPost[] = [
     schemaType: "HowTo",
   },
   {
-    slug: "turnitin-ai-detector-vs-markwitness",
-    title: "Turnitin AI Detector vs MarkWitness: Which to Trust",
-    h1: "Turnitin AI Detector vs MarkWitness: Which to Trust",
-    metaDescription: "Turnitin AI detector vs MarkWitness: what each tool actually measures, where each is useful, and why they're not really competitors.",
+    slug: "turnitin-ai-detector-vs-watermarkremoverpro",
+    title: "Turnitin AI Detector vs WatermarkRemoverPro: Which to Trust",
+    h1: "Turnitin AI Detector vs WatermarkRemoverPro: Which to Trust",
+    metaDescription: "Turnitin AI detector vs WatermarkRemoverPro: what each tool actually measures, where each is useful, and why they're not really competitors.",
     category: "Reviews",
     format: "review",
     intent: "commercial",
     publishedAt: "2026-08-07",
-    author: "MarkWitness Content Team",
+    author: "WatermarkRemoverPro Content Team",
     primaryKeyword: "turnitin ai false positive",
     supportingKeywords: [
-      "turnitin vs markwitness",
+      "turnitin vs watermarkremoverpro",
       "ai writing detector comparison",
       "turnitin ai detection accuracy",
       "watermark check vs ai classifier",
@@ -529,24 +529,24 @@ export const BLOG_POSTS_A: BlogPost[] = [
     ],
     longTailKeywords: [
       "is turnitin reliable enough on its own",
-      "should i use markwitness instead of turnitin",
+      "should i use watermarkremoverpro instead of turnitin",
       "difference between turnitin and a watermark checker",
     ],
     heroImage: {
       src: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600",
-      alt: "Scales of justice, representing weighing a Turnitin AI false positive against MarkWitness's own-writing check",
+      alt: "Scales of justice, representing weighing a Turnitin AI false positive against WatermarkRemoverPro's own-writing check",
       unsplashId: "DZpc4UY8ZtY",
     },
     intro: [
-      "Turnitin and MarkWitness get compared a lot, and honestly, that comparison rests on a mix-up: a Turnitin AI false positive and a MarkWitness result are not measuring the same thing at all.",
+      "Turnitin and WatermarkRemoverPro get compared a lot, and honestly, that comparison rests on a mix-up: a Turnitin AI false positive and a WatermarkRemoverPro result are not measuring the same thing at all.",
       "They measure different things, for different people, at different moments, so 'which one's better' is the wrong question. 'Which one for which job' is the right one.",
       "Below, we score Turnitin's AI writing detection on one narrow, useful question: how much should a standalone verdict be trusted without other evidence?",
     ],
     takeaways: [
       "Turnitin is an institutional classifier, built for universities screening submitted student work at scale.",
-      "MarkWitness is a personal, on-device tool for checking your own writing for one specific kind of statistical mark.",
+      "WatermarkRemoverPro is a personal, on-device tool for checking your own writing for one specific kind of statistical mark.",
       "Turnitin's own published false positive rate is under 1% at document level but rises to around 4% at sentence level.",
-      "A MarkWitness result is a useful complement to a Turnitin appeal, not a substitute for one.",
+      "A WatermarkRemoverPro result is a useful complement to a Turnitin appeal, not a substitute for one.",
       "Neither tool is designed to be the sole basis for a misconduct finding, and neither claims to be.",
     ],
     sections: [
@@ -560,10 +560,10 @@ export const BLOG_POSTS_A: BlogPost[] = [
         ],
       },
       {
-        id: "what-markwitness-actually-measures",
-        heading: "What MarkWitness Actually Measures",
+        id: "what-watermarkremoverpro-actually-measures",
+        heading: "What WatermarkRemoverPro Actually Measures",
         body: [
-          "MarkWitness does something narrower. It tests a piece of text against a specific statistical watermark, the green-list method described in the Kirchenbauer et al. research, under one or more keys.",
+          "WatermarkRemoverPro does something narrower. It tests a piece of text against a specific statistical watermark, the green-list method described in the Kirchenbauer et al. research, under one or more keys.",
           "It's built for a different moment: a person checking their own writing, voluntarily, before it becomes a dispute. Nothing gets uploaded for the free check; the whole test runs in the browser.",
           "It doesn't estimate 'does this sound like AI'. It answers a smaller, more falsifiable question: did this exact statistical pattern turn up, under this exact key, more than chance predicts.",
         ],
@@ -573,7 +573,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         heading: "The Accuracy Numbers Both Sides Publish",
         body: [
           "Turnitin's own blog states a document-level false positive rate under 1%, for documents with over 20% AI writing, based on an 800,000-document test set. At sentence level, that figure rises to roughly 4%, with errors clustering at the seams between human and AI writing.",
-          "MarkWitness's own positive-control test scored z > 8 (p < 1e-6) for marked text under the correct key, and chance-level under a wrong one. The live /verify page shows the same contrast publicly, with z = 20.45 against z = 0.1 on identical text.",
+          "WatermarkRemoverPro's own positive-control test scored z > 8 (p < 1e-6) for marked text under the correct key, and chance-level under a wrong one. The live /verify page shows the same contrast publicly, with z = 20.45 against z = 0.1 on identical text.",
           "Both sets of numbers are genuine and worth reading, but they're not measuring the same thing, so resist the urge to rank them against each other on a single scale.",
         ],
       },
@@ -586,10 +586,10 @@ export const BLOG_POSTS_A: BlogPost[] = [
         ],
       },
       {
-        id: "where-markwitness-is-the-right-tool",
-        heading: "Where MarkWitness Is the Right Tool",
+        id: "where-watermarkremoverpro-is-the-right-tool",
+        heading: "Where WatermarkRemoverPro Is the Right Tool",
         body: [
-          "If you're an individual wanting to check your own writing, privately, before submitting it or before an appeal meeting, that's the job MarkWitness is built for. Nothing leaves your device for the free check.",
+          "If you're an individual wanting to check your own writing, privately, before submitting it or before an appeal meeting, that's the job WatermarkRemoverPro is built for. Nothing leaves your device for the free check.",
           "It's also useful proactively: a freelancer checking a draft before sending it to a client, or a journalist checking a piece before publication, rather than reacting to an accusation after the fact.",
         ],
       },
@@ -597,17 +597,17 @@ export const BLOG_POSTS_A: BlogPost[] = [
         id: "why-they-are-not-really-competitors",
         heading: "Why They Are Not Really Competitors",
         body: [
-          "Put simply: Turnitin screens other people's work on an institution's behalf. MarkWitness lets you check your own. That's not a subtle distinction; it's a different tool for a different person at a different stage.",
-          "A genuine competitor to Turnitin would be another institutional classifier. MarkWitness has never tried to be that, and doesn't market itself as a Turnitin replacement anywhere.",
+          "Put simply: Turnitin screens other people's work on an institution's behalf. WatermarkRemoverPro lets you check your own. That's not a subtle distinction; it's a different tool for a different person at a different stage.",
+          "A genuine competitor to Turnitin would be another institutional classifier. WatermarkRemoverPro has never tried to be that, and doesn't market itself as a Turnitin replacement anywhere.",
         ],
       },
       {
         id: "using-both-together-in-an-appeal",
         heading: "Using Both Together in an Appeal",
         body: [
-          "In practice, the two work well as a pair. Turnitin's report tells you what got flagged and roughly how confident the classifier was. A MarkWitness check adds a separate, differently-built data point alongside your drafts and version history.",
+          "In practice, the two work well as a pair. Turnitin's report tells you what got flagged and roughly how confident the classifier was. A WatermarkRemoverPro check adds a separate, differently-built data point alongside your drafts and version history.",
           "Neither one, alone, should be the whole of an appeal. Together with your own process evidence, they make a more complete picture than either does by itself.",
-          "Picture two situations side by side. A university needs to screen four hundred submitted essays overnight ahead of a marking deadline: that's Turnitin's job, applying one consistent classifier across every submission so staff can triage which pieces need a closer human look. Now picture a single student, already flagged, sitting down the evening before their appeal meeting with one essay and a few hours to prepare: that's MarkWitness's job, a private, on-device check of one document, run by the person who actually needs to know what a specific statistical pattern under a specific key does or doesn't show. Reach for something built like Turnitin when the question is 'across this whole cohort, what needs a closer look'. Reach for something built like MarkWitness when the question is narrower and personal: 'about this one piece of my own writing, what can I actually show'.",
+          "Picture two situations side by side. A university needs to screen four hundred submitted essays overnight ahead of a marking deadline: that's Turnitin's job, applying one consistent classifier across every submission so staff can triage which pieces need a closer human look. Now picture a single student, already flagged, sitting down the evening before their appeal meeting with one essay and a few hours to prepare: that's WatermarkRemoverPro's job, a private, on-device check of one document, run by the person who actually needs to know what a specific statistical pattern under a specific key does or doesn't show. Reach for something built like Turnitin when the question is 'across this whole cohort, what needs a closer look'. Reach for something built like WatermarkRemoverPro when the question is narrower and personal: 'about this one piece of my own writing, what can I actually show'.",
         ],
       },
       {
@@ -620,23 +620,23 @@ export const BLOG_POSTS_A: BlogPost[] = [
       },
     ],
     table: {
-      caption: "Turnitin AI Writing Detection vs MarkWitness, side by side",
-      headers: ["", "Turnitin AI Writing Detection", "MarkWitness"],
+      caption: "Turnitin AI Writing Detection vs WatermarkRemoverPro, side by side",
+      headers: ["", "Turnitin AI Writing Detection", "WatermarkRemoverPro"],
       rows: [
         ["What it measures", "General AI-writing style classifier", "A specific keyed statistical watermark"],
         ["Who it's built for", "Institutions screening submitted work", "Individuals checking their own writing"],
         ["Where it runs", "Institutional platform, uploaded documents", "Free check runs in your own browser"],
-        ["Published accuracy figures", "Under 1% document-level FPR, around 4% sentence-level FPR (Turnitin's own blog)", "z > 8, p < 1e-6 under correct key; chance-level under wrong key (MarkWitness's own test)"],
+        ["Published accuracy figures", "Under 1% document-level FPR, around 4% sentence-level FPR (Turnitin's own blog)", "z > 8, p < 1e-6 under correct key; chance-level under wrong key (WatermarkRemoverPro's own test)"],
         ["Best used as", "One institutional signal among several", "A personal, falsifiable data point"],
       ],
     },
     quote: {
       quote: "We're not trying to out-detect Turnitin. We're answering a much smaller question, did this specific pattern show up under this specific key, and we think a smaller, checkable question is more useful here than a bigger, fuzzier one.",
-      attribution: "A MarkWitness detection engineer",
+      attribution: "A WatermarkRemoverPro detection engineer",
       role: "on how the two tools differ",
     },
     pitfalls: [
-      "Assuming a MarkWitness 'no mark found' result overturns a Turnitin flag on its own. It doesn't; it's supporting evidence.",
+      "Assuming a WatermarkRemoverPro 'no mark found' result overturns a Turnitin flag on its own. It doesn't; it's supporting evidence.",
       "Assuming Turnitin's percentage score is a lie-detector reading rather than a probability estimate with a published error rate.",
       "Comparing the two tools' numbers directly as if they measured the same thing. They don't, so the figures aren't interchangeable.",
       "Picking a side in what isn't really a rivalry, when the sensible move is usually to use both for what each is good at.",
@@ -647,15 +647,15 @@ export const BLOG_POSTS_A: BlogPost[] = [
         answer: "For document-level screening, Turnitin's own published false positive rate is under 1%, which is low. But its own figures also show a higher sentence-level error rate, around 4%, which is why it's not designed to be the sole basis for a misconduct finding.",
       },
       {
-        question: "Should I use MarkWitness instead of Turnitin?",
-        answer: "Not instead of, but alongside, for a different purpose. Turnitin screens submitted work for an institution; MarkWitness lets you check your own writing privately for a specific statistical watermark. They answer different questions.",
+        question: "Should I use WatermarkRemoverPro instead of Turnitin?",
+        answer: "Not instead of, but alongside, for a different purpose. Turnitin screens submitted work for an institution; WatermarkRemoverPro lets you check your own writing privately for a specific statistical watermark. They answer different questions.",
       },
       {
         question: "What's the real difference between a watermark checker and an AI detector?",
-        answer: "A watermark checker like MarkWitness tests for one specific, keyed statistical pattern. A general AI detector like Turnitin's classifier estimates a probability based on writing style. One is a narrow, falsifiable test; the other is a broader, fuzzier estimate.",
+        answer: "A watermark checker like WatermarkRemoverPro tests for one specific, keyed statistical pattern. A general AI detector like Turnitin's classifier estimates a probability based on writing style. One is a narrow, falsifiable test; the other is a broader, fuzzier estimate.",
       },
       {
-        question: "Can MarkWitness results be used to challenge a Turnitin flag?",
+        question: "Can WatermarkRemoverPro results be used to challenge a Turnitin flag?",
         answer: "Yes, as supporting evidence alongside your drafts, version history and process notes, not as a standalone rebuttal. Appeals go further with a full evidence pack than with any single tool's result.",
       },
       {
@@ -664,7 +664,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: "/vs/turnitin-ai-detector", label: "MarkWitness vs Turnitin AI detector" },
+      { href: "/vs/turnitin-ai-detector", label: "WatermarkRemoverPro vs Turnitin AI detector" },
       { href: "/check", label: "Try the free Check page" },
       { href: "/guide/ai-detection-false-positive", label: "Guide: AI detection false positives" },
       { href: "/for/university-students", label: "For university students" },
@@ -694,7 +694,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
     format: "data-study",
     intent: "informational",
     publishedAt: "2026-08-08",
-    author: "MarkWitness Content Team",
+    author: "WatermarkRemoverPro Content Team",
     primaryKeyword: "ai detection false positive",
     supportingKeywords: [
       "ai detector false positive rate",
@@ -785,8 +785,8 @@ export const BLOG_POSTS_A: BlogPost[] = [
         id: "how-a-watermark-check-differs-from-all-of-this",
         heading: "How a Watermark Check Differs From All of This",
         body: [
-          "Everything above concerns style-based classifiers: tools estimating whether writing sounds AI-generated. A statistical watermark check, like MarkWitness's, is a different kind of measurement entirely: it tests for a specific, keyed pattern, not a style.",
-          "In its own positive-control test, MarkWitness's check scored z > 8 (p < 1e-6) for correctly-keyed marked text, and chance-level for the same text under a different key, numbers that come from a testable statistical procedure rather than a trained style classifier's probability estimate.",
+          "Everything above concerns style-based classifiers: tools estimating whether writing sounds AI-generated. A statistical watermark check, like WatermarkRemoverPro's, is a different kind of measurement entirely: it tests for a specific, keyed pattern, not a style.",
+          "In its own positive-control test, WatermarkRemoverPro's check scored z > 8 (p < 1e-6) for correctly-keyed marked text, and chance-level for the same text under a different key, numbers that come from a testable statistical procedure rather than a trained style classifier's probability estimate.",
           "That doesn't make it immune to false positives in some looser sense; it makes a different kind of claim altogether, so it doesn't belong on the same comparison line as a style classifier's accuracy figure.",
         ],
       },
@@ -813,7 +813,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
     },
     quote: {
       quote: "Every one of these numbers is true, and none of them are interchangeable. A document-level rate and a sentence-level rate answer different questions, even from the same company.",
-      attribution: "A MarkWitness detection engineer",
+      attribution: "A WatermarkRemoverPro detection engineer",
       role: "on comparing published accuracy figures",
     },
     pitfalls: [
@@ -843,8 +843,8 @@ export const BLOG_POSTS_A: BlogPost[] = [
     internalLinks: [
       { href: "/guide/ai-detection-false-positive", label: "Guide: AI detection false positives" },
       { href: "/for/non-native-english-writers", label: "For non-native English writers" },
-      { href: "/vs/gptzero", label: "MarkWitness vs GPTZero" },
-      { href: "/vs/originality-ai", label: "MarkWitness vs Originality.ai" },
+      { href: "/vs/gptzero", label: "WatermarkRemoverPro vs GPTZero" },
+      { href: "/vs/originality-ai", label: "WatermarkRemoverPro vs Originality.ai" },
       { href: "/check", label: "Try the free Check page" },
       { href: "/blog/per-language-ai-detection-accuracy", label: "Per-language AI detection accuracy, compared" },
     ],

@@ -1,5 +1,5 @@
 /**
- * MarkWitness Calibration Engine
+ * WatermarkRemoverPro Calibration Engine
  *
  * A local-first, deterministic text normalization utility that helps writers
  * understand which word-frequency patterns trigger statistical AI detection.

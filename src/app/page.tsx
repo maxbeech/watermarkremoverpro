@@ -61,7 +61,7 @@ export default async function HomePage() {
           <div className="relative">
             <Reveal>
               <ExhibitFrame
-                url="markwitness.helm7.com/check"
+                url="watermarkremoverpro.com/check"
                 tilt
                 caption={
                   <>
@@ -79,7 +79,7 @@ export default async function HomePage() {
             <Drift rate={0.045} max={22} className="relative z-10 mt-10 lg:ml-16">
               <Reveal delay={120}>
                 <ExhibitFrame
-                  url="markwitness.helm7.com/check"
+                  url="watermarkremoverpro.com/check"
                   tilt
                   caption={
                     <>
@@ -260,7 +260,7 @@ export default async function HomePage() {
           </div>
 
           <Reveal>
-            <ExhibitFrame url="markwitness.helm7.com/check" tilt>
+            <ExhibitFrame url="watermarkremoverpro.com/check" tilt>
               <StyleExhibit result={marked} />
             </ExhibitFrame>
           </Reveal>

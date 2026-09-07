@@ -1,21 +1,21 @@
-# @markwitness/rewrite-engine
+# @watermarkremoverpro/rewrite-engine
 
 Reduce detectable AI-style evidence in text, entirely on-device. This is the
-same engine [MarkWitness](https://markwitness.helm7.com/rewrite)'s browser UI
+same engine [WatermarkRemoverPro](https://watermarkremoverpro.com/rewrite)'s browser UI
 and MCP server use, packaged to run in your own process.
 
-There is no REST endpoint for this on markwitness.helm7.com, on any tier, by
+There is no REST endpoint for this on watermarkremoverpro.com, on any tier, by
 design: this package never sends your document anywhere. Every call is a
 local function call or a subprocess you control. See
-[docs/REWRITE_PHILOSOPHY.md](https://github.com/maxbeech/markwitness/blob/main/docs/REWRITE_PHILOSOPHY.md)
+[docs/REWRITE_PHILOSOPHY.md](https://github.com/maxbeech/watermarkremoverpro/blob/main/docs/REWRITE_PHILOSOPHY.md)
 in the main repo for what it does and does not claim.
 
 ## What it does
 
 Two mechanisms, run together, targeted at the passages a real per-passage
 watermark/style check actually flags (via
-[`@markwitness/rewrite-engine`](.)'s bundled copy of the same detector
-MarkWitness's checker uses):
+[`@watermarkremoverpro/rewrite-engine`](.)'s bundled copy of the same detector
+WatermarkRemoverPro's checker uses):
 
 1. **Statistical evidence reduction**: scores candidate rewrites against the
    same watermark arithmetic the checker uses, gated by a fact-lock (numbers,
@@ -34,7 +34,7 @@ wording for a larger evidence reduction; review the diff.
 ## Install
 
 ```bash
-npm install @markwitness/rewrite-engine
+npm install @watermarkremoverpro/rewrite-engine
 ```
 
 The "standard" engine (deterministic, rule-based) needs nothing else. For the
@@ -48,21 +48,21 @@ npm install @huggingface/transformers
 ## CLI
 
 ```bash
-npx @markwitness/rewrite-engine --strength balanced input.txt
-cat input.txt | npx @markwitness/rewrite-engine --strength aggressive --tier pro
-npx @markwitness/rewrite-engine --model advanced --tier pro input.txt -o output.txt
-npx @markwitness/rewrite-engine --help
+npx @watermarkremoverpro/rewrite-engine --strength balanced input.txt
+cat input.txt | npx @watermarkremoverpro/rewrite-engine --strength aggressive --tier pro
+npx @watermarkremoverpro/rewrite-engine --model advanced --tier pro input.txt -o output.txt
+npx @watermarkremoverpro/rewrite-engine --help
 ```
 
 `--model advanced` downloads real model weights from the Hugging Face CDN on
 first use (cached under `~/.cache/markwitness/models`), never from a
-MarkWitness-operated server, and never carries your document in that
+WatermarkRemoverPro-operated server, and never carries your document in that
 download.
 
 ## Library
 
 ```ts
-import { reduceEvidence } from '@markwitness/rewrite-engine'
+import { reduceEvidence } from '@watermarkremoverpro/rewrite-engine'
 
 const result = await reduceEvidence(
   { text: 'Your document here...', strength: 'balanced', tier: 'free' },
@@ -76,14 +76,14 @@ console.log(result.limits) // always ships with its own stated limits
 For the advanced (real local LLM) backend in Node:
 
 ```ts
-import { rewriteDocument } from '@markwitness/rewrite-engine'
-import { createTransformersNodeBackend } from '@markwitness/rewrite-engine/node'
+import { rewriteDocument } from '@watermarkremoverpro/rewrite-engine'
+import { createTransformersNodeBackend } from '@watermarkremoverpro/rewrite-engine/node'
 
 const backend = createTransformersNodeBackend('pro')
 const result = await rewriteDocument({ text, strength: 'balanced', tier: 'pro' }, backend, [])
 ```
 
-`@markwitness/rewrite-engine/node` requires `@huggingface/transformers` as a
+`@watermarkremoverpro/rewrite-engine/node` requires `@huggingface/transformers` as a
 peer dependency and is Node-only (it never imports in a browser bundle).
 
 ## License

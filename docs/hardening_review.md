@@ -3,16 +3,16 @@
 **2026-09-04 note:** this review predates the pivot to an on-device rewrite
 engine (`docs/REWRITE_PHILOSOPHY.md`). Every reference below to "the
 permanent no-removal constraint" or "no mark-removal tool exposed" describes
-the product as it stood on 2026-08-12, not its current state: MarkWitness now
+the product as it stood on 2026-08-12, not its current state: WatermarkRemoverPro now
 ships a real, honestly-described evidence-reduction feature (`/rewrite`,
 `reduce_ai_evidence`), with a different, narrower absolute (strictly
 on-device, no unverifiable guarantee) replacing the old one. Kept as-is
 below for an accurate historical record of what was checked at the time,
 rather than silently edited to look prescient.
 
-Run started 2026-08-12T00:00Z. Product: MarkWitness. Workspace resolved per the
+Run started 2026-08-12T00:00Z. Product: WatermarkRemoverPro. Workspace resolved per the
 Product Pipeline Notes pointer (list_products carries a stale, non-existent
-`/cloud/...` workspacePath for this slug): `/Users/maxbeech/Documents/Beech/Development/ProductFactory/markwitness`.
+`/cloud/...` workspacePath for this slug): `/Users/maxbeech/Documents/Beech/Development/ProductFactory/watermarkremoverpro`.
 Claimed from Stage `built-live`, Notes carrying `S3b-polished 2026-08-12` and no
 `S4-hardened` marker.
 
@@ -33,7 +33,7 @@ Pass's job (docs/premium_polish_review.md) and are not re-reviewed here.
   Playwright, already part of this repo from the build stage): the free
   on-device check, the zero-upload network canary, the `/verify` detector
   demo, machine-readable surfaces, API auth/error contract, and page
-  coverage. 33/33 assertions pass against `https://markwitness.helm7.com`.
+  coverage. 33/33 assertions pass against `https://watermarkremoverpro.com`.
 - Three additional ad-hoc Playwright scripts written for this pass to cover
   journeys the existing harness didn't (signup/login, saved history, the
   signed-up free-tier word cap, API allowance/error-shape edge cases, and
@@ -161,8 +161,8 @@ Unchanged from the build stage: this deployment has no
 `STRIPE_SECRET_KEY` / `STRIPE_PRICE_PRO` / `STRIPE_WEBHOOK_SECRET`. The only
 Stripe account visible to this workspace (`acct_1TgA9kLTQj9uV5dz`) is
 Learnaway's livemode account. Using another product's live account to test
-MarkWitness billing would be the wrong call, and is exactly the
-already-flagged, human-gated task "Credentials needed before MarkWitness can
+WatermarkRemoverPro billing would be the wrong call, and is exactly the
+already-flagged, human-gated task "Credentials needed before WatermarkRemoverPro can
 launch", so it was not touched.
 
 Verified as far as the code path goes:
@@ -197,7 +197,7 @@ Verified as far as the code path goes:
 product specifically are provided:** an actual Stripe Checkout session, a
 real card charge (even in test mode), the webhook firing against a real
 Stripe event, or a real downgrade after cancellation. See the existing task
-"Credentials needed before MarkWitness can launch."
+"Credentials needed before WatermarkRemoverPro can launch."
 
 ### AGENT/MACHINE journeys: PASS
 

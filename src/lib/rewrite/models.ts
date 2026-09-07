@@ -10,7 +10,7 @@
  * backend/browser.ts, onnxruntime-node in the MCP server/CLI through
  * backend/node.ts. Both share backend/transformers-shared.ts. It downloads
  * real model weights from the Hugging Face CDN on first use (never from a
- * MarkWitness-operated server) and caches them locally. Entries below are
+ * WatermarkRemoverPro-operated server) and caches them locally. Entries below are
  * pinned to an exact repo id and commit revision, the same
  * pin-don't-trust-a-moving-target discipline already used for detection keys
  * in detector/keys.ts, so a later upstream change to the named repo can never

@@ -7,7 +7,7 @@
  * the API, the MCP tool or the evidence report, is required to carry that sentence,
  * because a single number labelled "distance" is the easiest thing in this
  * product to misread as a verdict, and being misread as a verdict is precisely
- * the harm MarkWitness exists to argue against.
+ * the harm WatermarkRemoverPro exists to argue against.
  *
  * WHAT IT IS. A typicality measurement. Each feature is expressed as a signed
  * distance in standard deviations from the corpus mean for that language, and

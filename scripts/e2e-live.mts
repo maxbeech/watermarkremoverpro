@@ -11,7 +11,7 @@
  */
 import { chromium, type Request } from 'playwright'
 
-const BASE = (process.argv[2] || 'https://markwitness.helm7.com').replace(/\/$/, '')
+const BASE = (process.argv[2] || 'https://watermarkremoverpro.com').replace(/\/$/, '')
 
 /** Distinctive enough that finding it in any request body is unambiguous. */
 const CANARY = 'zarquon-beeblebrox-77104 the drainage committee deferred its decision again'

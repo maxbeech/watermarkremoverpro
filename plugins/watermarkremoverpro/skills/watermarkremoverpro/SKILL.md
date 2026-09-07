@@ -1,9 +1,9 @@
 ---
-name: markwitness
+name: watermarkremoverpro
 description: Check text for a statistical AI provenance mark (watermark) and reduce detectable AI-style evidence, entirely on-device. Use before publishing agent-written prose to a website, blog, docs site, README, or anywhere a reader or screening tool will see it; when asked whether text carries an AI watermark or "reads as AI"; when asked to make writing sound less like ChatGPT, remove em dashes and stock AI phrasing, or reduce AI-detector false-positive risk on the user's own writing.
 ---
 
-# MarkWitness: check and reduce AI-style evidence, on-device
+# WatermarkRemoverPro: check and reduce AI-style evidence, on-device
 
 Two MCP tools, both of which run in this process and transmit nothing.
 

@@ -6,16 +6,16 @@
  */
 
 export const SITE = {
-  name: 'MarkWitness',
+  name: 'WatermarkRemoverPro',
   tagline: 'Reduce detectable AI-style evidence in your writing, on your device, honestly.',
   description:
-    'MarkWitness checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://markwitness.helm7.com',
-  contactEmail: 'hello@markwitness.helm7.com',
+    'WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://watermarkremoverpro.com',
+  contactEmail: 'hello@watermarkremoverpro.com',
 } as const
 
 /**
- * The mirror-image product. MarkWitness checks YOUR OWN writing; anyone who
+ * The mirror-image product. WatermarkRemoverPro checks YOUR OWN writing; anyone who
  * wants to screen other people's work is looking for Learnaway, and every page
  * says so. Keeping this pointer in one constant means the operator requirement
  * cannot rot on one page while holding on another.

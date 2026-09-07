@@ -7,7 +7,7 @@
 import { chromium, type Page } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 
-const base = process.argv[2] ?? 'https://markwitness.helm7.com';
+const base = process.argv[2] ?? 'https://watermarkremoverpro.com';
 const label = process.argv[3] ?? 'before';
 const outDir = new URL(`../.polish-shots/${label}/`, import.meta.url).pathname;
 

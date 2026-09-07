@@ -1,19 +1,19 @@
 {
-  "name": "markwitness",
+  "name": "watermarkremoverpro",
   "owner": {
-    "name": "MarkWitness",
-    "url": "https://markwitness.helm7.com"
+    "name": "WatermarkRemoverPro",
+    "url": "https://watermarkremoverpro.com"
   },
   "plugins": [
     {
-      "name": "markwitness",
-      "source": "./plugins/markwitness",
-      "displayName": "MarkWitness",
+      "name": "watermarkremoverpro",
+      "source": "./plugins/watermarkremoverpro",
+      "displayName": "WatermarkRemoverPro",
       "description": "Check text for AI provenance marks and reduce detectable AI-style evidence, entirely on-device. Adds check_document / reduce_ai_evidence MCP tools, plus a hook that checks public-facing content this agent writes before it ships.",
-      "version": "0.2.0",
-      "author": { "name": "MarkWitness", "url": "https://markwitness.helm7.com" },
-      "homepage": "https://markwitness.helm7.com/docs/mcp",
-      "repository": "https://github.com/maxbeech/markwitness",
+      "version": "0.3.0",
+      "author": { "name": "WatermarkRemoverPro", "url": "https://watermarkremoverpro.com" },
+      "homepage": "https://watermarkremoverpro.com/docs/mcp",
+      "repository": "https://github.com/maxbeech/watermarkremoverpro",
       "license": "MIT",
       "category": "productivity",
       "keywords": ["ai-detection", "watermark", "provenance", "content", "seo", "on-device", "privacy"]

@@ -1,11 +1,11 @@
-# MarkWitness for Claude Code
+# WatermarkRemoverPro for Claude Code
 
 Check text for an AI provenance mark and reduce detectable AI-style evidence,
 entirely on-device.
 
 ```bash
-claude plugin marketplace add maxbeech/markwitness
-claude plugin install markwitness@markwitness
+claude plugin marketplace add maxbeech/watermarkremoverpro
+claude plugin install watermarkremoverpro@watermarkremoverpro
 ```
 
 ## What you get
@@ -61,7 +61,9 @@ agent's context.
 Rewriting runs on-device or in-process, on every tier, with no hosted mode.
 `check_document` optionally uses a hosted endpoint if you set
 `MARKWITNESS_API_KEY`, which adds detection keys a local process cannot hold;
-leave it unset and everything stays local.
+leave it unset and everything stays local. (`MARKWITNESS_API_KEY` is the
+variable name used by every deployment of this server, unchanged by the
+product rename below, so existing configuration keeps working.)
 
 ## What it will not claim
 
@@ -78,4 +80,4 @@ commands and not a checkout plus a build. Rebuild them with
 `npm run build:plugin` from the repository root after changing anything under
 `mcp/` or `src/lib/`.
 
-Full documentation: https://markwitness.helm7.com/docs/mcp
+Full documentation: https://watermarkremoverpro.com/docs/mcp

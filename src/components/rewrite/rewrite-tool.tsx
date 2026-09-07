@@ -189,7 +189,7 @@ export function RewriteTool() {
             {modelChoice === 'advanced' && (
               <p className="mt-1 text-xs text-ink-500">
                 Downloads a small language model straight from the Hugging Face CDN and runs it in your
-                browser (WebGPU if available, WASM otherwise). Never from a MarkWitness-operated server.
+                browser (WebGPU if available, WASM otherwise). Never from a WatermarkRemoverPro-operated server.
                 Cached after the first run. Falls back to Standard automatically if this device can't run it.
               </p>
             )}

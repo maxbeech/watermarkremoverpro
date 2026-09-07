@@ -1,8 +1,8 @@
 {
-  "name": "markwitness",
+  "name": "watermarkremoverpro",
   "version": "0.1.0",
   "private": true,
-  "description": "MarkWitness: check your own writing for a statistical AI provenance mark, on your device.",
+  "description": "WatermarkRemoverPro: check your own writing for a statistical AI provenance mark, on your device.",
   "scripts": {
     "dev": "next dev -p 3540",
     "build": "next build",

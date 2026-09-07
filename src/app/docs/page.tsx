@@ -6,7 +6,7 @@ import { BandRule } from '@/components/brand/band'
 export const metadata: Metadata = {
   title: 'Documentation',
   description:
-    'MarkWitness documentation for machines: the JSON API and the MCP server, both running the same detection engine the browser does.',
+    'WatermarkRemoverPro documentation for machines: the JSON API and the MCP server, both running the same detection engine the browser does.',
   alternates: { canonical: '/docs' },
 }
 

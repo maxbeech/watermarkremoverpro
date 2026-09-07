@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'unauthorized',
-        message: 'Provide a MarkWitness API key as "Authorization: Bearer mw_live_...".',
+        message: 'Provide a WatermarkRemoverPro API key as "Authorization: Bearer mw_live_...".',
         documentation: '/docs/api',
       },
       { status: 401 },
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     {
       status: 200,
       headers: {
-        'X-MarkWitness-Billable-Units': String(units),
+        'X-WatermarkRemoverPro-Billable-Units': String(units),
         'Cache-Control': 'no-store',
       },
     },

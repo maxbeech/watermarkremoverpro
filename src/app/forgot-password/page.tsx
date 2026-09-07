@@ -5,7 +5,7 @@ import { BandRule } from '@/components/brand/band'
 
 export const metadata: Metadata = {
   title: 'Reset your password',
-  description: 'Request a password reset link for your MarkWitness account.',
+  description: 'Request a password reset link for your WatermarkRemoverPro account.',
   alternates: { canonical: '/forgot-password' },
 }
 

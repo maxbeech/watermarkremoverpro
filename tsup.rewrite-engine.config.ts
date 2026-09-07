@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup'
 
 /**
- * Builds the standalone @markwitness/rewrite-engine package from the same
+ * Builds the standalone @watermarkremoverpro/rewrite-engine package from the same
  * source the Next.js app ships (src/lib/rewrite, plus the detector/calibrate
  * modules it depends on), so there is exactly one implementation, not a
  * forked copy kept in sync by hand. Two library entries: `index` (isomorphic,

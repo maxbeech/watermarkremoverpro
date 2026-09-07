@@ -1,6 +1,6 @@
 # Superseded
 
-This document described MarkWitness's original no-removal policy. The product
+This document described WatermarkRemoverPro's original no-removal policy. The product
 was deliberately repositioned to offer on-device rewriting as a primary
 feature; that reversal, and what the new capability does and does not claim,
 is documented in [`docs/REWRITE_PHILOSOPHY.md`](REWRITE_PHILOSOPHY.md).

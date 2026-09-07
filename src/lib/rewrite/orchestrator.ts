@@ -27,7 +27,7 @@ import type { PassageRewrite, RewriteRequest, RewriteResult } from './types'
 export const REWRITE_LIMITS: string[] = [
   'This reduces detectable AI-style evidence. It cannot guarantee defeating a model vendor\'s undisclosed watermark. No tool can, since nobody outside that vendor holds the key it was applied with.',
   'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
-  'The evidence scores shown use the same detector arithmetic as MarkWitness\'s own check, tested against the keys this deployment holds, not a specific vendor\'s undisclosed detector.',
+  'The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro\'s own check, tested against the keys this deployment holds, not a specific vendor\'s undisclosed detector.',
   'All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.',
 ]
 

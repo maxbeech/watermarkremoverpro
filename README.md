@@ -1,8 +1,8 @@
-# MarkWitness
+# WatermarkRemoverPro
 
 **Reduce detectable AI-style evidence in your writing, on your device, honestly.**
 
-MarkWitness checks a writer's own text for a statistical AI provenance mark,
+WatermarkRemoverPro checks a writer's own text for a statistical AI provenance mark,
 then rewrites it on-device to reduce detectable AI-style evidence: both
 statistical watermark signal, where structurally possible, and human
 perceptible AI tells like em dashes and stock phrasing. Every step runs
@@ -10,12 +10,12 @@ entirely on the device; the document never leaves it, on either feature, on
 any tier.
 
 Checking remains the mirror image of an AI detector. Detectors are bought by
-the person doing the accusing; MarkWitness is for the person on the other end
+the person doing the accusing; WatermarkRemoverPro is for the person on the other end
 of it, and now also for that same person editing their own draft before
 anyone accuses them of anything.
 
 > Checking **someone else's** work for AI use is a different job with different
-> ethics. [Learnaway](https://learnaway.ai) does that. MarkWitness checks and
+> ethics. [Learnaway](https://learnaway.ai) does that. WatermarkRemoverPro checks and
 > edits writing you wrote yourself, not work someone else handed you to
 > submit. Every page of this product says so.
 
@@ -25,7 +25,7 @@ anyone accuses them of anything.
 
 **Rewriting runs entirely on-device or in-process, on every tier, on every
 surface.** Free and Pro alike. Browser, MCP server, and the local package/CLI
-alike. No server MarkWitness operates ever receives the document text for
+alike. No server WatermarkRemoverPro operates ever receives the document text for
 this feature; unlike checking, there is no opt-in hosted mode for it at all.
 
 **No unverifiable guarantee, anywhere.** "Reduces detectable evidence" is the
@@ -61,7 +61,7 @@ Two decisions matter for honesty:
   conclusion on the same document, and every result says so.
 
 **The limitation that matters most:** a green-list mark is *keyed*, and no model
-vendor publishes a detection key. MarkWitness tests the keys it holds and names
+vendor publishes a detection key. WatermarkRemoverPro tests the keys it holds and names
 them on every result. "No mark detected" therefore always means *under those
 keys*, never "this document is clean". Any tool claiming to detect a named
 vendor's mark without a key from that vendor is not doing what it says.
@@ -152,33 +152,33 @@ because the sitemap reads from `BLOG_POSTS` rather than a hand-maintained list.
 Adding this to an agent workflow is two commands:
 
 ```bash
-claude plugin marketplace add maxbeech/markwitness
-claude plugin install markwitness@markwitness
+claude plugin marketplace add maxbeech/watermarkremoverpro
+claude plugin install watermarkremoverpro@watermarkremoverpro
 ```
 
 That installs the MCP server, a skill telling the agent when to use it, and a
 `PostToolUse` hook that checks public-facing content the agent writes before
 it ships. The server is one committed, self-contained file
-(`plugins/markwitness/dist/mcp-server.mjs`) that runs under plain `node` with
+(`plugins/watermarkremoverpro/dist/mcp-server.mjs`) that runs under plain `node` with
 nothing installed, which is what makes the two-command version possible;
 rebuild it with `npm run build:plugin` after changing `mcp/` or `src/lib/`.
 
 For any other MCP client:
 
 ```bash
-claude mcp add markwitness -- node /path/to/plugins/markwitness/dist/mcp-server.mjs
+claude mcp add watermarkremoverpro -- node /path/to/plugins/watermarkremoverpro/dist/mcp-server.mjs
 ```
 
 | Surface | Path |
 |---|---|
-| Claude Code plugin (MCP + skill + hook) | `plugins/markwitness`, listed by `.claude-plugin/marketplace.json` |
+| Claude Code plugin (MCP + skill + hook) | `plugins/watermarkremoverpro`, listed by `.claude-plugin/marketplace.json` |
 | JSON API (checking only) | `POST /api/v1/check` |
 | Evidence report | `POST /api/v1/report` (Pro) |
 | OpenAPI 3.1 | `/api/openapi.json` |
 | Machine-readable pricing | `/pricing.json` |
 | Agent description | `/llms.txt` |
 | MCP server | `mcp/server.ts`: `check_document`/`describe_method` local or hosted; `calibrate_text`/`reduce_ai_evidence` always local, no hosted mode |
-| Rewrite engine (no REST API by design; see docs/REWRITE_PHILOSOPHY.md) | `src/lib/rewrite`, published standalone as `@markwitness/rewrite-engine` (`packages/rewrite-engine`) with a `markwitness-rewrite` CLI, same engine as the MCP tool |
+| Rewrite engine (no REST API by design; see docs/REWRITE_PHILOSOPHY.md) | `src/lib/rewrite`, published standalone as `@watermarkremoverpro/rewrite-engine` (`packages/rewrite-engine`) with a `watermarkremoverpro-rewrite` CLI, same engine as the MCP tool |
 
 ## Stack
 

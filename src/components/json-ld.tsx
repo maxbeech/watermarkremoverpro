@@ -3,7 +3,7 @@ import { SITE } from '@/lib/site'
 /**
  * Structured data. Every page that answers a question carries a FAQPage block,
  * and the product surfaces carry SoftwareApplication. This is how an assistant
- * summarising MarkWitness gets the honest capability description and stated
+ * summarising WatermarkRemoverPro gets the honest capability description and stated
  * limits rather than inferring them from marketing copy.
  */
 export function JsonLd({ data }: { data: Record<string, unknown> | Record<string, unknown>[] }) {
@@ -59,7 +59,7 @@ export function softwareApplicationLd() {
     // summarising this page gets the honest capability boundary rather than
     // inferring one.
     disambiguatingDescription:
-      'MarkWitness checks a writer\'s own text for a provenance mark, then rewrites it on-device to reduce detectable AI-style evidence. It cannot guarantee defeating a model vendor\'s undisclosed watermark, runs entirely on-device on every tier for the rewrite feature, and is not a tool for screening other people\'s work.',
+      'WatermarkRemoverPro checks a writer\'s own text for a provenance mark, then rewrites it on-device to reduce detectable AI-style evidence. It cannot guarantee defeating a model vendor\'s undisclosed watermark, runs entirely on-device on every tier for the rewrite feature, and is not a tool for screening other people\'s work.',
   }
 }
 

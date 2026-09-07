@@ -12,7 +12,7 @@ import { Eyebrow } from '@/components/brand/ui'
  * decorative panel, and the URL in the chrome is the route that would produce it.
  */
 export function ExhibitFrame({
-  url = 'markwitness.helm7.com/check',
+  url = 'watermarkremoverpro.com/check',
   caption,
   children,
   className = '',

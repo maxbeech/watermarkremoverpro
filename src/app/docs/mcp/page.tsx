@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/brand/ui'
 export const metadata: Metadata = {
   title: 'MCP server',
   description:
-    'Expose MarkWitness to an agent as an MCP tool: check_document for the provenance-mark check (local or hosted), plus reduce_ai_evidence and calibrate_text for on-device rewriting, which has no hosted mode on any tier.',
+    'Expose WatermarkRemoverPro to an agent as an MCP tool: check_document for the provenance-mark check (local or hosted), plus reduce_ai_evidence and calibrate_text for on-device rewriting, which has no hosted mode on any tier.',
   alternates: { canonical: '/docs/mcp' },
 }
 
@@ -30,8 +30,8 @@ export default function McpDocsPage() {
           Installs the MCP server, a skill telling the agent when to reach for it, and a hook
           that checks public-facing content the agent writes before it ships:
         </p>
-        <Code>{`claude plugin marketplace add maxbeech/markwitness
-claude plugin install markwitness@markwitness`}</Code>
+        <Code>{`claude plugin marketplace add maxbeech/watermarkremoverpro
+claude plugin install watermarkremoverpro@watermarkremoverpro`}</Code>
         <p>
           The server is a single committed file that runs under plain{' '}
           <code className="figure">node</code>. There is nothing to install, no build step and no
@@ -43,14 +43,14 @@ claude plugin install markwitness@markwitness`}</Code>
       <Section title="Any other MCP client">
         <p>
           Clone the repository (or copy{' '}
-          <code className="figure">plugins/markwitness/dist/mcp-server.mjs</code> out of it) and
+          <code className="figure">plugins/watermarkremoverpro/dist/mcp-server.mjs</code> out of it) and
           point your client at the bundled server over stdio:
         </p>
         <Code>{`{
   "mcpServers": {
-    "markwitness": {
+    "watermarkremoverpro": {
       "command": "node",
-      "args": ["/path/to/markwitness/plugins/markwitness/dist/mcp-server.mjs"],
+      "args": ["/path/to/watermarkremoverpro/plugins/watermarkremoverpro/dist/mcp-server.mjs"],
       "env": { "MARKWITNESS_API_KEY": "mw_live_..." }
     }
   }
@@ -58,7 +58,7 @@ claude plugin install markwitness@markwitness`}</Code>
         <p>
           Or, for Claude Code without the plugin:{' '}
           <code className="figure">
-            claude mcp add markwitness -- node /path/to/plugins/markwitness/dist/mcp-server.mjs
+            claude mcp add watermarkremoverpro -- node /path/to/plugins/watermarkremoverpro/dist/mcp-server.mjs
           </code>
         </p>
         <p className="text-sm">

@@ -5,7 +5,7 @@
  * (it imports node:os/node:path, which do not exist there).
  *
  * Caches weights to ~/.cache/markwitness/models, downloaded from the
- * Hugging Face CDN on first use, never from a MarkWitness-operated server.
+ * Hugging Face CDN on first use, never from a WatermarkRemoverPro-operated server.
  */
 
 import os from 'node:os'

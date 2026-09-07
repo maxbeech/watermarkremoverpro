@@ -2,7 +2,7 @@ import { defineConfig } from 'tsup'
 
 /**
  * Bundles the MCP server into a single self-contained file, committed into
- * the Claude Code plugin at plugins/markwitness/dist.
+ * the Claude Code plugin at plugins/watermarkremoverpro/dist.
  *
  * The point is zero-install distribution. Before this, using the MCP server
  * meant cloning the repo, running npm install, and pointing a client at
@@ -19,7 +19,7 @@ import { defineConfig } from 'tsup'
  */
 export default defineConfig({
   entry: { 'mcp-server': 'mcp/server.ts', 'hook-check': 'mcp/hook-check.ts' },
-  outDir: 'plugins/markwitness/dist',
+  outDir: 'plugins/watermarkremoverpro/dist',
   tsconfig: 'tsconfig.rewrite-engine.json',
   format: ['esm'],
   outExtension: () => ({ js: '.mjs' }),

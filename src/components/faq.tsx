@@ -47,12 +47,12 @@ export const CORE_FAQ: FaqItem[] = [
   {
     question: 'Is a detected mark proof I used AI?',
     answer:
-      'No. A detected mark is not proof of authorship. Marks can appear in text that was quoted, translated, edited, or written with assistance, and a statistical test reports a probability rather than a fact about a person. MarkWitness reports the strength of the signal and the passages carrying it, and states this limit on every result and every exported report.',
+      'No. A detected mark is not proof of authorship. Marks can appear in text that was quoted, translated, edited, or written with assistance, and a statistical test reports a probability rather than a fact about a person. WatermarkRemoverPro reports the strength of the signal and the passages carrying it, and states this limit on every result and every exported report.',
   },
   {
     question: 'Can this tool guarantee my writing won\'t be flagged?',
     answer:
-      'No, and any tool that claims a 100% or guaranteed result is overselling a probabilistic process. MarkWitness can reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. It cannot guarantee defeating a model vendor\'s undisclosed watermark, because nobody outside that vendor holds the key it was applied with, and no honest tool can promise otherwise. The rewrite runs entirely on your device, on every tier, and shows you the before/after evidence so you can judge the result yourself rather than take a guarantee on faith.',
+      'No, and any tool that claims a 100% or guaranteed result is overselling a probabilistic process. WatermarkRemoverPro can reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. It cannot guarantee defeating a model vendor\'s undisclosed watermark, because nobody outside that vendor holds the key it was applied with, and no honest tool can promise otherwise. The rewrite runs entirely on your device, on every tier, and shows you the before/after evidence so you can judge the result yourself rather than take a guarantee on faith.',
   },
   {
     question: 'What\'s the difference between the free and Pro rewrite?',
@@ -72,7 +72,7 @@ export const CORE_FAQ: FaqItem[] = [
   {
     question: 'An absent mark: does that prove I wrote it myself?',
     answer:
-      'No, and this matters as much as the first answer. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them. No model vendor publishes its detection key. MarkWitness tests the keys it holds and names them, so "no mark detected" always means "under these keys" and never "this document is clean".',
+      'No, and this matters as much as the first answer. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them. No model vendor publishes its detection key. WatermarkRemoverPro tests the keys it holds and names them, so "no mark detected" always means "under these keys" and never "this document is clean".',
   },
   {
     question: 'What can I actually hand to someone who has accused me?',

@@ -47,7 +47,7 @@ const transport = new StdioClientTransport({
   env: { ...process.env, MARKWITNESS_API_KEY: '' } as Record<string, string>,
 })
 
-const client = new Client({ name: 'markwitness-smoke', version: '1.0.0' }, { capabilities: {} })
+const client = new Client({ name: 'watermarkremoverpro-smoke', version: '1.0.0' }, { capabilities: {} })
 
 try {
   await client.connect(transport)

@@ -3,7 +3,7 @@ import { MIRROR_PRODUCT } from '@/lib/site'
 /**
  * The mirror-image pointer, on every page.
  *
- * MarkWitness is for checking YOUR OWN writing. Someone who arrives wanting to
+ * WatermarkRemoverPro is for checking YOUR OWN writing. Someone who arrives wanting to
  * screen a student's or a contractor's work is in the wrong place, and sending
  * them straight to Learnaway is better for both of them than letting them run a
  * self-check tool against someone else's document and misread the output.
@@ -25,7 +25,7 @@ export function MirrorBanner() {
           >
             {MIRROR_PRODUCT.name}
           </a>{' '}
-          does that. MarkWitness checks and edits writing <strong className="font-semibold text-white">you</strong> wrote
+          does that. WatermarkRemoverPro checks and edits writing <strong className="font-semibold text-white">you</strong> wrote
           yourself, not work someone else handed you to submit.
         </span>
       </div>

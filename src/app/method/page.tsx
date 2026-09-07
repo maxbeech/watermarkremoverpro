@@ -11,7 +11,7 @@ import { PageHeader } from '@/components/brand/ui'
 export const metadata: Metadata = {
   title: 'Method',
   description:
-    'Exactly what MarkWitness measures: a keyed green-list watermark z test, a key-free register measurement against per-language corpus baselines, and a false-discovery-rate correction on per-passage findings.',
+    'Exactly what WatermarkRemoverPro measures: a keyed green-list watermark z test, a key-free register measurement against per-language corpus baselines, and a false-discovery-rate correction on per-passage findings.',
   alternates: { canonical: '/method' },
 }
 
@@ -53,7 +53,7 @@ export default async function MethodPage() {
       <PageHeader
         eyebrow="Method"
         title="Two measurements, kept separate on purpose."
-        lead="Everything MarkWitness reports is one of two measurements. This page is the whole method, including the parts that limit what it can tell you."
+        lead="Everything WatermarkRemoverPro reports is one of two measurements. This page is the whole method, including the parts that limit what it can tell you."
       />
 
       <article className="mx-auto max-w-3xl px-5 pt-14">
@@ -94,7 +94,7 @@ export default async function MethodPage() {
             is unlikely to change.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-seal-700">
-            MarkWitness therefore tests the keys it holds and names them on every result. It ships a
+            WatermarkRemoverPro therefore tests the keys it holds and names them on every result. It ships a
             published open reference key so the machinery is auditable:{' '}
             <Link href="/verify" className="underline underline-offset-2">
               mark a passage under it yourself

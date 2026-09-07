@@ -1,4 +1,4 @@
-# MarkWitness: SEO/GEO Content Plan
+# WatermarkRemoverPro: SEO/GEO Content Plan
 
 Materialised 2026-08-12 (Stage 5, content engine launch) from the live keyword
 research recorded in the Product Pipeline row's Feature Spec during prep

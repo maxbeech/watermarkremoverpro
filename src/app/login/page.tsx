@@ -5,7 +5,7 @@ import { BandRule } from '@/components/brand/band'
 
 export const metadata: Metadata = {
   title: 'Sign in',
-  description: 'Sign in to your MarkWitness account for saved check history, higher limits and API keys.',
+  description: 'Sign in to your WatermarkRemoverPro account for saved check history, higher limits and API keys.',
   alternates: { canonical: '/login' },
 }
 
