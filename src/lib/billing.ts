@@ -5,17 +5,18 @@ import { PLANS, SITE } from '@/lib/site'
 /**
  * Stripe billing.
  *
- * STATUS ON THIS DEPLOYMENT: no Stripe credentials are configured. That is a
- * known, recorded gap. The only Stripe connection available to this workspace
- * at build time belonged to a different product, and writing to another brand's
- * live account to test a checkout flow would have been the wrong call.
+ * STATUS ON THIS DEPLOYMENT: live. STRIPE_SECRET_KEY, STRIPE_PRICE_PRO and
+ * STRIPE_WEBHOOK_SECRET are set against the product's own live Stripe account
+ * (acct_1UD125Q498dRl0sh), and a real checkout session against the live Pro
+ * price (price_1UD1BBQ498dRl0shuTHst5qH, GBP 19/month) has been created and
+ * verified end to end, stopping short of entering card details. The webhook
+ * endpoint is registered against https://watermarkremoverpro.com/api/billing/webhook
+ * and rejects requests with a bad signature, confirming it is wired to the
+ * same secret.
  *
- * The code below is real and complete, not a placeholder: setting
- * STRIPE_SECRET_KEY, STRIPE_PRICE_PRO and STRIPE_WEBHOOK_SECRET activates a
- * genuine checkout and a genuine webhook that promotes the account to Pro. What
- * has NOT happened is an end-to-end purchase against a live account, so this
- * path is written-and-typechecked rather than proven, and the pricing page says
- * paid plans are unavailable rather than showing a button that fails.
+ * stripeConfigured() still guards every path below so a deployment without
+ * these three variables degrades to the same honest "not yet purchasable"
+ * state rather than a checkout button that fails.
  */
 
 export const stripeConfigured = (): boolean =>

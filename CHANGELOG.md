@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-09-07: production readiness - billing live, repo public
+
+Two gaps recorded in the rebrand entry below are closed:
+
+Stripe billing is live against the product's own account (acct_1UD125Q498dRl0sh,
+GB, GBP), not a borrowed one. Created the Pro product and its GBP 19/month
+recurring price, registered the production webhook endpoint, and set
+`STRIPE_SECRET_KEY` / `STRIPE_PRICE_PRO` / `STRIPE_WEBHOOK_SECRET` in
+production. Verified end to end: the dashboard's "Upgrade to Pro" button opens
+a real, correctly priced live Stripe Checkout session for the signed-in
+account (stopped short of entering card details, deliberately), and the
+webhook endpoint rejects a request with a bad signature rather than trusting
+it. `stripeConfigured()` still gates every billing path, so a deployment
+without these variables keeps degrading to the same honest
+"not yet purchasable" state.
+
+The GitHub repo (`maxbeech/watermarkremoverpro`) is now public. It was private,
+which silently broke the two install paths this site's own `/docs/mcp` page
+documents for agents: `claude plugin marketplace add maxbeech/watermarkremoverpro`
+and cloning the repo to run the bundled MCP server, both of which need
+anonymous read access. Checked the full history for credentials or secrets
+first (none found) before flipping visibility, and confirmed an unauthenticated
+clone now succeeds and contains the bundled server at the path the docs name.
+
+Transactional email (`OPENHELM_API_KEY`) remains unconfigured: password-reset
+requests still return the same non-account-enumerating message either way, and
+the server logs a warning rather than pretending to send. Signup, login,
+checking, rewriting, and API-key issuance are unaffected.
+
 ## 2026-09-07: rebrand to WatermarkRemoverPro
 
 The product is now WatermarkRemoverPro at watermarkremoverpro.com (was
