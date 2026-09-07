@@ -13,7 +13,7 @@ existing installs pick up the update). The GitHub repo moved to
 Left unchanged on purpose: the `MARKWITNESS_API_URL`/`MARKWITNESS_API_KEY`/
 `MARKWITNESS_DETECTION_KEYS` env var names, the `mw_live_` API key prefix
 (existing customers hold keys with this prefix), the local model cache path,
-and the watermark key's cryptographic domain-separation string — all
+and the watermark key's cryptographic domain-separation string: all
 internal identifiers, not user-facing brand.
 
 Known gap, not fixed here because it needs real credentials: Stripe billing
