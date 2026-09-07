@@ -1,7 +1,7 @@
 {
   "name": "markwitness",
   "displayName": "MarkWitness",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Check text for AI provenance marks and reduce detectable AI-style evidence, entirely on-device. Adds check_document / reduce_ai_evidence MCP tools, plus a hook that checks public-facing content this agent writes before it ships.",
   "author": {
     "name": "MarkWitness",

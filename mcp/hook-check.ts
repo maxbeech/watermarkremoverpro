@@ -26,7 +26,7 @@
 
 import { checkDocument } from '../src/lib/detector'
 import { OPEN_REFERENCE_KEY } from '../src/lib/detector/keys'
-import { applyDeterministicPass } from '../src/lib/calibrate/ai-tells'
+import { applyDeterministicPass, type TellChange } from '../src/lib/calibrate/ai-tells'
 import { countWords } from '../src/lib/detector/tokenize'
 
 interface HookInput {
@@ -108,6 +108,61 @@ async function readStdin(): Promise<string> {
   const chunks: Buffer[] = []
   for await (const chunk of process.stdin) chunks.push(Buffer.from(chunk))
   return Buffer.concat(chunks).toString('utf8')
+}
+
+/**
+ * The lowest strength that can actually fix what was reported.
+ *
+ * Exported and tested because getting it wrong is a specific, repeated
+ * failure, twice now. The first version recommended "preserve" after
+ * reporting em dashes, and "preserve" deliberately leaves dash punctuation
+ * alone, so the agent went to a setting that could not address the finding
+ * and fixed the dashes by hand instead. The second version knew about
+ * punctuation but not about the vocabulary swaps added since, and recommended
+ * "preserve" after reporting 24 of them.
+ *
+ * The mapping is derived from what was found rather than hardcoded:
+ *   a construction   -> "aggressive", the lowest strength that routes a
+ *                       passage to the rewriter on style-tell pressure alone
+ *   a dash or a word -> "balanced", the lowest strength that swaps either
+ *   neither          -> "preserve"
+ */
+export function recommendStrength(found: {
+  changes: Array<{ category: TellChange['category'] }>
+  triadicCount: number
+  parallelismCount: number
+}): { strength: 'preserve' | 'balanced' | 'aggressive'; reason: string; needsAggressive: boolean; needsBalanced: boolean } {
+  // One three-item list is ordinary English; three through a document is a
+  // tic. A single "not just X, but Y" is already a tell.
+  const needsAggressive = found.triadicCount >= 3 || found.parallelismCount > 0
+  const needsBalanced = found.changes.some(
+    (c) => c.category === 'punctuation' || c.category === 'vocabulary',
+  )
+
+  if (needsAggressive) {
+    return {
+      strength: 'aggressive',
+      reason:
+        '"aggressive" is the lowest strength that sends a passage to the rewriter for its constructions alone, and it swaps the punctuation and vocabulary below on the way',
+      needsAggressive,
+      needsBalanced,
+    }
+  }
+  if (needsBalanced) {
+    return {
+      strength: 'balanced',
+      reason:
+        '"balanced" is the lowest strength that swaps dash punctuation and recurring vocabulary; "preserve" deliberately leaves both',
+      needsAggressive,
+      needsBalanced,
+    }
+  }
+  return {
+    strength: 'preserve',
+    reason: '"preserve" only touches passages a real check flags',
+    needsAggressive,
+    needsBalanced,
+  }
 }
 
 async function main(): Promise<void> {
@@ -198,16 +253,11 @@ async function main(): Promise<void> {
 
   if (findings.length === 0) return
 
-  // Recommend a strength that will actually fix what was found. "preserve"
-  // deliberately leaves dash punctuation alone, so recommending it after
-  // reporting em dashes sends the agent to a setting that cannot address the
-  // finding. That happened in testing; the agent fixed the dashes by hand and
-  // said so.
-  const foundDashes = changes.some((c) => c.category === 'punctuation')
-  const strength = foundDashes ? 'balanced' : 'preserve'
-  const strengthReason = foundDashes
-    ? '"balanced" is the lowest strength that swaps dash punctuation; "preserve" deliberately leaves it'
-    : '"preserve" only touches passages a real check flags'
+  const { strength, reason: strengthReason, needsAggressive, needsBalanced } = recommendStrength({
+    changes,
+    triadicCount: triadic.length,
+    parallelismCount: parallelism.length,
+  })
 
   const lines = [
     `MarkWitness checked ${filePath} before it ships as public content:`,
@@ -217,11 +267,22 @@ async function main(): Promise<void> {
     `strength "${strength}" (${strengthReason}). It runs on this machine; no`,
     'document text is transmitted.',
     '',
-    'Recurring vocabulary above is rewritten by that call. The constructions',
-    'are not: the right fix depends on what the sentence is actually saying,',
-    'so either edit those yourself or pass model "advanced" to have the local',
-    'model rewrite the passages carrying them.',
-    '',
+    ...(needsAggressive
+      ? [
+          'That strength sends the passages carrying those constructions to the',
+          'rewriter. The rule-based engine can only vary their wording, so add',
+          'model "advanced" (a real local model, downloaded once) if you want them',
+          'genuinely restructured, or rewrite those sentences yourself.',
+          '',
+        ]
+      : needsBalanced
+        ? [
+            'Recurring vocabulary above is rewritten by that call. A word appearing',
+            'once is left alone deliberately: one occurrence is a word choice, not',
+            'a tell.',
+            '',
+          ]
+        : []),
     'This is a report, not a verdict: a detected mark is not proof of authorship,',
     'and an absent one is not proof of human authorship.',
   ]
