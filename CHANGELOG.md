@@ -48,6 +48,29 @@ different measurement entirely. Reporting was a dead-end channel.
   is a platform") went unflagged. The pattern only closed on "but", "it's" or
   "its".
 
+### The hook now recommends a strength that can fix what it reported
+
+This has failed twice. The first version recommended `preserve` after
+reporting em dashes, and `preserve` deliberately leaves dash punctuation
+alone. The second knew about punctuation but not about the vocabulary swaps
+added in this same release, and recommended `preserve` after reporting 24 of
+them. The report was right both times and the advice attached to it was not,
+which is worse than saying nothing.
+
+- Changed: the recommendation is derived from what was found. A construction
+  escalates to `aggressive` (the lowest strength that routes a passage to the
+  rewriter on style-tell pressure alone), a dash or a recurring word to
+  `balanced`, nothing to `preserve`.
+- Changed: the closing paragraph matches the strength. At `aggressive` it says
+  the constructions go to the rewriter and that `model: "advanced"` is what
+  actually restructures them, rather than repeating the "not rewritten" line.
+- Added: `recommendStrength()` is exported and covered by
+  `tests/hook-recommendation.test.ts`, including a property test asserting the
+  hook never names a strength that skips something it just reported. Verified
+  end to end: on a document the hook escalated to `aggressive`, `preserve`
+  applied 0 swaps and left all five elevated words, while `aggressive` applied
+  24 and rewrote 12 of 12 targeted passages.
+
 ### The MCP response no longer costs 14,000 tokens a call
 
 Measured on a 612-word document: the full result was about 40 KB of JSON, 31 KB

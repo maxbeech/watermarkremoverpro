@@ -4634,6 +4634,34 @@ async function readStdin() {
   for await (const chunk of process.stdin) chunks.push(Buffer.from(chunk));
   return Buffer.concat(chunks).toString("utf8");
 }
+function recommendStrength(found) {
+  const needsAggressive = found.triadicCount >= 3 || found.parallelismCount > 0;
+  const needsBalanced = found.changes.some(
+    (c) => c.category === "punctuation" || c.category === "vocabulary"
+  );
+  if (needsAggressive) {
+    return {
+      strength: "aggressive",
+      reason: '"aggressive" is the lowest strength that sends a passage to the rewriter for its constructions alone, and it swaps the punctuation and vocabulary below on the way',
+      needsAggressive,
+      needsBalanced
+    };
+  }
+  if (needsBalanced) {
+    return {
+      strength: "balanced",
+      reason: '"balanced" is the lowest strength that swaps dash punctuation and recurring vocabulary; "preserve" deliberately leaves both',
+      needsAggressive,
+      needsBalanced
+    };
+  }
+  return {
+    strength: "preserve",
+    reason: '"preserve" only touches passages a real check flags',
+    needsAggressive,
+    needsBalanced
+  };
+}
 async function main() {
   const rawInput = await readStdin();
   if (!rawInput.trim()) return;
@@ -4695,9 +4723,11 @@ async function main() {
   } catch {
   }
   if (findings.length === 0) return;
-  const foundDashes = changes.some((c) => c.category === "punctuation");
-  const strength = foundDashes ? "balanced" : "preserve";
-  const strengthReason = foundDashes ? '"balanced" is the lowest strength that swaps dash punctuation; "preserve" deliberately leaves it' : '"preserve" only touches passages a real check flags';
+  const { strength, reason: strengthReason, needsAggressive, needsBalanced } = recommendStrength({
+    changes,
+    triadicCount: triadic.length,
+    parallelismCount: parallelism.length
+  });
   const lines = [
     `WatermarkRemoverPro checked ${filePath} before it ships as public content:`,
     ...findings.map((f) => `  - ${f}`),
@@ -4706,11 +4736,18 @@ async function main() {
     `strength "${strength}" (${strengthReason}). It runs on this machine; no`,
     "document text is transmitted.",
     "",
-    "Recurring vocabulary above is rewritten by that call. The constructions",
-    "are not: the right fix depends on what the sentence is actually saying,",
-    'so either edit those yourself or pass model "advanced" to have the local',
-    "model rewrite the passages carrying them.",
-    "",
+    ...needsAggressive ? [
+      "That strength sends the passages carrying those constructions to the",
+      "rewriter. The rule-based engine can only vary their wording, so add",
+      'model "advanced" (a real local model, downloaded once) if you want them',
+      "genuinely restructured, or rewrite those sentences yourself.",
+      ""
+    ] : needsBalanced ? [
+      "Recurring vocabulary above is rewritten by that call. A word appearing",
+      "once is left alone deliberately: one occurrence is a word choice, not",
+      "a tell.",
+      ""
+    ] : [],
     "This is a report, not a verdict: a detected mark is not proof of authorship,",
     "and an absent one is not proof of human authorship."
   ];
@@ -4721,5 +4758,6 @@ main().catch(() => {
   process.exit(0);
 });
 export {
-  extractProse
+  extractProse,
+  recommendStrength
 };
