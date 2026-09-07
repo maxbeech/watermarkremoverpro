@@ -3,9 +3,9 @@
  *
  * WatermarkRemoverPro sends through ThreadCamp (threadcamp.com), a
  * Resend-compatible email API for AI agents that we own. It has its own
- * ThreadCamp account and its own inbox, currently on the shared
- * relay.threadcamp.com domain rather than a verified watermarkremoverpro.com
- * subdomain; see CHANGELOG.md for the domain-verification follow-up.
+ * ThreadCamp account and its own inbox on its own verified domain
+ * (hello@watermarkremoverpro.com), not the shared relay.threadcamp.com
+ * address it started on; see CHANGELOG.md.
  *
  * NO SILENT SUCCESS. An unconfigured product returns
  * `{ sent: false, reason: "not_configured" }` and a failed send returns
@@ -31,7 +31,7 @@ function assertServer(): void {
 export interface MailConfig {
   apiUrl: string
   apiKey: string | null
-  /** The address this product sends from, e.g. "hello@relay.threadcamp.com". */
+  /** The address this product sends from, e.g. "hello@watermarkremoverpro.com". */
   fromAddress: string | null
   /** Display name on outbound mail. Without it, ThreadCamp shows the raw tenant id. */
   fromName: string

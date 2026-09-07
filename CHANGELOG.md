@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-09-07: ThreadCamp on its own domain, and a Stripe key rotation
+
+Two follow-ups from the same day's earlier entries:
+
+Verified watermarkremoverpro.com with ThreadCamp (the DKIM, SPF, MX and
+DMARC records ThreadCamp asked for, added via `vercel dns add` since Vercel
+holds this domain's nameservers, and confirmed by ThreadCamp's own real DNS
+check). Mail now sends from `hello@watermarkremoverpro.com` rather than the
+shared `relay.threadcamp.com` address, and the ThreadCamp account's own
+contact email was moved off a personal Gmail alias onto that same inbox.
+Verified with a real send, and with a real password-reset email through the
+app itself, both landing with ThreadCamp reporting `status: "delivered"`.
+
+Separately: the production `STRIPE_SECRET_KEY` was rolled (the prior key had
+briefly appeared in a terminal transcript). While updating it, a first pasted
+value turned out to be a different ProductFactory product's key (Vouchity's,
+pasted into the wrong `.env.local`); caught it by checking which Stripe
+account the key actually belonged to before deploying anything, corrected
+both products' `.env.local` and Vercel production env separately, and
+reverified checkout on this product against the new key.
+
 ## 2026-09-07: Stripe cross-product ownership gate
 
 `src/lib/gate.ts` and `src/lib/stripe-guard.ts` arrived from the shared
