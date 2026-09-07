@@ -2,14 +2,14 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 
 /**
  * sendPasswordResetEmail is the only place this product sends outbound email.
- * openhelm-mail is mocked so this asserts what auth.ts actually does with a
+ * threadcamp-mail is mocked so this asserts what auth.ts actually does with a
  * send result, not the transport contract (covered separately in
- * openhelm-mail.test.ts).
+ * threadcamp-mail.test.ts).
  */
 
 const sendEmail = vi.fn()
 
-vi.mock('@/lib/openhelm-mail', () => ({ sendEmail: (...args: unknown[]) => sendEmail(...args) }))
+vi.mock('@/lib/threadcamp-mail', () => ({ sendEmail: (...args: unknown[]) => sendEmail(...args) }))
 vi.mock('@neondatabase/serverless', () => ({ Pool: vi.fn() }))
 vi.mock('next/headers', () => ({ headers: vi.fn() }))
 vi.mock('server-only', () => ({}))

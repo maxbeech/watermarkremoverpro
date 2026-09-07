@@ -14,6 +14,12 @@ export default tseslint.config(
       // ignored explicitly rather than by virtue of being untracked.
       'packages/*/dist/**',
       'plugins/*/dist/**',
+      // Generated verbatim from ProductFactory/_services/stripe-guard and
+      // reinstalled across every product unchanged (same carve-out as
+      // tests/house-style.test.ts's SKIP_FILES, for the same reason): not
+      // this product's code, and not ours to fix lint issues in here.
+      'src/lib/gate.ts',
+      'src/lib/stripe-guard.ts',
     ],
   },
   js.configs.recommended,

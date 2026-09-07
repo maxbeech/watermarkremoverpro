@@ -3,7 +3,7 @@ import { betterAuth } from 'better-auth'
 import { Pool } from '@neondatabase/serverless'
 import { headers } from 'next/headers'
 import { DatabaseUnavailableError, sql } from './db'
-import { sendEmail } from './openhelm-mail'
+import { sendEmail } from './threadcamp-mail'
 import { SITE } from './site'
 
 /**

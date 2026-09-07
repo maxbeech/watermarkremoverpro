@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { applyBillingEvent, stripe, stripeConfigured } from '@/lib/billing'
 import { databaseConfigured } from '@/lib/db'
+import { guardStripeEvent } from '@/lib/gate'
 
 export const runtime = 'nodejs'
 
@@ -46,6 +47,16 @@ export async function POST(request: Request) {
       { error: 'invalid_signature', message: (err as Error).message },
       { status: 400 },
     )
+  }
+
+  // A Stripe webhook endpoint is registered on an ACCOUNT, so on a shared
+  // account this handler is delivered every other product's events too.
+  // Establish that this one is OURS, by price id, never by metadata or
+  // customer, before anything below acts on it. See src/lib/gate.ts.
+  const ownership = await guardStripeEvent(stripe(), event)
+  if (!ownership.ok) {
+    console.log(ownership.message)
+    return NextResponse.json({ received: true, ignored: ownership.reason })
   }
 
   try {

@@ -1,5 +1,40 @@
 # Changelog
 
+## 2026-09-07: Stripe cross-product ownership gate
+
+`src/lib/gate.ts` and `src/lib/stripe-guard.ts` arrived from the shared
+`ProductFactory/_services/stripe-guard` install (not written for this
+product specifically): before the webhook acts on an event, it now confirms
+by Stripe price id, never by metadata or customer, that the event actually
+belongs to WatermarkRemoverPro rather than another product on a shared
+Stripe account. The installed copy had a syntax error (an `import` placed
+inside the handler body instead of at the top of the file), which broke
+`tsc` and would have broken the build; fixed that and added the usual
+generated-file carve-outs to the house-style test and eslint config, without
+touching the gate's own logic. All 229 tests plus typecheck, lint and build
+pass with it in place.
+
+## 2026-09-07: transactional email moved to ThreadCamp
+
+OpenHelm Mail is replaced with ThreadCamp (threadcamp.com), a mail platform we
+also own, following the wider portfolio's move off the Helm7-managed OpenHelm
+Mail setup. `src/lib/openhelm-mail.ts` is deleted; `src/lib/threadcamp-mail.ts`
+is the new client, same shape (`sendEmail`, `emailEnabled`, `sendingAddress`),
+same no-silent-success contract. `src/lib/auth.ts` now imports from it, and
+`.env.example` documents `THREADCAMP_API_KEY` / `THREADCAMP_FROM_ADDRESS` in
+place of the old `OPENHELM_*` variables.
+
+A real ThreadCamp account and inbox were provisioned for this product
+(`hello@relay.threadcamp.com`, on the shared relay domain rather than a
+verified watermarkremoverpro.com subdomain for now), and both variables are
+set in production. Verified end to end: a real test send through the account
+returned `status: "sent"` and arrived. Password-reset email, previously a
+known, disclosed gap, now works.
+
+Follow-up, not done here: verifying watermarkremoverpro.com's own DNS with
+ThreadCamp so mail sends from `hello@watermarkremoverpro.com` instead of the
+shared relay domain.
+
 ## 2026-09-07: privacy policy and terms of service
 
 Added `/privacy` and `/terms`, linked from the footer and listed in the
