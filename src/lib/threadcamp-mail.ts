@@ -96,21 +96,26 @@ export type SendResult =
     }
   | { sent: false; reason: 'not_configured' | 'error'; error?: string }
 
-/** Minimal markdown to HTML: **bold**, bare URLs, blank-line paragraphs. */
+/** Minimal markdown to HTML: **bold**, [text](url) links, bare URLs, blank-line paragraphs. */
 function markdownToHtml(markdown: string): string {
   const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   const paragraphs = markdown.split(/\n\s*\n/).map((block) => {
     let html = escape(block.trim()).replace(/\n/g, '<br>')
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    html = html.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>')
+    // [text](url) first, so the bare-URL pass below doesn't also wrap the URL
+    // inside the href it just produced.
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>')
+    html = html.replace(/(?<!href=")(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>')
     return `<p>${html}</p>`
   })
   return paragraphs.join('\n')
 }
 
-/** Minimal markdown to plain text: strip the ** markers, leave everything else as-is. */
+/** Minimal markdown to plain text: resolve [text](url) and strip the ** markers. */
 function markdownToText(markdown: string): string {
-  return markdown.replace(/\*\*(.+?)\*\*/g, '$1')
+  return markdown
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1: $2')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
 }
 
 /**

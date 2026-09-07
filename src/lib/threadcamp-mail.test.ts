@@ -117,6 +117,21 @@ describe('sendEmail', () => {
     expect(calls[0]!.body.text).toBe('hi https://watermarkremoverpro.com')
   })
 
+  it('renders a [text](url) markdown link, not the literal brackets', async () => {
+    configure()
+    const calls = mockFetch([OK])
+    await sendEmail({
+      to: 'a@b.co',
+      subject: 's',
+      markdown: '[Reset your password](https://watermarkremoverpro.com/reset?token=abc)',
+    })
+
+    expect(calls[0]!.body.html).toBe(
+      '<p><a href="https://watermarkremoverpro.com/reset?token=abc">Reset your password</a></p>',
+    )
+    expect(calls[0]!.body.text).toBe('Reset your password: https://watermarkremoverpro.com/reset?token=abc')
+  })
+
   it('reports a held message as pending_approval, not as delivered', async () => {
     configure()
     mockFetch([{ ok: true, body: { id: 'm9', status: 'pending_approval', thread_id: 't9' } }])
