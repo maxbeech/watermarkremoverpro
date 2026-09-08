@@ -5,6 +5,7 @@ import { ButtonLink, Eyebrow, LimitNote, Panel, Section, SectionHead, Wrap } fro
 import { ExhibitFrame, ResultExhibit, StyleExhibit } from '@/components/marketing/exhibit'
 import { Reveal } from '@/components/marketing/parallax'
 import { markedSpecimenResult } from '@/components/marketing/specimen'
+import { TrustedByCarousel } from '@/components/marketing/trusted-by'
 import { Workspace } from '@/components/workspace/workspace'
 import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
 import { MIRROR_PRODUCT, SITE, SUPPORTED_LANGUAGE_NAMES } from '@/lib/site'
@@ -55,6 +56,19 @@ export default async function HomePage() {
               {PRO_TRIAL_RUNS_PER_WINDOW} free Pro-engine run every {PRO_TRIAL_WINDOW_DAYS} days
             </TrustItem>
           </ul>
+        </Wrap>
+      </div>
+
+      {/* --------------------------------------------------------- trusted by */}
+      <div className="border-b border-ink-200 bg-white py-10 sm:py-12">
+        <Wrap wide>
+          <p className="text-center text-sm font-semibold text-ink-500">
+            Just a few of the brands that trust{' '}
+            <span className="text-ink-700">{SITE.name}</span>
+          </p>
+          <div className="mt-6">
+            <TrustedByCarousel />
+          </div>
         </Wrap>
       </div>
 

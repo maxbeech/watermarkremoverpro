@@ -253,6 +253,22 @@ body {
 .mw-mark-in { animation: mw-mark-in 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both; }
 .mw-rise { animation: mw-rise 520ms cubic-bezier(0.22, 0.9, 0.28, 1) both; }
 
+/* The trusted-by logo strip: translate exactly one copy-width, so the
+   duplicated second copy lines up exactly where the first one started and
+   the loop point doesn't show. Paused on hover/focus so a visitor can
+   actually click the logo they're after. */
+@keyframes mw-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.mw-marquee-track {
+  animation: mw-marquee 70s linear infinite;
+}
+.mw-marquee-track:hover,
+.mw-marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
