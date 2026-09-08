@@ -8,16 +8,19 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
  */
 
 const sendEmail = vi.fn()
+const captureException = vi.fn()
 
 vi.mock('@/lib/threadcamp-mail', () => ({ sendEmail: (...args: unknown[]) => sendEmail(...args) }))
 vi.mock('@neondatabase/serverless', () => ({ Pool: vi.fn() }))
 vi.mock('next/headers', () => ({ headers: vi.fn() }))
 vi.mock('server-only', () => ({}))
+vi.mock('@sentry/nextjs', () => ({ captureException: (...args: unknown[]) => captureException(...args) }))
 
 const { sendPasswordResetEmail } = await import('./auth')
 
 beforeEach(() => {
   sendEmail.mockReset()
+  captureException.mockReset()
 })
 
 describe('sendPasswordResetEmail', () => {
@@ -40,5 +43,25 @@ describe('sendPasswordResetEmail', () => {
     sendEmail.mockResolvedValue({ sent: false, reason: 'not_configured' })
 
     await expect(sendPasswordResetEmail(user, url)).rejects.toThrow('not_configured')
+  })
+
+  it('reports a failed send to Sentry as a grouped issue, without the email address', async () => {
+    sendEmail.mockResolvedValue({ sent: false, reason: 'not_configured' })
+
+    await expect(sendPasswordResetEmail(user, url)).rejects.toThrow()
+
+    expect(captureException).toHaveBeenCalledTimes(1)
+    const [error, context] = captureException.mock.calls[0]
+    expect((error as Error).message).toContain('not_configured')
+    expect(context.extra.userId).toBe(user.id)
+    expect(JSON.stringify(context)).not.toContain(user.email)
+  })
+
+  it('does not report to Sentry when the send succeeds', async () => {
+    sendEmail.mockResolvedValue({ sent: true, id: 'msg_1', status: 'sent', threadId: null, replyTo: null, suppressed: [] })
+
+    await sendPasswordResetEmail(user, url)
+
+    expect(captureException).not.toHaveBeenCalled()
   })
 })

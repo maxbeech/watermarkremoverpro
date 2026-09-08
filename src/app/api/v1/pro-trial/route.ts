@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import * as Sentry from '@sentry/nextjs'
 import { currentEntitlements } from '@/lib/auth'
 import { databaseConfigured, sql } from '@/lib/db'
 import {
@@ -85,6 +86,7 @@ export async function GET() {
   } catch (err) {
     // A database that is configured but unreachable must not silently become
     // "no allowance left" or "unlimited". Say so, and let the client fall back.
+    Sentry.captureException(err, { tags: { feature: 'pro_trial' } })
     return NextResponse.json(
       { error: 'trial_unavailable', message: (err as Error).message },
       { status: 503 },

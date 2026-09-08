@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import * as Sentry from '@sentry/nextjs'
 import {
   reduceEvidence,
   rewriteDocument,
@@ -11,6 +12,7 @@ import { createTransformersBrowserBackend, type BrowserBackendProgress } from '@
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { countWords } from '@/lib/detector/tokenize'
 import { buttonClass } from '@/components/brand/ui'
+import { track } from '@/lib/openhelm-analytics'
 import { DocumentInput } from './document-input'
 import { AdvancedSettings, type WorkspaceSettings } from './advanced-settings'
 import { DEFAULT_STRENGTH, type EngineId } from './settings'
@@ -85,6 +87,7 @@ export function Workspace({
     setPhase({ kind: 'working' })
     setProgress(null)
     setFileError(null)
+    track('rewrite_started', { engine_id: settings.engineId })
 
     // Yield a frame so the working state paints before the main thread is
     // taken by work that genuinely happens right here.
@@ -115,9 +118,11 @@ export function Workspace({
             PUBLIC_DETECTION_KEYS,
           )
           if (res.status !== 'ok') {
+            track('rewrite_failed', { engine_id: 'pro' })
             setPhase({ kind: 'error', message: res.error ?? 'The rewrite could not be completed.' })
             return
           }
+          track('rewrite_completed', { engine_id: 'pro', device, downgraded: Boolean(downgraded) })
           setPhase({
             kind: 'result',
             result: res,
@@ -129,7 +134,12 @@ export function Workspace({
           // A real failure state: the local model genuinely could not load (no
           // WebGPU or WASM support, a blocked download, out of memory). Fall
           // back to the always-available engine and say exactly why, rather
-          // than swallowing it or blocking on it.
+          // than swallowing it or blocking on it. Reported to Sentry because it
+          // would otherwise leave no trace beyond the silent downgrade the
+          // visitor sees, and the only sign anything went wrong is a message they
+          // may not read.
+          Sentry.captureException(advancedErr, { tags: { feature: 'rewrite_pro_engine' } })
+          track('pro_engine_load_failed')
           downgraded = `The Pro engine could not start on this device (${(advancedErr as Error).message}), so the rewrite ran on Standard instead.`
         }
       }
@@ -146,9 +156,11 @@ export function Workspace({
         PUBLIC_DETECTION_KEYS,
       )
       if (res.status !== 'ok') {
+        track('rewrite_failed', { engine_id: 'standard' })
         setPhase({ kind: 'error', message: res.error ?? 'The rewrite could not be completed.' })
         return
       }
+      track('rewrite_completed', { engine_id: 'standard', downgraded: Boolean(downgraded) })
       setPhase({
         kind: 'result',
         result: res,
@@ -156,6 +168,8 @@ export function Workspace({
         downgraded,
       })
     } catch (err) {
+      Sentry.captureException(err, { tags: { feature: 'rewrite' } })
+      track('rewrite_failed', { engine_id: engineId, reason: 'exception' })
       setPhase({ kind: 'error', message: (err as Error).message || 'An unexpected error occurred.' })
     }
   }, [text, settings, trial, isSubscriber])

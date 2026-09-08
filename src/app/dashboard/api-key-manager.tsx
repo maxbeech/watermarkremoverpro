@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { ApiKeyRecord } from '@/lib/api-keys'
 import { buttonClass } from '@/components/brand/ui'
+import { track } from '@/lib/openhelm-analytics'
 
 /**
  * API key management.
@@ -29,9 +30,11 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
     const body = await res.json().catch(() => null)
     if (!res.ok) {
       setError(body?.message ?? `Could not create a key (${res.status}).`)
+      track('api_key_create_failed', { status: res.status })
       setBusy(false)
       return
     }
+    track('api_key_created')
     setIssued(body.secret)
     setKeys((prev) => [body.key, ...prev])
     setLabel('')
@@ -41,10 +44,12 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
   const revoke = async (id: string) => {
     const res = await fetch(`/api/v1/keys?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
     if (res.ok) {
+      track('api_key_revoked')
       setKeys((prev) => prev.map((k) => (k.id === id ? { ...k, revokedAt: new Date().toISOString() } : k)))
     } else {
       const body = await res.json().catch(() => null)
       setError(body?.message ?? 'Could not revoke that key.')
+      track('api_key_revoke_failed', { status: res.status })
     }
   }
 

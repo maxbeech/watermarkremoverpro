@@ -72,7 +72,18 @@ export async function createProCheckout(accountId: string, email: string): Promi
  * checkout completion alone, so a cancelled or lapsed subscription downgrades
  * rather than leaving someone on Pro forever.
  */
-export async function applyBillingEvent(event: Stripe.Event): Promise<{ handled: boolean; detail: string }> {
+export type BillingTransition = 'subscription_created' | 'subscription_cancelled' | 'subscription_reactivated'
+
+export interface BillingOutcome {
+  handled: boolean
+  detail: string
+  /** Set when a plan actually changed, so the caller can emit one telemetry
+   *  event per real transition rather than re-deriving it from `detail`. */
+  accountId?: string
+  transition?: BillingTransition
+}
+
+export async function applyBillingEvent(event: Stripe.Event): Promise<BillingOutcome> {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
@@ -82,7 +93,7 @@ export async function applyBillingEvent(event: Stripe.Event): Promise<{ handled:
         update accounts set plan = 'pro', stripe_customer_id = ${String(session.customer ?? '')}
         where id = ${accountId}
       `
-      return { handled: true, detail: `Account ${accountId} set to pro.` }
+      return { handled: true, detail: `Account ${accountId} set to pro.`, accountId, transition: 'subscription_created' }
     }
 
     case 'customer.subscription.updated':
@@ -92,7 +103,12 @@ export async function applyBillingEvent(event: Stripe.Event): Promise<{ handled:
       if (!accountId) return { handled: false, detail: 'No accountId on the subscription; nothing to update.' }
       const active = subscription.status === 'active' || subscription.status === 'trialing'
       await sql()`update accounts set plan = ${active ? 'pro' : 'free'} where id = ${accountId}`
-      return { handled: true, detail: `Account ${accountId} set to ${active ? 'pro' : 'free'}.` }
+      return {
+        handled: true,
+        detail: `Account ${accountId} set to ${active ? 'pro' : 'free'}.`,
+        accountId,
+        transition: active ? 'subscription_reactivated' : 'subscription_cancelled',
+      }
     }
 
     default:

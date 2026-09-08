@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-09-08: journey instrumentation - analytics events and Sentry capture across every material user path
+
+A product-specific journey review found instrumentation at essentially zero:
+the GA4 tag and Sentry SDK were both initialized but almost nothing in the app
+called into them beyond automatic page views. Added `track()` calls (browser,
+via `src/lib/openhelm-analytics.tsx`) and Measurement Protocol events (server,
+via `src/lib/openhelm-analytics-mp.ts`) across signup/login, password reset,
+the primary check-and-rewrite workspace, the weekly Pro-engine trial, Stripe
+checkout and the subscription webhook, dashboard API-key management, and the
+metered `/api/v1/check` API surface. Every event carries only non-PII,
+product-metadata parameters (engine id, plan, word-cap-hit booleans, status
+strings) - never document text, email or name, consistent with
+`sendDefaultPii: false`.
+
+Also strengthened Sentry capture on async failures that previously left no
+trace beyond a passive console log: a broken billing-webhook handler (the
+highest-priority gap - it silently meant "customer paid, plan didn't
+update"), a Pro-engine load failure that falls back to Standard, a failed
+password-reset send (a live, known-broken path as of this deployment - see
+`THREADCAMP_API_KEY` in the environment), and API-key verification failures
+on the metered check endpoint.
+
+`src/lib/billing.ts`'s `applyBillingEvent` now returns `accountId` and a
+`transition` (`subscription_created` / `subscription_cancelled` /
+`subscription_reactivated`) so the webhook route can emit one telemetry event
+per real plan change without re-parsing the Stripe event a second time.
+
+Found but not fixed here, because it is a product decision rather than an
+instrumentation gap: `src/app/terms/page.tsx` tells users they can cancel
+"from your dashboard", but the dashboard has no cancel/manage-subscription
+control - only an upgrade button for non-Pro accounts. Flagged for the
+product owner.
+
 ## 2026-09-08: a third channel, AI-style likelihood, biased to flag
 
 The provenance-mark channel is deliberately conservative: it only tests keys

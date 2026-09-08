@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createAuthClient } from 'better-auth/react'
 import { buttonClass } from '@/components/brand/ui'
+import { track } from '@/lib/openhelm-analytics'
 
 const client = createAuthClient()
 
@@ -39,12 +40,14 @@ export function ForgotPasswordForm() {
     e.preventDefault()
     setBusy(true)
     setError(null)
+    track('password_reset_requested')
 
     const result = await client.requestPasswordReset({ email, redirectTo: '/reset-password' })
 
     setBusy(false)
     if (result.error) {
       setError(result.error.message ?? 'Could not send the reset email.')
+      track('password_reset_failed')
       return
     }
     // The response looks the same whether or not the address has an account.
@@ -104,8 +107,10 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
     setBusy(false)
     if (result.error) {
       setError(result.error.message ?? 'Could not reset the password. The link may have expired.')
+      track('password_reset_completion_failed')
       return
     }
+    track('password_reset_succeeded')
     setDone(true)
   }
 

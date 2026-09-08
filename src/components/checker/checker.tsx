@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { checkDocument, type AnalysisResult } from '@/lib/detector'
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
@@ -8,6 +8,7 @@ import { countWords } from '@/lib/detector/tokenize'
 import { PLANS } from '@/lib/site'
 import { buttonClass } from '@/components/brand/ui'
 import { DocumentInput } from '@/components/workspace/document-input'
+import { track } from '@/lib/openhelm-analytics'
 import { ResultView } from './result-view'
 
 /**
@@ -38,9 +39,17 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
 
   const words = useMemo(() => countWords(text), [text])
   const overCap = words > wordCap
+  const overCapReported = useRef(false)
+
+  useEffect(() => {
+    if (!overCap || overCapReported.current) return
+    overCapReported.current = true
+    track('word_cap_reached', { surface: 'check' })
+  }, [overCap])
 
   const run = useCallback(async () => {
     setPhase({ kind: 'measuring' })
+    track('check_started', { language })
     // Yield a frame so the measuring state paints before the main thread is
     // occupied. The analysis is genuinely CPU-bound work happening right here.
     await new Promise((r) => setTimeout(r, 16))
@@ -49,10 +58,14 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
         keys: PUBLIC_DETECTION_KEYS,
         language: language === 'auto' ? undefined : language,
       })
+      // Metadata only: status and a detection boolean, never the document or a
+      // value derived from its content.
+      track('check_completed', { language, status: result.status, mark_detected: result.watermark.anyDetected })
       setPhase({ kind: 'done', result })
     } catch (err) {
       // Surface the real failure. A check that silently produced nothing would
       // be indistinguishable from a check that found nothing.
+      track('check_failed', { language })
       setPhase({ kind: 'error', message: (err as Error).message })
     }
   }, [text, language])

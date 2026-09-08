@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { buttonClass } from '@/components/brand/ui'
+import { track } from '@/lib/openhelm-analytics'
 
 export function UpgradeButton({ billingLive }: { billingLive: boolean }) {
   const [error, setError] = useState<string | null>(null)
@@ -18,13 +19,16 @@ export function UpgradeButton({ billingLive }: { billingLive: boolean }) {
   const start = async () => {
     setBusy(true)
     setError(null)
+    track('upgrade_button_clicked')
     const res = await fetch('/api/billing/checkout', { method: 'POST' })
     const body = await res.json().catch(() => null)
     if (!res.ok || !body?.url) {
       setError(body?.message ?? `Checkout could not be started (${res.status}).`)
+      track('checkout_failed', { status: res.status })
       setBusy(false)
       return
     }
+    track('checkout_started')
     window.location.href = body.url
   }
 
