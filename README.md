@@ -94,7 +94,7 @@ gains nothing from a per-request image transformation.
 
 ## What it measures
 
-Two channels, reported separately and never blended into a single "AI score".
+Three channels, reported separately and never blended into a single "AI score".
 
 ### 1. Provenance mark (keyed)
 
@@ -134,6 +134,23 @@ percentile bootstrap band.
 fiction, translated text and non-native prose all sit far from an encyclopaedic
 reference for entirely ordinary reasons, and every surface that shows the number
 says so beside it.
+
+### 3. AI-style likelihood (heuristic, key-free)
+
+[`src/lib/detector/ai-likelihood.ts`](src/lib/detector/ai-likelihood.ts). A
+0-100 score for surface habits common in current LLM output: dash-clause
+connectors, stock phrasing and elevated vocabulary (both from the same
+pattern tables `reduce_ai_evidence` rewrites, so the two can never disagree
+about what counts as a tell), templated structures (three-item lists,
+negative parallelism), and sentence-length uniformity. English only for now,
+since the phrase and vocabulary tables are English-specific.
+
+Unlike the two channels above, this one is deliberately biased toward
+flagging: it is read as a prompt to look closer, not as a scientific finding,
+so it is tuned to minimise false negatives rather than false positives, and
+every surface that shows the score says so. It is not a statistical test and
+it is not a provenance mark; a high score does not mean a vendor mark is
+present, and a low score does not mean the text is clean.
 
 ### Per-passage findings are corrected
 

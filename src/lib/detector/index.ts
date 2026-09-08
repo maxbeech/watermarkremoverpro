@@ -12,6 +12,7 @@
  * they have to handle the null.
  */
 
+import { analyzeAiLikelihood, type AiLikelihoodResult } from './ai-likelihood'
 import {
   analyzeDistribution,
   noBaselineResult,
@@ -81,6 +82,13 @@ export interface AnalysisResult {
     coverageNotice: string
   }
   distribution: DistributionalResult | null
+  /**
+   * Heuristic, key-free third channel: how many surface habits common in
+   * LLM output this document carries. Deliberately biased toward flagging;
+   * see ai-likelihood.ts. Never a substitute for the watermark channel above,
+   * and always shown with that distinction stated.
+   */
+  aiLikelihood: AiLikelihoodResult | null
   passages: PassageFinding[]
   passageCorrection: {
     method: 'benjamini-hochberg'
@@ -144,6 +152,7 @@ export function analyzeDocument(text: string, options: AnalyzeOptions): Analysis
     language: { code: null, name: null, determinedBy: 'measurement', scores: {}, margin: 0 },
     watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
     distribution: null,
+    aiLikelihood: null,
     passages: [],
     passageCorrection: null,
     limits,
@@ -200,6 +209,9 @@ export function analyzeDocument(text: string, options: AnalyzeOptions): Analysis
   const distribution: DistributionalResult = baseline
     ? analyzeDistribution(text, language, baseline)
     : noBaselineResult(language, tokens.length)
+
+  // --- AI-style likelihood channel (heuristic, key-free) ------------------
+  const aiLikelihood = analyzeAiLikelihood(text, language)
 
   // --- Per-passage attribution -------------------------------------------
   const granularity = options.granularity ?? 'sentence'
@@ -284,6 +296,7 @@ export function analyzeDocument(text: string, options: AnalyzeOptions): Analysis
       coverageNotice: coverageNotice(options.keys),
     },
     distribution,
+    aiLikelihood,
     passages,
     passageCorrection,
     limits,
@@ -358,3 +371,5 @@ export async function checkDocument(
 
 export { MIN_TRIALS }
 export type { WatermarkChannelResult, DistributionalResult, Baseline, DetectionKey, KeyRegistryEntry }
+export { MIN_WORDS_FOR_LIKELIHOOD } from './ai-likelihood'
+export type { AiLikelihoodResult, AiLikelihoodSignal, AiLikelihoodBand } from './ai-likelihood'

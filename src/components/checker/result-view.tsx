@@ -171,6 +171,99 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </section>
 
       {/* ---------------------------------------------------------------- */}
+      <section className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+        <MeasureHeader
+          eyebrow="Channel three · heuristic"
+          title="AI-style likelihood"
+          note="Surface habits common in LLM output: dash-clause connectors, stock phrasing, elevated vocabulary and sentence-length uniformity. Not a statistical test and not a provenance mark."
+        />
+
+        <div className="px-5 py-5">
+          {result.aiLikelihood?.status === 'computed' ? (
+            <>
+              <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+                <Stat label="AI-style likelihood">
+                  <span
+                    className={
+                      'figure text-3xl leading-none ' +
+                      (result.aiLikelihood.band === 'high' || result.aiLikelihood.band === 'elevated'
+                        ? 'text-signal-700'
+                        : 'text-ink-900')
+                    }
+                  >
+                    {result.aiLikelihood.score}
+                    <span className="text-base text-ink-400"> / 100</span>
+                  </span>
+                </Stat>
+                <Stat label="Band">
+                  <span className="text-base font-medium capitalize text-ink-800">
+                    {result.aiLikelihood.band}
+                  </span>
+                </Stat>
+                <Stat label="Measured over">
+                  <span className="figure text-base">{result.aiLikelihood.wordsScored.toLocaleString()}</span>
+                  <span className="ml-1 text-ink-400">words</span>
+                </Stat>
+              </div>
+
+              <div className="mt-6">
+                <Band
+                  value={result.aiLikelihood.score}
+                  reference={0}
+                  min={0}
+                  max={100}
+                  tone={
+                    result.aiLikelihood.band === 'high' || result.aiLikelihood.band === 'elevated'
+                      ? 'signal'
+                      : 'seal'
+                  }
+                  height={12}
+                  animate
+                  title={`AI-style likelihood ${result.aiLikelihood.score} of 100, band ${result.aiLikelihood.band}`}
+                />
+                <div className="mt-2 flex items-baseline justify-between">
+                  <span className="t-eyebrow text-ink-400">0 · low</span>
+                  <span className="t-eyebrow text-ink-400">100 · high</span>
+                </div>
+              </div>
+
+              <h3 className="t-eyebrow mt-8 text-ink-400">Signals measured</h3>
+              <ul className="mt-3 divide-y divide-ink-100 text-sm">
+                {result.aiLikelihood.signals.map((s) => (
+                  <li key={s.id} className="py-2.5">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-ink-600">{s.label}</span>
+                      <span className="figure text-ink-800">
+                        {s.count.toLocaleString()}{' '}
+                        <span className="text-ink-400">
+                          ({s.ratePer500.toFixed(2)} per 500 words)
+                        </span>
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed text-ink-400">{s.detail}</p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="text-sm text-ink-600">
+              {result.aiLikelihood?.detail ?? 'No AI-style likelihood score was produced.'}
+            </p>
+          )}
+
+          <div className="mt-5">
+            <LimitNote>
+              This score is a heuristic, tuned to flag more real AI writing at the cost of
+              occasionally flagging human writing that shares these surface habits. It is not a
+              statistical test, it is not a provenance mark, and it carries none of the guarantees
+              the channels above do. Treat a high score as a reason to look closer, not as a
+              finding.
+            </LimitNote>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
       <PassageBreakdown result={result} />
 
       {/* ---------------------------------------------------------------- */}

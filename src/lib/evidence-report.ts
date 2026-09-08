@@ -157,6 +157,29 @@ export async function buildEvidenceReport(result: AnalysisResult): Promise<Uint8
   }
   gap(cursor, 14)
 
+  // ---- AI-style likelihood (heuristic) ------------------------------------
+  heading(cursor, pdf, fonts, 'AI-style likelihood (heuristic)', 12)
+  const likelihood = result.aiLikelihood
+  if (likelihood && likelihood.status === 'computed') {
+    keyValue(cursor, pdf, fonts, 'Score', `${likelihood.score} / 100 (${likelihood.band})`)
+    keyValue(cursor, pdf, fonts, 'Measured over', `${likelihood.wordsScored.toLocaleString()} words`)
+    for (const s of likelihood.signals) {
+      keyValue(cursor, pdf, fonts, s.label, `${s.count.toLocaleString()} (${s.ratePer500.toFixed(2)} per 500 words)`)
+    }
+    gap(cursor, 4)
+    text(
+      cursor,
+      pdf,
+      fonts,
+      'A heuristic, key-free measurement of surface habits common in LLM output, deliberately biased toward flagging. It is not a statistical test, it is not a provenance mark, and a high score is a reason to look closer, not a finding.',
+      9,
+      MUTED,
+    )
+  } else {
+    text(cursor, pdf, fonts, likelihood?.detail ?? 'No AI-style likelihood score was produced.', 10)
+  }
+  gap(cursor, 14)
+
   // ---- Passages ----------------------------------------------------------
   heading(cursor, pdf, fonts, 'Per-passage findings', 12)
   if (result.passageCorrection) {

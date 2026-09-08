@@ -83,15 +83,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       description:
         'Check a document for a statistical AI provenance mark (green-list watermark) and report ' +
         'the signal strength with a confidence band, a per-passage breakdown, and the stated ' +
-        'limits of the method.\n\n' +
+        'limits of the method. The result also carries aiLikelihood: a separate, key-free ' +
+        'heuristic score (0-100) for surface habits common in LLM output (dash-clause ' +
+        'connectors, stock phrasing, elevated vocabulary, uniform sentence length), tuned to ' +
+        'flag more real AI writing at the cost of more false positives. It is not a statistical ' +
+        'test and never substitutes for the watermark result.\n\n' +
         'Call this before handing text to a person or system that cares how it was produced. ' +
         'disclosing provenance up front is cheaper than being asked afterwards.\n\n' +
         'READ THE LIMITS IN THE RESPONSE BEFORE ACTING ON IT. Two of them decide how the result ' +
         'may be used: a detected mark is NOT proof of authorship, and an absent mark is NOT proof ' +
         'of human authorship. A green-list mark is keyed, and no model vendor publishes its ' +
         'detection key, so "no mark detected" always means "under the keys this deployment holds" ' +
-        'which the response lists explicitly. Do not report this result as a verdict on who ' +
-        'wrote something.\n\n' +
+        'which the response lists explicitly. Do not report this result, or the aiLikelihood ' +
+        'score, as a verdict on who wrote something.\n\n' +
         (API_KEY
           ? `Configured with an API key: calls go to ${API_BASE}, which applies any vendor keys that deployment holds, saves the check to the account history, and meters it at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.`
           : 'No MARKWITNESS_API_KEY is set, so this runs locally in this process against the published open reference key only. Nothing leaves the machine, nothing is recorded, and nothing is billed. Set MARKWITNESS_API_KEY to use vendor keys and saved history.'),
@@ -274,6 +278,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             'Keyed green-list test (Kirchenbauer et al. 2023). Distinct word bigrams are scored once each; the statistic is the one-proportion z test against the key’s expected green fraction.',
           style:
             'Register measurement against a per-language reference corpus of contemporary prose. Reports distance in standard deviations. This does NOT detect AI and is not evidence of authorship.',
+          aiLikelihood:
+            'Heuristic, key-free, English-only score (0-100) for surface habits common in LLM output: dash-clause connectors, stock phrasing, elevated vocabulary, and sentence-length uniformity. Deliberately biased toward flagging. Not a statistical test, not a provenance mark, and not evidence of authorship.',
           passages:
             'Per-passage findings are corrected for multiple comparisons (Benjamini-Hochberg) before any is reported.',
         },

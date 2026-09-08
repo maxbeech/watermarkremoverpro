@@ -1,22 +1,50 @@
 # Changelog
 
+## 2026-09-08: a third channel, AI-style likelihood, biased to flag
+
+The provenance-mark channel is deliberately conservative: it only tests keys
+this deployment actually holds, and no model vendor (Anthropic included)
+publishes one, so ordinary AI-written text that carries no detectable mark
+under our keys correctly reads "no mark detected". That is honest, but it
+left a real gap: text that is obviously AI-written by ear got no signal at
+all. `src/lib/detector/ai-likelihood.ts` adds a third, separate, key-free
+channel that scores surface habits common in current LLM output (dash-clause
+connectors, stock phrasing, elevated vocabulary, templated structures,
+sentence-length uniformity) on a 0-100 scale, reusing the same pattern tables
+`reduce_ai_evidence` already rewrites so the two can never disagree about
+what counts as a tell. Unlike the other two channels it is deliberately
+tuned to flag: the score saturates quickly on just a couple of habits,
+trading false positives for fewer false negatives, and every surface that
+shows it says so in as many words. Wired into `analyzeDocument` as
+`result.aiLikelihood`, so it is present in the browser check, the API, the
+MCP `check_document` tool and the PDF evidence report without a second
+implementation anywhere. English only for now; the phrase and vocabulary
+tables are English-specific.
+
+Also added a Claude/ChatGPT-specific entry to `CORE_FAQ`
+(`src/components/faq.tsx`), which ships on the homepage, `/check`, and
+`llms.txt`, explaining plainly why no third-party tool (this one included)
+can detect a named vendor's watermark without that vendor's key, and pointing
+at the new heuristic channel and the existing `/guide/claude-ai-watermark`
+explainer as the honest alternative for someone asking that exact question.
+
 ## 2026-09-08: www is now the canonical domain
 
 `SITE.url` (`src/lib/site.ts`) now reads `https://www.watermarkremoverpro.com`
 instead of the bare apex, so it's what Better Auth signs callbacks against, what
 the Stripe checkout success/cancel URLs point at, and what every page's
-`metadataBase`/canonical/JSON-LD advertise — all of that already read from this
+`metadataBase`/canonical/JSON-LD advertise. All of that already read from this
 one constant, so nothing else needed to change to follow it.
 
 The apex domain stays registered on the Vercel project alongside www (nothing
 to change there), but `next.config.ts` now 308-redirects any request whose
 `Host` is `watermarkremoverpro.com` to the same path on `www`. 308 preserves
 the request method, so a POST to `/api/billing/webhook` on the apex still
-reaches the handler as a POST rather than being turned into a GET — verified
+reaches the handler as a POST rather than being turned into a GET, verified
 against a local production build with a spoofed `Host` header. The Stripe
 webhook endpoint itself is registered against the apex URL in the Stripe
 dashboard; re-pointing it at `www.watermarkremoverpro.com/api/billing/webhook`
-directly (rather than relying on the redirect) is a follow-up, not done here —
+directly (rather than relying on the redirect) is a follow-up, not done here:
 it needs dashboard access this session didn't have.
 
 ## 2026-09-08: one journey, one input box, and a brand that is not a lab report
