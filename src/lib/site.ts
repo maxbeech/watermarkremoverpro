@@ -12,7 +12,7 @@ export const SITE = {
   tagline: 'Reduce detectable AI-style evidence in your writing, on your device, honestly.',
   description:
     'WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://watermarkremoverpro.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.watermarkremoverpro.com',
   contactEmail: 'hello@watermarkremoverpro.com',
 } as const
 

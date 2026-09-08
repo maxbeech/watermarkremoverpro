@@ -51,7 +51,7 @@ import type { Strength, Tier } from '../src/lib/rewrite'
 // asks for model: "advanced" will ever execute) and slows every cold start
 // for a capability most calls do not use.
 
-const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://watermarkremoverpro.com').replace(/\/$/, '')
+const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://www.watermarkremoverpro.com').replace(/\/$/, '')
 const API_KEY = process.env.MARKWITNESS_API_KEY || ''
 
 const server = new Server({ name: 'watermarkremoverpro', version: ENGINE_VERSION }, { capabilities: { tools: {} } })

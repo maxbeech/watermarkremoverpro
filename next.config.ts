@@ -23,6 +23,20 @@ const nextConfig: NextConfig = {
       },
     ]
   },
+  // The apex domain is registered alongside www on Vercel so it still resolves,
+  // but www is canonical (matches SITE.url, which Better Auth, Stripe checkout
+  // and every page's metadata read from). 308 preserves the request method, so
+  // this also covers the Stripe webhook POST if it's ever hit on the apex.
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'watermarkremoverpro.com' }],
+        destination: 'https://www.watermarkremoverpro.com/:path*',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

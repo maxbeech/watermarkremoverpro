@@ -10,7 +10,7 @@ import { PLANS, SITE } from '@/lib/site'
  * (acct_1UD125Q498dRl0sh), and a real checkout session against the live Pro
  * price (price_1UD1BBQ498dRl0shuTHst5qH, GBP 19/month) has been created and
  * verified end to end, stopping short of entering card details. The webhook
- * endpoint is registered against https://watermarkremoverpro.com/api/billing/webhook
+ * endpoint is registered against https://www.watermarkremoverpro.com/api/billing/webhook
  * and rejects requests with a bad signature, confirming it is wired to the
  * same secret.
  *

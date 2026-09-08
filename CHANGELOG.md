@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-09-08: www is now the canonical domain
+
+`SITE.url` (`src/lib/site.ts`) now reads `https://www.watermarkremoverpro.com`
+instead of the bare apex, so it's what Better Auth signs callbacks against, what
+the Stripe checkout success/cancel URLs point at, and what every page's
+`metadataBase`/canonical/JSON-LD advertise — all of that already read from this
+one constant, so nothing else needed to change to follow it.
+
+The apex domain stays registered on the Vercel project alongside www (nothing
+to change there), but `next.config.ts` now 308-redirects any request whose
+`Host` is `watermarkremoverpro.com` to the same path on `www`. 308 preserves
+the request method, so a POST to `/api/billing/webhook` on the apex still
+reaches the handler as a POST rather than being turned into a GET — verified
+against a local production build with a spoofed `Host` header. The Stripe
+webhook endpoint itself is registered against the apex URL in the Stripe
+dashboard; re-pointing it at `www.watermarkremoverpro.com/api/billing/webhook`
+directly (rather than relying on the redirect) is a follow-up, not done here —
+it needs dashboard access this session didn't have.
+
 ## 2026-09-08: one journey, one input box, and a brand that is not a lab report
 
 The largest change to this product's surface since launch. Three things were
