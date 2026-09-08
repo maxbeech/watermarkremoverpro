@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import * as Sentry from '@sentry/nextjs'
 import { z } from 'zod'
 import { verifyApiKey } from '@/lib/api-keys'
 import { databaseConfigured } from '@/lib/db'
@@ -6,6 +7,7 @@ import { analyzeOnServer } from '@/lib/server-engine'
 import { billableUnits, checkAllowance, recordUsage, unitsToPence } from '@/lib/metering'
 import { countWords } from '@/lib/detector/tokenize'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
+import { configFromEnv, trackEvent } from '@/lib/openhelm-analytics-mp'
 
 export const runtime = 'nodejs'
 
@@ -49,6 +51,10 @@ export async function POST(request: Request) {
   try {
     key = await verifyApiKey(request.headers.get('authorization'))
   } catch (err) {
+    Sentry.captureException(err, { tags: { feature: 'api_key_verification' } })
+    // Not wrapped by withSentryConfig, so flush explicitly before this
+    // serverless invocation freezes at response time.
+    await Sentry.flush(2000)
     return NextResponse.json(
       { error: 'verification_failed', message: (err as Error).message },
       { status: 503 },
@@ -88,6 +94,18 @@ export async function POST(request: Request) {
   const words = countWords(parsed.data.text)
   const allowance = await checkAllowance(key.accountId, key.plan, words)
   if (!allowance.allowed) {
+    // The API-caller equivalent of a browser visitor hitting a paywall. It is
+    // only way to see this journey at all, since an API integration has no
+    // browser to fire a client-side event from.
+    // Awaited, not fire-and-forget: a Vercel serverless function can freeze
+    // as soon as the response is sent, so an un-awaited fetch here has no
+    // guarantee of completing. sendEvents/trackEvent never throw, so this
+    // adds no new failure mode to the response.
+    await trackEvent(
+      { ...configFromEnv(), clientId: key.accountId, surface: 'server' },
+      'api_paywall_hit',
+      { plan: allowance.plan },
+    )
     return NextResponse.json(
       {
         error: 'allowance_exceeded',
@@ -117,6 +135,13 @@ export async function POST(request: Request) {
     words,
     documentHash: result.documentHash,
   })
+
+  // Awaited for the same reason as the paywall event above.
+  await trackEvent(
+    { ...configFromEnv(), clientId: key.accountId, surface: 'server' },
+    'api_check_completed',
+    { plan: key.plan, billable_units: units },
+  )
 
   return NextResponse.json(
     {

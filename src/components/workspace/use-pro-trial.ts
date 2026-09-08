@@ -9,6 +9,7 @@ import {
   fetchAccountTrial,
   type TrialScope,
 } from '@/lib/entitlements/pro-trial-store'
+import { track } from '@/lib/openhelm-analytics'
 
 export interface ProTrialHandle {
   /** Null until the first read resolves, so the UI can say "checking" rather than guess. */
@@ -75,7 +76,9 @@ export function useProTrial({ subscriber }: { subscriber: boolean }): ProTrialHa
       if (result && result.scope === 'account') {
         setUnlimited(Boolean(result.unlimited))
         setStatus(result.status)
-        return Boolean(result.unlimited) || result.granted === true
+        const granted = Boolean(result.unlimited) || result.granted === true
+        track(granted ? 'pro_trial_granted' : 'pro_trial_paywall_hit', { scope: 'account' })
+        return granted
       }
       // The endpoint failed rather than refused. Fall through to the device
       // count instead of denying a run over an outage the visitor did not cause.
@@ -84,9 +87,11 @@ export function useProTrial({ subscriber }: { subscriber: boolean }): ProTrialHa
     const before = deviceTrialStatus()
     if (!before.entitled) {
       setStatus(before)
+      track('pro_trial_paywall_hit', { scope: 'device' })
       return false
     }
     setStatus(claimDeviceTrialRun())
+    track('pro_trial_granted', { scope: 'device' })
     return true
   }, [scope, subscriber, unlimited])
 

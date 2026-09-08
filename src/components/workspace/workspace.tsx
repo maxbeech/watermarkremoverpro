@@ -3,8 +3,10 @@
 import { useCallback, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import * as Sentry from '@sentry/nextjs'
 import { countWords } from '@/lib/detector/tokenize'
 import { buttonClass } from '@/components/brand/ui'
+import { track } from '@/lib/openhelm-analytics'
 import { stageRun } from '@/lib/workspace/handoff'
 import { saveRun } from '@/lib/workspace/history'
 import { newRun } from '@/lib/workspace/runs'
@@ -57,6 +59,10 @@ export function Workspace({
     setOpening(true)
     setError(null)
     setFileError(null)
+    // Metadata only, as everywhere else on this path: which engine was chosen,
+    // never the draft, its length or anything derived from its content. The
+    // rewrite itself is instrumented where it runs, in ./use-rewrite-runner.
+    track('workspace_opened', { engine_id: settings.engineId })
     try {
       const record = newRun(text, settings)
       // Staged in memory first so the handoff works even where the browser
@@ -65,6 +71,8 @@ export function Workspace({
       await saveRun(record)
       router.push(workspaceUrl(record.id))
     } catch (err) {
+      Sentry.captureException(err, { tags: { feature: 'workspace_handoff' } })
+      track('workspace_open_failed')
       setOpening(false)
       setError((err as Error).message || 'The workspace could not be opened.')
     }

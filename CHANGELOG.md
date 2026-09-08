@@ -96,6 +96,57 @@ the on-device network-call walk over `src/components/app`,
 IndexedDB and that no document or run id is put in a URL.
 `scripts/e2e-journey.mts` now drives the whole workspace journey.
 
+The journey instrumentation below landed in parallel and is preserved: the
+rewrite events moved with the code, from the homepage component into
+`src/components/workspace/use-rewrite-runner.ts` where the rewrite now actually
+runs, and pressing the button on a marketing page emits `workspace_opened`
+instead. Every property is still an engine id, a device name or a boolean.
+
+## 2026-09-08: journey instrumentation - analytics events and Sentry capture across every material user path
+
+A product-specific journey review found instrumentation at essentially zero:
+the GA4 tag and Sentry SDK were both initialized but almost nothing in the app
+called into them beyond automatic page views. Added `track()` calls (browser,
+via `src/lib/openhelm-analytics.tsx`) and Measurement Protocol events (server,
+via `src/lib/openhelm-analytics-mp.ts`) across signup/login, password reset,
+the primary check-and-rewrite workspace, the weekly Pro-engine trial, Stripe
+checkout and the subscription webhook, dashboard API-key management, and the
+metered `/api/v1/check` API surface. Every event carries only non-PII,
+product-metadata parameters (engine id, plan, word-cap-hit booleans, status
+strings) - never document text, email or name, consistent with
+`sendDefaultPii: false`.
+
+Also strengthened Sentry capture on async failures that previously left no
+trace beyond a passive console log: a broken billing-webhook handler (the
+highest-priority gap - it silently meant "customer paid, plan didn't
+update"), a Pro-engine load failure that falls back to Standard, a failed
+password-reset send (a live, known-broken path as of this deployment - see
+`THREADCAMP_API_KEY` in the environment), and API-key verification failures
+on the metered check endpoint.
+
+`src/lib/billing.ts`'s `applyBillingEvent` now returns `accountId` and a
+`transition` (`subscription_created` / `subscription_cancelled` /
+`subscription_reactivated`) so the webhook route can emit one telemetry event
+per real plan change without re-parsing the Stripe event a second time.
+
+Also fixed a real delivery bug found while verifying this against production:
+none of these Route Handlers are wrapped by `withSentryConfig` (this app uses
+manual `instrumentation.ts`/`instrumentation-client.ts` setup instead), so a
+`Sentry.captureException`/`captureMessage` call made just before a response
+has no guarantee of completing its send before the serverless function
+freezes. A live test against the deployed webhook (an intentionally invalid
+Stripe signature) confirmed the event never reached Sentry. Every manual
+capture added here is now followed by `await Sentry.flush(2000)` before the
+response returns, and the two server-side GA4 events on `/api/v1/check` were
+changed from fire-and-forget to awaited for the same reason.
+
+Found but not fixed here, because it is a product decision rather than an
+instrumentation gap: `src/app/terms/page.tsx` tells users they can cancel
+"from your dashboard", but the dashboard has no cancel/manage-subscription
+control - only an upgrade button for non-Pro accounts. Flagged for the
+product owner. (That page is now `src/app/(site)/terms/page.tsx`; the route
+group changed no URLs.)
+
 ## 2026-09-08: a third channel, AI-style likelihood, biased to flag
 
 The provenance-mark channel is deliberately conservative: it only tests keys

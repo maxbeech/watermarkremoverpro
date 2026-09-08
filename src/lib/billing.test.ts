@@ -63,6 +63,8 @@ describe('applyBillingEvent', () => {
     expect(outcome.handled).toBe(true)
     expect(outcome.detail).toContain('acct_abc')
     expect(outcome.detail).toContain('pro')
+    expect(outcome.accountId).toBe('acct_abc')
+    expect(outcome.transition).toBe('subscription_created')
   })
 
   it('refuses silently-successful behaviour when a session carries no accountId', async () => {
@@ -88,6 +90,7 @@ describe('applyBillingEvent', () => {
     const outcome = await applyBillingEvent(subscriptionEvent('customer.subscription.deleted', 'canceled'))
     expect(outcome.handled).toBe(true)
     expect(outcome.detail).toContain('free')
+    expect(outcome.transition).toBe('subscription_cancelled')
   })
 
   it('downgrades to free when a subscription lapses to past_due', async () => {

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createAuthClient } from 'better-auth/react'
 import { buttonClass } from '@/components/brand/ui'
+import { track } from '@/lib/openhelm-analytics'
 
 const client = createAuthClient()
 
@@ -24,6 +25,7 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
     e.preventDefault()
     setBusy(true)
     setError(null)
+    track(mode === 'signup' ? 'signup_started' : 'login_started')
 
     const result =
       mode === 'signup'
@@ -33,8 +35,12 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
     if (result.error) {
       setError(result.error.message ?? `Sign ${mode === 'signup' ? 'up' : 'in'} failed.`)
       setBusy(false)
+      // No error message/reason in the params: Better Auth's message can echo
+      // back user input (e.g. "user already exists" ties to the email typed).
+      track(mode === 'signup' ? 'signup_failed' : 'login_failed')
       return
     }
+    track(mode === 'signup' ? 'signup_succeeded' : 'login_succeeded')
     window.location.href = '/dashboard'
   }
 

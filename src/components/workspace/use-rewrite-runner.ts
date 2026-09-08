@@ -1,12 +1,14 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import * as Sentry from '@sentry/nextjs'
 import { reduceEvidence, rewriteDocument, type RewriteResult } from '@/lib/rewrite'
 import {
   createTransformersBrowserBackend,
   type BrowserBackendProgress,
 } from '@/lib/rewrite/backend/browser'
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
+import { track } from '@/lib/openhelm-analytics'
 import type { WorkspaceSettings } from './advanced-settings'
 import type { EngineId } from './settings'
 import { useProTrial, type ProTrialHandle } from './use-pro-trial'
@@ -21,9 +23,10 @@ import { useProTrial, type ProTrialHandle } from './use-pro-trial'
  * this instead, so "what happens when the Pro engine cannot start" has one
  * answer rather than two that drift.
  *
- * EVERYTHING HERE RUNS ON THE VISITOR'S DEVICE. The only network call reachable
- * from this file is the weekly-allowance count inside ./use-pro-trial, which
- * carries no document, no hash and no word count.
+ * EVERYTHING HERE RUNS ON THE VISITOR'S DEVICE. The only network calls reachable
+ * from this file are the weekly-allowance count inside ./use-pro-trial and the
+ * analytics events below, and neither carries a document, a hash or a word
+ * count: every event property here is an engine id, a device name or a boolean.
  */
 
 export interface RunOutcome {
@@ -66,6 +69,7 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
   const execute = useCallback(
     async (text: string, settings: WorkspaceSettings): Promise<RunAttempt> => {
       setProgress(null)
+      track('rewrite_started', { engine_id: settings.engineId })
 
       let engineId: EngineId = settings.engineId
       let downgraded: string | null = null
@@ -97,8 +101,10 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
               PUBLIC_DETECTION_KEYS,
             )
             if (res.status !== 'ok') {
+              track('rewrite_failed', { engine_id: 'pro' })
               return { ok: false, message: res.error ?? 'The rewrite could not be completed.' }
             }
+            track('rewrite_completed', { engine_id: 'pro', device, downgraded: Boolean(downgraded) })
             return {
               ok: true,
               result: res,
@@ -109,7 +115,12 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
             // A real failure state: the local model genuinely could not load (no
             // WebGPU or WASM support, a blocked download, out of memory). Fall
             // back to the always-available engine and say exactly why, rather
-            // than swallowing it or blocking on it.
+            // than swallowing it or blocking on it. Reported to Sentry because
+            // it would otherwise leave no trace beyond the silent downgrade the
+            // visitor sees, and the only sign anything went wrong is a message
+            // they may not read.
+            Sentry.captureException(advancedErr, { tags: { feature: 'rewrite_pro_engine' } })
+            track('pro_engine_load_failed')
             downgraded = `The Pro engine could not start on this device (${(advancedErr as Error).message}), so the rewrite ran on Standard instead.`
           }
         }
@@ -126,8 +137,10 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
           PUBLIC_DETECTION_KEYS,
         )
         if (res.status !== 'ok') {
+          track('rewrite_failed', { engine_id: 'standard' })
           return { ok: false, message: res.error ?? 'The rewrite could not be completed.' }
         }
+        track('rewrite_completed', { engine_id: 'standard', downgraded: Boolean(downgraded) })
         return {
           ok: true,
           result: res,
@@ -135,6 +148,8 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
           downgraded,
         }
       } catch (err) {
+        Sentry.captureException(err, { tags: { feature: 'rewrite' } })
+        track('rewrite_failed', { engine_id: engineId, reason: 'exception' })
         return { ok: false, message: (err as Error).message || 'An unexpected error occurred.' }
       } finally {
         setProgress(null)

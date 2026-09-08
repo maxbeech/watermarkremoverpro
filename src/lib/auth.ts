@@ -1,4 +1,5 @@
 import 'server-only'
+import * as Sentry from '@sentry/nextjs'
 import { betterAuth } from 'better-auth'
 import { Pool } from '@neondatabase/serverless'
 import { headers } from 'next/headers'
@@ -73,6 +74,21 @@ export async function sendPasswordResetEmail(user: { id: string; email: string }
     clientId: `reset-password:${user.id}:${url}`,
   })
   if (!result.sent) {
+    // A grouped, actionable Sentry issue rather than the passive console.error
+    // that sendEmail already logs. This is a live, known-broken path
+    // (missing THREADCAMP_API_KEY as of 2026-09-08) and every failed attempt
+    // should surface as one issue an operator can watch clear, not scroll to
+    // find in logs. No email address attached: sendDefaultPii is off by
+    // design (src/instrumentation-client.ts), so only the internal user id
+    // travels with the report.
+    Sentry.captureException(new Error(`could not send password reset email: ${result.reason}`), {
+      extra: { userId: user.id, reason: result.reason },
+    })
+    // This runs inside the Better Auth catch-all route (src/app/api/auth/[...all]),
+    // a serverless function that is not wrapped by withSentryConfig, so nothing
+    // else guarantees the capture above is actually sent before the function
+    // freezes once the response goes out.
+    await Sentry.flush(2000)
     throw new Error(`could not send password reset email: ${result.reason}`)
   }
 }
