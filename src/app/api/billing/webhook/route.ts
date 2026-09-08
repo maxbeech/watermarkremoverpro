@@ -53,6 +53,12 @@ export async function POST(request: Request) {
       level: 'warning',
       extra: { reason: (err as Error).message },
     })
+    // This Route Handler is not wrapped by withSentryConfig, so nothing else
+    // guarantees the event above is actually sent before this serverless
+    // function freezes right after the response goes out. Flush explicitly
+    // rather than relying on a capture that reads as done in code but never
+    // reaches Sentry.
+    await Sentry.flush(2000)
     return NextResponse.json(
       { error: 'invalid_signature', message: (err as Error).message },
       { status: 400 },
@@ -87,6 +93,7 @@ export async function POST(request: Request) {
     // journey review found, since a broken handler here means "customer paid,
     // plan silently didn't update."
     Sentry.captureException(err, { tags: { feature: 'billing_webhook' } })
+    await Sentry.flush(2000)
     return NextResponse.json(
       { error: 'handler_failed', message: (err as Error).message },
       { status: 500 },
@@ -105,5 +112,6 @@ async function sendBillingTelemetry(accountId: string, transition: string): Prom
       level: 'warning',
       extra: { reason: result.reason, error: 'error' in result ? result.error : undefined },
     })
+    await Sentry.flush(2000)
   }
 }

@@ -27,6 +27,17 @@ on the metered check endpoint.
 `subscription_reactivated`) so the webhook route can emit one telemetry event
 per real plan change without re-parsing the Stripe event a second time.
 
+Also fixed a real delivery bug found while verifying this against production:
+none of these Route Handlers are wrapped by `withSentryConfig` (this app uses
+manual `instrumentation.ts`/`instrumentation-client.ts` setup instead), so a
+`Sentry.captureException`/`captureMessage` call made just before a response
+has no guarantee of completing its send before the serverless function
+freezes. A live test against the deployed webhook (an intentionally invalid
+Stripe signature) confirmed the event never reached Sentry. Every manual
+capture added here is now followed by `await Sentry.flush(2000)` before the
+response returns, and the two server-side GA4 events on `/api/v1/check` were
+changed from fire-and-forget to awaited for the same reason.
+
 Found but not fixed here, because it is a product decision rather than an
 instrumentation gap: `src/app/terms/page.tsx` tells users they can cancel
 "from your dashboard", but the dashboard has no cancel/manage-subscription

@@ -87,6 +87,9 @@ export async function GET() {
     // A database that is configured but unreachable must not silently become
     // "no allowance left" or "unlimited". Say so, and let the client fall back.
     Sentry.captureException(err, { tags: { feature: 'pro_trial' } })
+    // Not wrapped by withSentryConfig, so flush explicitly before this
+    // serverless invocation freezes at response time.
+    await Sentry.flush(2000)
     return NextResponse.json(
       { error: 'trial_unavailable', message: (err as Error).message },
       { status: 503 },
@@ -121,6 +124,12 @@ export async function POST() {
       status: await statusFor(entitlements.userId),
     })
   } catch (err) {
+    // Same reasoning as the GET handler above: an unreachable database here
+    // must not silently read as "allowance exhausted".
+    Sentry.captureException(err, { tags: { feature: 'pro_trial' } })
+    // Not wrapped by withSentryConfig, so flush explicitly before this
+    // serverless invocation freezes at response time.
+    await Sentry.flush(2000)
     return NextResponse.json(
       { error: 'trial_unavailable', message: (err as Error).message },
       { status: 503 },

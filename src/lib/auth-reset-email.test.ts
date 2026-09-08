@@ -14,7 +14,10 @@ vi.mock('@/lib/threadcamp-mail', () => ({ sendEmail: (...args: unknown[]) => sen
 vi.mock('@neondatabase/serverless', () => ({ Pool: vi.fn() }))
 vi.mock('next/headers', () => ({ headers: vi.fn() }))
 vi.mock('server-only', () => ({}))
-vi.mock('@sentry/nextjs', () => ({ captureException: (...args: unknown[]) => captureException(...args) }))
+vi.mock('@sentry/nextjs', () => ({
+  captureException: (...args: unknown[]) => captureException(...args),
+  flush: vi.fn().mockResolvedValue(true),
+}))
 
 const { sendPasswordResetEmail } = await import('./auth')
 

@@ -84,6 +84,11 @@ export async function sendPasswordResetEmail(user: { id: string; email: string }
     Sentry.captureException(new Error(`could not send password reset email: ${result.reason}`), {
       extra: { userId: user.id, reason: result.reason },
     })
+    // This runs inside the Better Auth catch-all route (src/app/api/auth/[...all]),
+    // a serverless function that is not wrapped by withSentryConfig, so nothing
+    // else guarantees the capture above is actually sent before the function
+    // freezes once the response goes out.
+    await Sentry.flush(2000)
     throw new Error(`could not send password reset email: ${result.reason}`)
   }
 }

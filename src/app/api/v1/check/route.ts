@@ -52,6 +52,9 @@ export async function POST(request: Request) {
     key = await verifyApiKey(request.headers.get('authorization'))
   } catch (err) {
     Sentry.captureException(err, { tags: { feature: 'api_key_verification' } })
+    // Not wrapped by withSentryConfig, so flush explicitly before this
+    // serverless invocation freezes at response time.
+    await Sentry.flush(2000)
     return NextResponse.json(
       { error: 'verification_failed', message: (err as Error).message },
       { status: 503 },
@@ -94,7 +97,11 @@ export async function POST(request: Request) {
     // The API-caller equivalent of a browser visitor hitting a paywall. It is
     // only way to see this journey at all, since an API integration has no
     // browser to fire a client-side event from.
-    void trackEvent(
+    // Awaited, not fire-and-forget: a Vercel serverless function can freeze
+    // as soon as the response is sent, so an un-awaited fetch here has no
+    // guarantee of completing. sendEvents/trackEvent never throw, so this
+    // adds no new failure mode to the response.
+    await trackEvent(
       { ...configFromEnv(), clientId: key.accountId, surface: 'server' },
       'api_paywall_hit',
       { plan: allowance.plan },
@@ -129,7 +136,8 @@ export async function POST(request: Request) {
     documentHash: result.documentHash,
   })
 
-  void trackEvent(
+  // Awaited for the same reason as the paywall event above.
+  await trackEvent(
     { ...configFromEnv(), clientId: key.accountId, surface: 'server' },
     'api_check_completed',
     { plan: key.plan, billable_units: units },
