@@ -1,5 +1,101 @@
 # Changelog
 
+## 2026-09-08: the workspace, and the brand mark in the browser tab
+
+**The result screen is now an application.** Pressing "Clean up my text"
+used to swap the homepage's input box for a result panel, which left the most
+involved screen in the product (a rewritten document, an analysis, a diff,
+per-paragraph controls) sitting halfway down a landing page with a marketing
+footer under it. It now opens `/app`: a full-height workspace with its own
+sidebar. The draft travels there in memory
+(`src/lib/workspace/handoff.ts`) with a copy in the browser's own database, so
+it never touches a URL, a referrer header or a server.
+
+**What the workspace shows, in order.** The rewritten text first, because that
+is what the visitor came to collect. Then the summary of how much AI evidence
+is left, four figures wide: the heuristic AI-style likelihood before and after,
+whether a provenance mark was found under the keys this deployment holds, how
+many passages survive correction, and the watermark z-score, each rendering as
+the reason it is null where it could not be measured. Then a
+paragraph-by-paragraph comparison. Then the complete analysis, collapsed: the
+identical `ResultView` the dedicated check page renders, over the analysis this
+rewrite already computed, with a toggle between the draft and the rewrite.
+
+**The comparison.** `src/lib/diff/words.ts` is a word-level diff over
+whitespace-preserving atoms (common prefix and suffix peeled off first, then
+longest-common-subsequence over what is left, with a size guard that falls back
+to a whole-block replace), plus a paragraph alignment between the draft and the
+rewrite. Split and unified are two renderings of the same computed
+`DiffPart[]`, so they cannot disagree about what changed. Where a rewrite did
+not preserve the paragraph count, the alignment refuses to guess and the
+comparison says why instead of pointing the per-paragraph controls at the wrong
+text.
+
+**Running it again, whole or in part.** The whole document re-runs from the
+original draft, so passes never stack on top of one another; when a re-run at
+the same settings produces byte-identical text (the Standard engine is
+deterministic) it says so and points at the strength control rather than
+looking broken. Any paragraph, or any selection of them, re-runs on its own
+from the version currently shown, which is what makes a second pass produce
+something new, at whatever strength is currently set. A rephrased paragraph can
+be restored to exactly what the writer wrote. After a paragraph edit the
+document is re-measured with `checkDocument` so the summary above is about the
+text on screen; the counts the rewrite earned on its own pass are left alone,
+because a paragraph edit does not change them.
+
+**An anonymous identity, and a history.** `src/lib/workspace/identity.ts`
+mints an opaque id in the browser on first use;
+`src/lib/workspace/history.ts` keeps the newest 25 runs in that browser's
+IndexedDB. There is no account behind it and there is not going to be one for
+drafts: a server-side copy of someone's documents would contradict the single
+promise this product makes. The sidebar says exactly that, and offers a delete
+per run and a delete-everything. Every storage call resolves rather than
+rejecting where a browser refuses IndexedDB, and the sidebar reports that state
+instead of the rewrite failing.
+
+**Chrome split into a route group.** The marketing header and footer moved from
+the root layout into `src/app/(site)/layout.tsx`; the root layout is now the
+document shell (html, fonts, analytics) and nothing else; `/app` sits outside
+the group with its own sidebar. Route groups do not appear in URLs, so nothing
+changed address. The mirror-product pointer follows the visitor into the
+workspace via the sidebar, and `tests/product-constraints.test.ts` now asserts
+it in both places rather than only in the footer it used to live in.
+
+**`/app` is a static route.** The run id is a query parameter, not a dynamic
+segment: the entire page comes out of the visitor's own browser, so a dynamic
+segment would spend a function invocation per open document to return the same
+empty shell. It is `noindex` through its own metadata and absent from the
+sitemap, and deliberately NOT disallowed in `robots.txt`: a crawler told not to
+fetch a page never reads the noindex tag on it, and a `/app` prefix rule would
+also have matched `/apple-icon.png`.
+
+**Favicon.** `npm run logos` now also generates `src/app/favicon.ico` (16, 32
+and 48px, packed by hand as PNG-in-ICO), `icon.png` and `apple-icon.png` from
+the same brand mark the header and footer render, fitted inside a white square
+so it reads on a light or a dark tab strip. The `icons` block in the root
+layout's metadata is gone: the files are picked up by Next.js file convention,
+so there is one place the icon is declared rather than two that can disagree.
+
+**Two contrast fixes found by the e2e probe.** A disabled solid button dropped
+to a mid fill and kept white text, which lands at 1.6:1 and reads as broken
+rather than inactive; the disabled treatment now lives once in `buttonClass`
+and clears AA. The trusted-by marquee's logos were `loading="lazy"` inside a
+track that moves by a CSS transform inside an `overflow-hidden` box: a browser
+does not re-evaluate lazy loading as a transform carries an element into view,
+so every icon past the first screen-width never loaded at all, which is what
+the probe was actually reporting. They now load eagerly at
+`fetchPriority="low"`, the low priority being what keeps Next.js from emitting
+forty-five `<link rel="preload">` tags into the head to race the hero.
+
+New tests: `src/lib/diff/words.test.ts` (round-trip, size guard, alignment
+refusal), `src/lib/workspace/runs.test.ts` (titles, storage trimming, the
+summary keeping nulls as nulls, pruning), `src/lib/workspace/identity.test.ts`
+(minting, reuse, blocked storage). `tests/product-constraints.test.ts` extends
+the on-device network-call walk over `src/components/app`,
+`src/lib/workspace` and `src/lib/diff`, and asserts that the history layer is
+IndexedDB and that no document or run id is put in a URL.
+`scripts/e2e-journey.mts` now drives the whole workspace journey.
+
 ## 2026-09-08: a third channel, AI-style likelihood, biased to flag
 
 The provenance-mark channel is deliberately conservative: it only tests keys

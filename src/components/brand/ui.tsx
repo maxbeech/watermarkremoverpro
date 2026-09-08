@@ -151,7 +151,18 @@ export function PageHeader({
 const BUTTON_BASE =
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold ' +
   'transition-[background-color,color,box-shadow,transform,border-color] duration-150 ' +
-  'active:translate-y-[0.5px] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0'
+  'active:translate-y-[0.5px] disabled:cursor-not-allowed disabled:active:translate-y-0'
+
+/**
+ * How a disabled button looks, once, for every tone.
+ *
+ * A solid button used to grey out by dropping to a mid fill and keeping white
+ * text, which lands at about 1.6:1 and is unreadable rather than merely
+ * inactive. Ink 400 on ink 100 reads as switched off and still clears AA, and
+ * the contrast probe in scripts/e2e-journey.mts holds it there.
+ */
+const BUTTON_DISABLED =
+  'disabled:bg-ink-100 disabled:text-ink-400 disabled:border-ink-200 disabled:shadow-none'
 
 const BUTTON_TONES = {
   primary:
@@ -166,7 +177,7 @@ const BUTTON_TONES = {
 export type ButtonTone = keyof typeof BUTTON_TONES
 
 export function buttonClass(tone: ButtonTone = 'primary', extra = '') {
-  return `${BUTTON_BASE} ${BUTTON_TONES[tone]} ${extra}`
+  return `${BUTTON_BASE} ${BUTTON_TONES[tone]} ${BUTTON_DISABLED} ${extra}`
 }
 
 export function ButtonLink({

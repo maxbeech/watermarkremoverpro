@@ -3,8 +3,10 @@
  *
  * Unit tests cover the arithmetic; this covers the thing a unit test cannot:
  * that a visitor can land on the homepage, get text into the box by all three
- * routes, press one button, and receive rewritten text with the detector's
- * reading of it attached, without a console error or a broken image.
+ * routes, press one button, be carried into the workspace, and find their
+ * rewritten text there with the detector's reading of it, a comparison they can
+ * act on paragraph by paragraph, and a history of what they have run, without a
+ * console error or a broken image.
  *
  * Run against a server that is already up:
  *   npm run dev          # in one terminal
@@ -31,6 +33,9 @@ Ultimately, success hinges on execution. Teams that embrace agility, transparenc
  */
 const PAGES = [
   '/rewrite',
+  // The workspace shell, in its empty state. It is the one route with its own
+  // chrome, so it is also the one most likely to overflow on a phone.
+  '/app',
   '/check',
   '/pricing',
   '/method',
@@ -266,7 +271,7 @@ async function main() {
   await advanced.click()
 
   // --------------------------------------------------------------- the paste
-  console.log('\nPaste and rewrite')
+  console.log('\nPaste, and the handoff into the workspace')
   const box = page.locator('textarea').first()
   await box.fill(SAMPLE)
   const words = SAMPLE.trim().split(/\s+/).length
@@ -281,27 +286,107 @@ async function main() {
 
   const heading = page.getByRole('heading', { name: 'Your rewritten text', exact: true })
   await heading.waitFor({ timeout: 60_000 })
+  check('pressing the button opens the workspace', new URL(page.url()).pathname === '/app')
+  check('the run id travels in the URL, not the document', /[?&]run=run_/.test(page.url()))
+  check('the workspace is not the marketing page', (await page.locator('footer').count()) === 0)
   check('the output screen appears', await heading.isVisible())
 
   const revised = await page.locator('textarea[readonly]').first().inputValue()
   check('the rewritten text is real and non-empty', revised.trim().length > 50, `${revised.length} chars`)
   check('the rewritten text is not identical to the input', revised.trim() !== SAMPLE.trim())
 
-  check('what changed is reported', await page.getByRole('heading', { name: /what changed/i }).isVisible())
   check(
-    'the detector analysis ships with the rewrite',
-    await page.getByRole('heading', { name: /full detector analysis/i }).isVisible(),
+    'the AI-detection summary is on screen without being asked for',
+    await page.getByRole('heading', { name: /what the detector finds now/i }).isVisible(),
   )
-  check('the analysis is expanded by default', (await page.getByText('Provenance mark').count()) > 0)
+  check(
+    'the deep dive is collapsed rather than four panels of statistics',
+    (await page.getByText('Provenance mark', { exact: true }).count()) === 1 &&
+      (await page.getByRole('button', { name: /the full analysis/i }).getAttribute('aria-expanded')) === 'false',
+  )
+  await page.getByRole('button', { name: /the full analysis/i }).click()
+  check(
+    'opening the deep dive reveals the same analysis the check page runs',
+    await page.getByText('A keyed statistical test', { exact: false }).first().isVisible(),
+  )
   check('stated limits travel with the result', (await page.getByText(/cannot guarantee|no guarantee/i).count()) > 0)
   check('copy and download are offered', (await page.getByRole('button', { name: /^Copy$/ }).count()) === 1)
 
-  await page.screenshot({ path: join(SHOTS, '04-result.png'), fullPage: true })
-  await assertNoHorizontalOverflow(page, 'result screen')
+  // ------------------------------------------------------------- comparison
+  console.log('\nComparison and per-paragraph rewriting')
+  check(
+    'a paragraph-by-paragraph comparison is shown',
+    await page.getByRole('heading', { name: 'Comparison', exact: true }).isVisible(),
+  )
+  check('it offers both layouts', (await page.getByRole('button', { name: /^unified$/i }).count()) === 1)
+  await page.getByRole('button', { name: /^unified$/i }).click()
+  check(
+    'the unified layout marks removals and insertions',
+    (await page.locator('del').count()) > 0 && (await page.locator('ins').count()) > 0,
+  )
+  await page.getByRole('button', { name: /^split$/i }).click()
+  check('the split layout shows the draft beside the rewrite', (await page.getByText('Your draft').count()) > 0)
 
-  // start over returns to the input
-  await page.getByRole('button', { name: /start over/i }).click()
-  check('start over returns to the input', await page.locator('textarea').first().isVisible())
+  const paragraphButtons = page.getByRole('button', { name: /^Rewrite again$/ })
+  check('every paragraph can be sent back on its own', (await paragraphButtons.count()) >= 3)
+  check(
+    'paragraphs can be selected in bulk',
+    (await page.getByRole('checkbox').count()) >= 3 &&
+      (await page.getByRole('button', { name: /select every changed paragraph/i }).count()) === 1,
+  )
+  const beforeParagraphRun = await page.locator('textarea[readonly]').first().inputValue()
+  await paragraphButtons.first().click()
+  await page.waitForFunction(
+    (previous) => {
+      const area = document.querySelector('textarea[readonly]') as HTMLTextAreaElement | null
+      const notice = document.body.innerText.includes('found nothing further')
+      return notice || (area !== null && area.value !== previous)
+    },
+    beforeParagraphRun,
+    { timeout: 60_000 },
+  )
+  check(
+    'a single paragraph either changes or says why it could not',
+    (await page.locator('textarea[readonly]').first().inputValue()) !== beforeParagraphRun ||
+      (await page.getByText(/found nothing further/i).count()) > 0,
+  )
+
+  check(
+    'the whole document can be run again',
+    await page.getByRole('button', { name: /rewrite the whole thing again/i }).isVisible(),
+  )
+
+  await page.screenshot({ path: join(SHOTS, '04-result.png'), fullPage: true })
+  await assertNoHorizontalOverflow(page, 'workspace')
+
+  // ---------------------------------------------------------------- history
+  console.log('\nAnonymous identity and history')
+  check(
+    'the visitor is given a local identity rather than an account',
+    (await page.getByText(/^Guest /).count()) === 1,
+  )
+  check(
+    'the history says where it lives',
+    (await page.getByText(/live in this browser only/i).count()) === 1,
+  )
+  check(
+    'the run appears in the sidebar',
+    (await page.locator('nav[aria-label="Your rewrites"] a').count()) >= 1,
+  )
+  check(
+    'the mirror-product pointer reaches the workspace too',
+    (await page.getByText('Learnaway', { exact: false }).count()) > 0,
+  )
+
+  await page.getByRole('link', { name: /new rewrite/i }).click()
+  await page.getByRole('heading', { name: /clean up a draft/i }).waitFor({ timeout: 10_000 })
+  check('a new rewrite can be started from the sidebar', new URL(page.url()).search === '')
+  check(
+    'the previous run is still listed after starting a new one',
+    (await page.locator('nav[aria-label="Your rewrites"] a').count()) >= 1,
+  )
+
+  await page.goto(BASE, { waitUntil: 'networkidle' })
 
   // ------------------------------------------------------------ file upload
   console.log('\nFile input')

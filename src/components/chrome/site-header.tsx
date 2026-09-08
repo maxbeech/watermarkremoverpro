@@ -16,6 +16,12 @@ import { buttonClass } from '@/components/brand/ui'
  * API docs at all.
  */
 const NAV = [
+  /*
+    The workspace is the way back in for someone who used this yesterday: their
+    history is in their browser, and without a route to it the only way to reach
+    it is to rewrite something else first.
+  */
+  { href: '/app', label: 'Workspace' },
   { href: '/check', label: 'Check' },
   { href: '/method', label: 'How it works' },
   { href: '/verify', label: 'Verify' },

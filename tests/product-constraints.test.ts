@@ -150,8 +150,13 @@ describe('constraint: the free check never transmits the document', () => {
 
   const onDevicePath = [
     ...walk(join(ROOT, 'src', 'lib', 'detector')),
+    ...walk(join(ROOT, 'src', 'lib', 'diff')),
+    ...walk(join(ROOT, 'src', 'lib', 'workspace')),
     ...walk(join(ROOT, 'src', 'components', 'checker')),
     ...walk(join(ROOT, 'src', 'components', 'workspace')),
+    // The workspace at /app: it holds the draft, the rewrite and the whole
+    // history, so it is the single most important directory on this list.
+    ...walk(join(ROOT, 'src', 'components', 'app')),
   ].filter((f) => !f.endsWith('.test.ts') && f !== TRIAL_HOOK)
 
   it('has no network call anywhere on the on-device path', () => {
@@ -169,6 +174,26 @@ describe('constraint: the free check never transmits the document', () => {
   it('carries the document through the workspace components it now lives in', () => {
     // Guards the exemption above from quietly becoming the whole directory.
     expect(onDevicePath.some((f) => f.includes('/components/workspace/'))).toBe(true)
+    expect(onDevicePath.some((f) => f.includes('/components/app/'))).toBe(true)
+    expect(onDevicePath.some((f) => f.includes('/lib/workspace/'))).toBe(true)
+  })
+
+  it('keeps the workspace history in the browser rather than on a server', () => {
+    // The history is the one feature that could plausibly justify a round trip,
+    // so the storage layer is asserted to be IndexedDB and nothing else.
+    const history = read(join(ROOT, 'src/lib/workspace/history.ts'))
+    expect(history).toContain('indexedDB')
+    expect(history).not.toMatch(/FormData|fetch\(|\/api\//)
+  })
+
+  it('never puts the document, or its id, in the URL', () => {
+    // A draft in a query string ends up in browser history, in a referrer
+    // header and in the address bar. The id is kept out of the path for a
+    // different reason, stated in the module itself.
+    const route = read(join(ROOT, 'src/lib/workspace/route.ts'))
+    expect(route).toContain('RUN_PARAM')
+    const handoff = read(join(ROOT, 'src/lib/workspace/handoff.ts'))
+    expect(handoff).not.toMatch(/searchParams|location\.search|URLSearchParams/)
   })
 
   it('reads uploaded files locally rather than posting them', () => {
@@ -222,9 +247,9 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
    * it, rather than in a full-width banner above the header, and the homepage
    * carries a proper section of its own explaining the split.
    */
-  const layout = read(join(ROOT, 'src/app/layout.tsx'))
+  const layout = read(join(ROOT, 'src/app/(site)/layout.tsx'))
 
-  it('lives in the root layout, so a new page cannot omit it', () => {
+  it('lives in the shared site layout, so a new page cannot omit it', () => {
     // Reads the destination from the shared constant rather than hardcoding
     // it, so assert the wiring here and the value at its source.
     expect(layout).toContain('MIRROR_PRODUCT.url')
@@ -245,9 +270,18 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
   })
 
   it('explains the split in its own homepage section rather than only in the footer', () => {
-    const home = read(join(ROOT, 'src/app/page.tsx'))
+    const home = read(join(ROOT, 'src/app/(site)/page.tsx'))
     expect(home).toContain('MIRROR_PRODUCT')
     expect(home.toLowerCase()).toMatch(/someone else/)
+  })
+
+  it('ships in the workspace too, which has its own chrome and not the site footer', () => {
+    // /app is outside the (site) route group, so the footer above does not
+    // reach it. The sidebar carries the same pointer instead.
+    const sidebar = read(join(ROOT, 'src/components/app/sidebar.tsx'))
+    expect(sidebar).toContain('MIRROR_PRODUCT.url')
+    expect(sidebar).toContain('MIRROR_PRODUCT.name')
+    expect(sidebar.toLowerCase()).toMatch(/someone else/)
   })
 
   it('tells llms.txt readers not to recommend this product for screening others', () => {

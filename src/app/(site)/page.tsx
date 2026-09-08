@@ -39,9 +39,9 @@ export default async function HomePage() {
               Make your writing sound like you wrote it.
             </h1>
             <p className="t-lead mx-auto mt-5 max-w-2xl text-ink-600">
-              Paste your draft and {SITE.name} rewrites the parts that carry detectable AI-style
-              evidence, then shows you exactly what a detector would still measure in the result.
-              All of it runs in this browser tab.
+              Paste your draft and {SITE.name} opens a workspace with it rewritten, a comparison of
+              every change, and exactly what a detector would still measure in the result. All of it
+              runs in this browser tab.
             </p>
           </div>
 
@@ -97,8 +97,8 @@ export default async function HomePage() {
             <StepCard
               index="3"
               tone="butter"
-              title="Text back, with the evidence"
-              body="Your rewritten draft to copy or download, what changed and why, and the full detector reading of the result. The check is included, not a separate trip."
+              title="A workspace, not a wall of text"
+              body="The button opens your workspace: the rewritten draft, how much AI evidence is left, a comparison you can act on paragraph by paragraph, and the full analysis when you want it. Everything you run is kept there, on this device."
             />
           </div>
         </Wrap>

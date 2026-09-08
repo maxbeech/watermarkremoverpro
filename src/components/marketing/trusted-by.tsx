@@ -59,7 +59,20 @@ function LogoBadge({ brand, tabbable }: { brand: TrustedByLogo; tabbable: boolea
         alt=""
         width={22}
         height={22}
-        loading="lazy"
+        /*
+          Not lazy, and low priority.
+
+          Lazy was worse than a deferred load here: the track moves by a CSS
+          transform inside an `overflow-hidden` box, and a browser does not
+          re-evaluate lazy loading as a transform carries an element into view,
+          so every icon past the first screen-width never loaded at all. Eager
+          fixes that; `fetchPriority="low"` is what stops Next.js emitting a
+          `<link rel="preload">` for all forty-five of them into the head, where
+          they would compete with the hero for the first connections. Forty-five
+          icons of about a kilobyte each, fetched after everything that matters.
+        */
+        decoding="async"
+        fetchPriority="low"
         className="h-[22px] w-[22px] shrink-0 rounded-[6px] object-contain"
       />
       <span className="whitespace-nowrap text-sm font-semibold text-ink-700">{brand.name}</span>

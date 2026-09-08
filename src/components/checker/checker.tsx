@@ -89,7 +89,7 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
               type="button"
               onClick={run}
               disabled={words === 0 || overCap || phase.kind === 'measuring'}
-              className={buttonClass('primary', 'disabled:bg-ink-300 disabled:text-white')}
+              className={buttonClass('primary')}
             >
               {phase.kind === 'measuring' ? 'Measuring…' : 'Run the check'}
             </button>

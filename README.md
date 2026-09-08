@@ -40,17 +40,59 @@ drift.
 
 ## How you use it
 
-One flow, on the homepage. Paste your draft into the box (or drop a file on it,
-or use the upload button), press one button, and get back the rewritten text
-together with the detector's full reading of it. The check is not a separate
-trip: the rewrite engine already measures the document before and after in
-order to decide what to target, so the analysis it shows you is the exact
-arithmetic that produced the result above it.
+One flow. Paste your draft into the box on the homepage (or drop a file on it,
+or use the upload button) and press one button. That opens **the workspace** at
+`/app`: a full-height application with its own sidebar, not a result panel
+halfway down a landing page.
+
+The workspace shows, in this order:
+
+1. **The rewritten text**, to copy or download.
+2. **How much AI evidence is left**, in four figures: the heuristic AI-style
+   likelihood before and after, whether a provenance mark was found under the
+   keys this deployment holds, how many passages survive correction, and the
+   watermark z-score. A figure that could not be measured says so.
+3. **A comparison**, paragraph by paragraph, in a split or a unified layout,
+   both rendered from the same computed word-level diff
+   ([`src/lib/diff/words.ts`](src/lib/diff/words.ts)).
+4. **The full analysis**, collapsed. Opening it renders the identical
+   `ResultView` the dedicated check page uses, over the analysis this rewrite
+   already computed, with a toggle between the draft and the rewrite.
+
+Anything can be run again: the whole document (from your original draft, so
+passes never stack), or any paragraph on its own, singly or in a batch, from
+the version currently shown for it. A paragraph that has been rewritten again
+can be restored to exactly what you wrote. When the engine can find nothing
+further it could safely change, it says that rather than silently doing
+nothing.
 
 Language, engine and strength sit behind an **Advanced settings** disclosure
-with defaults that suit almost everyone. `/check` and `/rewrite` remain as
-their own pages for their own search intent, and both render the same
-components as the homepage rather than reimplementing them.
+with defaults that suit almost everyone, and they apply to a re-run. `/check`
+and `/rewrite` remain as their own pages for their own search intent, and both
+render the same components as the homepage rather than reimplementing them.
+
+### The anonymous identity and the history
+
+The workspace mints an opaque id in the browser on first use
+([`src/lib/workspace/identity.ts`](src/lib/workspace/identity.ts)) and keeps
+every run in that browser's own IndexedDB
+([`src/lib/workspace/history.ts`](src/lib/workspace/history.ts)), newest 25.
+There is no account behind it and there is not going to be one for drafts: a
+server-side copy of your documents would contradict the one promise this
+product makes. The sidebar says so in as many words, and offers a one-click
+delete for a single run or for everything.
+
+That is also why `/app` is a single static route with the run id in a query
+parameter rather than a dynamic segment: the whole page comes out of the
+visitor's browser, so there is nothing per-request to compute and no reason for
+a run id ever to reach the origin. The route is `noindex` and disallowed in
+`robots.txt`.
+
+The chrome split follows from the same decision. The marketing header and
+footer live in a `(site)` route group
+([`src/app/(site)/layout.tsx`](src/app/(site)/layout.tsx)); the root layout is
+the document shell and nothing else; `/app` sits outside the group with its own
+sidebar. Route groups do not appear in URLs, so nothing changed address.
 
 ### Engines and the weekly allowance
 
@@ -202,7 +244,7 @@ npm run check                # typecheck + lint + tests + MCP smoke + build
 npm run mcp                  # run the MCP server over stdio
 
 npm run e2e                  # drive the real journey in a real browser (needs `npm run dev` up)
-npm run logos                # regenerate web-sized logo assets from public/logo*.png
+npm run logos                # regenerate the web logo assets AND the browser icons from public/logo*.png
 ```
 
 `npm test` runs the unit suite **and** connects to the MCP server over the real
@@ -211,10 +253,13 @@ the last time someone actually connected to it.
 
 `npm run e2e` is the same argument applied to the interface. It drives a real
 Chromium against a running dev server: paste, drag-and-drop, upload, a refused
-PDF, a full rewrite through to the output screen, the dedicated check page,
-every page in the nav and a mobile viewport, asserting on each that there are
-no console errors, nothing overflows horizontally and every image actually
-decoded. Screenshots land in `.e2e-shots/` for a human to look at.
+PDF, a full rewrite through the handoff into the workspace, the comparison in
+both layouts, a single paragraph sent back through the engine, the anonymous
+identity and the history sidebar, the dedicated check page, every page in the
+nav and a mobile viewport, asserting on each that there are no console errors,
+nothing overflows horizontally, every image actually decoded and every piece of
+text clears WCAG AA contrast. Screenshots land in `.e2e-shots/` for a human to
+look at.
 
 ## Content
 
