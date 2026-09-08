@@ -44,7 +44,7 @@ export default function LimitsPage() {
         <ol className="mt-8 space-y-6">
           {limits.map((limit, i) => (
             <li key={i} className="flex gap-4">
-              <span className="figure mt-0.5 text-sm text-ink-300">{String(i + 1).padStart(2, '0')}</span>
+              <span className="figure mt-0.5 text-sm text-ink-400">{String(i + 1).padStart(2, '0')}</span>
               <p className="text-[15px] leading-relaxed text-ink-700">{limit}</p>
             </li>
           ))}

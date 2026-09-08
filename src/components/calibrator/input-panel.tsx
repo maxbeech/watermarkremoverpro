@@ -28,7 +28,7 @@ export function InputPanel({
   const wordCount = text.trim().split(/\s+/).length
 
   return (
-    <div className="space-y-4 rounded-lg border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+    <div className="space-y-4 rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
       {/* Header */}
       <div>
         <p className="t-eyebrow mb-2">Input</p>
@@ -42,7 +42,7 @@ export function InputPanel({
           onChange={(e) => onTextChange(e.target.value)}
           disabled={isLoading}
           placeholder="Paste your text here. It will be analyzed locally on your device."
-          className="min-h-40 w-full resize-none rounded border border-ink-200 bg-white p-3 font-mono text-sm text-ink-900 placeholder-ink-400 focus:border-seal-500 focus:outline-none focus:ring-1 focus:ring-seal-500 disabled:bg-ink-50 disabled:text-ink-500"
+          className="min-h-40 w-full resize-none rounded-[var(--radius-control)] border border-ink-200 bg-white p-3 font-mono text-sm text-ink-900 placeholder-ink-400 focus:border-seal-500 focus:outline-none focus:ring-1 focus:ring-seal-500 disabled:bg-ink-50 disabled:text-ink-500"
         />
         <p className="mt-2 text-xs text-ink-500">
           {wordCount} word{wordCount !== 1 ? 's' : ''} • 100% local processing
@@ -61,7 +61,7 @@ export function InputPanel({
             value={language || ''}
             onChange={(e) => onLanguageChange(e.target.value || '')}
             disabled={isLoading}
-            className="mt-1 block w-full rounded border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 focus:border-seal-500 focus:outline-none focus:ring-1 focus:ring-seal-500 disabled:bg-ink-50 disabled:text-ink-500"
+            className="mt-1 block w-full rounded-[var(--radius-control)] border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 focus:border-seal-500 focus:outline-none focus:ring-1 focus:ring-seal-500 disabled:bg-ink-50 disabled:text-ink-500"
           >
             <option value="">Auto-detect</option>
             {SUPPORTED_LANGUAGES.map((code: LanguageCode) => (
@@ -82,7 +82,7 @@ export function InputPanel({
             value={mode}
             onChange={(e) => onModeChange(e.target.value as 'preview' | 'apply')}
             disabled={isLoading}
-            className="mt-1 block w-full rounded border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 focus:border-seal-500 focus:outline-none focus:ring-1 focus:ring-seal-500 disabled:bg-ink-50 disabled:text-ink-500"
+            className="mt-1 block w-full rounded-[var(--radius-control)] border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 focus:border-seal-500 focus:outline-none focus:ring-1 focus:ring-seal-500 disabled:bg-ink-50 disabled:text-ink-500"
           >
             <option value="preview">Preview (dry-run)</option>
             <option value="apply">Apply (record)</option>
@@ -93,7 +93,7 @@ export function InputPanel({
         <button
           onClick={onCalibrate}
           disabled={isLoading || text.trim().length === 0}
-          className="inline-flex items-center justify-center gap-2 rounded-[3px] bg-seal-600 px-5 py-2.5 text-sm font-medium text-white shadow-[var(--shadow-panel)] transition-[background-color,box-shadow] duration-150 hover:bg-seal-700 hover:shadow-[var(--shadow-raised)] active:translate-y-[0.5px] disabled:cursor-not-allowed disabled:bg-seal-400 disabled:shadow-[var(--shadow-panel)]"
+          className="inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] bg-seal-600 px-5 py-2.5 text-sm font-medium text-white shadow-[var(--shadow-panel)] transition-[background-color,box-shadow] duration-150 hover:bg-seal-700 hover:shadow-[var(--shadow-raised)] active:translate-y-[0.5px] disabled:cursor-not-allowed disabled:bg-seal-400 disabled:shadow-[var(--shadow-panel)]"
         >
           {isLoading ? (
             <>
@@ -108,7 +108,7 @@ export function InputPanel({
 
       {/* Info Box */}
       {text.trim().length === 0 && (
-        <div className="rounded bg-ink-50 p-3 text-xs text-ink-600">
+        <div className="rounded-[var(--radius-control)] bg-ink-50 p-3 text-xs text-ink-600">
           This tool analyzes your text's statistical profile and suggests synonym replacements to
           adjust word frequencies. All processing happens locally on your device.
         </div>

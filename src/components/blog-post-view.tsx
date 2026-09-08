@@ -12,7 +12,7 @@ import {
 } from '@/components/json-ld'
 import { BandRule } from '@/components/brand/band'
 import { ButtonLink, Eyebrow, LimitNote, Wrap } from '@/components/brand/ui'
-import { findPost, type BlogPost } from '@/content/blog'
+import { CATEGORY_TONE, findPost, type BlogPost } from '@/content/blog'
 import { SITE } from '@/lib/site'
 
 /**
@@ -21,12 +21,6 @@ import { SITE } from '@/lib/site'
  * decides how a hero image, a TOC, a stats table or a review rating actually
  * get drawn, so fifteen posts cannot each invent their own markup and drift.
  */
-
-const CATEGORY_TONE: Record<BlogPost['category'], { label: string; className: string }> = {
-  Academy: { label: 'Academy', className: 'bg-seal-50 text-seal-700 border-seal-200' },
-  News: { label: 'News', className: 'bg-signal-100 text-signal-700 border-signal-200' },
-  Reviews: { label: 'Reviews', className: 'bg-ink-100 text-ink-700 border-ink-200' },
-}
 
 const FORMAT_LABEL: Record<BlogPost['format'], string> = {
   'how-to': 'How-to guide',
@@ -89,7 +83,7 @@ export function blogPostMetadata(slug: string): Metadata {
 }
 
 export function BlogPostView({ post }: { post: BlogPost }) {
-  const tone = CATEGORY_TONE[post.category]
+  const toneClass = CATEGORY_TONE[post.category]
   const minutes = readingMinutes(post)
 
   const structuredData: Record<string, unknown>[] = [
@@ -133,13 +127,13 @@ export function BlogPostView({ post }: { post: BlogPost }) {
             <Link href="/" className="transition-colors hover:text-seal-600">
               Home
             </Link>
-            <span className="mx-2 text-ink-300">/</span>
+            <span className="mx-2 text-ink-400">/</span>
             <Link href="/blog" className="transition-colors hover:text-seal-600">
               Blog
             </Link>
-            <span className="mx-2 text-ink-300">/</span>
-            <span className={`t-eyebrow rounded-[3px] border px-1.5 py-0.5 ${tone.className}`}>
-              {tone.label}
+            <span className="mx-2 text-ink-400">/</span>
+            <span className={`t-eyebrow rounded-full border px-2.5 py-1 ${toneClass}`}>
+              {post.category}
             </span>
           </nav>
 
@@ -179,15 +173,15 @@ export function BlogPostView({ post }: { post: BlogPost }) {
       </p>
 
       <article className="mx-auto w-full max-w-6xl px-5 py-12">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:gap-14">
-          <div className="prose-body max-w-2xl">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:gap-14">
+          <div className="prose-body min-w-0 max-w-2xl">
             {post.intro.map((paragraph, i) => (
               <p key={i} className="t-lead mt-4 text-ink-700 first:mt-0">
                 {paragraph}
               </p>
             ))}
 
-            <div className="mt-8 rounded-[4px] border border-seal-200 bg-seal-50 p-6">
+            <div className="mt-8 rounded-[var(--radius-panel)] border border-seal-200 bg-seal-50 p-6">
               <Eyebrow className="mb-3">TL;DR</Eyebrow>
               <ul className="space-y-2 text-[15px] leading-relaxed text-ink-700">
                 {post.takeaways.map((t, i) => (
@@ -216,7 +210,7 @@ export function BlogPostView({ post }: { post: BlogPost }) {
             </div>
 
             {post.table && (
-              <figure className="mt-10 overflow-x-auto rounded-[4px] border border-ink-200 shadow-[var(--shadow-panel)]">
+              <figure className="mt-10 overflow-x-auto rounded-[var(--radius-panel)] border border-ink-200 shadow-[var(--shadow-panel)]">
                 <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
                   <thead>
                     <tr className="border-b border-ink-300 bg-ink-100/70">
@@ -320,7 +314,7 @@ export function BlogPostView({ post }: { post: BlogPost }) {
           </div>
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
-            <nav aria-label="Table of contents" className="rounded-[4px] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+            <nav aria-label="Table of contents" className="rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
               <Eyebrow className="mb-3">On this page</Eyebrow>
               <ul className="space-y-2 text-sm">
                 {post.sections.map((s) => (
@@ -336,7 +330,7 @@ export function BlogPostView({ post }: { post: BlogPost }) {
               </ul>
             </nav>
 
-            <div className="mt-6 rounded-[4px] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
+            <div className="mt-6 rounded-[var(--radius-panel)] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
               <h2 className="t-heading text-ink-900">Check a document now</h2>
               <p className="mt-2.5 text-sm leading-relaxed text-ink-600">
                 Free, no signup, up to 1,500 words. The document is analysed in your browser and

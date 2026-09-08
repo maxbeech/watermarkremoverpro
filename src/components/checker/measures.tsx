@@ -80,7 +80,7 @@ export function KeyMeasure({
   return (
     <div
       className={
-        'rounded-[3px] border p-4 sm:p-5 ' +
+        'rounded-[var(--radius-control)] border p-4 sm:p-5 ' +
         (detected ? 'border-signal-200 bg-signal-100/35' : 'border-ink-200 bg-ink-50/70')
       }
     >
@@ -134,8 +134,8 @@ export function KeyMeasure({
               )} expected by chance`}
             />
             <div className="mt-2 flex items-baseline justify-between">
-              <span className="t-eyebrow text-ink-300">25%</span>
-              <span className="t-eyebrow text-ink-300">85%</span>
+              <span className="t-eyebrow text-ink-400">25%</span>
+              <span className="t-eyebrow text-ink-400">85%</span>
             </div>
             <p className="t-eyebrow mt-2.5 text-ink-400">
               {result.greenRateInterval
@@ -178,8 +178,8 @@ export function PassageRow({ passage }: { passage: PassageFinding }) {
         <span
           className={
             flagged
-              ? 'rounded-[2px] bg-signal-500 px-2 py-0.5 text-[11px] font-medium tracking-wide text-white'
-              : 't-eyebrow text-ink-300'
+              ? 'rounded-full bg-signal-700 px-2.5 py-0.5 text-[11px] font-semibold text-white'
+              : 't-eyebrow text-ink-400'
           }
         >
           {flagged ? 'carries signal after correction' : 'no finding'}
@@ -196,7 +196,7 @@ export function PassageRow({ passage }: { passage: PassageFinding }) {
         />
         <p
           className={
-            'font-serif text-[15px] leading-relaxed ' + (flagged ? 'text-ink-800' : 'text-ink-500')
+            'text-[15px] leading-relaxed ' + (flagged ? 'text-ink-800' : 'text-ink-500')
           }
         >
           {passage.text}
@@ -259,3 +259,31 @@ export function MeasureHeader({
     </header>
   )
 }
+
+/**
+ * The plain-English name for each measured register feature.
+ *
+ * Lives here rather than in the result view because the marketing exhibits
+ * render the same `AnalysisResult`, and when this map was private to the app
+ * they printed the raw identifiers (`hapaxRatio`, `commaRate`) at visitors.
+ * Unknown keys fall through to the identifier rather than being hidden, so a
+ * feature added to the engine shows up as something rather than nothing.
+ */
+const FEATURE_LABELS: Record<string, string> = {
+  meanWordLength: 'Mean word length (characters)',
+  mattr: 'Vocabulary variety (moving-average TTR)',
+  hapaxRatio: 'Share of words used exactly once',
+  meanSentenceLength: 'Mean sentence length (words)',
+  sentenceLengthCv: 'Sentence-length variability',
+  functionWordRate: 'Function words per 1,000 words',
+  commaRate: 'Commas per 1,000 words',
+  semicolonRate: 'Semicolons per 1,000 words',
+  colonRate: 'Colons per 1,000 words',
+  dashRate: 'Dashes per 1,000 words',
+  quoteRate: 'Quotation marks per 1,000 words',
+  parenthesisRate: 'Parentheses per 1,000 words',
+  exclamationRate: 'Exclamation marks per 1,000 words',
+  questionRate: 'Question marks per 1,000 words',
+}
+
+export const featureLabel = (name: string): string => FEATURE_LABELS[name] ?? name

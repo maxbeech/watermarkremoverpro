@@ -7,7 +7,7 @@ import { buttonClass } from '@/components/brand/ui'
 const client = createAuthClient()
 
 const INPUT =
-  'w-full rounded-[3px] border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800 ' +
+  'w-full rounded-[var(--radius-control)] border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800 ' +
   'transition-colors duration-150 hover:border-ink-300 focus:border-seal-400'
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
@@ -22,7 +22,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 
 function ErrorNotice({ message }: { message: string }) {
   return (
-    <p className="rounded-[3px] border border-signal-400 bg-signal-100 px-3.5 py-2.5 text-sm text-signal-700">
+    <p className="rounded-[var(--radius-control)] border border-signal-400 bg-signal-100 px-3.5 py-2.5 text-sm text-signal-700">
       {message}
     </p>
   )
@@ -55,7 +55,7 @@ export function ForgotPasswordForm() {
 
   if (sent) {
     return (
-      <p className="rounded-[3px] border border-ink-200 bg-ink-50 px-3.5 py-2.5 text-sm text-ink-700">
+      <p className="rounded-[var(--radius-control)] border border-ink-200 bg-ink-50 px-3.5 py-2.5 text-sm text-ink-700">
         If an account exists for that address, a reset link is on its way.
       </p>
     )
@@ -111,7 +111,7 @@ export function ResetPasswordForm({ token }: { token: string | null }) {
 
   if (done) {
     return (
-      <p className="rounded-[3px] border border-ink-200 bg-ink-50 px-3.5 py-2.5 text-sm text-ink-700">
+      <p className="rounded-[var(--radius-control)] border border-ink-200 bg-ink-50 px-3.5 py-2.5 text-sm text-ink-700">
         Password reset. <a href="/login" className="link-quiet">Sign in</a> with your new password.
       </p>
     )

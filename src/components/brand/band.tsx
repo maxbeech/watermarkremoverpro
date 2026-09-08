@@ -131,29 +131,36 @@ export function Band({
 }
 
 /**
- * A band reduced to a rule. Used as a section divider and under headings so the
- * signature is present on pages that carry no result of their own.
+ * A short accent rule under a heading.
+ *
+ * This USED to be a miniature measurement band, marker and hatching and all,
+ * used as page furniture on forty pages that carry no measurement. That was
+ * the single biggest reason unrelated pages read as lab reports: the graphic
+ * that means "here is a statistic" appeared under headings where there was no
+ * statistic, so it meant nothing and just added noise.
+ *
+ * It is now a plain two-tone rule in the same tone families. The name, props
+ * and every call site are unchanged deliberately, so this is one edit rather
+ * than a sweep through every content page, and `Band` above stays the one
+ * component that draws a real measurement.
  */
 export function BandRule({
   at = 62,
   tone = 'seal',
   className = '',
 }: {
+  /** Where the accent segment sits along the rule, as a percentage. */
   at?: number
   tone?: BandTone
   className?: string
 }) {
   const c = TONES[tone]
   return (
-    <div className={`relative h-[6px] w-full ${className}`} aria-hidden="true">
-      <div className="absolute inset-0 rounded-[1px]" style={{ backgroundColor: c.track }} />
+    <div className={`relative h-[3px] w-full overflow-hidden rounded-full ${className}`} aria-hidden="true">
+      <div className="absolute inset-0 rounded-full" style={{ backgroundColor: c.track }} />
       <div
-        className="hatch absolute inset-y-0"
-        style={{ left: `${Math.max(0, at - 14)}%`, width: '22%', color: c.hatch }}
-      />
-      <div
-        className="absolute top-[-2px] bottom-[-2px] w-[3px] rounded-[1px]"
-        style={{ left: `${at}%`, backgroundColor: c.mark }}
+        className="absolute inset-y-0 rounded-full"
+        style={{ left: `${Math.max(0, Math.min(70, at - 14))}%`, width: '30%', backgroundColor: c.fill }}
       />
     </div>
   )

@@ -3,82 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * Scroll-linked drift.
+ * Reveal an element the first time it scrolls into view, once.
  *
- * The two hero exhibits are the same paragraph measured twice, and they move at
- * slightly different rates as the page scrolls, which separates them in depth
- * without either of them animating on its own. Deliberately small: the intent is
- * that a visitor notices the panels are separate objects, not that they notice
- * an animation.
- *
- * Honours prefers-reduced-motion by never subscribing to scroll at all, and
- * measures on rAF so it cannot fight the compositor.
- */
-export function Drift({
-  rate = 0.05,
-  max = 26,
-  className = '',
-  children,
-}: {
-  /** Fraction of scroll distance to move by. Positive drifts down. */
-  rate?: number
-  /** Hard cap in pixels, so a long page cannot slide a panel off its section. */
-  max?: number
-  className?: string
-  children: React.ReactNode
-}) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [offset, setOffset] = useState(0)
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    let frame = 0
-    const measure = () => {
-      frame = 0
-      const el = ref.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      // 0 when the element's centre is at the viewport centre, negative above.
-      const fromCentre = rect.top + rect.height / 2 - window.innerHeight / 2
-      const next = Math.max(-max, Math.min(max, -fromCentre * rate))
-      setOffset(next)
-    }
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(measure)
-    }
-
-    measure()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      if (frame) cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-    }
-  }, [rate, max])
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{ transform: `translate3d(0, ${offset.toFixed(2)}px, 0)`, willChange: 'transform' }}
-    >
-      {children}
-    </div>
-  )
-}
-
-/**
- * Reveal on first entry into the viewport. One-shot: once shown, an element is
- * never re-hidden, so scrolling back up is not a second performance.
- *
- * It starts VISIBLE and only hides itself once mounted JavaScript has confirmed
- * the element is genuinely below the fold. An earlier version started hidden and
- * waited to be shown, which meant anything the observer never got around to
- * reporting stayed invisible: a screenshot of the deployed homepage caught the
- * second hero panel missing entirely. Motion is allowed to add something to a
- * page. It is never allowed to be the reason content is not there.
+ * Deliberately the only scroll-linked motion left in the product. Honours
+ * prefers-reduced-motion by never subscribing at all, and never re-runs, so
+ * nothing on the page keeps moving after the reader has arrived at it.
  */
 export function Reveal({
   children,

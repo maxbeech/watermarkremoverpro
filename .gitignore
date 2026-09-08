@@ -24,3 +24,4 @@ corpus/
 
 # Built from src/lib/rewrite via tsup.rewrite-engine.config.ts (npm run build:rewrite-engine).
 packages/rewrite-engine/dist/
+.e2e-shots/

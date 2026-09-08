@@ -41,7 +41,7 @@ export function BudgetStatus() {
 
   return (
     <div
-      className={`rounded-lg p-4 ${
+      className={`rounded-[var(--radius-panel)] p-4 ${
         isAtLimit
           ? 'border border-signal-200 bg-signal-50'
           : isNearLimit

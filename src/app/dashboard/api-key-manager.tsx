@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { ApiKeyRecord } from '@/lib/api-keys'
+import { buttonClass } from '@/components/brand/ui'
 
 /**
  * API key management.
@@ -48,7 +49,7 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
   }
 
   return (
-    <div className="rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+    <div className="rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
       <header className="border-b border-ink-100 px-5 py-4">
         <h2 className="t-heading text-ink-900">API keys</h2>
         <p className="mt-1 text-sm text-ink-500">
@@ -63,13 +64,13 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             placeholder="What is this key for?"
-            className="min-w-48 flex-1 rounded border border-ink-200 px-3 py-2 text-sm"
+            className="min-w-48 flex-1 rounded-[var(--radius-control)] border border-ink-200 px-3 py-2 text-sm transition-colors hover:border-ink-300"
           />
           <button
             type="button"
             onClick={create}
             disabled={busy}
-            className="rounded-[3px] bg-seal-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-seal-700 disabled:bg-ink-300"
+            className={buttonClass('primary')}
           >
             {busy ? 'Creating…' : 'Create a key'}
           </button>
@@ -78,11 +79,13 @@ export function ApiKeyManager({ initialKeys, pro }: { initialKeys: ApiKeyRecord[
         {error && <p className="mt-3 text-sm text-signal-700">{error}</p>}
 
         {issued && (
-          <div className="mt-4 rounded border border-signal-500 bg-signal-100 p-3">
-            <p className="text-sm font-medium text-signal-700">
+          <div className="mt-4 rounded-[var(--radius-control)] border border-signal-300 bg-signal-50 p-3">
+            <p className="text-sm font-semibold text-signal-800">
               Copy this now. It is not stored and cannot be shown again.
             </p>
-            <p className="figure mt-2 break-all rounded bg-white px-3 py-2 text-sm text-ink-900">{issued}</p>
+            <p className="figure mt-2 break-all rounded-[var(--radius-control)] bg-white px-3 py-2 text-sm text-ink-900">
+              {issued}
+            </p>
           </div>
         )}
 

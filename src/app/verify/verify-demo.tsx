@@ -7,6 +7,7 @@ import { generateMarkedText } from '@/lib/detector/simulate'
 import { testWatermark } from '@/lib/detector/watermark'
 import { tokenize } from '@/lib/detector/tokenize'
 import type { DetectionKey } from '@/lib/detector/keys'
+import { buttonClass } from '@/components/brand/ui'
 
 /**
  * The auditability demo.
@@ -69,31 +70,23 @@ export function VerifyDemo() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={() => run(true)}
-          className="rounded-[3px] bg-seal-600 px-5 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-seal-700"
-        >
+        <button type="button" onClick={() => run(true)} className={buttonClass('seal')}>
           Generate text marked with the reference key
         </button>
-        <button
-          type="button"
-          onClick={() => run(false)}
-          className="rounded border border-ink-300 bg-white px-5 py-2 text-sm font-medium text-ink-800"
-        >
+        <button type="button" onClick={() => run(false)} className={buttonClass('quiet')}>
           Generate unmarked text as a control
         </button>
       </div>
 
       {outcome && (
         <>
-          <div className="rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-4">
-            <p className="text-xs uppercase tracking-wide text-ink-400">
+          <div className="rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-4">
+            <p className="text-[13px] font-semibold text-ink-500">
               {outcome.wasMarked
                 ? 'Text generated WITH the reference mark'
                 : 'Control text, generated with no mark under the reference key'}
             </p>
-            <p className="mt-2 max-h-32 overflow-y-auto font-serif text-sm leading-relaxed text-ink-600">
+            <p className="mt-2 max-h-32 overflow-y-auto text-sm leading-relaxed text-ink-600">
               {outcome.text}
             </p>
           </div>
@@ -139,7 +132,7 @@ function Panel({
   expectation: string
 }) {
   return (
-    <div className="rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-4">
+    <div className="rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-4">
       <h3 className="font-medium text-ink-900">{title}</h3>
       <p className="text-xs text-ink-400">{subtitle}</p>
 

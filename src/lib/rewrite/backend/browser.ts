@@ -7,7 +7,7 @@
  *
  * Not wired into src/lib/rewrite/index.ts on purpose: creating this backend
  * downloads real weights, which the always-available rule-based default must
- * never do implicitly. A caller opts in explicitly (see rewrite-tool.tsx).
+ * never do implicitly. A caller opts in explicitly (see components/workspace).
  */
 
 import type { GenerateOptions, RewriteBackend } from './types'

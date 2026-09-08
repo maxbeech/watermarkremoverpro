@@ -30,7 +30,7 @@ export function MetricsDisplay({
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* Left: Before */}
-        <div className="rounded-lg border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+        <div className="rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
           <p className="text-sm font-medium text-ink-600">Original</p>
           <div className="mt-4 space-y-3">
             <MetricRow label="Tokens" value={before.tokens} />
@@ -47,7 +47,7 @@ export function MetricsDisplay({
         </div>
 
         {/* Right: After */}
-        <div className="rounded-lg border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+        <div className="rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
           <p className="text-sm font-medium text-ink-600">Calibrated</p>
           <div className="mt-4 space-y-3">
             <MetricRow label="Tokens" value={after.tokens} />
@@ -67,7 +67,7 @@ export function MetricsDisplay({
       </div>
 
       {/* Summary Stats */}
-      <div className="rounded-lg border border-seal-200 bg-seal-50 p-5">
+      <div className="rounded-[var(--radius-panel)] border border-seal-200 bg-seal-50 p-5">
         <p className="text-sm font-medium text-seal-900">Changes Applied</p>
         <div className="mt-3 flex items-baseline gap-6">
           <div>

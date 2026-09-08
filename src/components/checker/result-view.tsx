@@ -5,7 +5,7 @@ import { ALPHA } from '@/lib/detector'
 import { Band } from '@/components/brand/band'
 import { LimitNote } from '@/components/brand/ui'
 import { PassageBreakdown } from './passage-breakdown'
-import { KeyMeasure, MeasureHeader, Stat, Verdict, fmt } from './measures'
+import { KeyMeasure, MeasureHeader, Stat, Verdict, featureLabel, fmt } from './measures'
 
 /**
  * Rendering rules, which are product rules and not styling preferences:
@@ -23,7 +23,7 @@ import { KeyMeasure, MeasureHeader, Stat, Verdict, fmt } from './measures'
 export function ResultView({ result }: { result: AnalysisResult }) {
   if (result.status !== 'ok') {
     return (
-      <section className="rounded-[4px] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
+      <section className="rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
         <h2 className="t-heading text-ink-900">No result was produced</h2>
         <p className="mt-2 text-sm leading-relaxed text-ink-600">{result.detail}</p>
         {result.status === 'language_undetermined' && (
@@ -42,7 +42,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
   return (
     <div className="mw-rise space-y-5">
       {/* ---------------------------------------------------------------- */}
-      <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+      <section className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
         <MeasureHeader
           eyebrow="Channel one"
           title="Provenance mark"
@@ -72,7 +72,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       </section>
 
       {/* ---------------------------------------------------------------- */}
-      <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+      <section className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
         <MeasureHeader
           eyebrow="Channel two"
           title="Style measurement"
@@ -118,13 +118,13 @@ export function ResultView({ result }: { result: AnalysisResult }) {
                   title={`Style distance ${fmt(dist.compositeDeviation, 2)} standard deviations from reference`}
                 />
                 <div className="mt-2 flex items-baseline justify-between">
-                  <span className="t-eyebrow text-ink-300">0 SD</span>
+                  <span className="t-eyebrow text-ink-400">0 SD</span>
                   <span className="t-eyebrow text-ink-400">
                     {dist.compositeInterval
                       ? `interval ${fmt(dist.compositeInterval.low, 2)} to ${fmt(dist.compositeInterval.high, 2)} SD`
                       : 'too few sentences to resample for a band'}
                   </span>
-                  <span className="t-eyebrow text-ink-300">5 SD</span>
+                  <span className="t-eyebrow text-ink-400">5 SD</span>
                 </div>
               </div>
 
@@ -174,7 +174,7 @@ export function ResultView({ result }: { result: AnalysisResult }) {
       <PassageBreakdown result={result} />
 
       {/* ---------------------------------------------------------------- */}
-      <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+      <section className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
         <MeasureHeader eyebrow="Attached to every result" title="Stated limits" />
         <ul className="space-y-3.5 px-5 py-5 text-sm leading-relaxed text-ink-600">
           {result.limits.map((limit, i) => (
@@ -198,22 +198,3 @@ export function ResultView({ result }: { result: AnalysisResult }) {
     </div>
   )
 }
-
-const FEATURE_LABELS: Record<string, string> = {
-  meanWordLength: 'Mean word length (characters)',
-  mattr: 'Vocabulary variety (moving-average TTR)',
-  hapaxRatio: 'Share of words used exactly once',
-  meanSentenceLength: 'Mean sentence length (words)',
-  sentenceLengthCv: 'Sentence-length variability',
-  functionWordRate: 'Function words per 1,000 words',
-  commaRate: 'Commas per 1,000 words',
-  semicolonRate: 'Semicolons per 1,000 words',
-  colonRate: 'Colons per 1,000 words',
-  dashRate: 'Dashes per 1,000 words',
-  quoteRate: 'Quotation marks per 1,000 words',
-  parenthesisRate: 'Parentheses per 1,000 words',
-  exclamationRate: 'Exclamation marks per 1,000 words',
-  questionRate: 'Question marks per 1,000 words',
-}
-
-const featureLabel = (name: string) => FEATURE_LABELS[name] ?? name

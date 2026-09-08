@@ -31,7 +31,7 @@ export default function CalibratorPage() {
           <div className="max-w-2xl space-y-4">
             <h2 className="t-title text-ink-900">How it works</h2>
 
-            <details className="cursor-pointer rounded-lg border border-ink-200 bg-white p-4">
+            <details className="cursor-pointer rounded-[var(--radius-panel)] border border-ink-200 bg-white p-4">
               <summary className="font-medium text-ink-900">
                 How is this different from the full Rewrite tool?
               </summary>
@@ -44,7 +44,7 @@ export default function CalibratorPage() {
               </p>
             </details>
 
-            <details className="cursor-pointer rounded-lg border border-ink-200 bg-white p-4">
+            <details className="cursor-pointer rounded-[var(--radius-panel)] border border-ink-200 bg-white p-4">
               <summary className="font-medium text-ink-900">
                 Where does my text go?
               </summary>
@@ -55,7 +55,7 @@ export default function CalibratorPage() {
               </p>
             </details>
 
-            <details className="cursor-pointer rounded-lg border border-ink-200 bg-white p-4">
+            <details className="cursor-pointer rounded-[var(--radius-panel)] border border-ink-200 bg-white p-4">
               <summary className="font-medium text-ink-900">
                 Why do some words get different confidence scores?
               </summary>
@@ -66,7 +66,7 @@ export default function CalibratorPage() {
               </p>
             </details>
 
-            <details className="cursor-pointer rounded-lg border border-ink-200 bg-white p-4">
+            <details className="cursor-pointer rounded-[var(--radius-panel)] border border-ink-200 bg-white p-4">
               <summary className="font-medium text-ink-900">
                 What is a daily quota?
               </summary>
@@ -76,7 +76,7 @@ export default function CalibratorPage() {
               </p>
             </details>
 
-            <details className="cursor-pointer rounded-lg border border-ink-200 bg-white p-4">
+            <details className="cursor-pointer rounded-[var(--radius-panel)] border border-ink-200 bg-white p-4">
               <summary className="font-medium text-ink-900">
                 Will calibration preserve my writing style?
               </summary>

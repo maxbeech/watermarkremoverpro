@@ -76,7 +76,7 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
       </Field>
 
       {error && (
-        <p className="rounded-[3px] border border-signal-400 bg-signal-100 px-3.5 py-2.5 text-sm text-signal-700">
+        <p className="rounded-[var(--radius-control)] border border-signal-400 bg-signal-100 px-3.5 py-2.5 text-sm text-signal-700">
           {error}
         </p>
       )}
@@ -89,7 +89,7 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
 }
 
 const INPUT =
-  'w-full rounded-[3px] border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800 ' +
+  'w-full rounded-[var(--radius-control)] border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-800 ' +
   'transition-colors duration-150 hover:border-ink-300 focus:border-seal-400'
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {

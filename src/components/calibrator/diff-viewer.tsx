@@ -63,7 +63,7 @@ export function DiffViewer({
       </div>
 
       {/* Diff Container */}
-      <div className="overflow-hidden rounded-lg border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+      <div className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
         <div className="grid grid-cols-1 divide-y divide-ink-200 md:grid-cols-2 md:divide-x md:divide-y-0">
           {/* Left: Original */}
           <div className="overflow-x-auto p-4">
@@ -149,11 +149,11 @@ export function DiffViewer({
       {/* Legend */}
       <div className="flex gap-4 text-xs text-ink-600">
         <div className="flex items-center gap-2">
-          <span className="inline-block h-4 w-8 rounded bg-seal-100" />
+          <span className="inline-block h-4 w-8 rounded-[var(--radius-control)] bg-seal-100" />
           <span>Changed words (click to review)</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="inline-block h-4 w-8 rounded bg-ink-50" />
+          <span className="inline-block h-4 w-8 rounded-[var(--radius-control)] bg-ink-50" />
           <span>Unchanged</span>
         </div>
       </div>

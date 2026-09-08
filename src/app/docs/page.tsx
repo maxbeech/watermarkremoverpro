@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { PageHeader, Section, Wrap, Panel } from '@/components/brand/ui'
-import { BandRule } from '@/components/brand/band'
 
 export const metadata: Metadata = {
   title: 'Documentation',
@@ -39,9 +38,8 @@ export default function DocsIndexPage() {
             {DOCS.map((doc, i) => (
               <Link key={doc.href} href={doc.href} className="block">
                 <Panel interactive className="h-full p-6">
-                  <span className="figure text-xs text-ink-300">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="figure text-xs text-ink-400">{String(i + 1).padStart(2, '0')}</span>
                   <h2 className="t-heading mt-2 text-ink-900">{doc.title}</h2>
-                  <BandRule at={30 + i * 20} tone="muted" className="mt-3 max-w-[4rem] opacity-60" />
                   <p className="mt-3 text-sm leading-relaxed text-ink-500">{doc.description}</p>
                 </Panel>
               </Link>

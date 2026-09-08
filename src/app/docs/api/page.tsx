@@ -21,7 +21,7 @@ export default function ApiDocsPage() {
           <>
             The same engine the browser runs, plus any detection keys this deployment holds that
             cannot be shipped to a browser. Metered at{' '}
-            <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words, rounded
+            <span className="figure">{API_PRICE_PENCE_PER_1K_WORDS}p</span> per 1,000 words, rounded-[var(--radius-control)]
             up.
           </>
         }
@@ -137,7 +137,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Code({ children }: { children: string }) {
   return (
-    <pre className="mt-3 overflow-x-auto rounded border border-ink-200 bg-white p-4 text-xs leading-relaxed text-ink-800">
+    <pre className="mt-3 overflow-x-auto rounded-[var(--radius-control)] border border-ink-200 bg-white p-4 text-xs leading-relaxed text-ink-800">
       <code className="figure">{children}</code>
     </pre>
   )

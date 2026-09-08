@@ -68,7 +68,7 @@ export default async function MethodPage() {
             list of size γ and a red list; a marked generator is nudged toward green. Detection is
             the one-proportion z test that falls out of that:
           </p>
-          <p className="figure mt-4 rounded border border-ink-200 bg-white px-4 py-3 text-center text-sm">
+          <p className="figure mt-4 rounded-[var(--radius-control)] border border-ink-200 bg-white px-4 py-3 text-center text-sm">
             z = (|s|<sub>G</sub> − γT) / √(T · γ · (1 − γ))
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
@@ -85,8 +85,8 @@ export default async function MethodPage() {
           </p>
         </section>
 
-        <section className="mt-10 rounded-lg border border-seal-300 bg-seal-50 p-5">
-          <h2 className="font-serif text-xl text-seal-700">The limitation that matters most</h2>
+        <section className="mt-10 rounded-[var(--radius-panel)] border border-seal-300 bg-seal-50 p-5">
+          <h2 className="t-heading text-seal-700">The limitation that matters most</h2>
           <p className="mt-2 text-[15px] leading-relaxed text-seal-700">
             A green-list mark is <strong>keyed</strong>. Without the secret used to apply it, the
             partition is unknowable and there is no test to run. No model vendor publishes a
@@ -136,7 +136,7 @@ export default async function MethodPage() {
           <div className="mt-4 overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="border-b border-ink-200 text-left text-xs uppercase tracking-wide text-ink-400">
+                <tr className="border-b border-ink-200 text-left text-[13px] font-semibold text-ink-500">
                   <th className="py-2 pr-4 font-medium">Language</th>
                   <th className="py-2 pr-4 font-medium">Documents</th>
                   <th className="py-2 pr-4 font-medium">Words</th>

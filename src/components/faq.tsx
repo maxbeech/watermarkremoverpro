@@ -1,10 +1,20 @@
 import { Section, SectionHead, Wrap } from '@/components/brand/ui'
+import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
 
 export interface FaqItem {
   question: string
   answer: string
 }
 
+/**
+ * The FAQ, as a list of disclosures.
+ *
+ * It used to render every answer expanded with a numbered gutter, which put
+ * eighteen hundred words of prose between the homepage's last section and its
+ * closing call to action. The answers are still in the DOM (so they are still
+ * indexed, and the FAQPage structured data still describes them); they are
+ * just not all shouted at once.
+ */
 export function Faq({
   items,
   title = 'Questions people actually ask',
@@ -16,19 +26,26 @@ export function Faq({
     <Section surface="panel" tight>
       <Wrap>
         <SectionHead eyebrow="Answers, in full" title={title} />
-        <dl className="mt-10 divide-y divide-ink-200 border-t border-ink-300">
-          {items.map((item, i) => (
+        <dl className="mt-8 space-y-2.5">
+          {items.map((item) => (
             <div
               key={item.question}
-              className="group grid gap-x-8 gap-y-2 py-6 transition-colors duration-150 sm:grid-cols-[2.5rem_minmax(0,1fr)]"
+              className="rounded-[var(--radius-panel)] border border-ink-200 transition-colors duration-150 hover:border-ink-300"
             >
-              <span className="figure hidden pt-1 text-xs text-ink-300 transition-colors duration-150 group-hover:text-seal-500 sm:block">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <div>
-                <dt className="font-medium text-ink-900">{item.question}</dt>
-                <dd className="mt-2.5 text-[15px] leading-relaxed text-ink-600">{item.answer}</dd>
-              </div>
+              <details className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+                  <dt className="font-semibold text-ink-900">{item.question}</dt>
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 text-ink-400 transition-transform duration-200 group-open:rotate-180"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </summary>
+                <dd className="px-5 pb-5 text-[15px] leading-relaxed text-ink-600">{item.answer}</dd>
+              </details>
             </div>
           ))}
         </dl>
@@ -55,9 +72,9 @@ export const CORE_FAQ: FaqItem[] = [
       'No, and any tool that claims a 100% or guaranteed result is overselling a probabilistic process. WatermarkRemoverPro can reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. It cannot guarantee defeating a model vendor\'s undisclosed watermark, because nobody outside that vendor holds the key it was applied with, and no honest tool can promise otherwise. The rewrite runs entirely on your device, on every tier, and shows you the before/after evidence so you can judge the result yourself rather than take a guarantee on faith.',
   },
   {
-    question: 'What\'s the difference between the free and Pro rewrite?',
+    question: 'What\'s the difference between the Standard and Pro rewrite engines?',
     answer:
-      'Both run the same on-device engine with unlimited use: there is no word cap or monthly limit on rewriting, because the computation happens on your device, not our servers. Pro generates more candidate rewrites per passage, giving a better result to choose from, and uses the extended AI-tell library. Neither tier ever sends your text anywhere.',
+      `Standard is deterministic substitution against the core AI-tell library: instant, no download, and unlimited on every plan with no word cap or monthly limit, because the computation happens on your device rather than on our servers. Pro is a real small language model that downloads once and runs in your browser, generating more candidate rewrites per passage and using the extended AI-tell library. Everyone gets ${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free Pro-engine run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free Pro-engine runs`} every ${PRO_TRIAL_WINDOW_DAYS} days so you can compare them on your own text, and a Pro subscription removes that limit. Neither engine ever sends your text anywhere.`,
   },
   {
     question: 'Does my document ever leave my device?',

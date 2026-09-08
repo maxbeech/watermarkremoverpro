@@ -183,7 +183,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Code({ children }: { children: string }) {
   return (
-    <pre className="mt-3 overflow-x-auto rounded border border-ink-200 bg-white p-4 text-xs leading-relaxed text-ink-800">
+    <pre className="mt-3 overflow-x-auto rounded-[var(--radius-control)] border border-ink-200 bg-white p-4 text-xs leading-relaxed text-ink-800">
       <code className="figure">{children}</code>
     </pre>
   )

@@ -28,7 +28,7 @@ export function GET() {
           machineCallable: false,
           rewrite: { ...PLANS.anonymous.rewrite, onDevice: true },
           notes:
-            'Checking runs entirely in the browser and the document is not uploaded, so there is no server-side path for a programmatic caller to use. Rewriting is unlimited-use and always on-device, on every plan.',
+            'Checking runs entirely in the browser and the document is not uploaded, so there is no server-side path for a programmatic caller to use. Rewriting is always on-device on every plan, and unlimited on the Standard engine; the Pro engine is limited to a weekly free allowance unless you subscribe.',
         },
         {
           id: PLANS.free.id,

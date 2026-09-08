@@ -105,8 +105,9 @@ Usage:
 Options:
   -o, --output <file>   Write the revised text here instead of stdout.
       --strength <s>    preserve | balanced | aggressive | regenerate (default: balanced)
-      --tier <t>        free | pro (default: free). Both are unlimited-use; pro generates
-                         more candidates per passage and uses the extended AI-tell library.
+      --tier <t>        free | pro (default: free). Unlimited in this CLI, which runs
+                         entirely in your own process; pro generates more candidates per
+                         passage and uses the extended AI-tell library.
       --model <m>       standard | advanced (default: standard). "advanced" downloads and
                          runs a real local LLM (Qwen2.5) on first use; "standard" is the
                          instant, no-download rule-based engine. Both are 100% on-device.

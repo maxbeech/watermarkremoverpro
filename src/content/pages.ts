@@ -344,7 +344,7 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
     keyDifference: [
       'WatermarkRemoverPro\'s rewrite runs entirely on your device or in your own process, on every tier: nothing about the document is ever sent to a WatermarkRemoverPro-operated server, and there is no REST endpoint for it by design. Most humanizer tools are the opposite: a cloud service you paste your draft into.',
       'The claim is the other real difference. WatermarkRemoverPro states a reduction, not a guarantee: the same conservative language used everywhere else on this site. It also shows the before/after evidence delta using the same arithmetic its own detector uses, so the change is something you can verify rather than take on faith.',
-      'Free and Pro are both unlimited-use here, because the computation runs on your device either way rather than metering server compute.',
+      'The Standard engine is unlimited on every plan, because the computation runs on your device rather than metering server compute. The Pro engine is a real local model, free once a week for everyone and unlimited on a Pro subscription.',
     ],
   },
 ]
@@ -684,7 +684,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'What WatermarkRemoverPro\'s rewrite actually does',
         body: [
           'Two mechanisms, run together, entirely on your device: a deterministic pass over AI-tell punctuation and phrasing, and targeted candidate rewrites of the specific passages a real per-passage check flags, gated so a candidate that changes a number, a name or a negation is rejected outright rather than used. See /rewrite.',
-          'Free and Pro are both unlimited-use, because the computation runs on your device either way; Pro adds more candidates per passage and the extended AI-tell library, and can optionally run a larger local model. Nothing about the document is ever sent anywhere, on any tier: see docs/REWRITE_PHILOSOPHY.md for exactly what is and is not claimed.',
+          'The Standard engine is unlimited on every plan, because the computation runs on your device rather than metering server compute. The Pro engine adds a real local language model, more candidates per passage and the extended AI-tell library; everyone gets a free run of it each week, and a Pro subscription removes that limit. Nothing about the document is ever sent anywhere, on any tier: see docs/REWRITE_PHILOSOPHY.md for exactly what is and is not claimed.',
         ],
       },
     ],

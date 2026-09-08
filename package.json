@@ -18,7 +18,9 @@
     "mcp": "tsx mcp/server.ts",
     "build:rewrite-engine": "tsup --config tsup.rewrite-engine.config.ts",
     "build:plugin": "tsup --config tsup.mcp.config.ts",
-    "db:push": "tsx scripts/db-push.ts"
+    "db:push": "tsx scripts/db-push.ts",
+    "e2e": "tsx scripts/e2e-journey.mts",
+    "logos": "tsx scripts/build-logos.ts"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",

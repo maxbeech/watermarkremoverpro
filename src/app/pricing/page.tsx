@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { API_PRICE_PENCE_PER_1K_WORDS, PLANS } from '@/lib/site'
+import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
 import { JsonLd, faqPageLd, softwareApplicationLd } from '@/components/json-ld'
 import { Faq } from '@/components/faq'
 import { BandRule } from '@/components/brand/band'
@@ -13,7 +14,7 @@ import { stripeConfigured } from '@/lib/billing'
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Unlimited on-device rewriting on every tier, free or Pro. Free on-device checks with no signup, a free account tier, and Pro with the larger rewrite model, the dated PDF evidence report, and metered API/MCP access to checking.',
+    'Unlimited on-device rewriting on the Standard engine, free or Pro, plus a free weekly run of the Pro rewrite engine for everyone. Free on-device checks with no signup, a free account tier, and Pro with the unlimited Pro engine, the dated PDF evidence report, and metered API/MCP access to checking.',
   alternates: { canonical: '/pricing' },
 }
 
@@ -21,7 +22,7 @@ const FAQ = [
   {
     question: 'What does Pro give me that free does not?',
     answer:
-      "For rewriting: a larger on-device model with more candidates generated per passage, and the extended AI-tell library. Both tiers are unlimited-use, since the computation runs on your device either way. For checking: the dated evidence report, which the free tier structurally cannot produce, since the free check runs in your browser and deliberately leaves nothing behind. Pro also runs checks server-side against every detection key the deployment holds, plus batch upload and metered API/MCP access to checking.",
+      `For rewriting: the Pro engine, a real local language model, with no weekly limit, plus more candidates generated per passage and the extended AI-tell library. Everyone gets ${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free Pro-engine run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free Pro-engine runs`} every ${PRO_TRIAL_WINDOW_DAYS} days and unlimited use of the Standard engine, so you can see exactly what the upgrade buys on your own text before paying for it. For checking: the dated evidence report, which the free tier structurally cannot produce, since the free check runs in your browser and deliberately leaves nothing behind. Pro also runs checks server-side against every detection key the deployment holds, plus batch upload and metered API/MCP access to checking.`,
   },
   {
     question: 'Is the API billed separately from the subscription?',
@@ -43,15 +44,15 @@ export default async function PricingPage() {
       <JsonLd data={[softwareApplicationLd(), faqPageLd(FAQ)]} />
       <PageHeader
         eyebrow="Pricing"
-        title="Rewriting is unlimited on every tier."
+        title="Rewriting is free and unlimited. Pay for the bigger engine."
         wide
-        lead="On-device rewriting has no server cost, so it's unlimited whether you pay or not. What you pay for is Pro's larger rewrite model, and, for checking, the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else."
+        lead={`On-device rewriting has no server cost, so the Standard engine is unlimited whether you pay or not, forever. Everyone also gets ${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free runs`} of the Pro engine every ${PRO_TRIAL_WINDOW_DAYS} days. What you pay for is the Pro engine without that limit, and, for checking, the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else.`}
       />
 
       <Section tight>
         <Wrap wide>
         {!billingLive && (
-          <div className="mb-10 rounded-[4px] border border-signal-400 bg-signal-100 px-5 py-4 text-sm text-signal-700">
+          <div className="mb-10 rounded-[var(--radius-panel)] border border-signal-400 bg-signal-100 px-5 py-4 text-sm text-signal-700">
             <p className="font-medium">Paid plans are not yet purchasable on this deployment.</p>
             <p className="mt-1.5 leading-relaxed">
               No payment processor is configured here, so the Pro checkout is switched off rather than
@@ -104,8 +105,8 @@ export default async function PricingPage() {
             </p>
             <p className="mt-5 text-sm leading-relaxed text-ink-500">
               Rewriting itself is <Link href="/rewrite" className="link-quiet">a separate feature</Link>,
-              unlimited on every tier and always on-device. It cannot guarantee defeating a model
-              vendor&apos;s undisclosed watermark, on any tier, at any price.
+              always on-device and unlimited on the Standard engine. It cannot guarantee defeating a
+              model vendor&apos;s undisclosed watermark, on any tier, at any price.
             </p>
           </div>
 
@@ -164,32 +165,42 @@ function Tier({
   return (
     <div
       className={
-        'flex flex-col rounded-[4px] border bg-white p-7 transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-[2px] ' +
+        'flex flex-col rounded-[var(--radius-panel)] border bg-white p-7 transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-[2px] ' +
         (highlight
           ? 'border-seal-300 shadow-[var(--shadow-raised)] hover:shadow-[var(--shadow-exhibit)]'
           : 'border-ink-200 shadow-[var(--shadow-panel)] hover:border-seal-200 hover:shadow-[var(--shadow-raised)]')
       }
     >
-      <h2 className="t-eyebrow text-ink-400">{name}</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-sm font-semibold text-ink-600">{name}</h2>
+        {highlight && (
+          <span className="rounded-full bg-seal-100 px-2.5 py-0.5 text-[11px] font-semibold text-seal-700">
+            Most complete
+          </span>
+        )}
+      </div>
       <p className="mt-4 flex items-baseline gap-2">
         <span className="figure text-4xl leading-none text-ink-900">{price}</span>
-        <span className="text-sm text-ink-400">{note}</span>
+        <span className="text-sm text-ink-500">{note}</span>
       </p>
-      <BandRule at={highlight ? 78 : 34} tone={highlight ? 'seal' : 'muted'} className="mt-5 max-w-[5rem]" />
-      <ul className="mt-6 flex-1 space-y-3.5 text-sm leading-relaxed text-ink-600">
+      <ul className="mt-6 flex-1 space-y-3.5 border-t border-ink-100 pt-6 text-sm leading-relaxed text-ink-600">
         {features.map((f) => (
-          <li key={f} className="flex gap-3">
-            <span
-              className={
-                'mt-[7px] h-[3px] w-[3px] shrink-0 ' + (highlight ? 'bg-seal-500' : 'bg-ink-400')
-              }
-            />
+          <li key={f} className="flex gap-2.5">
+            {/* A tick, not a 3px square: a checklist of what you get should
+                look like one, and the square read as a stray bullet glyph. */}
+            <svg
+              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+              className={'mt-0.5 shrink-0 ' + (highlight ? 'text-seal-600' : 'text-mint-500')}
+            >
+              <path d="M20 6L9 17l-5-5" />
+            </svg>
             <span>{f}</span>
           </li>
         ))}
       </ul>
       {cta.disabled ? (
-        <span className="mt-7 block cursor-not-allowed rounded-[3px] bg-ink-100 px-4 py-2.5 text-center text-sm text-ink-400">
+        <span className="mt-7 block cursor-not-allowed rounded-full bg-ink-100 px-4 py-2.5 text-center text-sm font-semibold text-ink-500">
           {cta.label}
         </span>
       ) : (

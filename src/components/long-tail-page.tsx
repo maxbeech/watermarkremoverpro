@@ -69,7 +69,7 @@ export async function LongTailPageView({ page }: { page: LongTailPage }) {
             <Link href="/" className="transition-colors hover:text-seal-600">
               Home
             </Link>
-            <span className="mx-2 text-ink-300">/</span>
+            <span className="mx-2 text-ink-400">/</span>
             <Link href={`/${page.group}`} className="transition-colors hover:text-seal-600">
               {GROUP_LABELS[page.group]}
             </Link>
@@ -82,8 +82,8 @@ export async function LongTailPageView({ page }: { page: LongTailPage }) {
       </div>
 
       <article className="mx-auto w-full max-w-6xl px-5 py-14">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,23rem)] lg:gap-14">
-          <div className="prose-body max-w-2xl space-y-10">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,23rem)] lg:gap-14">
+          <div className="prose-body min-w-0 max-w-2xl space-y-10">
             {page.sections.map((section) => (
               <section key={section.heading}>
                 <h2 className="t-heading text-ink-900">{section.heading}</h2>
@@ -110,7 +110,7 @@ export async function LongTailPageView({ page }: { page: LongTailPage }) {
               </ExhibitFrame>
             </Reveal>
 
-            <div className="mt-8 rounded-[4px] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
+            <div className="mt-8 rounded-[var(--radius-panel)] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
               <h2 className="t-heading text-ink-900">Check a document now</h2>
               <p className="mt-2.5 text-sm leading-relaxed text-ink-600">
                 Up to {PLANS.anonymous.wordCap.toLocaleString()} words without an account, analysed

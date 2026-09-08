@@ -1,3 +1,5 @@
+import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
+
 /**
  * Site-wide constants. Single source of truth for anything that appears in more
  * than one place: metadata, JSON-LD, llms.txt, the OpenAPI document and the
@@ -27,13 +29,23 @@ export const MIRROR_PRODUCT = {
 } as const
 
 /**
- * Two axes now, not one. `wordCap`/`checksPerMonth` etc. describe CHECKING,
- * which still costs server compute on the Pro/API/MCP hosted paths and keeps
- * its existing word-cap shape unchanged. `rewrite` describes the on-device
- * REWRITE feature, which is unlimited-use on every plan (the computation runs
- * on the caller's own device or process, so there is no server cost to gate)
- * and differentiates purely by model tier and AI-tell library depth.
+ * Two axes, not one. `wordCap`/`checksPerMonth` describe CHECKING, which still
+ * costs server compute on the Pro/API/MCP hosted paths and keeps its existing
+ * word-cap shape. `rewrite` describes the on-device REWRITE feature, which
+ * runs in the caller's own browser or process and therefore costs this product
+ * nothing to serve.
+ *
+ * Rewriting is UNLIMITED on every plan on the Standard engine, forever. What a
+ * plan changes is which ENGINE you can reach for: the Pro engine is a real
+ * local language model, and everyone gets PRO_TRIAL_RUNS_PER_WINDOW run of it
+ * every PRO_TRIAL_WINDOW_DAYS days before falling back to Standard. A Pro
+ * subscription removes that limit. The numbers below are read from
+ * lib/entitlements/pro-trial rather than retyped, so the pricing page, the
+ * machine-readable pricing document and the code that actually enforces the
+ * allowance cannot disagree.
  */
+const proEngineTrialLine = `${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'One' : PRO_TRIAL_RUNS_PER_WINDOW} free run of the Pro rewrite engine every ${PRO_TRIAL_WINDOW_DAYS} days, then unlimited Standard`
+
 export const PLANS = {
   anonymous: {
     id: 'anonymous',
@@ -41,9 +53,15 @@ export const PLANS = {
     price: 0,
     wordCap: 1500,
     checksPerMonth: null,
-    rewrite: { modelTier: 'standard', unlimited: true, tellLibrary: 'core' },
+    rewrite: {
+      modelTier: 'standard',
+      unlimited: true,
+      tellLibrary: 'core',
+      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW,
+    },
     features: [
-      'Unlimited on-device rewriting, standard model, core AI-tell library',
+      'Unlimited on-device rewriting on the Standard engine, core AI-tell library',
+      proEngineTrialLine,
       'One document at a time to check, up to 1,500 words',
       'Runs entirely in your browser, and the document is never uploaded',
       'Confidence band, per-passage breakdown and stated limits on screen',
@@ -55,9 +73,15 @@ export const PLANS = {
     price: 0,
     wordCap: 5000,
     checksPerMonth: 20,
-    rewrite: { modelTier: 'standard', unlimited: true, tellLibrary: 'core' },
+    rewrite: {
+      modelTier: 'standard',
+      unlimited: true,
+      tellLibrary: 'core',
+      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW,
+    },
     features: [
-      'Unlimited on-device rewriting, standard model, core AI-tell library, saved history',
+      'Unlimited on-device rewriting on the Standard engine, plus saved history',
+      `${proEngineTrialLine}, counted against your account rather than one browser`,
       'Up to 5,000 words per document to check, 20 checks a month',
       'All five supported languages',
     ],
@@ -69,12 +93,17 @@ export const PLANS = {
     currency: 'GBP',
     wordCap: 100_000,
     checksPerMonth: null,
-    rewrite: { modelTier: 'advanced', unlimited: true, tellLibrary: 'extended' },
+    rewrite: {
+      modelTier: 'advanced',
+      unlimited: true,
+      tellLibrary: 'extended',
+      proEngineRunsPerWindow: null,
+    },
     features: [
-      'Unlimited on-device rewriting: more candidates per passage and the extended AI-tell library',
+      'The Pro rewrite engine with no weekly limit: a real local model, more candidates per passage, and the extended AI-tell library',
       'Unlimited checks and batch upload',
       'The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash',
-      'API and MCP access to checking, metered; rewriting is always on-device, unlimited, on every tier',
+      'API and MCP access to checking, metered; rewriting is always on-device, on every tier',
     ],
   },
 } as const

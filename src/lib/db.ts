@@ -160,4 +160,20 @@ create table if not exists checks (
 
 create index if not exists checks_account_created
   on checks (account_id, created_at desc);
+
+-- Every run of the Pro rewrite engine taken against the free weekly trial
+-- allowance (see src/lib/entitlements/pro-trial.ts). One row per run, so the
+-- rolling window is a query rather than a counter that has to be reset by a
+-- job. Deliberately records no document text, no hash and no word count: this
+-- table exists to answer "has this account used its weekly Pro run", and
+-- storing anything about WHAT was rewritten would break the guarantee that
+-- rewriting never leaves the device.
+create table if not exists pro_trial_runs (
+  id            bigserial primary key,
+  account_id    text not null references accounts(id) on delete cascade,
+  created_at    timestamptz not null default now()
+);
+
+create index if not exists pro_trial_runs_account_created
+  on pro_trial_runs (account_id, created_at desc);
 `

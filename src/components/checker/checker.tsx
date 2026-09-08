@@ -1,31 +1,40 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { checkDocument, type AnalysisResult } from '@/lib/detector'
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import { countWords } from '@/lib/detector/tokenize'
 import { PLANS } from '@/lib/site'
 import { buttonClass } from '@/components/brand/ui'
+import { DocumentInput } from '@/components/workspace/document-input'
 import { ResultView } from './result-view'
 
 /**
- * The free check.
+ * The check on its own, without the rewrite.
  *
  * EVERYTHING HERE RUNS IN THE BROWSER. There is no fetch, no server action and
  * no analytics call carrying document text anywhere in this component or in
  * anything it imports. That is the product's central promise, and it is
- * enforced by a test (tests/product-constraints.test.ts) that fails the
- * build if a network call appears on this path.
+ * enforced by a test (tests/product-constraints.test.ts) that fails the build
+ * if a network call appears on this path.
+ *
+ * The input surface is the SAME component the homepage workspace uses, so
+ * paste, drag-and-drop and upload behave identically on both, and a fix to one
+ * is a fix to both.
  */
 
-type Phase = { kind: 'idle' } | { kind: 'measuring' } | { kind: 'done'; result: AnalysisResult } | { kind: 'error'; message: string }
+type Phase =
+  | { kind: 'idle' }
+  | { kind: 'measuring' }
+  | { kind: 'done'; result: AnalysisResult }
+  | { kind: 'error'; message: string }
 
 export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: number }) {
   const [text, setText] = useState('')
   const [language, setLanguage] = useState<string>('auto')
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' })
-  const fileInput = useRef<HTMLInputElement>(null)
+  const [fileError, setFileError] = useState<string | null>(null)
 
   const words = useMemo(() => countWords(text), [text])
   const overCap = words > wordCap
@@ -48,112 +57,70 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
     }
   }, [text, language])
 
-  const readFile = useCallback((file: File) => {
-    const reader = new FileReader()
-    reader.onload = () => setText(String(reader.result ?? ''))
-    reader.onerror = () => setPhase({ kind: 'error', message: `Could not read ${file.name}.` })
-    // readAsText is a local operation. The file is not uploaded.
-    reader.readAsText(file)
-  }, [])
-
   return (
-    <div className="space-y-6">
-      <div className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-raised)] transition-[border-color] duration-200 focus-within:border-seal-300">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 bg-ink-50/70 px-4 py-3">
-          <div className="flex items-center gap-2 text-sm text-seal-700">
-            <ShieldIcon />
-            <span>
-              Runs on your device. Open your browser’s network tab and watch: nothing is sent.
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="text-sm text-ink-500" htmlFor="language">
+    <div className="space-y-4">
+      <DocumentInput
+        value={text}
+        onChange={setText}
+        words={words}
+        wordCap={wordCap}
+        disabled={phase.kind === 'measuring'}
+        onFileError={setFileError}
+        placeholder="Paste the writing you want to check. Your own writing, that is. Or drop a file anywhere on this box."
+        toolbar={
+          <div className="flex items-center gap-2">
+            <label htmlFor="check-language" className="sr-only">
               Language
             </label>
             <select
-              id="language"
+              id="check-language"
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="rounded-[3px] border border-ink-200 bg-white px-2 py-1 text-sm text-ink-800 transition-colors duration-150 hover:border-seal-300"
+              className="rounded-full border border-ink-200 bg-white px-3 py-1.5 text-[13px] text-ink-700 transition-colors hover:border-ink-300"
             >
-              <option value="auto">Detect automatically</option>
+              <option value="auto">Detect language</option>
               {SUPPORTED_LANGUAGES.map((code) => (
                 <option key={code} value={code}>
                   {LANGUAGE_NAMES[code]}
                 </option>
               ))}
             </select>
-          </div>
-        </div>
-
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={12}
-          spellCheck={false}
-          placeholder="Paste the writing you want to check. Your own writing: this tool is not for screening other people’s work."
-          className="w-full resize-y bg-transparent px-5 py-5 font-serif text-[15px] leading-relaxed text-ink-800 outline-none placeholder:text-ink-300"
-        />
-
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-100 px-4 py-3">
-          <div className="flex items-center gap-4 text-sm">
-            <span className={overCap ? 'figure text-signal-700' : 'figure text-ink-500'}>
-              {words.toLocaleString()} / {wordCap.toLocaleString()} words
-            </span>
-            <input
-              ref={fileInput}
-              type="file"
-              accept=".txt,.md,.markdown,text/plain,text/markdown"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                if (file) readFile(file)
-              }}
-            />
             <button
               type="button"
-              onClick={() => fileInput.current?.click()}
-              className="link-quiet text-ink-500"
+              onClick={run}
+              disabled={words === 0 || overCap || phase.kind === 'measuring'}
+              className={buttonClass('primary', 'disabled:bg-ink-300 disabled:text-white')}
             >
-              Open a .txt or .md file
+              {phase.kind === 'measuring' ? 'Measuring…' : 'Run the check'}
             </button>
           </div>
+        }
+        footer={
+          overCap ? (
+            <p className="border-t border-signal-200 bg-signal-50 px-4 py-3 text-sm leading-relaxed text-signal-800">
+              This document is {(words - wordCap).toLocaleString()} words over the{' '}
+              {wordCap.toLocaleString()}-word limit for a check without an account. Nothing has been
+              truncated or partially analysed, because a result measured on part of a document would
+              not describe the document.
+            </p>
+          ) : null
+        }
+      />
 
-          <button
-            type="button"
-            onClick={run}
-            disabled={words === 0 || overCap || phase.kind === 'measuring'}
-            className={buttonClass('primary', 'disabled:bg-ink-300 disabled:text-ink-50')}
-          >
-            {phase.kind === 'measuring' ? 'Measuring…' : 'Run the check'}
-          </button>
-        </div>
-
-        {overCap && (
-          <p className="border-t border-signal-100 bg-signal-100/50 px-4 py-3 text-sm text-signal-700">
-            This document is {(words - wordCap).toLocaleString()} words over the {wordCap.toLocaleString()}-word
-            limit for a check without an account. Nothing has been truncated or partially analysed,
-            because a result measured on part of a document would not describe the document.
-          </p>
-        )}
-      </div>
+      {fileError && (
+        <p className="rounded-[var(--radius-control)] border border-signal-200 bg-signal-50 px-4 py-3 text-sm text-signal-800">
+          {fileError}
+        </p>
+      )}
 
       {phase.kind === 'error' && (
-        <div className="rounded-[4px] border border-signal-500 bg-signal-100 px-4 py-3 text-sm text-signal-700">
-          <p className="font-medium">The check did not run.</p>
+        <div className="rounded-[var(--radius-control)] border border-signal-300 bg-signal-50 px-4 py-3 text-sm text-signal-800">
+          <p className="font-semibold">The check did not run.</p>
           <p className="mt-1">{phase.message}</p>
         </div>
       )}
 
       {phase.kind === 'done' && <ResultView result={phase.result} />}
     </div>
-  )
-}
-
-function ShieldIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <path d="M12 3l7 3v6c0 4.5-3 7.9-7 9-4-1.1-7-4.5-7-9V6l7-3z" />
-    </svg>
   )
 }

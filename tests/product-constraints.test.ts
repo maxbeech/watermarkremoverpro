@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 /**
@@ -135,10 +135,24 @@ describe('constraint: the free check never transmits the document', () => {
   const stripComments = (source: string): string =>
     source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '')
 
+  /**
+   * Every component that HOLDS the document, on any surface. The workspace
+   * directory is included deliberately: it is where the homepage flow lives
+   * now, so the constraint has to follow the document there rather than stay
+   * pointed at the components it used to live in.
+   *
+   * One file in that directory is exempt and named here rather than pattern
+   * matched. `use-pro-trial.ts` reads the weekly Pro-engine allowance over the
+   * network; it never sees the document, and the test below asserts that the
+   * module it calls cannot carry one.
+   */
+  const TRIAL_HOOK = join(ROOT, 'src', 'components', 'workspace', 'use-pro-trial.ts')
+
   const onDevicePath = [
     ...walk(join(ROOT, 'src', 'lib', 'detector')),
     ...walk(join(ROOT, 'src', 'components', 'checker')),
-  ].filter((f) => !f.endsWith('.test.ts'))
+    ...walk(join(ROOT, 'src', 'components', 'workspace')),
+  ].filter((f) => !f.endsWith('.test.ts') && f !== TRIAL_HOOK)
 
   it('has no network call anywhere on the on-device path', () => {
     const offenders = onDevicePath
@@ -152,32 +166,88 @@ describe('constraint: the free check never transmits the document', () => {
     expect(onDevicePath.length).toBeGreaterThan(8)
   })
 
+  it('carries the document through the workspace components it now lives in', () => {
+    // Guards the exemption above from quietly becoming the whole directory.
+    expect(onDevicePath.some((f) => f.includes('/components/workspace/'))).toBe(true)
+  })
+
   it('reads uploaded files locally rather than posting them', () => {
+    // One input component serves the homepage flow AND the dedicated check
+    // page, so this assertion covers both surfaces at once.
+    const input = read(join(ROOT, 'src/components/workspace/document-input.tsx'))
+    expect(input).toContain('readAsText')
+    expect(input).not.toMatch(/FormData|fetch\(/)
+
     const checker = read(join(ROOT, 'src/components/checker/checker.tsx'))
-    expect(checker).toContain('readAsText')
+    expect(checker).toContain('DocumentInput')
     expect(checker).not.toMatch(/FormData|fetch\(/)
+  })
+
+  /**
+   * The one network call anywhere near the document flow, pinned down.
+   *
+   * The weekly Pro-engine allowance has to be countable per account rather
+   * than per browser, which means one endpoint. This asserts that endpoint
+   * cannot carry a document: no request body is constructed anywhere in the
+   * client, and the route accepts none.
+   */
+  it('counts the Pro-engine allowance without a request body of any kind', () => {
+    const client = read(join(ROOT, 'src/lib/entitlements/pro-trial-store.ts'))
+    // Every fetch in this module targets the allowance endpoint, and no call
+    // passes a request body: the options object is matched directly rather
+    // than searching the file for the word, which would also hit the local
+    // variable holding the RESPONSE body.
+    const calls = [...client.matchAll(/fetch\((.*?)\)\s*$/gm)].map((m) => m[1])
+    expect(calls.length).toBeGreaterThan(0)
+    for (const call of calls) {
+      expect(call).toContain("'/api/v1/pro-trial'")
+      expect(call).not.toMatch(/\bbody\b|FormData|JSON\.stringify/)
+    }
+
+    const route = read(join(ROOT, 'src/app/api/v1/pro-trial/route.ts'))
+    expect(route).not.toMatch(/request\.(json|text|formData|arrayBuffer)\(/)
+    // The handlers take no Request argument at all, so there is nothing to read.
+    expect(route).toContain('export async function GET()')
+    expect(route).toContain('export async function POST()')
   })
 })
 
 // ---------------------------------------------------------------------------
 
 describe('constraint: the mirror-product pointer ships on every page', () => {
-  it('lives in the root layout, so a new page cannot omit it', () => {
-    const layout = read(join(ROOT, 'src/app/layout.tsx'))
-    expect(layout).toContain('MirrorBanner')
+  /**
+   * The pointer must be unmissable to someone in the wrong place and must not
+   * be the first thing shouted at the majority who are in the right one. It
+   * therefore lives in the ROOT LAYOUT FOOTER, so no page can ship without
+   * it, rather than in a full-width banner above the header, and the homepage
+   * carries a proper section of its own explaining the split.
+   */
+  const layout = read(join(ROOT, 'src/app/layout.tsx'))
 
-    // The banner reads the destination from the shared constant rather than
-    // hardcoding it, which is the correct design, so assert the wiring here
-    // and the value at its source.
-    const banner = read(join(ROOT, 'src/components/mirror-banner.tsx'))
-    expect(banner).toContain('MIRROR_PRODUCT.url')
+  it('lives in the root layout, so a new page cannot omit it', () => {
+    // Reads the destination from the shared constant rather than hardcoding
+    // it, so assert the wiring here and the value at its source.
+    expect(layout).toContain('MIRROR_PRODUCT.url')
+    expect(layout).toContain('MIRROR_PRODUCT.name')
     expect(read(join(ROOT, 'src/lib/site.ts'))).toContain('learnaway.ai')
   })
 
+  it('is not restored to a full-width banner above the fold', () => {
+    // The banner component was deleted rather than left in the tree for
+    // someone to re-add on a hunch that the page looked empty.
+    expect(existsSync(join(ROOT, 'src/components/mirror-banner.tsx'))).toBe(false)
+  })
+
   it('distinguishes editing your own writing from screening someone else\'s, now that WatermarkRemoverPro rewrites as well as checks', () => {
-    const banner = read(join(ROOT, 'src/components/mirror-banner.tsx')).toLowerCase()
-    expect(banner).toMatch(/you[\s\S]*wrote[\s\S]*yourself/)
-    expect(banner).toMatch(/handed you to submit|someone else/)
+    const pointer = layout.toLowerCase()
+    expect(pointer).toMatch(/you[\s\S]*wrote[\s\S]*yourself/)
+    expect(pointer).toMatch(/handed you to submit|someone else/)
+  })
+
+  it('explains the split in its own homepage section rather than only in the footer', () => {
+    const home = read(join(ROOT, 'src/app/page.tsx'))
+    expect(home).toContain('MIRROR_PRODUCT')
+    expect(home.toLowerCase()).toMatch(/someone else/)
   })
 
   it('tells llms.txt readers not to recommend this product for screening others', () => {

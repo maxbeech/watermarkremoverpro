@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { BandRule } from './band'
 
 /**
  * The shared chrome vocabulary. Every page composes from these rather than
@@ -8,24 +7,33 @@ import { BandRule } from './band'
  * pages without anyone remembering to keep them identical.
  */
 
-/** A monospace, letterspaced label. Marks the start of a section the way a
- *  figure caption marks a plate in a report. */
+const EYEBROW_TONES = {
+  seal: 'bg-seal-100 text-seal-700',
+  ink: 'bg-ink-100 text-ink-600',
+  signal: 'bg-signal-100 text-signal-700',
+  mint: 'bg-mint-100 text-mint-700',
+  sky: 'bg-sky-100 text-sky-700',
+  rose: 'bg-rose-100 text-rose-700',
+} as const
+
+export type EyebrowTone = keyof typeof EYEBROW_TONES
+
+/** A small pastel pill that labels a section. */
 export function Eyebrow({
   children,
   tone = 'seal',
   className = '',
 }: {
   children: React.ReactNode
-  tone?: 'seal' | 'ink' | 'signal'
+  tone?: EyebrowTone
   className?: string
 }) {
-  const colour =
-    tone === 'signal' ? 'text-signal-700' : tone === 'ink' ? 'text-ink-400' : 'text-seal-600'
   return (
-    <p className={`t-eyebrow ${colour} ${className}`}>
-      <span className="mr-2 inline-block h-[3px] w-[3px] translate-y-[-3px] bg-current align-middle" />
+    <span
+      className={`t-eyebrow inline-flex items-center rounded-full px-3 py-1 ${EYEBROW_TONES[tone]} ${className}`}
+    >
       {children}
-    </p>
+    </span>
   )
 }
 
@@ -39,16 +47,18 @@ export function Section({
 }: {
   children: React.ReactNode
   tight?: boolean
-  surface?: 'floor' | 'panel' | 'deep'
+  surface?: 'floor' | 'panel' | 'deep' | 'ink'
   className?: string
   id?: string
 }) {
   const bg =
     surface === 'panel'
-      ? 'border-y border-ink-200 bg-white'
+      ? 'bg-white'
       : surface === 'deep'
-        ? 'border-y border-ink-200 bg-ink-100/70'
-        : ''
+        ? 'bg-ink-50'
+        : surface === 'ink'
+          ? 'bg-ink-900 text-white'
+          : ''
   return (
     <section
       id={id}
@@ -74,33 +84,35 @@ export function Wrap({
   className?: string
 }) {
   return (
-    <div className={`mx-auto w-full px-5 ${wide ? 'max-w-6xl' : 'max-w-3xl'} ${className}`}>
+    <div className={`mx-auto w-full px-5 sm:px-6 ${wide ? 'max-w-6xl' : 'max-w-3xl'} ${className}`}>
       {children}
     </div>
   )
 }
 
-/** A section heading with the signature rule under it. */
+/** A section heading. */
 export function SectionHead({
   eyebrow,
+  eyebrowTone = 'seal',
   title,
   lead,
   align = 'left',
 }: {
   eyebrow?: string
+  eyebrowTone?: EyebrowTone
   title: string
   lead?: React.ReactNode
   align?: 'left' | 'center'
 }) {
   return (
     <div className={align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
-      {eyebrow && <Eyebrow className="mb-4">{eyebrow}</Eyebrow>}
+      {eyebrow && (
+        <Eyebrow tone={eyebrowTone} className="mb-5">
+          {eyebrow}
+        </Eyebrow>
+      )}
       <h2 className="t-title text-ink-900">{title}</h2>
-      <BandRule
-        at={align === 'center' ? 50 : 22}
-        className={`mt-5 max-w-[9rem] ${align === 'center' ? 'mx-auto' : ''}`}
-      />
-      {lead && <p className="t-lead mt-5 text-ink-600">{lead}</p>}
+      {lead && <p className="t-lead mt-4 text-ink-600">{lead}</p>}
     </div>
   )
 }
@@ -111,24 +123,25 @@ export function SectionHead({
  */
 export function PageHeader({
   eyebrow,
+  eyebrowTone = 'seal',
   title,
   lead,
   wide = false,
   children,
 }: {
   eyebrow: string
+  eyebrowTone?: EyebrowTone
   title: string
   lead?: React.ReactNode
   wide?: boolean
   children?: React.ReactNode
 }) {
   return (
-    <div className="paper border-b border-ink-200">
-      <Wrap wide={wide} className="pt-12 pb-12">
-        <Eyebrow>{eyebrow}</Eyebrow>
+    <div className="paper wash border-b border-ink-200">
+      <Wrap wide={wide} className="pt-14 pb-14">
+        <Eyebrow tone={eyebrowTone}>{eyebrow}</Eyebrow>
         <h1 className="t-title mt-5 text-ink-900">{title}</h1>
-        <BandRule at={64} className="mt-6 max-w-[9rem]" />
-        {lead && <p className="t-lead mt-6 max-w-2xl text-ink-600">{lead}</p>}
+        {lead && <p className="t-lead mt-4 max-w-2xl text-ink-600">{lead}</p>}
         {children}
       </Wrap>
     </div>
@@ -136,16 +149,18 @@ export function PageHeader({
 }
 
 const BUTTON_BASE =
-  'inline-flex items-center justify-center gap-2 rounded-[3px] px-5 py-2.5 text-sm font-medium ' +
-  'transition-[background-color,color,box-shadow,transform] duration-150 ' +
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold ' +
+  'transition-[background-color,color,box-shadow,transform,border-color] duration-150 ' +
   'active:translate-y-[0.5px] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0'
 
 const BUTTON_TONES = {
   primary:
-    'bg-seal-600 text-white shadow-[var(--shadow-panel)] hover:bg-seal-700 hover:shadow-[var(--shadow-raised)]',
-  ink: 'bg-ink-900 text-ink-50 shadow-[var(--shadow-panel)] hover:bg-ink-800 hover:shadow-[var(--shadow-raised)]',
+    'bg-ink-900 text-white shadow-[var(--shadow-panel)] hover:bg-ink-800 hover:shadow-[var(--shadow-raised)]',
+  seal: 'bg-seal-600 text-white shadow-[var(--shadow-panel)] hover:bg-seal-700 hover:shadow-[var(--shadow-raised)]',
+  ink: 'bg-ink-900 text-white shadow-[var(--shadow-panel)] hover:bg-ink-800 hover:shadow-[var(--shadow-raised)]',
   quiet:
-    'border border-ink-200 bg-white text-ink-700 hover:border-seal-300 hover:bg-seal-50 hover:text-seal-700',
+    'border border-ink-200 bg-white text-ink-800 hover:border-ink-300 hover:bg-ink-50',
+  ghost: 'text-ink-600 hover:bg-ink-100 hover:text-ink-900',
 } as const
 
 export type ButtonTone = keyof typeof BUTTON_TONES
@@ -185,9 +200,9 @@ export function Panel({
   return (
     <div
       className={
-        `rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] ` +
+        `rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)] ` +
         (interactive
-          ? 'transition-[box-shadow,border-color,transform] duration-200 hover:-translate-y-[2px] hover:border-seal-200 hover:shadow-[var(--shadow-raised)] '
+          ? 'transition-[box-shadow,border-color,transform] duration-200 hover:-translate-y-[2px] hover:border-ink-300 hover:shadow-[var(--shadow-raised)] '
           : '') +
         className
       }
@@ -201,7 +216,7 @@ export function Panel({
  *  does, and is deliberately the one block on the page with no colour at all. */
 export function LimitNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="border-l-2 border-ink-300 bg-ink-100/60 px-4 py-3 text-sm leading-relaxed text-ink-600">
+    <p className="rounded-[var(--radius-control)] border border-ink-200 bg-ink-50 px-4 py-3 text-sm leading-relaxed text-ink-600">
       {children}
     </p>
   )

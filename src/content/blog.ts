@@ -39,6 +39,18 @@ export const postsByCategory = (category: (typeof BLOG_POSTS)[number]['category'
  */
 export const BLOG_CATEGORIES = ['Academy', 'News', 'Reviews'] as const
 
+/**
+ * How a category badge is coloured, in one place.
+ *
+ * The index and the post renderer both draw this badge, and before this
+ * constant existed they each held their own copy in a different shape.
+ */
+export const CATEGORY_TONE: Record<BlogCategoryName, string> = {
+  Academy: 'border-seal-200 bg-seal-50 text-seal-700',
+  News: 'border-signal-200 bg-signal-100 text-signal-700',
+  Reviews: 'border-ink-200 bg-ink-100 text-ink-700',
+}
+
 export const categorySlug = (category: BlogCategoryName): string => category.toLowerCase()
 
 export const categoryFromSlug = (slug: string): BlogCategoryName | undefined =>

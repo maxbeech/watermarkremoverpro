@@ -28,7 +28,7 @@ export function PassageBreakdown({ result }: { result: AnalysisResult }) {
   const visible = showAll ? result.passages : flagged.length > 0 ? flagged : result.passages.slice(0, 5)
 
   return (
-    <section className="overflow-hidden rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+    <section className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
       <MeasureHeader
         eyebrow="Attribution"
         title="Per-passage breakdown"

@@ -1,6 +1,7 @@
 import { API_PRICE_PENCE_PER_1K_WORDS, MIRROR_PRODUCT, PLANS, SITE } from '@/lib/site'
 import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '@/lib/detector/languages'
 import { CORE_FAQ } from '@/components/faq'
+import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
 
 export const dynamic = 'force-static'
 
@@ -147,12 +148,17 @@ against a substitute.
 
 ## Pricing
 
-- ${PLANS.anonymous.name}: free, unlimited on-device rewriting, ${PLANS.anonymous.wordCap.toLocaleString()} words per check document, in-browser only.
-- ${PLANS.free.name}: free, unlimited on-device rewriting, ${PLANS.free.wordCap.toLocaleString()} words per check document, ${PLANS.free.checksPerMonth} checks a month, saved history.
-- ${PLANS.pro.name}: £${PLANS.pro.price}/month: unlimited on-device rewriting with more candidates per passage
-  and the extended AI-tell library, unlimited checks, batch upload, the dated PDF
-  evidence report, and API/MCP access to checking metered at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.
-  Rewriting is never metered. It runs on your device, not our servers.
+- ${PLANS.anonymous.name}: free. Unlimited on-device rewriting on the Standard engine,
+  ${PRO_TRIAL_RUNS_PER_WINDOW} free run of the Pro rewrite engine every ${PRO_TRIAL_WINDOW_DAYS} days,
+  ${PLANS.anonymous.wordCap.toLocaleString()} words per check document, in-browser only.
+- ${PLANS.free.name}: free. The same, with the weekly Pro-engine allowance counted against the
+  account rather than one browser, ${PLANS.free.wordCap.toLocaleString()} words per check document,
+  ${PLANS.free.checksPerMonth} checks a month, saved history.
+- ${PLANS.pro.name}: £${PLANS.pro.price}/month: the Pro rewrite engine with no weekly limit,
+  more candidates per passage and the extended AI-tell library, unlimited checks, batch upload,
+  the dated PDF evidence report, and API/MCP access to checking metered at
+  ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.
+  Rewriting is never metered and never leaves your device, on any plan.
 
 ## Questions this product gets asked
 

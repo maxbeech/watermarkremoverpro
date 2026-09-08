@@ -33,7 +33,7 @@ export function GroupIndex({
                   href={`/${group}/${page.slug}`}
                   className="group grid gap-x-8 gap-y-2 py-6 transition-colors duration-150 sm:grid-cols-[2.5rem_minmax(0,1fr)]"
                 >
-                  <span className="figure hidden pt-1 text-xs text-ink-300 transition-colors duration-150 group-hover:text-seal-500 sm:block">
+                  <span className="figure hidden pt-1 text-xs text-ink-400 transition-colors duration-150 group-hover:text-seal-500 sm:block">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <div>

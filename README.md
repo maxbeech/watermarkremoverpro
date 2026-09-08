@@ -38,6 +38,60 @@ reasoning, including why the product's original no-removal policy
 (`docs/archive/NO_REMOVAL.md`) was deliberately reversed rather than eroded by
 drift.
 
+## How you use it
+
+One flow, on the homepage. Paste your draft into the box (or drop a file on it,
+or use the upload button), press one button, and get back the rewritten text
+together with the detector's full reading of it. The check is not a separate
+trip: the rewrite engine already measures the document before and after in
+order to decide what to target, so the analysis it shows you is the exact
+arithmetic that produced the result above it.
+
+Language, engine and strength sit behind an **Advanced settings** disclosure
+with defaults that suit almost everyone. `/check` and `/rewrite` remain as
+their own pages for their own search intent, and both render the same
+components as the homepage rather than reimplementing them.
+
+### Engines and the weekly allowance
+
+| Engine | What it is | Who gets it |
+|---|---|---|
+| Standard | Deterministic substitution against the core AI-tell library. Instant, no download. | Everyone, unlimited, forever |
+| Pro | A real small language model (Qwen2.5), downloaded once from the Hugging Face CDN and run in your browser on WebGPU, plus the extended AI-tell library and more candidates per passage. | One free run every 7 days for everyone; unlimited on a Pro subscription |
+
+The Pro engine costs this product nothing to run, so that allowance is a
+commercial boundary rather than a capacity one, and it is set to be generous
+enough that anyone can see what they would be paying for on their own text
+before deciding. The arithmetic is
+[`src/lib/entitlements/pro-trial.ts`](src/lib/entitlements/pro-trial.ts): pure
+functions over a list of timestamps, with a **rolling** window rather than a
+calendar week. Signed-in visitors are counted per account through
+`/api/v1/pro-trial`; anonymous visitors are counted in that browser. Neither
+verb on that endpoint accepts a request body, and the client sends none, so
+the one network call anywhere near the document flow provably cannot carry a
+document. A test asserts it.
+
+## Design system
+
+Everything visual lives in two files and every page composes from them:
+
+- [`src/app/globals.css`](src/app/globals.css) holds the palette, the type
+  scale, the spacing rhythm, three corner-radius tokens and three elevation
+  levels. Colour has exactly three jobs: `ink` for structure and prose, `seal`
+  for anything interactive, `signal` for evidence of a mark actually being
+  found. The remaining pastels (`mint`, `sky`, `rose`, `butter`, `peach`) are
+  illustrative only and never encode a result, so a reader who learns those
+  three rules can read any result on the site.
+- [`src/components/brand/ui.tsx`](src/components/brand/ui.tsx) holds the
+  section, wrapper, heading, button, panel and eyebrow primitives.
+
+`Band` is the one component that draws a real statistic and it is the same
+component on the marketing pages and inside a result. The logo has one source
+of truth in [`src/components/brand/logo.tsx`](src/components/brand/logo.tsx);
+`npm run logos` regenerates the web-sized derivatives from the master artwork
+in `public/`, which are then served unoptimised, because a fixed brand asset
+gains nothing from a per-request image transformation.
+
 ## What it measures
 
 Two channels, reported separately and never blended into a single "AI score".
@@ -129,11 +183,21 @@ npm run dev                  # http://localhost:3540
 
 npm run check                # typecheck + lint + tests + MCP smoke + build
 npm run mcp                  # run the MCP server over stdio
+
+npm run e2e                  # drive the real journey in a real browser (needs `npm run dev` up)
+npm run logos                # regenerate web-sized logo assets from public/logo*.png
 ```
 
 `npm test` runs the unit suite **and** connects to the MCP server over the real
 protocol. A claim that a product "has an MCP server" is worth exactly as much as
 the last time someone actually connected to it.
+
+`npm run e2e` is the same argument applied to the interface. It drives a real
+Chromium against a running dev server: paste, drag-and-drop, upload, a refused
+PDF, a full rewrite through to the output screen, the dedicated check page,
+every page in the nav and a mobile viewport, asserting on each that there are
+no console errors, nothing overflows horizontally and every image actually
+decoded. Screenshots land in `.e2e-shots/` for a human to look at.
 
 ## Content
 

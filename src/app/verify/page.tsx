@@ -40,7 +40,7 @@ export default function VerifyPage() {
         </p>
       </section>
 
-      <section className="mt-10 rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-5">
+      <section className="mt-10 rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-5">
         <h2 className="t-heading text-ink-900">About this reference key</h2>
         <dl className="mt-3 space-y-2 text-sm">
           <div className="flex flex-wrap gap-2">

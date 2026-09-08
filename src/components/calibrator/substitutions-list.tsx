@@ -23,7 +23,7 @@ export function SubstitutionsList({
   }
 
   return (
-    <div className="rounded-lg border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+    <div className="rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -48,11 +48,11 @@ export function SubstitutionsList({
           {applied.map((subst, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between rounded px-3 py-2 hover:bg-ink-50"
+              className="flex items-center justify-between rounded-[var(--radius-control)] px-3 py-2 hover:bg-ink-50"
             >
               <div className="flex-1 font-mono text-xs">
                 <span className="text-ink-400">{subst.original}</span>
-                <span className="text-ink-300"> → </span>
+                <span className="text-ink-400"> → </span>
                 <span className="font-medium text-seal-700">{subst.replacement}</span>
               </div>
               <div className="flex items-center gap-2">

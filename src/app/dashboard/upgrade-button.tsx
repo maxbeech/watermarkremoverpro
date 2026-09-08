@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { buttonClass } from '@/components/brand/ui'
 
 export function UpgradeButton({ billingLive }: { billingLive: boolean }) {
   const [error, setError] = useState<string | null>(null)
@@ -33,7 +34,7 @@ export function UpgradeButton({ billingLive }: { billingLive: boolean }) {
         type="button"
         onClick={start}
         disabled={busy}
-        className="rounded-[3px] bg-seal-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-seal-700 disabled:bg-ink-300"
+        className={buttonClass('primary')}
       >
         {busy ? 'Starting…' : 'Upgrade to Pro'}
       </button>

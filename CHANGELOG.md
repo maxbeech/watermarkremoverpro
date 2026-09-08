@@ -1,5 +1,135 @@
 # Changelog
 
+## 2026-09-08: one journey, one input box, and a brand that is not a lab report
+
+The largest change to this product's surface since launch. Three things were
+wrong and all three are addressed here.
+
+**The visual identity.** The old design was deliberately ink-on-paper, serif
+headings, letterspaced monospace eyebrows, hairline "measurement band"
+graphics under every heading on forty pages that carry no measurement. It
+read as a court exhibit, which is defensible for a result screen and wrong
+for everything around it. The palette is retuned in one place
+(`src/app/globals.css`) to a clean, modern, pastel set built around the
+product's own logo blue, with Plus Jakarta Sans throughout and JetBrains
+Mono kept for anything measured. Token NAMES (`ink-*`, `seal-*`,
+`signal-*`) are unchanged on purpose, so every one of the forty-odd pages
+picked up the new identity without a find-and-replace, and a future retune
+is one file again. Corner radii collapse to three shared tokens
+(`--radius-control`, `--radius-panel`, `--radius-hero`); `BandRule` becomes
+a plain accent rule while `Band` stays the one component that draws a real
+statistic. `src/components/brand/logo.tsx` is the single source of truth for
+the logo.
+
+**The user journey.** Rewriting and checking were two features on two pages
+reached by two nav items, and a visitor had to work out for themselves that
+they probably wanted both. There is now one flow. `Workspace`
+(`src/components/workspace/`) sits in the homepage hero: one input area that
+accepts paste, drag-and-drop and an upload button, one button, and an output
+screen carrying the rewritten text AND the detector's full reading of it.
+That analysis costs nothing extra: `documentAfter` is the measurement the
+rewrite engine already made in order to decide what to target. Language,
+engine and strength moved behind an Advanced settings disclosure with
+sensible defaults, and the two contradictory menus ("model tier" and
+"rewrite engine", which could be set to combinations that meant nothing)
+collapse into one engine choice.
+
+`/check` remains a dedicated page for its own search intent, and `/rewrite`
+remains for its own; both render the same components as the homepage rather
+than reimplementing them, so the three cannot drift. `DocumentInput` is now
+the only way text enters this product on any surface.
+
+**Model tiers.** Everyone, signed in or not, now gets one free run of the Pro
+rewrite engine every seven days and unlimited use of the Standard engine
+forever. `src/lib/entitlements/pro-trial.ts` holds the arithmetic as pure
+functions over a list of timestamps (rolling window, not a calendar week: "one
+a week" measured from Sunday hands someone two runs in twenty minutes if they
+arrive on a Sunday evening). Signed-in visitors are counted per account in a
+new `pro_trial_runs` table through `/api/v1/pro-trial`; anonymous visitors are
+counted in localStorage. A Pro subscriber never touches the ledger. The
+endpoint accepts no request body on either verb and the client sends none,
+which `tests/product-constraints.test.ts` now asserts: the one network call
+anywhere near the document flow provably cannot carry a document.
+
+**The Learnaway banner** is no longer a full-width interruption above the
+header on every page. It is a footer note in the root layout (so no page can
+ship without it) plus a proper homepage section explaining the split. The
+constraint test was rewritten rather than deleted, and is stricter than
+before: it now also asserts the banner component has not been reinstated and
+that the homepage carries the section.
+
+Also in this change:
+
+- `SiteHeader` replaces the old header. The previous one hid Method, Verify,
+  Blog and the API docs behind `hidden sm:inline-block`, which meant a phone
+  visitor could not reach them at all; there is a real mobile menu now.
+- `scripts/build-logos.ts` generates web-sized derivatives of the master
+  artwork (264 KB to 31 KB for the lockup) and the logo is served
+  `unoptimized`, because a fixed brand asset gains nothing from a per-request
+  image transformation and every transformation is billable Vercel quota.
+- `src/lib/documents/accepted-files.ts` names which formats can be read on
+  the device and refuses .docx/.pdf/.odt BY NAME with what to do instead,
+  rather than producing mojibake from a zip container.
+- `npm run e2e` (`scripts/e2e-journey.mts`) drives the real journey in a real
+  browser: paste, upload, a refused PDF, a full rewrite, the check page, every
+  nav page, and mobile, asserting no console errors, no horizontal overflow
+  and no undecoded images on any of them.
+- Deleted: `mirror-banner.tsx`, `band-field.tsx`, `rewrite-tool.tsx`, and the
+  `Drift` scroll-parallax component. All superseded, none left in the tree for
+  someone to reinstate on a hunch.
+
+Pricing copy, `llms.txt`, `pricing.json`, the FAQ and the CLI help all read
+the trial numbers from the same constants the enforcement code does, so the
+weekly allowance cannot be described differently in three places.
+
+The homepage stays statically prerendered: the workspace resolves subscriber
+status client-side from the allowance endpoint rather than reading a session
+cookie on the server, which would have turned the most-visited page into a
+per-request function invocation.
+
+Found and fixed during the browser review that followed:
+
+- **Blog posts scrolled sideways on a phone.** A `grid` with only an
+  `lg:grid-cols-…` template falls back to one IMPLICIT column, and an implicit
+  column is `auto`-sized: it takes its widest child's max-content width rather
+  than the viewport's. The article rendered at 592px inside a 350px column and
+  took the whole page, sticky header included, with it. `grid-cols-1` and
+  `min-w-0` on both two-column content templates.
+- **"Passages rewritten: 0 of 0" beside "AI-tell swaps: 6".** `result.passages`
+  only ever holds passages the engine TARGETED, so when the targeting picked
+  none the tile read as a bug. It now counts against the passages the document
+  actually has, and says in a sentence when nothing was worth targeting.
+- **Raw identifiers shown to visitors.** The marketing exhibit printed
+  `hapaxRatio`, `commaRate` and friends, because the plain-English label map
+  was private to the app's result view while the exhibit renders the same
+  analysis object. Moved into `checker/measures.tsx` with the rest of the
+  shared measurement vocabulary.
+- **Illustrative `Band`s on the homepage's honesty cards.** Hand-typed numbers
+  drawn with the graphic this product reserves for real measurements, on the
+  section arguing it never does that. Replaced with numbered pastel badges.
+- **The header CTA appeared on phones anyway.** `buttonClass` sets
+  `inline-flex`, and adding `hidden sm:inline-flex` to the same element is a
+  tie between two display utilities of equal specificity, settled by
+  stylesheet order rather than class-string order. Hidden by a wrapper now,
+  and the E2E asserts the outcome rather than the class list.
+- **Contrast.** `ink-400` measured 2.8:1 on white and was carrying figure
+  captions, timestamps and the per-passage measurement lines; the "carries
+  signal after correction" badge was 2.8:1 white-on-amber. The muted ramp is
+  retuned so 400 and below clear 4.5:1 on white AND on the tinted panel
+  grounds, the badge moved to `signal-700`, and `ink-300` is now a
+  borders-and-dividers tone that is never text. `npm run e2e` now walks every
+  page template computing real contrast against the painted backdrop, so this
+  cannot come back quietly.
+- Long file paths in inline `<code>` scrolled `/docs/mcp` sideways on a phone;
+  inline code wraps anywhere now, block code keeps its own scroll so a command
+  is never broken mid-token.
+- The blog index put a full section's padding between the category filter and
+  the posts it filters. Auth pages painted their page background onto a narrow
+  centred column, which drew a grey stripe down a white page; there is one
+  `AuthShell` for all four now. Bespoke buttons on `/verify` and `/dashboard`
+  now use `buttonClass`. `CATEGORY_TONE` had drifted into two copies in two
+  different shapes and is now one, in `src/content/blog.ts`.
+
 ## 2026-09-07: ThreadCamp on its own domain, and a Stripe key rotation
 
 Two follow-ups from the same day's earlier entries:

@@ -1,69 +1,120 @@
 @import 'tailwindcss';
 
 /*
-  WatermarkRemoverPro is a product people reach for when they have been accused of
-  something. The visual language is deliberately closer to a lab report or a
-  court exhibit than to a SaaS landing page: restrained ink-on-paper palette,
-  a serif for argument, a monospace for anything measured. Nothing pulses,
-  nothing gradients, and no number is ever coloured red for drama.
+  WatermarkRemoverPro's visual language.
 
-  THE SIGNATURE, applied everywhere: the measurement band. A horizontal track
-  carrying a hatched uncertainty interval, a hard marker at the measured value
-  and a chance line to read it against. It is the literal output of the product
-  and it is also the site's shape language, so the marketing pages and the app
-  are visibly the same object seen from two distances.
+  The product is a writing tool people reach for when they are anxious, so the
+  surface it presents should feel like a calm, modern app rather than a lab
+  report: generous white space, one soft neutral ground, rounded surfaces, and
+  a small pastel family used only where colour carries meaning.
 
-  COLOUR CARRIES MEANING AND NOTHING ELSE. Each family has exactly one job:
+  COLOUR HAS EXACTLY THREE JOBS, and every family below maps to one of them.
     ink     structure, prose, chrome. The default for everything.
-    seal    something was measured. Interactive elements, because clicking is
-            how you ask for a measurement.
-    signal  a mark was actually found. Never decorative, never a highlight
-            colour, never used because a section needed some warmth.
-  A reader who learns those three rules on the homepage can read a result.
+    seal    something is interactive, or something was measured cleanly.
+    signal  evidence of a mark was actually found. Never decorative.
+  The remaining pastels (mint, sky, rose, butter, peach) exist for illustrative
+  surfaces (feature cards, section grounds, diagram fills) and are never used
+  to encode a result, because a reader who learns the three rules above must be
+  able to read any result on the site without learning a fourth.
+
+  Token NAMES are stable on purpose: forty-odd pages and every component
+  reference `ink-*`, `seal-*` and `signal-*`, so the palette can be retuned
+  here, in one place, without a find-and-replace across the app.
 */
 
 @theme {
-  --color-ink-50: #f7f7f5;
-  --color-ink-100: #eeeeea;
-  --color-ink-200: #dcdcd4;
-  --color-ink-300: #b9b9ad;
-  --color-ink-400: #8a8a7c;
-  --color-ink-500: #63635a;
-  --color-ink-600: #474742;
-  --color-ink-700: #33332f;
-  --color-ink-800: #22221f;
-  --color-ink-900: #141412;
+  /* ---------------------------------------------------------------- ink */
+  /* Neutrals carry a slight blue cast so they sit with the logo's navy
+     wordmark rather than against it. */
+  --color-ink-50: #f8fafc;
+  --color-ink-100: #f1f4f8;
+  --color-ink-200: #e4e8ef;
+  /* 300 is for borders, dividers and disabled fills; it is never text.
+     400 and below are, so both sit at or past 4.5:1 on white: the previous
+     400 measured 2.8:1 and was being used for figure captions, timestamps and
+     the per-passage measurement lines, which is small grey-on-white text
+     nobody with average eyesight should have to squint at. */
+  --color-ink-300: #c7cddb;
+  --color-ink-400: #666e80;
+  --color-ink-500: #545c6d;
+  --color-ink-600: #4b5468;
+  --color-ink-700: #333c4e;
+  --color-ink-800: #1e2635;
+  --color-ink-900: #0f1626;
 
-  --color-seal-50: #eef4f7;
-  --color-seal-100: #d6e5ed;
-  --color-seal-200: #b4d0de;
-  --color-seal-300: #8bb3c9;
-  --color-seal-500: #3d7595;
-  --color-seal-600: #2f5c76;
-  --color-seal-700: #244557;
-  --color-seal-900: #162c38;
+  /* ------------------------------------------------- seal (interactive) */
+  /* Taken from the logo mark: the same blue the W is drawn in, so the one
+     colour a visitor learns to click is the colour of the brand. */
+  --color-seal-50: #f0f7ff;
+  --color-seal-100: #dfeeff;
+  --color-seal-200: #bcdcff;
+  --color-seal-300: #8ec5ff;
+  --color-seal-400: #57a5fb;
+  --color-seal-500: #2b86f5;
+  --color-seal-600: #146ae0;
+  --color-seal-700: #0f53b4;
+  --color-seal-800: #10428c;
+  --color-seal-900: #0d2f63;
 
-  --color-signal-100: #f6ead6;
-  --color-signal-200: #ecd5ad;
-  --color-signal-400: #c99339;
-  --color-signal-500: #b0741f;
-  --color-signal-700: #7d5115;
+  /* ------------------------------------------- signal (a mark was found) */
+  --color-signal-50: #fff8f0;
+  --color-signal-100: #ffeedc;
+  --color-signal-200: #fbdcb8;
+  --color-signal-300: #f4bf7f;
+  --color-signal-400: #e5a04a;
+  --color-signal-500: #d8871f;
+  --color-signal-600: #b76c12;
+  --color-signal-700: #8f530d;
+  --color-signal-800: #6d3f0b;
+  --color-signal-900: #4a2a07;
 
-  --font-serif: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  /* -------------------------------------------- illustrative pastel set */
+  --color-mint-100: #ddf6ec;
+  --color-mint-200: #b9ebd7;
+  --color-mint-500: #3fbf8f;
+  --color-mint-700: #0f6b48;
 
-  /* One rhythm for vertical space, so section padding stops being a per-page
-     guess. Every marketing section uses --space-section through <Section>. */
-  --space-section: 5.5rem;
-  --space-section-tight: 3.5rem;
+  --color-sky-100: #e1effd;
+  --color-sky-200: #c2ddfa;
+  --color-sky-500: #5ba8f0;
+  --color-sky-700: #1b5f9f;
 
-  /* Three surfaces, not one. A page has a floor, panels that sit on it, and
-     exhibits that lift off it, and a reader can tell which is which. */
-  --shadow-panel: 0 1px 2px rgba(20, 20, 18, 0.04), 0 1px 1px rgba(20, 20, 18, 0.03);
-  --shadow-raised: 0 2px 4px rgba(20, 20, 18, 0.05), 0 8px 20px -12px rgba(20, 20, 18, 0.16);
-  --shadow-exhibit: 0 1px 2px rgba(20, 20, 18, 0.05), 0 18px 40px -20px rgba(20, 20, 18, 0.28),
-    0 60px 90px -60px rgba(36, 69, 87, 0.3);
+  --color-rose-100: #ffe4ee;
+  --color-rose-200: #ffc7dc;
+  --color-rose-500: #f2739e;
+  --color-rose-700: #ab2c5c;
+
+  --color-butter-100: #fff3ce;
+  --color-butter-200: #ffe49b;
+  --color-butter-500: #e3b02a;
+  --color-butter-700: #7a5300;
+
+  --color-peach-100: #ffe9e0;
+  --color-peach-200: #ffcdb9;
+  --color-peach-500: #ff8a65;
+  --color-peach-700: #b5401e;
+
+  /* --------------------------------------------------------------- type */
+  /* One sans for everything and one monospace for anything measured. The
+     previous identity set headings in a serif; there is no serif here now, and
+     no `font-serif` left in the tree that would silently fall back to one. */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-mono-jetbrains), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ------------------------------------------------------------- rhythm */
+  --space-section: 6rem;
+  --space-section-tight: 4rem;
+
+  /* Rounded, app-like surfaces. Three steps, used consistently: controls,
+     panels, and the big hero surfaces. */
+  --radius-control: 10px;
+  --radius-panel: 16px;
+  --radius-hero: 24px;
+
+  /* Soft, diffuse elevation. Nothing has a hard drop shadow. */
+  --shadow-panel: 0 1px 2px rgba(20, 20, 23, 0.04), 0 1px 3px rgba(20, 20, 23, 0.03);
+  --shadow-raised: 0 2px 4px rgba(20, 20, 23, 0.03), 0 8px 24px -10px rgba(20, 20, 23, 0.12);
+  --shadow-exhibit: 0 2px 6px rgba(20, 20, 23, 0.04), 0 20px 48px -20px rgba(20, 20, 23, 0.18);
 }
 
 html {
@@ -72,95 +123,102 @@ html {
 }
 
 body {
-  background-color: var(--color-ink-50);
-  color: var(--color-ink-800);
+  background-color: #ffffff;
+  color: var(--color-ink-900);
   font-family: var(--font-sans);
-  font-feature-settings: 'kern', 'liga';
+  font-feature-settings: 'kern', 'liga', 'cv11';
 }
 
 /* ------------------------------------------------------------------ type */
 
-/* A deliberate five-step scale rather than a per-section pick. Display and
-   title tiers are serif because they carry the argument; the eyebrow tier is
-   monospace and letterspaced because it labels measurements. */
 .t-display {
-  font-family: var(--font-serif);
-  font-size: clamp(2.6rem, 5.4vw, 4.1rem);
-  line-height: 1.02;
-  letter-spacing: -0.021em;
-  font-weight: 400;
+  font-size: clamp(2.4rem, 5.2vw, 3.75rem);
+  line-height: 1.04;
+  letter-spacing: -0.032em;
+  font-weight: 700;
   text-wrap: balance;
 }
 
 .t-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
   line-height: 1.12;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.026em;
+  font-weight: 700;
   text-wrap: balance;
 }
 
 .t-heading {
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
-  line-height: 1.25;
-  letter-spacing: -0.008em;
+  font-size: 1.125rem;
+  line-height: 1.35;
+  letter-spacing: -0.014em;
+  font-weight: 650;
 }
 
 .t-lead {
-  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-  line-height: 1.65;
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  line-height: 1.6;
+  letter-spacing: -0.006em;
   text-wrap: pretty;
 }
 
+/* The eyebrow is a pastel pill, not letterspaced small caps. It reads as a
+   label on a modern app rather than a plate number in a report. */
 .t-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  line-height: 1;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.005em;
 }
 
-/* A measured figure always renders in the monospace face, so a reader can tell
-   at a glance which parts of a result were computed and which are prose. */
+/* A measured figure always renders in the monospace face with tabular
+   numerals, so a reader can tell which parts of a result were computed. */
 .figure {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .prose-body p {
-  line-height: 1.75;
+  line-height: 1.7;
   text-wrap: pretty;
+}
+
+/* An inline code span carrying a file path or a package name has nowhere to
+   break, and one of them is enough to scroll a 390px screen sideways. Block
+   code keeps its own horizontal scroll instead, because breaking a command
+   mid-token would make it wrong to copy. */
+:where(code) {
+  overflow-wrap: anywhere;
+}
+:where(pre) code {
+  overflow-wrap: normal;
 }
 
 /* --------------------------------------------------------------- surfaces */
 
 .hatch {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    currentColor 0 1px,
-    transparent 1px 5px
-  );
+  background-image: repeating-linear-gradient(-45deg, currentColor 0 1px, transparent 1px 5px);
 }
 
-/* The paper the exhibits sit on. Very low contrast rule grid, the texture of a
-   measurement sheet rather than a decorative pattern. */
+/* The soft ground the hero and feature sections sit on: a single very wide
+   pastel wash, not a pattern. */
 .paper {
+  background-color: var(--color-ink-50);
+}
+
+.wash {
   background-image:
-    linear-gradient(to right, rgba(36, 69, 87, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(36, 69, 87, 0.045) 1px, transparent 1px);
-  background-size: 28px 28px;
+    radial-gradient(46rem 22rem at 6% -14%, var(--color-seal-200) 0%, transparent 64%),
+    radial-gradient(40rem 20rem at 96% -4%, var(--color-mint-200) 0%, transparent 66%),
+    radial-gradient(34rem 18rem at 58% 112%, var(--color-butter-200) 0%, transparent 62%);
 }
 
 /* ------------------------------------------------------------ interaction */
 
-/* Every interactive element in the product routes through one focus treatment,
-   so keyboard users get the same affordance everywhere. */
 :where(a, button, input, textarea, select, summary):focus-visible {
   outline: 2px solid var(--color-seal-500);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .link-quiet {
@@ -171,64 +229,33 @@ body {
 }
 .link-quiet:hover {
   color: var(--color-seal-600);
-  text-decoration-color: var(--color-seal-500);
+  text-decoration-color: var(--color-seal-400);
 }
 
 /* ---------------------------------------------------------------- motion */
 
-/* Motion is only ever a measurement settling into place. Nothing bounces,
-   nothing loops, nothing draws attention to itself after the first paint. */
 @keyframes mw-settle {
-  from {
-    transform: scaleX(0.001);
-    opacity: 0;
-  }
-  to {
-    transform: scaleX(1);
-    opacity: 1;
-  }
+  from { transform: scaleX(0.001); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
 }
 
 @keyframes mw-mark-in {
-  from {
-    transform: translateX(-8px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  from { transform: translateX(-8px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes mw-rise {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 
-.mw-settle {
-  transform-origin: left center;
-  animation: mw-settle 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
-}
-.mw-mark-in {
-  animation: mw-mark-in 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
-}
-.mw-rise {
-  animation: mw-rise 520ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
-}
+.mw-settle { transform-origin: left center; animation: mw-settle 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both; }
+.mw-mark-in { animation: mw-mark-in 620ms cubic-bezier(0.22, 0.9, 0.28, 1) both; }
+.mw-rise { animation: mw-rise 520ms cubic-bezier(0.22, 0.9, 0.28, 1) both; }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

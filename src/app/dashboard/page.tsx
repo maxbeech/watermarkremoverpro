@@ -67,7 +67,7 @@ export default async function DashboardPage() {
       <p className="mt-2 text-sm text-ink-500">{entitlements.email}</p>
 
       {/* -------------------------------------------------------------- */}
-      <div className="mt-8 rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-5">
+      <div className="mt-8 rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)] p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="t-heading text-ink-900">{plan.name} plan</h2>
           {!entitlements.pro && <UpgradeButton billingLive={stripeConfigured()} />}
@@ -96,7 +96,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* -------------------------------------------------------------- */}
-      <div className="mt-6 rounded-[4px] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+      <div className="mt-6 rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
         <header className="border-b border-ink-100 px-5 py-4">
           <h2 className="t-heading text-ink-900">Saved checks</h2>
           <p className="mt-1 text-sm text-ink-500">
@@ -131,7 +131,7 @@ export default async function DashboardPage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-ink-400">{label}</dt>
+      <dt className="text-[13px] font-medium text-ink-500">{label}</dt>
       <dd className="figure mt-0.5 text-ink-900">{value}</dd>
     </div>
   )

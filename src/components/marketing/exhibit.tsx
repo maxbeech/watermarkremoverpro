@@ -1,5 +1,5 @@
 import type { AnalysisResult } from '@/lib/detector'
-import { KeyMeasure, PassageRow, Verdict, fmt } from '@/components/checker/measures'
+import { KeyMeasure, PassageRow, Verdict, featureLabel, fmt } from '@/components/checker/measures'
 import { Band } from '@/components/brand/band'
 import { Eyebrow } from '@/components/brand/ui'
 
@@ -28,7 +28,7 @@ export function ExhibitFrame({
     <figure className={`group/exhibit ${className}`}>
       <div
         className={
-          'overflow-hidden rounded-[6px] border border-ink-200 bg-white shadow-[var(--shadow-exhibit)] ' +
+          'overflow-hidden rounded-[var(--radius-hero)] border border-ink-200 bg-white shadow-[var(--shadow-exhibit)] ' +
           'transition-transform duration-500 ease-out ' +
           (tilt ? 'group-hover/exhibit:-translate-y-1' : '')
         }
@@ -40,7 +40,7 @@ export function ExhibitFrame({
             <span className="h-2.5 w-2.5 rounded-full bg-ink-300" />
             <span className="h-2.5 w-2.5 rounded-full bg-ink-300" />
           </div>
-          <div className="flex min-w-0 flex-1 items-center rounded-[3px] border border-ink-200 bg-white px-2.5 py-1">
+          <div className="flex min-w-0 flex-1 items-center rounded-[var(--radius-control)] border border-ink-200 bg-white px-2.5 py-1">
             <span className="figure truncate text-[11px] text-ink-400">{url}</span>
           </div>
         </div>
@@ -154,15 +154,15 @@ export function StyleExhibit({ result }: { result: AnalysisResult }) {
           title={`Style distance ${fmt(dist.compositeDeviation, 2)} standard deviations from reference`}
         />
         <div className="mt-2 flex justify-between">
-          <span className="t-eyebrow text-ink-300">0 SD</span>
-          <span className="t-eyebrow text-ink-300">5 SD</span>
+          <span className="t-eyebrow text-ink-400">0 SD</span>
+          <span className="t-eyebrow text-ink-400">5 SD</span>
         </div>
       </div>
 
       <ul className="mt-5 divide-y divide-ink-100 text-sm">
         {dist.features.slice(0, 3).map((f) => (
           <li key={f.feature} className="flex items-baseline justify-between gap-4 py-2">
-            <span className="text-ink-600">{f.feature}</span>
+            <span className="text-ink-600">{featureLabel(f.feature)}</span>
             <span className="figure text-ink-800">
               {f.observed.toFixed(2)}{' '}
               <span className="text-ink-400">
