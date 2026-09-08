@@ -6,6 +6,7 @@ import { SiteHeader } from '@/components/chrome/site-header'
 import { Logo } from '@/components/brand/logo'
 import { MIRROR_PRODUCT, SITE } from '@/lib/site'
 import './globals.css'
+import { OpenHelmAnalytics } from "../lib/openhelm-analytics";
 
 /**
  * One sans for the whole product and one monospace for anything measured.
@@ -131,6 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </footer>
 
         <Analytics />
+        <OpenHelmAnalytics />
       </body>
     </html>
   )
