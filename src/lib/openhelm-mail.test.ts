@@ -69,7 +69,7 @@ afterEach(() => {
 });
 
 describe("configuration", () => {
-  it("is disabled — and says so — without a key and an inbox", () => {
+  it("is disabled: and says so, without a key and an inbox", () => {
     delete process.env.OPENHELM_API_KEY;
     delete process.env.OPENHELM_MAIL_INBOX_ID;
     expect(emailEnabled()).toBe(false);
@@ -109,7 +109,7 @@ describe("sendEmail", () => {
     expect(calls[0]!.body).toMatchObject({ to: ["a@b.co"], subject: "Hello", body_markdown: "**hi**" });
   });
 
-  it("never sends a from-address — the platform decides who this product is", async () => {
+  it("never sends a from-address: the platform decides who this product is", async () => {
     configure();
     const calls = mockFetch([OK]);
     await sendEmail({ to: "a@b.co", subject: "s", text: "t" });
