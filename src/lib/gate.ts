@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// GENERATED FILE — do not edit here.
+// GENERATED FILE. Do not edit here.
 // Canonical source: _services/stripe-guard/gate.ts in the ProductFactory repo.
 // Edit that, then re-run  node _services/stripe-guard/install.mjs --write
 // ─────────────────────────────────────────────────────────────────────────────
@@ -8,7 +8,7 @@
 // answers "is this event this product's?" for the whole handler.
 //
 // The alternative was to guard each branch of each of ~49 webhook handlers
-// individually, which is 49 chances to miss one — and missing one is exactly
+// individually, which is 49 chances to miss one, and missing one is exactly
 // how a Patent77 customer got a Job13 receipt. One gate before the switch
 // protects every branch, including branches added later by someone who has
 // never read this file.
@@ -17,7 +17,7 @@
 // it REFUSES when it cannot establish ownership. Refusing is the safe verdict:
 // a product that cannot name its own prices cannot tell its sales from another
 // product's, and acting on a stranger's payment is worse than not acting on
-// your own — the payment is still in Stripe, still retryable, still visible.
+// your own: the payment is still in Stripe, still retryable, still visible.
 
 import {
   catalogueIds,
@@ -37,7 +37,7 @@ const PRICE_ID = /^price_[A-Za-z0-9]+$/;
  *
  * Deliberately derived rather than declared per product: the products name
  * their price variables differently (`STRIPE_PRICE_PRO`, `STRIPE_PRICE_SCALE`,
- * `NEXT_PUBLIC_STRIPE_PRICE_MONTHLY`, `…_LEGACY` lists), and a hand-maintained
+ * `NEXT_PUBLIC_STRIPE_PRICE_MONTHLY`, `*_LEGACY` lists), and a hand-maintained
  * mapping for 49 repositories is a mapping that goes stale. Any environment
  * variable mentioning STRIPE and PRICE whose value is a Stripe price id counts.
  *
@@ -62,7 +62,7 @@ export function catalogueFromEnv(env: Record<string, string | undefined> = proce
 /** Event families whose ownership a price id can decide. */
 type PriceScoped = { readonly kind: "price"; readonly ownership: Ownership };
 /**
- * Event families that carry no price because they are not about a sale —
+ * Event families that carry no price because they are not about a sale:
  * today only Connect `account.*`, which a platform's own webhook identifies by
  * the connected account id instead. The gate passes these through and says so;
  * it does not pretend to have checked them.
@@ -125,7 +125,7 @@ export async function guardStripeEvent(
       reason: "unresolved",
       message:
         `[stripe] REFUSING ${event.type} ${event.id}: no price id could be read from it, so ownership ` +
-        "cannot be established. NOT falling back to metadata, customer id or client_reference_id — " +
+        "cannot be established. NOT falling back to metadata, customer id or client_reference_id: " +
         "on a shared Stripe account those belong to whichever product made the sale.",
     };
   }

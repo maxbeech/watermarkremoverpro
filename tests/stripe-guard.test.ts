@@ -60,7 +60,7 @@ describe("ownershipOfPrice", () => {
 
   it("refuses everything when the product has no prices configured", () => {
     // A product with no STRIPE_PRICE_* set cannot distinguish its own sales, so
-    // it must claim nothing — not fall through to "probably ours".
+    // it must claim nothing, not fall through to "probably ours".
     expect(ownershipOfPrice("price_ourpro", priceCatalogue({}))).toEqual({
       verdict: "unresolved",
       reason: "no_prices_configured",
@@ -122,7 +122,7 @@ describe("pricesFromInvoiceLines", () => {
     expect(pricesFromInvoiceLines([{ price: { id: "price_old" } }])).toEqual(["price_old"]);
   });
 
-  it("yields null — not a guess — for a line with neither shape", () => {
+  it("yields null, not a guess, for a line with neither shape", () => {
     expect(pricesFromInvoiceLines([{}])).toEqual([null]);
     expect(ownershipOfPrices(pricesFromInvoiceLines([{}]), OURS)).toMatchObject({
       verdict: "unresolved",

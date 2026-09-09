@@ -2,7 +2,7 @@
  * ⚠️ GENERATED. Canonical copy:
  * `ProductFactory/_services/openhelm-analytics/openhelm-analytics.test.ts`.
  *
- * Covers the Measurement Protocol module — the half a product can exercise
+ * Covers the Measurement Protocol module: the half a product can exercise
  * without a DOM, and the half that carries the rules GA4 enforces silently
  * (event-name shape, the 25-event cap, the params that decide whether an event
  * appears in reports at all).
@@ -34,7 +34,7 @@ describe("configuration", () => {
     expect(res).toEqual({ sent: false, reason: "not_configured" });
   });
 
-  it("treats a missing client id as unconfigured — an event with no client id has no user", async () => {
+  it("treats a missing client id as unconfigured, since an event with no client id has no user", async () => {
     const res = await sendEvents(
       { measurementId: "G-X", apiSecret: "s" },
       [{ name: "test_event" }],
