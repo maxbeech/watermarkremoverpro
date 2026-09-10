@@ -1,5 +1,137 @@
 # Changelog
 
+## 2026-09-10: the rename is finished, and the local model is the working default
+
+Two jobs, both of which were left half done by the rebrand in September.
+
+### The local model runs by default when it is actually there
+
+`reduce_ai_evidence` used to default to `model: "standard"`, the deterministic
+engine, and reach the real local LLM only when a caller named it. That is the
+wrong default in both directions. A machine that had already downloaded the
+weights kept getting the weaker engine unless somebody remembered to ask for
+the better one, and the obvious alternative (default to `advanced`) would stall
+a first call behind several hundred megabytes nobody asked for.
+
+There is now a third value, `auto`, and it is the default: run the local model
+when its weights are already cached on this machine, run the deterministic
+engine when they are not. One `model: "advanced"` call downloads them; every
+call after that gets the model on its own. `standard` and `advanced` still mean
+exactly what they meant, so nothing that named an engine changes behaviour.
+
+`src/lib/rewrite/engine-choice.ts` is the whole decision, pure and isomorphic,
+and `src/lib/rewrite/backend/node-engine.ts` is the one place that acts on it.
+The MCP server and the CLI both go through it; before this they each had their
+own copy of the try/catch around the model and already disagreed about what to
+tell a caller when it failed.
+
+Configurable rather than special-cased: `WATERMARKREMOVERPRO_REWRITE_MODEL`
+sets the default for a machine that should always (or never) use the model, and
+a misspelled value throws rather than quietly running a different engine.
+
+### Which engine ran is now part of every answer
+
+The old code reported a downgrade in a prose `model` string. That was not
+silent, which is the bar, but it was not usable either: a caller could not
+branch on it. Every `reduce_ai_evidence` response now carries an `engine`
+object naming the engine requested, the engine used, the backend id, the cache
+directory, and the reason in a sentence fit to print. When the local model was
+chosen and could not load, `engine.failure` carries the underlying error and
+the reason says the deterministic engine finished the job. Verified against the
+real bundled server with no `@huggingface/transformers` installed: the response
+comes back naming the missing package.
+
+`WATERMARKREMOVERPRO_REWRITE_STRICT=1` turns that reported switch into a thrown
+error, for a pipeline that would rather stop than take a weaker result it did
+not ask for.
+
+### The model cache moved with the product, and brought the weights with it
+
+`~/.cache/markwitness/models` is now `~/.cache/watermarkremoverpro/models`, and
+an existing cache is MOVED rather than left behind: a rename that costs
+somebody a multi-gigabyte re-download is a rename that gets reported as a bug.
+`rename` first, a copy as the fallback for the cross-filesystem case, the empty
+`~/.cache/markwitness` pruned after, and a failure reported (it means a slow
+first call, and hiding it would make that call inexplicable). Measured on the
+machine this was written on: 2.5 GB of pinned Qwen2.5 and MiniLM weights
+relocated in place, nothing re-fetched. `WATERMARKREMOVERPRO_MODEL_CACHE`
+overrides the location, and an override is never migrated into, because an
+operator who named a directory meant that directory.
+
+### Nothing about the on-device guarantee changed, and it is now guarded harder
+
+No path in the rewrite feature transmits anything, on any engine, on any tier.
+The only switch in the whole MCP server that sends document text anywhere is
+`WATERMARKREMOVERPRO_API_KEY`, which opts `check_document` in to the hosted
+endpoint; unset, which is the default, everything is local.
+`tests/product-constraints.test.ts` now asserts that directly rather than by
+implication: the server has exactly one `fetch`, it targets
+`/api/v1/check`, it is reachable from exactly one line guarded by `if
+(API_KEY)`, no tool argument can switch modes, every response labels the mode
+it was computed in, the content hook (which fires unattended on every write)
+has no network call at all, and the new engine-selection modules have none
+either.
+
+### The rename, finished
+
+Renamed: the `MARKWITNESS_*` configuration variables (to
+`WATERMARKREMOVERPRO_*`), the model cache path, and every remaining mention in
+the site copy, the docs pages, the plugin README, the package README and the
+main README. The plugin is at 0.4.0 in both manifests, and the committed
+bundles are rebuilt from the renamed source.
+
+Deliberately NOT renamed, and each one now pinned by `tests/rename.test.ts` so
+a future sweep has to read the reason before taking it:
+
+- **The `mw_live_` API key prefix.** Live customer keys carry it. It is stored
+  in `api_keys.key_prefix`, shown in the dashboard, and matched on every
+  authenticated request, so a new prefix invalidates keys that are in use
+  today. The reasoning recorded on 2026-09-07 still holds.
+- **The open reference key's domain-separation string,**
+  `markwitness/open-reference-key/v1`. It is hashed into the green-list PRF, so
+  it is an input to every statistic rather than a label on one. A new value is
+  a new key: text marked under the published scheme would stop being detected
+  and every evidence report issued under it would become unreproducible.
+- **The `MARKWITNESS_*` variable names as ALIASES.** The 09-07 entry left them
+  as the only names, which finished nothing; deleting them would have been
+  worse. They are now the pre-rename names of variables that have current ones,
+  still read, and their use reported at startup. A deployment or an MCP client
+  config written before the rename keeps working and loses nothing. Setting a
+  variable under both names with different values throws, naming both, rather
+  than picking one and leaving the operator looking at a value the process is
+  ignoring.
+
+Dated historical entries (this changelog, `docs/BUILD_LOG.md`,
+`docs/hardening_review.md`, `docs/domain_shortlist.md`) keep the old name,
+because they record what was true when they were written. The rename guard
+exempts them by name.
+
+### If you installed the plugin before the rename
+
+An installation of `markwitness@markwitness` is pinned to the retired GitHub
+repository and will never see an update, however long it sits there. It cannot
+be fixed from this side. Replace it:
+
+```bash
+claude plugin uninstall markwitness@markwitness
+claude plugin marketplace remove markwitness
+claude plugin marketplace add maxbeech/watermarkremoverpro
+claude plugin install watermarkremoverpro@watermarkremoverpro
+```
+
+The MCP server id changes with it, so tool names go from
+`mcp__plugin_markwitness_markwitness__*` to
+`mcp__plugin_watermarkremoverpro_watermarkremoverpro__*`. The plugin holds no
+state, so nothing else needs carrying over.
+
+### Also
+
+`.env.local` on the development machine still pointed `NEXT_PUBLIC_SITE_URL` at
+the pre-rename domain while `.env.example` had the current one. Better Auth
+signs callbacks against that value, and `llms.txt`, `pricing.json`, the OpenAPI
+document and the JSON-LD all advertise it, so a local run was advertising an
+address the product no longer calls itself.
+
 ## 2026-09-08: the workspace, and the brand mark in the browser tab
 
 **The result screen is now an application.** Pressing "Clean up my text"

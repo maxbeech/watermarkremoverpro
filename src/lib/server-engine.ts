@@ -10,8 +10,8 @@ import type { LanguageCode } from '@/lib/detector/languages'
  *
  * The SAME engine as the browser runs, called the same way. The only difference
  * is the key set: the server can hold vendor or institution keys from
- * MARKWITNESS_DETECTION_KEYS, which by definition cannot be shipped to a
- * browser without publishing them.
+ * WATERMARKREMOVERPRO_DETECTION_KEYS, which by definition cannot be shipped to
+ * a browser without publishing them.
  */
 
 let keys: DetectionKey[] | null = null

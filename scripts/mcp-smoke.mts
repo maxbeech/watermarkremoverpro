@@ -44,7 +44,13 @@ const transport = new StdioClientTransport({
   command: 'npx',
   args: ['tsx', 'mcp/server.ts'],
   // Force local mode so the smoke test never depends on a deployed endpoint.
-  env: { ...process.env, MARKWITNESS_API_KEY: '' } as Record<string, string>,
+  // Both names are cleared: either one set in the ambient environment would
+  // otherwise send this test at a live deployment.
+  env: {
+    ...process.env,
+    WATERMARKREMOVERPRO_API_KEY: '',
+    MARKWITNESS_API_KEY: '',
+  } as Record<string, string>,
 })
 
 const client = new Client({ name: 'watermarkremoverpro-smoke', version: '1.0.0' }, { capabilities: {} })
@@ -72,19 +78,21 @@ try {
     'no tool description makes an unverifiable 100%-style guarantee',
   )
 
-  // The advanced (real local-LLM) engine is opt-in and undiscoverable by
-  // default, so this only checks the schema advertises it correctly. It
-  // never invokes model: 'advanced' here: doing so would download real
-  // weights, which this fast/default smoke test must not require. See
-  // `npm run test:models` for that.
+  // The three engine choices, checked at the schema. This never invokes
+  // model: 'advanced' directly: that would download real weights, which this
+  // fast/default smoke test must not require. See `npm run test:models`.
+  // The default is 'auto', which on a machine with no cached weights resolves
+  // to the deterministic engine, and the assertions further down check it
+  // reports having done so.
   const rewriteInputSchema = rewriteTool?.inputSchema as
     | { properties?: Record<string, { enum?: string[] }> }
     | undefined
   assert(
     Array.isArray(rewriteInputSchema?.properties?.model?.enum) &&
-      rewriteInputSchema!.properties!.model!.enum!.includes('standard') &&
-      rewriteInputSchema!.properties!.model!.enum!.includes('advanced'),
-    'reduce_ai_evidence advertises both the standard and advanced model options',
+      ['auto', 'standard', 'advanced'].every((choice) =>
+        rewriteInputSchema!.properties!.model!.enum!.includes(choice),
+      ),
+    'reduce_ai_evidence advertises the auto, standard and advanced model options',
   )
 
   const described = await client.callTool({ name: 'describe_method', arguments: {} })
@@ -173,10 +181,50 @@ try {
     JSON.stringify(fullPayload).length > JSON.stringify(rewritePayload).length,
     'the full response is genuinely larger than the summary, so the default saves something real',
   )
+  // Which engine ran, and why, on every response. A caller must never have to
+  // guess whether a result came from the local model or the deterministic
+  // engine, which is exactly the ambiguity a default of 'auto' would create if
+  // it were not reported.
   assert(
-    typeof rewritePayload.model === 'string' && /standard/.test(rewritePayload.model),
-    'the default call reports it ran the standard (rule-based, no download) engine',
+    typeof rewritePayload.model === 'string' && rewritePayload.model.length > 0,
+    'the default call names the engine that ran in the human-readable `model` field',
   )
+  const reportedEngine = rewritePayload.engine
+  assert(reportedEngine?.requested === 'auto', 'a call naming no model is reported as the auto default')
+  assert(
+    reportedEngine?.used === 'standard' || reportedEngine?.used === 'advanced',
+    'the response names the engine that actually ran',
+  )
+  assert(
+    typeof reportedEngine?.reason === 'string' && reportedEngine.reason.length > 20,
+    'the response explains why that engine ran',
+  )
+  assert(
+    typeof reportedEngine?.modelCacheDir === 'string' &&
+      reportedEngine.modelCacheDir.includes('watermarkremoverpro'),
+    'the local model cache is reported at the post-rename path',
+  )
+  assert(
+    reportedEngine?.failure === null || typeof reportedEngine?.failure?.message === 'string',
+    'a local model that could not load reports why, rather than degrading in silence',
+  )
+
+  // Explicitly asking for the deterministic engine must be honoured whatever
+  // is cached on the machine running this.
+  const explicitStandard = await client.callTool({
+    name: 'reduce_ai_evidence',
+    arguments: { text: SAMPLE, strength: 'preserve', model: 'standard' },
+  })
+  const standardPayload = JSON.parse((explicitStandard.content as Array<{ text: string }>)[0].text)
+  assert(standardPayload.engine.used === 'standard', 'model "standard" runs the deterministic engine')
+  assert(standardPayload.engine.failure === null, 'the deterministic engine reports no failure')
+
+  // An engine that does not exist is refused rather than quietly replaced.
+  const badModel = await client.callTool({
+    name: 'reduce_ai_evidence',
+    arguments: { text: SAMPLE, model: 'turbo' },
+  })
+  assert(badModel.isError === true, 'an unrecognised model is an explicit error, not a silent substitution')
 
   console.log('\nMCP smoke test passed.')
   await client.close()

@@ -15,20 +15,26 @@
  * Reads from a file argument or stdin, writes to a file (-o) or stdout.
  * Never makes a network call with your document text, on any tier, on any
  * flag combination. --model advanced downloads real model weights from the
- * Hugging Face CDN on first use (cached under ~/.cache/markwitness/models);
- * that download never carries your document.
+ * Hugging Face CDN on first use (cached under
+ * ~/.cache/watermarkremoverpro/models); that download never carries your
+ * document. The default, --model auto, uses those weights when they are
+ * already cached and the deterministic engine when they are not, and says
+ * which one it used either way.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
-import { reduceEvidence, rewriteDocument, REWRITE_LIMITS } from './index'
+import { REWRITE_LIMITS } from './index'
 import { OPEN_REFERENCE_KEY } from '../detector/keys'
 import type { Strength, Tier } from './types'
+import { MODEL_CHOICES, isModelChoice, type ModelChoice } from './engine-choice'
+import { describeEngine, runRewriteOnNode } from './backend/node-engine'
 
 interface ParsedArgs {
   inputFile?: string
   outputFile?: string
   strength: Strength
   tier: Tier
-  model: 'standard' | 'advanced'
+  /** Undefined means "not named on the command line", which defers to configuration. */
+  model?: ModelChoice
   language?: string
   json: boolean
   help: boolean
@@ -38,7 +44,7 @@ const STRENGTHS: Strength[] = ['preserve', 'balanced', 'aggressive', 'regenerate
 const TIERS: Tier[] = ['free', 'pro']
 
 function parseArgs(argv: string[]): ParsedArgs {
-  const result: ParsedArgs = { strength: 'balanced', tier: 'free', model: 'standard', json: false, help: false }
+  const result: ParsedArgs = { strength: 'balanced', tier: 'free', json: false, help: false }
   const positional: string[] = []
 
   for (let i = 0; i < argv.length; i++) {
@@ -66,7 +72,7 @@ function parseArgs(argv: string[]): ParsedArgs {
       }
       case '--model': {
         const value = argv[++i]
-        if (value !== 'standard' && value !== 'advanced') throw new Error('--model must be "standard" or "advanced"')
+        if (!isModelChoice(value)) throw new Error(`--model must be one of: ${MODEL_CHOICES.join(', ')}`)
         result.model = value
         break
       }
@@ -108,9 +114,12 @@ Options:
       --tier <t>        free | pro (default: free). Unlimited in this CLI, which runs
                          entirely in your own process; pro generates more candidates per
                          passage and uses the extended AI-tell library.
-      --model <m>       standard | advanced (default: standard). "advanced" downloads and
-                         runs a real local LLM (Qwen2.5) on first use; "standard" is the
-                         instant, no-download rule-based engine. Both are 100% on-device.
+      --model <m>       auto | standard | advanced (default: auto). "auto" runs the local
+                         model when its weights are already cached and the deterministic
+                         engine when they are not, and prints which it chose. "advanced"
+                         downloads and runs a real local LLM (Qwen2.5) on first use;
+                         "standard" is the instant, no-download rule-based engine. All
+                         three are entirely on-device.
       --language <code> Force a language instead of auto-detecting (en, es, fr, de, pt).
       --json             Print the full RewriteResult as JSON instead of just the revised text.
   -h, --help             Show this help.
@@ -134,15 +143,13 @@ async function main() {
 
   const request = { text, language: args.language, strength: args.strength, tier: args.tier }
 
-  const result =
-    args.model === 'advanced'
-      ? await (async () => {
-          const { createTransformersNodeBackend } = await import('./backend/node')
-          const backend = createTransformersNodeBackend(args.tier)
-          process.stderr.write(`Using advanced engine: ${backend.id} (downloads/caches on first use)...\n`)
-          return rewriteDocument(request, backend, [OPEN_REFERENCE_KEY])
-        })()
-      : await reduceEvidence(request, [OPEN_REFERENCE_KEY])
+  const { result, engine } = await runRewriteOnNode(request, [OPEN_REFERENCE_KEY], { model: args.model })
+
+  // Which engine ran is stderr, always, whether or not it was the one asked
+  // for. stdout stays the revised text so the command still pipes.
+  if (engine.cacheMigration?.note) process.stderr.write(`${engine.cacheMigration.note}\n`)
+  process.stderr.write(`Engine: ${describeEngine(engine)}\n`)
+  if (engine.failure) process.stderr.write(`The local model failed to load: ${engine.failure.message}\n`)
 
   if (result.status !== 'ok') {
     process.stderr.write(`Rewrite failed: ${result.error}\n`)

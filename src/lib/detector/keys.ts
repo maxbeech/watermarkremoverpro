@@ -24,6 +24,7 @@
  */
 
 import { utf8 } from './crypto'
+import { ENV_DETECTION_KEYS, readAliasedEnv } from '../env-names'
 
 export interface DetectionKey {
   id: string
@@ -54,6 +55,18 @@ export const OPEN_REFERENCE_KEY: DetectionKey = {
   label: 'WatermarkRemoverPro open reference scheme',
   scheme: 'greenlist-bigram-v1',
   gamma: 0.5,
+  /*
+    NOT renamed with the product, and it must never be.
+
+    This string is hashed into the pseudorandom function that decides the green
+    list, so it is an INPUT to every statistic the detector reports rather than
+    a label on one. Change it and the key becomes a different key: text marked
+    under the published open reference scheme stops being detected, every
+    evidence report ever issued under it becomes unreproducible, and
+    simulate.ts starts generating text this build cannot see. The value is a
+    cryptographic domain separator that happens to spell the old brand.
+    tests/rename.test.ts pins it so a future rename sweep cannot take it.
+  */
   secret: utf8('markwitness/open-reference-key/v1'),
   provenance:
     'Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.',
@@ -71,15 +84,25 @@ export interface KeyRegistryEntry {
 /**
  * Keys available to a given deployment.
  *
- * Additional keys are supplied through MARKWITNESS_DETECTION_KEYS as a JSON
- * array of { id, label, secret, gamma?, provenance }. This is the path a model
- * vendor publishing a detection key, or an institution issued one under NDA,
- * plugs into. The engine needs no change to test against it.
+ * Additional keys are supplied through WATERMARKREMOVERPRO_DETECTION_KEYS as a
+ * JSON array of { id, label, secret, gamma?, provenance }. This is the path a
+ * model vendor publishing a detection key, or an institution issued one under
+ * NDA, plugs into. The engine needs no change to test against it.
+ *
+ * The pre-rename name (MARKWITNESS_DETECTION_KEYS) is still accepted, because
+ * a deployment that has it set would otherwise lose its vendor keys at the
+ * next deploy while continuing to answer every request normally. See
+ * src/lib/env-names.ts.
  */
 export function loadDetectionKeys(env: Record<string, string | undefined> = {}): DetectionKey[] {
   const keys: DetectionKey[] = [OPEN_REFERENCE_KEY]
-  const raw = env.MARKWITNESS_DETECTION_KEYS
+  const configured = readAliasedEnv(env, ENV_DETECTION_KEYS)
+  const raw = configured.value
   if (!raw) return keys
+
+  // Errors name the variable the operator actually set, not the one they
+  // did not, so the message points at the line they have to go and edit.
+  const varName = configured.nameUsed ?? ENV_DETECTION_KEYS.canonical
 
   let parsed: unknown
   try {
@@ -88,17 +111,17 @@ export function loadDetectionKeys(env: Record<string, string | undefined> = {}):
     // Surface the misconfiguration rather than silently running with fewer keys
     // than the operator believes are active.
     throw new Error(
-      'MARKWITNESS_DETECTION_KEYS is set but is not valid JSON. Expected an array of {id,label,secret,gamma?,provenance}.',
+      `${varName} is set but is not valid JSON. Expected an array of {id,label,secret,gamma?,provenance}.`,
     )
   }
   if (!Array.isArray(parsed)) {
-    throw new Error('MARKWITNESS_DETECTION_KEYS must be a JSON array.')
+    throw new Error(`${varName} must be a JSON array.`)
   }
 
   for (const entry of parsed) {
     const e = entry as Record<string, unknown>
     if (typeof e.id !== 'string' || typeof e.secret !== 'string') {
-      throw new Error('Each MARKWITNESS_DETECTION_KEYS entry needs at least a string id and secret.')
+      throw new Error(`Each ${varName} entry needs at least a string id and secret.`)
     }
     const gamma = typeof e.gamma === 'number' ? e.gamma : 0.5
     if (!(gamma > 0 && gamma < 1)) {

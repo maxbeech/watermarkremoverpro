@@ -28,6 +28,22 @@ const sourceFiles = walk(join(ROOT, 'src'))
 
 const read = (file: string) => readFileSync(file, 'utf8')
 
+/**
+ * Matches an invocation, not a mention. Several of the files scanned below
+ * discuss fetching baselines or model weights in their comments, and a test
+ * that fails on the word would either be muted or would push the explanation
+ * out of the code, both worse outcomes than a slightly more careful regex.
+ *
+ * Defined once here rather than per describe block: three separate constraints
+ * now depend on it, and "what counts as a network call" drifting between them
+ * is how one of them quietly stops checking anything.
+ */
+const NETWORK_CALL =
+  /(^|[^.\w])(fetch\s*\(|new\s+XMLHttpRequest|navigator\s*\.\s*sendBeacon|new\s+WebSocket|new\s+EventSource)/
+
+const stripComments = (source: string): string =>
+  source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '')
+
 // ---------------------------------------------------------------------------
 
 /**
@@ -90,11 +106,6 @@ describe('constraint: the rewrite feature never transmits the document, on any t
    * guarantee, on any tier or surface, ever.
    */
   const rewritePath = [...walk(join(ROOT, 'src', 'lib', 'rewrite'))].filter((f) => !f.endsWith('.test.ts'))
-  const NETWORK_CALL = /(^|[^.\w])(fetch\s*\(|new\s+XMLHttpRequest|navigator\s*\.\s*sendBeacon|new\s+WebSocket|new\s+EventSource)/
-
-  const stripComments = (source: string): string =>
-    source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '')
-
   it('has no network call anywhere in the rewrite engine', () => {
     const offenders = rewritePath
       .filter((file) => NETWORK_CALL.test(stripComments(read(file))))
@@ -113,6 +124,79 @@ describe('constraint: the rewrite feature never transmits the document, on any t
     const toolBody = server.slice(start, end)
     expect(toolBody).not.toMatch(/API_BASE|fetch\(/)
   })
+
+  it('is on-device whichever engine runs, because engine selection touches no network', () => {
+    // The local model is the default whenever its weights are present, so the
+    // selection path is now on the document's route and has to carry the same
+    // constraint as the engine it selects.
+    for (const file of [
+      'src/lib/rewrite/engine-choice.ts',
+      'src/lib/rewrite/backend/node-engine.ts',
+      'src/lib/rewrite/backend/model-cache.ts',
+    ]) {
+      expect(stripComments(read(join(ROOT, file))), file).not.toMatch(NETWORK_CALL)
+    }
+  })
+})
+
+// ---------------------------------------------------------------------------
+
+describe('constraint: the MCP server is local by default, and hosted only on an explicit opt-in', () => {
+  /**
+   * check_document is the ONE tool in the server with a hosted mode, and the
+   * property that makes that acceptable is that reaching it requires setting
+   * an API key, which nobody does by accident. If the default ever became
+   * hosted, every agent that installed this plugin would start posting its
+   * user's documents to a server without anybody choosing that.
+   */
+  const server = read(join(ROOT, 'mcp/server.ts'))
+
+  it('sends a document to exactly one place, and only when a key is configured', () => {
+    // Every fetch in the server, matched at its call site rather than by
+    // searching for the word, which the file's own comments also contain.
+    const fetches = [...server.matchAll(/fetch\(([^)]*)/g)].map((m) => m[1])
+    expect(fetches.length, 'the server should have exactly one network call').toBe(1)
+    expect(fetches[0]).toContain('${API_BASE}/api/v1/check')
+
+    // That call lives in runHosted, and runHosted is reachable from one line.
+    const callSites = [...server.matchAll(/await runHosted\(/g)]
+    expect(callSites.length).toBe(1)
+    expect(server).toContain('if (API_KEY) return json(await runHosted(text, language, granularity))')
+  })
+
+  it('derives the key from configuration only, never from a tool argument', () => {
+    // A caller must not be able to switch the server into hosted mode through
+    // the tool call itself; that would put the decision in the wrong hands.
+    expect(server).toContain('const apiKey = readAliasedEnv(process.env, ENV_API_KEY)')
+    expect(server).not.toMatch(/args\??\.(apiKey|api_key|apiUrl|hosted|endpoint)\b/)
+  })
+
+  it('labels which mode produced every answer', () => {
+    // A result that does not say where it was computed is a result somebody
+    // will assume was local.
+    expect(server).toContain("mode: API_KEY ? 'hosted' : 'local'")
+    expect(server).toContain('modeNote')
+    // The rewrite tool hardcodes local, because it has no other mode.
+    const rewriteBody = server.slice(
+      server.indexOf("name === 'reduce_ai_evidence'"),
+      server.indexOf('Unknown tool', server.indexOf("name === 'reduce_ai_evidence'")),
+    )
+    expect(rewriteBody).toContain("mode: 'local'")
+  })
+
+  it('keeps the content hook entirely local, since it fires on every write', () => {
+    // The hook runs unattended after an agent writes a file. It has no opt-in
+    // moment at all, so it gets no hosted mode of any kind.
+    expect(stripComments(read(join(ROOT, 'mcp/hook-check.ts')))).not.toMatch(NETWORK_CALL)
+  })
+
+  it('always reports which rewrite engine ran', () => {
+    // The local model is the default when it is available, so "which engine
+    // produced this" stops being obvious from the call and has to be answered
+    // in the response.
+    expect(server).toContain('engine,')
+    expect(server).toContain('describeEngine(engine)')
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -124,17 +208,6 @@ describe('constraint: the free check never transmits the document', () => {
    * ("open your network tab and watch") would become false, and it would be
    * false in a way no user could easily detect.
    */
-  /**
-   * Matches an invocation, not a mention. These files discuss fetching
-   * baselines in their comments, and a test that fails on the word would
-   * either be muted or would push the explanation out of the code, and both
-   * worse outcomes than a slightly more careful regex.
-   */
-  const NETWORK_CALL = /(^|[^.\w])(fetch\s*\(|new\s+XMLHttpRequest|navigator\s*\.\s*sendBeacon|new\s+WebSocket|new\s+EventSource)/
-
-  const stripComments = (source: string): string =>
-    source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '')
-
   /**
    * Every component that HOLDS the document, on any surface. The workspace
    * directory is included deliberately: it is where the homepage flow lives

@@ -45,7 +45,7 @@ export default function ApiDocsPage() {
 
       <Section title="POST /api/v1/check">
         <Code>{`curl -X POST ${SITE.url}/api/v1/check \\
-  -H "Authorization: Bearer $MARKWITNESS_API_KEY" \\
+  -H "Authorization: Bearer $WATERMARKREMOVERPRO_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "text": "The text you want to check...",

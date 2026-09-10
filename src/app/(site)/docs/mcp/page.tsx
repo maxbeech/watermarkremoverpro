@@ -51,7 +51,7 @@ claude plugin install watermarkremoverpro@watermarkremoverpro`}</Code>
     "watermarkremoverpro": {
       "command": "node",
       "args": ["/path/to/watermarkremoverpro/plugins/watermarkremoverpro/dist/mcp-server.mjs"],
-      "env": { "MARKWITNESS_API_KEY": "mw_live_..." }
+      "env": { "WATERMARKREMOVERPRO_API_KEY": "mw_live_..." }
     }
   }
 }`}</Code>
@@ -62,8 +62,12 @@ claude plugin install watermarkremoverpro@watermarkremoverpro`}</Code>
           </code>
         </p>
         <p className="text-sm">
-          The <code className="figure">MARKWITNESS_API_KEY</code> line is optional and only affects{' '}
-          <code className="figure">check_document</code>. Leave it out and everything runs locally.
+          The <code className="figure">WATERMARKREMOVERPRO_API_KEY</code> line is optional and only
+          affects <code className="figure">check_document</code>. Leave it out and everything runs
+          locally, which is the default. Keys still begin{' '}
+          <code className="figure">mw_live_</code>, and{' '}
+          <code className="figure">MARKWITNESS_API_KEY</code> is the pre-rename name of the same
+          variable and still works, so a config written before the rename needs no edit.
         </p>
       </Section>
 
@@ -157,7 +161,7 @@ claude plugin install watermarkremoverpro@watermarkremoverpro`}</Code>
           <code className="figure">calibrate_text</code>{' '}
           always run in this server&apos;s own process, unlike{' '}
           <code className="figure">check_document</code>. There is no{' '}
-          <code className="figure">MARKWITNESS_API_KEY</code>{' '}
+          <code className="figure">WATERMARKREMOVERPRO_API_KEY</code>{' '}
           branch for either, no REST endpoint, and no parameter that sends the document anywhere:
           rewriting is more sensitive than measuring, and gets no exception to the on-device
           guarantee. See <code className="figure">docs/REWRITE_PHILOSOPHY.md</code>{' '}

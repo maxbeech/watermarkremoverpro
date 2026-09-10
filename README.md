@@ -295,6 +295,33 @@ For any other MCP client:
 claude mcp add watermarkremoverpro -- node /path/to/plugins/watermarkremoverpro/dist/mcp-server.mjs
 ```
 
+Installed the plugin before the rename? An installation of
+`markwitness@markwitness` points at the retired GitHub repository and will
+never update. Remove it and add the current marketplace:
+
+```bash
+claude plugin uninstall markwitness@markwitness
+claude plugin marketplace remove markwitness
+claude plugin marketplace add maxbeech/watermarkremoverpro
+claude plugin install watermarkremoverpro@watermarkremoverpro
+```
+
+### Configuration
+
+Every variable is optional, and unset means the local, private, unmetered
+path. The pre-rename `MARKWITNESS_*` names are still read, so nothing set
+before the rename breaks; setting a variable under both names with different
+values is refused rather than silently resolved.
+
+| Variable | Effect when set |
+|---|---|
+| `WATERMARKREMOVERPRO_API_KEY` | Opts `check_document` in to the hosted endpoint, which adds vendor detection keys, saves history and meters the call. The only switch anywhere that sends document text off the machine. Keys still begin `mw_live_`. |
+| `WATERMARKREMOVERPRO_API_URL` | Points the hosted mode at a different deployment. |
+| `WATERMARKREMOVERPRO_DETECTION_KEYS` | Deployment-side: extra detection keys, as JSON. |
+| `WATERMARKREMOVERPRO_MODEL_CACHE` | Where local model weights live. Defaults to `~/.cache/watermarkremoverpro/models`; a pre-rename cache at `~/.cache/markwitness/models` is moved there on first use rather than downloaded again. |
+| `WATERMARKREMOVERPRO_REWRITE_MODEL` | `auto` (default), `standard` or `advanced`: which engine a caller that names none gets. |
+| `WATERMARKREMOVERPRO_REWRITE_STRICT` | `1` makes a local model that cannot load a hard error instead of a reported switch to the deterministic engine. |
+
 | Surface | Path |
 |---|---|
 | Claude Code plugin (MCP + skill + hook) | `plugins/watermarkremoverpro`, listed by `.claude-plugin/marketplace.json` |
@@ -303,7 +330,8 @@ claude mcp add watermarkremoverpro -- node /path/to/plugins/watermarkremoverpro/
 | OpenAPI 3.1 | `/api/openapi.json` |
 | Machine-readable pricing | `/pricing.json` |
 | Agent description | `/llms.txt` |
-| MCP server | `mcp/server.ts`: `check_document`/`describe_method` local or hosted; `calibrate_text`/`reduce_ai_evidence` always local, no hosted mode |
+| MCP server | `mcp/server.ts`: `check_document`/`describe_method` local by default, hosted only when an API key is set; `calibrate_text`/`reduce_ai_evidence` always local, no hosted mode |
+| Rewrite engine selection | `src/lib/rewrite/engine-choice.ts` decides, `src/lib/rewrite/backend/node-engine.ts` runs it, and both the MCP tool and the CLI go through them, so the two cannot answer the question differently |
 | Rewrite engine (no REST API by design; see docs/REWRITE_PHILOSOPHY.md) | `src/lib/rewrite`, published standalone as `@watermarkremoverpro/rewrite-engine` (`packages/rewrite-engine`) with a `watermarkremoverpro-rewrite` CLI, same engine as the MCP tool |
 
 ## Stack

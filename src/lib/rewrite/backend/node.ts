@@ -4,18 +4,17 @@
  * and the local package/CLI, never by anything running in the browser
  * (it imports node:os/node:path, which do not exist there).
  *
- * Caches weights to ~/.cache/markwitness/models, downloaded from the
- * Hugging Face CDN on first use, never from a WatermarkRemoverPro-operated server.
+ * Caches weights to ~/.cache/watermarkremoverpro/models (see ./model-cache.ts,
+ * which also relocates a pre-rename cache rather than making anyone download
+ * the weights twice), fetched from the Hugging Face CDN on first use, never
+ * from a WatermarkRemoverPro-operated server.
  */
 
-import os from 'node:os'
-import path from 'node:path'
 import type { GenerateOptions, RewriteBackend } from './types'
 import { generateWithTransformers, embedWithTransformers, type TransformersEnv } from './transformers-shared'
 import { effectiveRewriteModel } from '../models'
 import type { Tier } from '../types'
-
-const CACHE_DIR = path.join(os.homedir(), '.cache', 'markwitness', 'models')
+import { resolveModelCacheDir } from './model-cache'
 
 export function createTransformersNodeBackend(tier: Tier): RewriteBackend {
   // device: 'cpu' deliberately never triggers the browser-only "weak
@@ -27,7 +26,7 @@ export function createTransformersNodeBackend(tier: Tier): RewriteBackend {
   const env: TransformersEnv = {
     device: 'cpu',
     dtype,
-    cacheDir: CACHE_DIR,
+    cacheDir: resolveModelCacheDir().dir,
   }
 
   return {

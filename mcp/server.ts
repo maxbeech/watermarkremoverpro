@@ -14,15 +14,20 @@
  * Client configuration:
  *   { "mcpServers": { "watermarkremoverpro": { "command": "npx",
  *       "args": ["-y", "tsx", "/path/to/mcp/server.ts"],
- *       "env": { "MARKWITNESS_API_KEY": "mw_live_…" } } } }
+ *       "env": { "WATERMARKREMOVERPRO_API_KEY": "mw_live_…" } } } }
  *
- * check_document has two modes:
+ * check_document has two modes, and the LOCAL one is the default. The hosted
+ * one exists only when a caller has opted in by setting an API key, which is
+ * an act nobody performs by accident:
  *  - With no API key, it runs the engine LOCALLY, in this process, against the
  *    published reference key. Nothing leaves the machine and nothing is
  *    recorded or billed.
- *  - With MARKWITNESS_API_KEY set, calls go to the hosted endpoint, which adds
- *    any vendor or institution detection keys that deployment holds, records
- *    the check against the account's history, and meters it.
+ *  - With WATERMARKREMOVERPRO_API_KEY set (or its pre-rename name,
+ *    MARKWITNESS_API_KEY, which still works), calls go to the hosted endpoint,
+ *    which adds any vendor or institution detection keys that deployment
+ *    holds, records the check against the account's history, and meters it.
+ *    That is the ONLY path in this server on which document text leaves the
+ *    machine, and every response says which mode produced it.
  *
  * reduce_ai_evidence and calibrate_text have ONE mode, always: they run
  * entirely in this process. There is no hosted branch for either, on any
@@ -43,16 +48,31 @@ import type { Baseline } from '../src/lib/detector/distributional'
 import { countWords } from '../src/lib/detector/tokenize'
 import { API_PRICE_PENCE_PER_1K_WORDS } from '../src/lib/site'
 import { calibrateText } from '../src/lib/calibrate'
-import { reduceEvidence, rewriteDocument, REWRITE_LIMITS } from '../src/lib/rewrite'
+import { reduceEvidence, REWRITE_LIMITS } from '../src/lib/rewrite'
 import type { Strength, Tier } from '../src/lib/rewrite'
-// The advanced (local LLM) backend is imported lazily, inside the one branch
-// that uses it. A static import pulls onnxruntime's native binaries into the
-// bundled, zero-install server (about 1.3 MB of .node files nobody who never
-// asks for model: "advanced" will ever execute) and slows every cold start
-// for a capability most calls do not use.
+import {
+  MODEL_CHOICES,
+  isModelChoice,
+  type ModelChoice,
+} from '../src/lib/rewrite/engine-choice'
+import { ENV_API_KEY, ENV_API_URL, describeLegacyEnvUse, readAliasedEnv } from '../src/lib/env-names'
+// The rewrite runner (and through it the advanced local-model backend) is
+// imported lazily, inside the one tool that uses it. A static import pulls
+// onnxruntime's native binaries into the bundled, zero-install server (about
+// 1.3 MB of .node files nobody who never reaches the local model will ever
+// execute) and slows every cold start for a capability most calls do not use.
 
-const API_BASE = (process.env.MARKWITNESS_API_URL || 'https://www.watermarkremoverpro.com').replace(/\/$/, '')
-const API_KEY = process.env.MARKWITNESS_API_KEY || ''
+const apiUrl = readAliasedEnv(process.env, ENV_API_URL)
+const apiKey = readAliasedEnv(process.env, ENV_API_KEY)
+
+const API_BASE = (apiUrl.value || 'https://www.watermarkremoverpro.com').replace(/\/$/, '')
+const API_KEY = apiKey.value || ''
+
+/** Pre-rename variable names still in use, reported at startup rather than silently honoured. */
+const LEGACY_ENV_NOTICES = [
+  apiKey.legacy ? describeLegacyEnvUse(ENV_API_KEY) : null,
+  apiUrl.legacy ? describeLegacyEnvUse(ENV_API_URL) : null,
+].filter((notice): notice is string => notice !== null)
 
 const server = new Server({ name: 'watermarkremoverpro', version: ENGINE_VERSION }, { capabilities: { tools: {} } })
 
@@ -98,7 +118,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         'score, as a verdict on who wrote something.\n\n' +
         (API_KEY
           ? `Configured with an API key: calls go to ${API_BASE}, which applies any vendor keys that deployment holds, saves the check to the account history, and meters it at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.`
-          : 'No MARKWITNESS_API_KEY is set, so this runs locally in this process against the published open reference key only. Nothing leaves the machine, nothing is recorded, and nothing is billed. Set MARKWITNESS_API_KEY to use vendor keys and saved history.'),
+          : `No ${ENV_API_KEY.canonical} is set, so this runs locally in this process against the published open reference key only. Nothing leaves the machine, nothing is recorded, and nothing is billed. This is the default. Setting ${ENV_API_KEY.canonical} opts in to the hosted endpoint, which adds vendor keys and saved history and is the only mode in which the document is transmitted.`),
       inputSchema: checkDocumentSchema,
     },
     {
@@ -196,15 +216,20 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           },
           model: {
             type: 'string',
-            enum: ['standard', 'advanced'],
+            enum: [...MODEL_CHOICES],
             description:
-              '"standard" (default) is the deterministic rule-based engine: instant, no download. ' +
-              '"advanced" runs a real small local LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) via ' +
-              'onnxruntime-node, downloaded from the Hugging Face CDN and cached under ' +
-              '~/.cache/markwitness/models on first use, never from a WatermarkRemoverPro-operated server, and ' +
-              'still on-device only. First call with "advanced" can take a while (model download); later ' +
-              'calls reuse the cache. If the model cannot be loaded (offline, unsupported platform), this ' +
-              'automatically falls back to "standard" and the response says so in `model`.',
+              '"auto" (the default) runs the local model when its weights are already cached on this ' +
+              'machine and the deterministic engine when they are not, so a machine that has the model ' +
+              'gets it without asking and one that does not is never stalled behind an unrequested ' +
+              'download. "advanced" runs the local model either way, downloading the weights on the ' +
+              'first call. "standard" is the deterministic rule-based engine: instant, no download. ' +
+              'The local model is a real small LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) run via ' +
+              'onnxruntime-node, fetched from the Hugging Face CDN and cached under ' +
+              '~/.cache/watermarkremoverpro/models, never from a WatermarkRemoverPro-operated server, ' +
+              'and still on-device only. Every response carries an `engine` object naming which one ran ' +
+              'and why; if the local model was chosen and could not load, `engine.failure` carries the ' +
+              'reason and the deterministic engine finishes the job. Set ' +
+              'WATERMARKREMOVERPRO_REWRITE_STRICT=1 to make that a hard error instead.',
           },
           detail: {
             type: 'string',
@@ -268,7 +293,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return json({
         engineVersion: ENGINE_VERSION,
         mode: API_KEY ? 'hosted' : 'local',
+        modeNote: API_KEY
+          ? `Hosted mode, opted in by setting ${apiKey.nameUsed}. check_document sends the document to ${API_BASE}; no other tool here transmits anything.`
+          : 'Local mode, the default. No tool in this server transmits a document in this mode.',
         endpoint: API_KEY ? `${API_BASE}/api/v1/check` : null,
+        ...(LEGACY_ENV_NOTICES.length > 0 ? { configurationNotices: LEGACY_ENV_NOTICES } : {}),
         detectionKeys: API_KEY
           ? 'Determined by the hosted deployment; returned on every check as watermark.keysTested.'
           : [describeKey(OPEN_REFERENCE_KEY)],
@@ -354,27 +383,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const language = typeof args?.language === 'string' ? args.language : undefined
       const strength = (typeof args?.strength === 'string' ? args.strength : 'balanced') as Strength
       const tier = (typeof args?.tier === 'string' ? args.tier : 'free') as Tier
-      const modelChoice = (typeof args?.model === 'string' ? args.model : 'standard') as 'standard' | 'advanced'
-
-      let result
-      let model = 'standard (rule-based, no download)'
-      if (modelChoice === 'advanced') {
-        try {
-          const { createTransformersNodeBackend } = await import('../src/lib/rewrite/backend/node')
-          const backend = createTransformersNodeBackend(tier)
-          result = await rewriteDocument({ text, language, strength, tier }, backend, [OPEN_REFERENCE_KEY])
-          model = `advanced (${backend.id}; cached under ~/.cache/markwitness/models)`
-        } catch (err) {
-          // Real failure state, not a silent downgrade: the advanced model
-          // genuinely could not load (offline on first use, unsupported
-          // platform, out of memory), so this falls back to the
-          // always-available rule-based engine and says exactly why.
-          result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY])
-          model = `standard (rule-based); advanced model unavailable: ${(err as Error).message}`
-        }
-      } else {
-        result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY])
+      // An unrecognised value is refused rather than quietly treated as the
+      // default: a caller asking for an engine that does not exist wants to
+      // know that, not to get a different one without being told.
+      if (args?.model !== undefined && !isModelChoice(args.model)) {
+        throw new Error(`"model" must be one of: ${MODEL_CHOICES.join(', ')}.`)
       }
+      const modelChoice = args?.model as ModelChoice | undefined
+
+      // Lazy, so a caller who never rewrites anything never loads the engine
+      // selector or the model backend behind it.
+      const { runRewriteOnNode, describeEngine } = await import('../src/lib/rewrite/backend/node-engine')
+      const { result, engine } = await runRewriteOnNode(
+        { text, language, strength, tier },
+        [OPEN_REFERENCE_KEY],
+        { model: modelChoice },
+      )
 
       const detail = args?.detail === 'full' ? 'full' : 'summary'
 
@@ -382,7 +406,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result: detail === 'full' ? result : summarizeRewrite(result),
         detail,
         mode: 'local',
-        model,
+        // `model` is the one-line human form and stays for readers who print
+        // it; `engine` is the structured version a caller can branch on.
+        model: describeEngine(engine),
+        engine,
         note: `Rewrite completed entirely in this process (${countWords(text)} words). Nothing was transmitted. This tool has no hosted mode on any tier.`,
       })
     }
@@ -464,6 +491,7 @@ async function main() {
   process.stderr.write(
     `watermarkremoverpro MCP server ready (${API_KEY ? `hosted via ${API_BASE}` : 'local mode, open reference key only'})\n`,
   )
+  for (const notice of LEGACY_ENV_NOTICES) process.stderr.write(`${notice}\n`)
 }
 
 main().catch((err) => {
