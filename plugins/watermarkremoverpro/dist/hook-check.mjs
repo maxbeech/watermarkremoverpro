@@ -4740,19 +4740,40 @@ var PUBLIC_CONTENT_PATH_HINTS = [
   "/marketing/"
 ];
 var IGNORED_PATH_HINTS = [
+  // Not writing.
   "/node_modules/",
   "/.git/",
   "/dist/",
   "/build/",
   "/.next/",
   "/coverage/",
+  "/LICENSE",
+  // Agent and session scratch space. `~/.claude/` covers plans, transcripts and
+  // memory; `.claude/` inside a repo covers per-project agent config.
+  "/.claude/",
+  // Engineering notes, not published prose.
   "/CHANGELOG",
-  "/LICENSE"
+  "/CLAUDE.md",
+  "/AGENTS.md",
+  "/SKILL.md",
+  "/docs/plans/",
+  "/adr/",
+  "/.github/"
 ];
+var IGNORED_BASENAMES = /* @__PURE__ */ new Set([
+  "todo.md",
+  "notes.md",
+  "scratch.md",
+  "memory.md",
+  "agents.md",
+  "claude.md"
+]);
 var MIN_WORDS = 120;
 function isPublicContent(filePath) {
-  const lower = filePath.toLowerCase();
+  const lower = filePath.replace(/\\/g, "/").toLowerCase();
   if (IGNORED_PATH_HINTS.some((h) => lower.includes(h.toLowerCase()))) return false;
+  const basename = lower.slice(lower.lastIndexOf("/") + 1);
+  if (IGNORED_BASENAMES.has(basename)) return false;
   const extensionMatch = PUBLIC_CONTENT_EXTENSIONS.some((e) => lower.endsWith(e));
   const pathMatch = PUBLIC_CONTENT_PATH_HINTS.some((h) => lower.includes(h));
   return extensionMatch || pathMatch;
@@ -4890,5 +4911,6 @@ main().catch(() => {
 });
 export {
   extractProse,
+  isPublicContent,
   recommendStrength
 };
