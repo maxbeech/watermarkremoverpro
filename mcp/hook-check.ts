@@ -58,25 +58,77 @@ const PUBLIC_CONTENT_PATH_HINTS = [
   '/marketing/',
 ]
 
-/** Never worth checking, whatever the extension says. */
+/**
+ * Never worth checking, whatever the extension says.
+ *
+ * Two kinds of entry. Build output and vendored code are not writing at all.
+ * The rest are WORKING NOTES: files whose extension says markdown and whose
+ * purpose is not publication: an engineering changelog, a plan, an agent
+ * instruction file, a session transcript.
+ *
+ * That distinction is the whole point of the hook and it was missing (2026-09-10).
+ * The check fired on every `.md` a session touched, so a long working session
+ * spent its attention reporting AI-tells in its own internal plan file over and
+ * over. A check that cries wolf on notes nobody publishes is a check people
+ * learn to scroll past, and then it is not protecting the content that IS
+ * published either.
+ *
+ * Erring toward NOT checking is deliberate. A missed public file gets caught by
+ * the same check on the next edit, or by running the tool directly; a hook that
+ * interrupts every internal note gets disabled.
+ */
 const IGNORED_PATH_HINTS = [
+  // Not writing.
   '/node_modules/',
   '/.git/',
   '/dist/',
   '/build/',
   '/.next/',
   '/coverage/',
-  '/CHANGELOG',
   '/LICENSE',
+  // Agent and session scratch space. `~/.claude/` covers plans, transcripts and
+  // memory; `.claude/` inside a repo covers per-project agent config.
+  '/.claude/',
+  // Engineering notes, not published prose.
+  '/CHANGELOG',
+  '/CLAUDE.md',
+  '/AGENTS.md',
+  '/SKILL.md',
+  '/docs/plans/',
+  '/adr/',
+  '/.github/',
 ]
+
+/**
+ * Filenames that are working notes wherever they sit.
+ *
+ * Matched on the BASENAME, because these are conventions rather than locations:
+ * a TODO.md at a repo root and one three directories down are the same kind of
+ * file, and neither is published.
+ */
+const IGNORED_BASENAMES = new Set([
+  'todo.md',
+  'notes.md',
+  'scratch.md',
+  'memory.md',
+  'agents.md',
+  'claude.md',
+])
 
 /** Minimum words before any statistic is worth computing or reporting. */
 const MIN_WORDS = 120
 
-function isPublicContent(filePath: string): boolean {
-  const lower = filePath.toLowerCase()
+export function isPublicContent(filePath: string): boolean {
+  const lower = filePath.replace(/\\/g, '/').toLowerCase()
   if (IGNORED_PATH_HINTS.some((h) => lower.includes(h.toLowerCase()))) return false
+  const basename = lower.slice(lower.lastIndexOf('/') + 1)
+  if (IGNORED_BASENAMES.has(basename)) return false
 
+  /*
+   * A path hint BEATS the extension, so `/docs/plans/x.md` is excluded above
+   * while `/docs/guide.md` is still checked: a docs site is published, a plans
+   * directory is not.
+   */
   const extensionMatch = PUBLIC_CONTENT_EXTENSIONS.some((e) => lower.endsWith(e))
   const pathMatch = PUBLIC_CONTENT_PATH_HINTS.some((h) => lower.includes(h))
   return extensionMatch || pathMatch

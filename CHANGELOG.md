@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-09-10 (later) - the content hook stops checking working notes
+
+The hook fires on every Write and Edit a session makes, and it treated any
+`.md` as public content. So a long working session spent its attention
+reporting AI-tells in its own internal plan file, over and over: measured on a
+real session, the same plan file was reported eleven times in a row while it
+was being drafted.
+
+What it DECLINES to check matters as much as what it checks. A check that cries
+wolf on notes nobody publishes is one people learn to scroll past, and then it
+is not protecting the content that IS published either.
+
+Working notes are now excluded by location (`.claude/` anywhere, `docs/plans/`,
+`adr/`, `.github/`) and by basename wherever they sit (`TODO.md`, `notes.md`,
+`scratch.md`), alongside the engineering files that merely happen to be
+markdown (`CHANGELOG`, `CLAUDE.md`, `AGENTS.md`, `SKILL.md`). A path hint now
+beats the extension in both directions, so `/docs/guide.md` is still checked
+while `/docs/plans/x.md` is not.
+
+Erring toward NOT checking is deliberate: a missed public file is caught by the
+same hook on its next edit, or by running the tool directly, whereas a hook
+that interrupts every internal note gets disabled. 8 new tests pin the cases,
+including the plan-file regression.
+
+
 ## 2026-09-10: the rename is finished, and the local model is the working default
 
 Two jobs, both of which were left half done by the rebrand in September.
