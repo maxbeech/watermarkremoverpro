@@ -170,7 +170,7 @@ const AUDIENCES: LongTailPage[] = [
       {
         question: 'Can we run this on our own infrastructure?',
         answer:
-          'The engine is a single TypeScript module with no network calls, and the MCP server runs locally with no API key. If your organisation holds a detection key under an agreement, MARKWITNESS_DETECTION_KEYS lets a deployment test against it without any change to the engine.',
+          'The engine is a single TypeScript module with no network calls, and the MCP server runs locally with no API key. If your organisation holds a detection key under an agreement, WATERMARKREMOVERPRO_DETECTION_KEYS lets a deployment test against it without any change to the engine.',
       },
       {
         question: 'Does it work on non-English copy?',

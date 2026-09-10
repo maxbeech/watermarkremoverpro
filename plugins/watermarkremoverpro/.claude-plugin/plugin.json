@@ -1,7 +1,7 @@
 {
   "name": "watermarkremoverpro",
   "displayName": "WatermarkRemoverPro",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Check text for AI provenance marks and reduce detectable AI-style evidence, entirely on-device. Adds check_document / reduce_ai_evidence MCP tools, plus a hook that checks public-facing content this agent writes before it ships.",
   "author": {
     "name": "WatermarkRemoverPro",

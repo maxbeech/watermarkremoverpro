@@ -55,7 +55,7 @@ npx @watermarkremoverpro/rewrite-engine --help
 ```
 
 `--model advanced` downloads real model weights from the Hugging Face CDN on
-first use (cached under `~/.cache/markwitness/models`), never from a
+first use (cached under `~/.cache/watermarkremoverpro/models`), never from a
 WatermarkRemoverPro-operated server, and never carries your document in that
 download.
 

@@ -17,8 +17,21 @@ whether any rewrite is warranted.
 
 **`reduce_ai_evidence`**: rewrite, on-device. Targets only the passages a
 real check flags. Takes `strength` (`preserve` | `balanced` | `aggressive` |
-`regenerate`) and `model` (`standard`, the default deterministic engine, or
-`advanced`, a real local LLM that downloads on first use).
+`regenerate`) and `model` (`auto` | `standard` | `advanced`).
+
+`model` defaults to `auto`: the local LLM when its weights are already cached
+on this machine, the deterministic engine when they are not. Pass
+`model: "advanced"` once to download them (a few hundred megabytes, from the
+Hugging Face CDN, cached under `~/.cache/watermarkremoverpro/models`), after
+which every call gets the local model without being asked. Pass
+`model: "standard"` to stay on the instant deterministic engine whatever is
+cached. Every response carries an `engine` object naming which engine ran and
+why; when the local model was chosen and could not load, `engine.failure`
+holds the reason.
+
+The local model matters most at `aggressive` and `regenerate`, where passages
+are routed to the rewriter for their sentence structure: the deterministic
+engine can vary wording but cannot restructure a sentence.
 
 Start at `preserve`. It only touches passages the checker actually flags,
 which is almost always what a user editing their own writing wants; higher

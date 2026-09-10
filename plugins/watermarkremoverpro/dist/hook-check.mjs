@@ -2764,6 +2764,683 @@ var init_baselines = __esm({
   }
 });
 
+// src/lib/calibrate/patterns.ts
+var assemble = (...parts) => parts.join("");
+var DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g;
+var CORE_STOCK_PHRASES = {
+  "delve into": ["look at", "examine", "go into"],
+  "it is important to note that": ["note that", "worth noting:", ""],
+  "it's important to note that": ["note that", "worth noting:", ""],
+  "in conclusion": ["overall", "to sum up", "in short"],
+  "in summary": ["overall", "to sum up", "in short"],
+  "plays a crucial role": ["matters", "is central", "is a key part"],
+  "plays a vital role": ["matters", "is central", "is a key part"],
+  "a testament to": ["evidence of", "a sign of", "proof of"],
+  "rich tapestry": ["mix", "range", "variety"],
+  "navigate the complexities of": ["deal with", "work through", "handle"],
+  "in today\u2019s fast-paced world": ["now", "these days", "currently"],
+  "in today's fast-paced world": ["now", "these days", "currently"],
+  "unlock the potential of": ["make the most of", "get value from", "use"],
+  "stands as a": ["is a", "remains a"],
+  "boasts a": ["has a", "offers a"],
+  "underscores the importance of": ["shows why X matters", "highlights", "points to the importance of"],
+  [assemble("seam", "lessly integrate")]: ["fit together", "combine cleanly", "work together"],
+  furthermore: ["also", "and", "beyond that"],
+  moreover: ["also", "and", "on top of that"],
+  additionally: ["also", "and", "on top of that"]
+};
+var EXTENDED_STOCK_PHRASES = {
+  ...CORE_STOCK_PHRASES,
+  // Announcement and marketing register. This is what an assistant reaches
+  // for when asked to write a launch post, and it is the single most
+  // recognisable block of generated copy on the public web.
+  "we are thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
+  "we're thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
+  "we are excited to announce": ["we are announcing", "today we are launching", "we have launched"],
+  "we're excited to announce": ["we are announcing", "today we are launching", "we have launched"],
+  "we are proud to announce": ["we are announcing", "today we are launching", "we have launched"],
+  "i'm thrilled to share": ["here is", "sharing"],
+  "thrilled to share": ["sharing", "here is"],
+  // Copula avoidance: models systematically prefer a heavier verb where
+  // "is" would do. Documented in the Wikipedia catalogue and in the
+  // biomedical excess-vocabulary study.
+  "serves as a": ["is a", "works as a"],
+  "functions as a": ["is a", "works as a"],
+  "stands as": ["is", "remains"],
+  "marks a significant": ["is a significant", "is an important"],
+  "represents a shift": ["is a shift", "shifts"],
+  // Superficial-analysis verbs and significance puffery.
+  "valuable insights": ["findings", "useful detail", "what it shows"],
+  "a wide range of": ["many", "a lot of", "various"],
+  "a treasure trove of": ["a lot of", "plenty of", "a store of"],
+  "when it comes to": ["for", "with", "on"],
+  "at its core": ["fundamentally", "basically", "essentially"],
+  "that being said": ["even so", "still", "that said"],
+  "to put it simply": ["put simply", "in short"],
+  "it is worth noting that": ["note that", "worth noting:", ""],
+  "it's worth noting that": ["note that", "worth noting:", ""],
+  "needless to say": ["clearly", "obviously", ""],
+  "the fact of the matter is": ["in fact", "actually", ""],
+  "in the realm of": ["in", "within", "across"],
+  "the ever-evolving landscape of": ["the changing world of", "changes in", ""],
+  "the evolving landscape of": ["the changing world of", "changes in", ""],
+  "paradigm shift": ["change", "shift", "break with the past"],
+  "deep dive": ["detailed look", "close look", "thorough review"],
+  "i hope this helps": ["", "hope that helps"],
+  "let me walk you through": ["here is", "the steps are", ""],
+  // Promotional vocabulary. Assembled from fragments (see `assemble`)
+  // because this repo's own house-style test bans these words in source
+  // prose, which is exactly why they belong in a table that flags them.
+  [assemble("super", "charge")]: ["speed up", "improve", "strengthen"],
+  [assemble("game", "-changing")]: ["significant", "major", "important"],
+  [assemble("cutting", "-edge")]: ["recent", "advanced", "current"],
+  [assemble("best", "-in-class")]: ["strong", "leading", "well regarded"],
+  [assemble("effort", "less")]: ["simple", "straightforward", "easy"],
+  [assemble("elevate", " your")]: ["improve your", "strengthen your"],
+  [assemble("harness", " the power of")]: ["use", "make use of", "apply"],
+  [assemble("unlock", " the power of")]: ["use", "make use of", "get value from"],
+  [assemble("revolution", "ise")]: ["change", "transform", "reshape"],
+  [assemble("revolution", "ize")]: ["change", "transform", "reshape"]
+};
+var TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g;
+var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi;
+var ELEVATED_VOCABULARY = [
+  "delve",
+  "tapestry",
+  "testament",
+  "underscore",
+  "underscores",
+  "meticulous",
+  "meticulously",
+  "pivotal",
+  "realm",
+  "robust",
+  "leverage",
+  "showcase",
+  "showcasing",
+  "boasts",
+  "bolstered",
+  "garner",
+  "intricate",
+  "intricacies",
+  "interplay",
+  "vibrant",
+  "crucial",
+  "nuanced",
+  "multifaceted",
+  "illuminate",
+  "fostering",
+  "encompassing",
+  "resonate",
+  "align",
+  "holistic",
+  "comprehensive"
+];
+var REGISTER_DOWNSHIFT = {
+  underscore: ["stress", "show"],
+  underscores: ["stresses", "shows"],
+  meticulous: ["careful", "thorough"],
+  meticulously: ["carefully", "thoroughly"],
+  pivotal: ["central", "decisive"],
+  realm: ["field", "area"],
+  robust: ["strong", "reliable", "sturdy"],
+  showcase: ["show", "display"],
+  showcasing: ["showing", "displaying"],
+  boasts: ["has", "offers"],
+  bolstered: ["strengthened", "reinforced"],
+  garner: ["gather", "attract"],
+  intricate: ["complex", "detailed"],
+  intricacies: ["details", "complexities"],
+  interplay: ["interaction", "relationship"],
+  vibrant: ["lively", "bright"],
+  crucial: ["essential", "central"],
+  nuanced: ["subtle", "careful"],
+  multifaceted: ["many-sided", "complex"],
+  fostering: ["encouraging", "building"],
+  encompassing: ["covering", "including"],
+  holistic: ["overall", "whole"],
+  comprehensive: ["complete", "full", "thorough"]
+};
+var REGISTER_DENSITY_THRESHOLD = 2;
+
+// src/lib/calibrate/ai-tells.ts
+function shouldSwapDashes(strength) {
+  return strength !== "preserve";
+}
+function shouldSwapPhrases() {
+  return true;
+}
+function swapDashes(text) {
+  const changes = [];
+  let useComma = true;
+  let result = "";
+  let lastEnd = 0;
+  DASH_CLAUSE_PATTERN.lastIndex = 0;
+  let match;
+  while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
+    const start = match.index;
+    const end = start + match[0].length;
+    const replacement = useComma ? ", " : ". ";
+    useComma = !useComma;
+    result += text.slice(lastEnd, start) + replacement;
+    changes.push({
+      start,
+      end,
+      original: match[0],
+      replacement,
+      category: "punctuation",
+      note: "Em/en dash used as a clause connector, a construction over-represented in LLM output relative to typical published prose."
+    });
+    lastEnd = end;
+  }
+  result += text.slice(lastEnd);
+  return { text: result, changes };
+}
+function swapStockPhrases(text, library) {
+  const changes = [];
+  const usage = /* @__PURE__ */ new Map();
+  const table = library === "extended" ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES;
+  let result = text;
+  const phrases = Object.keys(table).sort((a, b) => b.length - a.length);
+  for (const phrase of phrases) {
+    const alternatives = table[phrase];
+    const re = new RegExp(escapeRegExp(phrase), "gi");
+    let match;
+    let cursor = 0;
+    let next = "";
+    re.lastIndex = 0;
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(phrase) ?? 0;
+      const replacement = alternatives[idx % alternatives.length];
+      usage.set(phrase, idx + 1);
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: "phrase",
+        note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`
+      });
+      cursor = match.index + match[0].length;
+    }
+    next += result.slice(cursor);
+    result = next;
+  }
+  return { text: result, changes };
+}
+function vocabularyWordsToSwap(text, strength) {
+  const swap = /* @__PURE__ */ new Set();
+  if (strength === "preserve") return swap;
+  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    const count = countWholeWord(text, word);
+    if (count === 0) continue;
+    if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
+    swap.add(word);
+  }
+  return swap;
+}
+function swapElevatedVocabulary(text, strength) {
+  const targets = vocabularyWordsToSwap(text, strength);
+  if (targets.size === 0) return { text, changes: [] };
+  const changes = [];
+  const usage = /* @__PURE__ */ new Map();
+  let result = text;
+  for (const word of targets) {
+    const alternatives = REGISTER_DOWNSHIFT[word];
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    let match;
+    let cursor = 0;
+    let next = "";
+    re.lastIndex = 0;
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(word) ?? 0;
+      const replacement = alternatives[idx % alternatives.length];
+      usage.set(word, idx + 1);
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: "vocabulary",
+        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
+      });
+      cursor = match.index + match[0].length;
+    }
+    next += result.slice(cursor);
+    result = next;
+  }
+  return { text: result, changes };
+}
+function countWholeWord(text, word) {
+  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+  return text.match(re)?.length ?? 0;
+}
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function applyCase(original, replacement) {
+  if (replacement.length === 0) return replacement;
+  if (original[0] === original[0].toUpperCase() && /[A-Za-z]/.test(original[0])) {
+    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+  }
+  return replacement;
+}
+function flagStructures(text) {
+  const flagged = [];
+  TRIADIC_LIST_PATTERN.lastIndex = 0;
+  let match;
+  while ((match = TRIADIC_LIST_PATTERN.exec(text)) !== null) {
+    flagged.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+      kind: "triadic-list",
+      note: "Three-item list. Ordinary once; a recognisable tic when it recurs through a document."
+    });
+  }
+  NEGATIVE_PARALLELISM_PATTERN.lastIndex = 0;
+  while ((match = NEGATIVE_PARALLELISM_PATTERN.exec(text)) !== null) {
+    flagged.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+      kind: "negative-parallelism",
+      note: '"Not just X, but Y" construction, one of the most reliable structural tells in current model output.'
+    });
+  }
+  return flagged.sort((a, b) => a.start - b.start);
+}
+function countElevatedVocabulary(text) {
+  const counts = [];
+  for (const word of ELEVATED_VOCABULARY) {
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    const found = text.match(re);
+    if (found && found.length > 0) counts.push({ word, count: found.length });
+  }
+  return counts.sort((a, b) => b.count - a.count);
+}
+var PARALLELISM_WEIGHT = 2;
+var TRIADIC_WEIGHT = 1;
+function measureStyleTells(text) {
+  const flagged = flagStructures(text);
+  const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0);
+  const weighted = flagged.reduce(
+    (sum, f) => sum + (f.kind === "negative-parallelism" ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
+    0
+  );
+  return {
+    structures: flagged.length,
+    vocabulary,
+    pressure: weighted + Math.floor(vocabulary / 2)
+  };
+}
+function applyDeterministicPass(text, strength = "balanced", library = "core") {
+  let current = text;
+  const allChanges = [];
+  if (shouldSwapPhrases()) {
+    const { text: swapped, changes } = swapStockPhrases(current, library);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  if (shouldSwapDashes(strength)) {
+    const { text: swapped, changes } = swapDashes(current);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  return {
+    text: current,
+    changes: allChanges,
+    flaggedStructures: flagStructures(current),
+    elevatedVocabulary: countElevatedVocabulary(current)
+  };
+}
+
+// src/lib/detector/stats.ts
+function normalCdf(z) {
+  return 0.5 * (1 + erf(z / Math.SQRT2));
+}
+function erf(x) {
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * ax);
+  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax);
+  return sign * y;
+}
+function upperTailP(z) {
+  return 1 - normalCdf(z);
+}
+function binomialZ(successes, trials, p0) {
+  if (trials <= 0) return null;
+  const sd = Math.sqrt(trials * p0 * (1 - p0));
+  if (sd === 0) return null;
+  return (successes - trials * p0) / sd;
+}
+function wilsonInterval(successes, trials, z = 1.959963984540054) {
+  if (trials <= 0) return null;
+  const phat = successes / trials;
+  const z2 = z * z;
+  const denom = 1 + z2 / trials;
+  const centre = phat + z2 / (2 * trials);
+  const margin = z * Math.sqrt((phat * (1 - phat) + z2 / (4 * trials)) / trials);
+  return { low: Math.max(0, (centre - margin) / denom), high: Math.min(1, (centre + margin) / denom) };
+}
+function mean(xs) {
+  if (xs.length === 0) return NaN;
+  let s = 0;
+  for (const x of xs) s += x;
+  return s / xs.length;
+}
+function stdDev(xs) {
+  if (xs.length < 2) return NaN;
+  const m = mean(xs);
+  let acc = 0;
+  for (const x of xs) acc += (x - m) ** 2;
+  return Math.sqrt(acc / (xs.length - 1));
+}
+function quantile(sorted, q) {
+  if (sorted.length === 0) return NaN;
+  if (sorted.length === 1) return sorted[0];
+  const pos = (sorted.length - 1) * q;
+  const lo = Math.floor(pos);
+  const hi = Math.ceil(pos);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+}
+function seededRandom(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = a + 1831565813 >>> 0;
+    let t = a;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function benjaminiHochberg(pValues, fdr = 0.05) {
+  const indexed = pValues.map((p, i) => ({ p, i })).sort((a, b) => a.p - b.p);
+  const m = indexed.length;
+  let maxK = -1;
+  for (let k = 0; k < m; k++) {
+    if (indexed[k].p <= (k + 1) / m * fdr) maxK = k;
+  }
+  if (maxK < 0) return [];
+  return indexed.slice(0, maxK + 1).map((e) => e.i).sort((a, b) => a - b);
+}
+
+// src/lib/detector/tokenize.ts
+var WORD_RE = new RegExp("\\p{L}[\\p{L}\\p{M}\u2019'-]*", "gu");
+function tokenize(text) {
+  const tokens = [];
+  WORD_RE.lastIndex = 0;
+  let m;
+  while ((m = WORD_RE.exec(text)) !== null) {
+    const raw = m[0];
+    tokens.push({
+      raw,
+      norm: normalizeToken(raw),
+      start: m.index,
+      end: m.index + raw.length
+    });
+  }
+  return tokens;
+}
+function normalizeToken(raw) {
+  return raw.toLowerCase().replace(/’/g, "'").replace(/^[-']+|[-']+$/g, "");
+}
+function countWords(text) {
+  WORD_RE.lastIndex = 0;
+  let n = 0;
+  while (WORD_RE.exec(text) !== null) n++;
+  return n;
+}
+var ABBREVIATIONS = /* @__PURE__ */ new Set([
+  "mr",
+  "mrs",
+  "ms",
+  "dr",
+  "prof",
+  "sr",
+  "jr",
+  "st",
+  "vs",
+  "etc",
+  "eg",
+  "ie",
+  "fig",
+  "no",
+  "vol",
+  "al",
+  "ca",
+  "cf",
+  "ed",
+  "esp",
+  "inc",
+  "ltd",
+  "co",
+  "univ",
+  "dept",
+  "approx",
+  // es / pt
+  "sra",
+  "srta",
+  "ud",
+  "uds",
+  "ejemplo",
+  "av",
+  "depto",
+  // fr
+  "mme",
+  "mlle",
+  "bd",
+  "env",
+  // de
+  "bzw",
+  "ggf",
+  "usw",
+  "zb",
+  "evtl",
+  "nr",
+  "abb",
+  "hrsg"
+]);
+function splitSentences(text) {
+  const passages = [];
+  const terminator = /[.!?…]+["'”’)\]]*(\s+|$)/g;
+  let cursor = 0;
+  let m;
+  while ((m = terminator.exec(text)) !== null) {
+    const endOfSentence = m.index + m[0].length;
+    const candidate = text.slice(cursor, endOfSentence);
+    const beforeDot = candidate.trimEnd().replace(/[.!?…"'”’)\]]+$/, "");
+    const lastWord = beforeDot.split(/[\s(]+/).pop() ?? "";
+    const lastWordNorm = normalizeToken(lastWord);
+    if (ABBREVIATIONS.has(lastWordNorm) || new RegExp("^\\p{Lu}$", "u").test(lastWord)) continue;
+    pushPassage(passages, text, cursor, endOfSentence);
+    cursor = endOfSentence;
+  }
+  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
+  return passages;
+}
+function splitParagraphs(text) {
+  const passages = [];
+  const re = /\n\s*\n/g;
+  let cursor = 0;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    pushPassage(passages, text, cursor, m.index);
+    cursor = m.index + m[0].length;
+  }
+  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
+  return passages;
+}
+function pushPassage(into, text, start, end) {
+  const slice = text.slice(start, end);
+  const trimmedStart = start + (slice.length - slice.trimStart().length);
+  const trimmed = slice.trim();
+  if (trimmed.length === 0) return;
+  into.push({
+    index: into.length,
+    text: trimmed,
+    start: trimmedStart,
+    end: trimmedStart + trimmed.length
+  });
+}
+function punctuationCounts(text) {
+  const counts = {
+    comma: 0,
+    semicolon: 0,
+    colon: 0,
+    dash: 0,
+    quote: 0,
+    exclamation: 0,
+    question: 0,
+    parenthesis: 0
+  };
+  for (const ch of text) {
+    switch (ch) {
+      case ",":
+        counts.comma++;
+        break;
+      case ";":
+        counts.semicolon++;
+        break;
+      case ":":
+        counts.colon++;
+        break;
+      case "-":
+      case "\u2013":
+      case "\u2014":
+        counts.dash++;
+        break;
+      case '"':
+      case "\u201C":
+      case "\u201D":
+      case "\xAB":
+      case "\xBB":
+        counts.quote++;
+        break;
+      case "!":
+        counts.exclamation++;
+        break;
+      case "?":
+        counts.question++;
+        break;
+      case "(":
+        counts.parenthesis++;
+        break;
+    }
+  }
+  return counts;
+}
+
+// src/lib/detector/ai-likelihood.ts
+var MIN_WORDS_FOR_LIKELIHOOD = 60;
+var SUPPORTED = "en";
+function bandFor(score) {
+  if (score >= 75) return "high";
+  if (score >= 50) return "elevated";
+  if (score >= 25) return "watch";
+  return "low";
+}
+function saturate(raw) {
+  const s = 100 * (1 - Math.exp(-raw / 34));
+  return Math.round(Math.min(100, Math.max(0, s)));
+}
+function analyzeAiLikelihood(text, language) {
+  const tokens = tokenize(text);
+  const words = tokens.length;
+  if (language !== SUPPORTED) {
+    return {
+      status: "insufficient_data",
+      score: null,
+      band: null,
+      signals: [],
+      wordsScored: words,
+      detail: language === null ? "No language was determined for this document, so this channel did not run." : `This channel currently covers English only, because its phrase and vocabulary tables are English-specific and guessing at another language would misfire silently. Language measured: ${language}.`
+    };
+  }
+  if (words < MIN_WORDS_FOR_LIKELIHOOD) {
+    return {
+      status: "insufficient_data",
+      score: null,
+      band: null,
+      signals: [],
+      wordsScored: words,
+      detail: `Only ${words} words; ${MIN_WORDS_FOR_LIKELIHOOD} are needed before per-1,000-word rates and sentence-rhythm mean anything. No score is reported for this document.`
+    };
+  }
+  const per500 = (count) => count / words * 500;
+  const dashMatches = text.match(DASH_CLAUSE_PATTERN)?.length ?? 0;
+  const dashRate = per500(dashMatches);
+  const dashContribution = dashRate * 7;
+  const tells = measureStyleTells(text);
+  const structureRate = per500(tells.structures);
+  const vocabularyRate = per500(tells.vocabulary);
+  const structureContribution = structureRate * 4;
+  const vocabularyContribution = vocabularyRate * 3;
+  const sentences = splitSentences(text);
+  const lengths = sentences.map((s) => tokenize(s.text).length).filter((l) => l > 0);
+  let uniformityContribution = 0;
+  let cv = null;
+  if (lengths.length >= 6) {
+    const m = mean(lengths);
+    const sd = stdDev(lengths);
+    cv = m > 0 ? sd / m : 0;
+    const HUMAN_TYPICAL_CV = 0.55;
+    uniformityContribution = Math.max(0, HUMAN_TYPICAL_CV - cv) * 40;
+  }
+  const raw = dashContribution + structureContribution + vocabularyContribution + uniformityContribution;
+  const score = saturate(raw);
+  const signals = [
+    {
+      id: "dash-clauses",
+      label: "Em/en dash used as a clause connector",
+      count: dashMatches,
+      ratePer500: dashRate,
+      contribution: dashContribution,
+      detail: "A punctuation habit heavily over-represented in LLM output relative to edited human prose."
+    },
+    {
+      id: "structural-tics",
+      label: "Templated structures (triadic lists, negative parallelism)",
+      count: tells.structures,
+      ratePer500: structureRate,
+      contribution: structureContribution,
+      detail: '"Not just X, but Y" and repeated three-item lists, some of the most reliable structural tells in current model output.'
+    },
+    {
+      id: "elevated-vocabulary",
+      label: 'Elevated vocabulary ("delve", "underscore", "robust", "realm"...)',
+      count: tells.vocabulary,
+      ratePer500: vocabularyRate,
+      contribution: vocabularyContribution,
+      detail: "Words whose rate rises sharply in LLM-assisted text while remaining ordinary English on their own."
+    },
+    {
+      id: "sentence-uniformity",
+      label: "Sentence-length uniformity",
+      count: lengths.length,
+      ratePer500: cv ?? 0,
+      contribution: uniformityContribution,
+      detail: cv === null ? "Too few sentences to measure rhythm." : `Coefficient of variation ${cv.toFixed(2)}; human prose is typically burstier than this.`
+    }
+  ];
+  return {
+    status: "computed",
+    score,
+    band: bandFor(score),
+    signals,
+    wordsScored: words
+  };
+}
+
 // src/lib/detector/languages.ts
 var SUPPORTED_LANGUAGES = ["en", "es", "fr", "de", "pt"];
 var LANGUAGE_NAMES = {
@@ -3384,244 +4061,6 @@ function identifyLanguage(tokens) {
   return { language: confident ? best : null, scores, margin, confident };
 }
 
-// src/lib/detector/tokenize.ts
-var WORD_RE = new RegExp("\\p{L}[\\p{L}\\p{M}\u2019'-]*", "gu");
-function tokenize(text) {
-  const tokens = [];
-  WORD_RE.lastIndex = 0;
-  let m;
-  while ((m = WORD_RE.exec(text)) !== null) {
-    const raw = m[0];
-    tokens.push({
-      raw,
-      norm: normalizeToken(raw),
-      start: m.index,
-      end: m.index + raw.length
-    });
-  }
-  return tokens;
-}
-function normalizeToken(raw) {
-  return raw.toLowerCase().replace(/’/g, "'").replace(/^[-']+|[-']+$/g, "");
-}
-function countWords(text) {
-  WORD_RE.lastIndex = 0;
-  let n = 0;
-  while (WORD_RE.exec(text) !== null) n++;
-  return n;
-}
-var ABBREVIATIONS = /* @__PURE__ */ new Set([
-  "mr",
-  "mrs",
-  "ms",
-  "dr",
-  "prof",
-  "sr",
-  "jr",
-  "st",
-  "vs",
-  "etc",
-  "eg",
-  "ie",
-  "fig",
-  "no",
-  "vol",
-  "al",
-  "ca",
-  "cf",
-  "ed",
-  "esp",
-  "inc",
-  "ltd",
-  "co",
-  "univ",
-  "dept",
-  "approx",
-  // es / pt
-  "sra",
-  "srta",
-  "ud",
-  "uds",
-  "ejemplo",
-  "av",
-  "depto",
-  // fr
-  "mme",
-  "mlle",
-  "bd",
-  "env",
-  // de
-  "bzw",
-  "ggf",
-  "usw",
-  "zb",
-  "evtl",
-  "nr",
-  "abb",
-  "hrsg"
-]);
-function splitSentences(text) {
-  const passages = [];
-  const terminator = /[.!?…]+["'”’)\]]*(\s+|$)/g;
-  let cursor = 0;
-  let m;
-  while ((m = terminator.exec(text)) !== null) {
-    const endOfSentence = m.index + m[0].length;
-    const candidate = text.slice(cursor, endOfSentence);
-    const beforeDot = candidate.trimEnd().replace(/[.!?…"'”’)\]]+$/, "");
-    const lastWord = beforeDot.split(/[\s(]+/).pop() ?? "";
-    const lastWordNorm = normalizeToken(lastWord);
-    if (ABBREVIATIONS.has(lastWordNorm) || new RegExp("^\\p{Lu}$", "u").test(lastWord)) continue;
-    pushPassage(passages, text, cursor, endOfSentence);
-    cursor = endOfSentence;
-  }
-  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
-  return passages;
-}
-function splitParagraphs(text) {
-  const passages = [];
-  const re = /\n\s*\n/g;
-  let cursor = 0;
-  let m;
-  while ((m = re.exec(text)) !== null) {
-    pushPassage(passages, text, cursor, m.index);
-    cursor = m.index + m[0].length;
-  }
-  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
-  return passages;
-}
-function pushPassage(into, text, start, end) {
-  const slice = text.slice(start, end);
-  const trimmedStart = start + (slice.length - slice.trimStart().length);
-  const trimmed = slice.trim();
-  if (trimmed.length === 0) return;
-  into.push({
-    index: into.length,
-    text: trimmed,
-    start: trimmedStart,
-    end: trimmedStart + trimmed.length
-  });
-}
-function punctuationCounts(text) {
-  const counts = {
-    comma: 0,
-    semicolon: 0,
-    colon: 0,
-    dash: 0,
-    quote: 0,
-    exclamation: 0,
-    question: 0,
-    parenthesis: 0
-  };
-  for (const ch of text) {
-    switch (ch) {
-      case ",":
-        counts.comma++;
-        break;
-      case ";":
-        counts.semicolon++;
-        break;
-      case ":":
-        counts.colon++;
-        break;
-      case "-":
-      case "\u2013":
-      case "\u2014":
-        counts.dash++;
-        break;
-      case '"':
-      case "\u201C":
-      case "\u201D":
-      case "\xAB":
-      case "\xBB":
-        counts.quote++;
-        break;
-      case "!":
-        counts.exclamation++;
-        break;
-      case "?":
-        counts.question++;
-        break;
-      case "(":
-        counts.parenthesis++;
-        break;
-    }
-  }
-  return counts;
-}
-
-// src/lib/detector/stats.ts
-function normalCdf(z) {
-  return 0.5 * (1 + erf(z / Math.SQRT2));
-}
-function erf(x) {
-  const sign = x < 0 ? -1 : 1;
-  const ax = Math.abs(x);
-  const t = 1 / (1 + 0.3275911 * ax);
-  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax);
-  return sign * y;
-}
-function upperTailP(z) {
-  return 1 - normalCdf(z);
-}
-function binomialZ(successes, trials, p0) {
-  if (trials <= 0) return null;
-  const sd = Math.sqrt(trials * p0 * (1 - p0));
-  if (sd === 0) return null;
-  return (successes - trials * p0) / sd;
-}
-function wilsonInterval(successes, trials, z = 1.959963984540054) {
-  if (trials <= 0) return null;
-  const phat = successes / trials;
-  const z2 = z * z;
-  const denom = 1 + z2 / trials;
-  const centre = phat + z2 / (2 * trials);
-  const margin = z * Math.sqrt((phat * (1 - phat) + z2 / (4 * trials)) / trials);
-  return { low: Math.max(0, (centre - margin) / denom), high: Math.min(1, (centre + margin) / denom) };
-}
-function mean(xs) {
-  if (xs.length === 0) return NaN;
-  let s = 0;
-  for (const x of xs) s += x;
-  return s / xs.length;
-}
-function stdDev(xs) {
-  if (xs.length < 2) return NaN;
-  const m = mean(xs);
-  let acc = 0;
-  for (const x of xs) acc += (x - m) ** 2;
-  return Math.sqrt(acc / (xs.length - 1));
-}
-function quantile(sorted, q) {
-  if (sorted.length === 0) return NaN;
-  if (sorted.length === 1) return sorted[0];
-  const pos = (sorted.length - 1) * q;
-  const lo = Math.floor(pos);
-  const hi = Math.ceil(pos);
-  if (lo === hi) return sorted[lo];
-  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
-}
-function seededRandom(seed) {
-  let a = seed >>> 0;
-  return () => {
-    a = a + 1831565813 >>> 0;
-    let t = a;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-function benjaminiHochberg(pValues, fdr = 0.05) {
-  const indexed = pValues.map((p, i) => ({ p, i })).sort((a, b) => a.p - b.p);
-  const m = indexed.length;
-  let maxK = -1;
-  for (let k = 0; k < m; k++) {
-    if (indexed[k].p <= (k + 1) / m * fdr) maxK = k;
-  }
-  if (maxK < 0) return [];
-  return indexed.slice(0, maxK + 1).map((e) => e.i).sort((a, b) => a - b);
-}
-
 // src/lib/detector/features.ts
 var CHUNK_TOKENS = 400;
 var MIN_CHUNK_TOKENS = 120;
@@ -4017,6 +4456,18 @@ var OPEN_REFERENCE_KEY = {
   label: "WatermarkRemoverPro open reference scheme",
   scheme: "greenlist-bigram-v1",
   gamma: 0.5,
+  /*
+      NOT renamed with the product, and it must never be.
+  
+      This string is hashed into the pseudorandom function that decides the green
+      list, so it is an INPUT to every statistic the detector reports rather than
+      a label on one. Change it and the key becomes a different key: text marked
+      under the published open reference scheme stops being detected, every
+      evidence report ever issued under it becomes unreproducible, and
+      simulate.ts starts generating text this build cannot see. The value is a
+      cryptographic domain separator that happens to spell the old brand.
+      tests/rename.test.ts pins it so a future rename sweep cannot take it.
+    */
   secret: utf8("markwitness/open-reference-key/v1"),
   provenance: "Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
   vendorPublished: false
@@ -4120,6 +4571,7 @@ function analyzeDocument(text, options) {
     language: { code: null, name: null, determinedBy: "measurement", scores: {}, margin: 0 },
     watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
     distribution: null,
+    aiLikelihood: null,
     passages: [],
     passageCorrection: null,
     limits
@@ -4164,6 +4616,7 @@ function analyzeDocument(text, options) {
   );
   const baseline6 = options.baselines?.[language] ?? null;
   const distribution = baseline6 ? analyzeDistribution(text, language, baseline6) : noBaselineResult(language, tokens.length);
+  const aiLikelihood = analyzeAiLikelihood(text, language);
   const granularity = options.granularity ?? "sentence";
   const rawPassages = granularity === "paragraph" ? splitParagraphs(text) : splitSentences(text);
   const fdr = options.fdr ?? 0.05;
@@ -4238,6 +4691,7 @@ function analyzeDocument(text, options) {
       coverageNotice: coverageNotice(options.keys)
     },
     distribution,
+    aiLikelihood,
     passages,
     passageCorrection,
     limits
@@ -4270,329 +4724,6 @@ async function checkDocument(text, options) {
     }
   }
   return analyzeDocument(text, { ...options, baselines });
-}
-
-// src/lib/calibrate/patterns.ts
-var assemble = (...parts) => parts.join("");
-var DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g;
-var CORE_STOCK_PHRASES = {
-  "delve into": ["look at", "examine", "go into"],
-  "it is important to note that": ["note that", "worth noting:", ""],
-  "it's important to note that": ["note that", "worth noting:", ""],
-  "in conclusion": ["overall", "to sum up", "in short"],
-  "in summary": ["overall", "to sum up", "in short"],
-  "plays a crucial role": ["matters", "is central", "is a key part"],
-  "plays a vital role": ["matters", "is central", "is a key part"],
-  "a testament to": ["evidence of", "a sign of", "proof of"],
-  "rich tapestry": ["mix", "range", "variety"],
-  "navigate the complexities of": ["deal with", "work through", "handle"],
-  "in today\u2019s fast-paced world": ["now", "these days", "currently"],
-  "in today's fast-paced world": ["now", "these days", "currently"],
-  "unlock the potential of": ["make the most of", "get value from", "use"],
-  "stands as a": ["is a", "remains a"],
-  "boasts a": ["has a", "offers a"],
-  "underscores the importance of": ["shows why X matters", "highlights", "points to the importance of"],
-  [assemble("seam", "lessly integrate")]: ["fit together", "combine cleanly", "work together"],
-  furthermore: ["also", "and", "beyond that"],
-  moreover: ["also", "and", "on top of that"],
-  additionally: ["also", "and", "on top of that"]
-};
-var EXTENDED_STOCK_PHRASES = {
-  ...CORE_STOCK_PHRASES,
-  // Announcement and marketing register. This is what an assistant reaches
-  // for when asked to write a launch post, and it is the single most
-  // recognisable block of generated copy on the public web.
-  "we are thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we're thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we are excited to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we're excited to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we are proud to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "i'm thrilled to share": ["here is", "sharing"],
-  "thrilled to share": ["sharing", "here is"],
-  // Copula avoidance: models systematically prefer a heavier verb where
-  // "is" would do. Documented in the Wikipedia catalogue and in the
-  // biomedical excess-vocabulary study.
-  "serves as a": ["is a", "works as a"],
-  "functions as a": ["is a", "works as a"],
-  "stands as": ["is", "remains"],
-  "marks a significant": ["is a significant", "is an important"],
-  "represents a shift": ["is a shift", "shifts"],
-  // Superficial-analysis verbs and significance puffery.
-  "valuable insights": ["findings", "useful detail", "what it shows"],
-  "a wide range of": ["many", "a lot of", "various"],
-  "a treasure trove of": ["a lot of", "plenty of", "a store of"],
-  "when it comes to": ["for", "with", "on"],
-  "at its core": ["fundamentally", "basically", "essentially"],
-  "that being said": ["even so", "still", "that said"],
-  "to put it simply": ["put simply", "in short"],
-  "it is worth noting that": ["note that", "worth noting:", ""],
-  "it's worth noting that": ["note that", "worth noting:", ""],
-  "needless to say": ["clearly", "obviously", ""],
-  "the fact of the matter is": ["in fact", "actually", ""],
-  "in the realm of": ["in", "within", "across"],
-  "the ever-evolving landscape of": ["the changing world of", "changes in", ""],
-  "the evolving landscape of": ["the changing world of", "changes in", ""],
-  "paradigm shift": ["change", "shift", "break with the past"],
-  "deep dive": ["detailed look", "close look", "thorough review"],
-  "i hope this helps": ["", "hope that helps"],
-  "let me walk you through": ["here is", "the steps are", ""],
-  // Promotional vocabulary. Assembled from fragments (see `assemble`)
-  // because this repo's own house-style test bans these words in source
-  // prose, which is exactly why they belong in a table that flags them.
-  [assemble("super", "charge")]: ["speed up", "improve", "strengthen"],
-  [assemble("game", "-changing")]: ["significant", "major", "important"],
-  [assemble("cutting", "-edge")]: ["recent", "advanced", "current"],
-  [assemble("best", "-in-class")]: ["strong", "leading", "well regarded"],
-  [assemble("effort", "less")]: ["simple", "straightforward", "easy"],
-  [assemble("elevate", " your")]: ["improve your", "strengthen your"],
-  [assemble("harness", " the power of")]: ["use", "make use of", "apply"],
-  [assemble("unlock", " the power of")]: ["use", "make use of", "get value from"],
-  [assemble("revolution", "ise")]: ["change", "transform", "reshape"],
-  [assemble("revolution", "ize")]: ["change", "transform", "reshape"]
-};
-var TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g;
-var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi;
-var ELEVATED_VOCABULARY = [
-  "delve",
-  "tapestry",
-  "testament",
-  "underscore",
-  "underscores",
-  "meticulous",
-  "meticulously",
-  "pivotal",
-  "realm",
-  "robust",
-  "leverage",
-  "showcase",
-  "showcasing",
-  "boasts",
-  "bolstered",
-  "garner",
-  "intricate",
-  "intricacies",
-  "interplay",
-  "vibrant",
-  "crucial",
-  "nuanced",
-  "multifaceted",
-  "illuminate",
-  "fostering",
-  "encompassing",
-  "resonate",
-  "align",
-  "holistic",
-  "comprehensive"
-];
-var REGISTER_DOWNSHIFT = {
-  underscore: ["stress", "show"],
-  underscores: ["stresses", "shows"],
-  meticulous: ["careful", "thorough"],
-  meticulously: ["carefully", "thoroughly"],
-  pivotal: ["central", "decisive"],
-  realm: ["field", "area"],
-  robust: ["strong", "reliable", "sturdy"],
-  showcase: ["show", "display"],
-  showcasing: ["showing", "displaying"],
-  boasts: ["has", "offers"],
-  bolstered: ["strengthened", "reinforced"],
-  garner: ["gather", "attract"],
-  intricate: ["complex", "detailed"],
-  intricacies: ["details", "complexities"],
-  interplay: ["interaction", "relationship"],
-  vibrant: ["lively", "bright"],
-  crucial: ["essential", "central"],
-  nuanced: ["subtle", "careful"],
-  multifaceted: ["many-sided", "complex"],
-  fostering: ["encouraging", "building"],
-  encompassing: ["covering", "including"],
-  holistic: ["overall", "whole"],
-  comprehensive: ["complete", "full", "thorough"]
-};
-var REGISTER_DENSITY_THRESHOLD = 2;
-
-// src/lib/calibrate/ai-tells.ts
-function shouldSwapDashes(strength) {
-  return strength !== "preserve";
-}
-function shouldSwapPhrases() {
-  return true;
-}
-function swapDashes(text) {
-  const changes = [];
-  let useComma = true;
-  let result = "";
-  let lastEnd = 0;
-  DASH_CLAUSE_PATTERN.lastIndex = 0;
-  let match;
-  while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
-    const start = match.index;
-    const end = start + match[0].length;
-    const replacement = useComma ? ", " : ". ";
-    useComma = !useComma;
-    result += text.slice(lastEnd, start) + replacement;
-    changes.push({
-      start,
-      end,
-      original: match[0],
-      replacement,
-      category: "punctuation",
-      note: "Em/en dash used as a clause connector, a construction over-represented in LLM output relative to typical published prose."
-    });
-    lastEnd = end;
-  }
-  result += text.slice(lastEnd);
-  return { text: result, changes };
-}
-function swapStockPhrases(text, library) {
-  const changes = [];
-  const usage = /* @__PURE__ */ new Map();
-  const table = library === "extended" ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES;
-  let result = text;
-  const phrases = Object.keys(table).sort((a, b) => b.length - a.length);
-  for (const phrase of phrases) {
-    const alternatives = table[phrase];
-    const re = new RegExp(escapeRegExp(phrase), "gi");
-    let match;
-    let cursor = 0;
-    let next = "";
-    re.lastIndex = 0;
-    while ((match = re.exec(result)) !== null) {
-      const idx = usage.get(phrase) ?? 0;
-      const replacement = alternatives[idx % alternatives.length];
-      usage.set(phrase, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
-      changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
-        original: match[0],
-        replacement,
-        category: "phrase",
-        note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`
-      });
-      cursor = match.index + match[0].length;
-    }
-    next += result.slice(cursor);
-    result = next;
-  }
-  return { text: result, changes };
-}
-function vocabularyWordsToSwap(text, strength) {
-  const swap = /* @__PURE__ */ new Set();
-  if (strength === "preserve") return swap;
-  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
-    const count = countWholeWord(text, word);
-    if (count === 0) continue;
-    if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
-    swap.add(word);
-  }
-  return swap;
-}
-function swapElevatedVocabulary(text, strength) {
-  const targets = vocabularyWordsToSwap(text, strength);
-  if (targets.size === 0) return { text, changes: [] };
-  const changes = [];
-  const usage = /* @__PURE__ */ new Map();
-  let result = text;
-  for (const word of targets) {
-    const alternatives = REGISTER_DOWNSHIFT[word];
-    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
-    let match;
-    let cursor = 0;
-    let next = "";
-    re.lastIndex = 0;
-    while ((match = re.exec(result)) !== null) {
-      const idx = usage.get(word) ?? 0;
-      const replacement = alternatives[idx % alternatives.length];
-      usage.set(word, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
-      changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
-        original: match[0],
-        replacement,
-        category: "vocabulary",
-        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
-      });
-      cursor = match.index + match[0].length;
-    }
-    next += result.slice(cursor);
-    result = next;
-  }
-  return { text: result, changes };
-}
-function countWholeWord(text, word) {
-  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
-  return text.match(re)?.length ?? 0;
-}
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-function applyCase(original, replacement) {
-  if (replacement.length === 0) return replacement;
-  if (original[0] === original[0].toUpperCase() && /[A-Za-z]/.test(original[0])) {
-    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-  }
-  return replacement;
-}
-function flagStructures(text) {
-  const flagged = [];
-  TRIADIC_LIST_PATTERN.lastIndex = 0;
-  let match;
-  while ((match = TRIADIC_LIST_PATTERN.exec(text)) !== null) {
-    flagged.push({
-      start: match.index,
-      end: match.index + match[0].length,
-      text: match[0],
-      kind: "triadic-list",
-      note: "Three-item list. Ordinary once; a recognisable tic when it recurs through a document."
-    });
-  }
-  NEGATIVE_PARALLELISM_PATTERN.lastIndex = 0;
-  while ((match = NEGATIVE_PARALLELISM_PATTERN.exec(text)) !== null) {
-    flagged.push({
-      start: match.index,
-      end: match.index + match[0].length,
-      text: match[0],
-      kind: "negative-parallelism",
-      note: '"Not just X, but Y" construction, one of the most reliable structural tells in current model output.'
-    });
-  }
-  return flagged.sort((a, b) => a.start - b.start);
-}
-function countElevatedVocabulary(text) {
-  const counts = [];
-  for (const word of ELEVATED_VOCABULARY) {
-    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
-    const found = text.match(re);
-    if (found && found.length > 0) counts.push({ word, count: found.length });
-  }
-  return counts.sort((a, b) => b.count - a.count);
-}
-function applyDeterministicPass(text, strength = "balanced", library = "core") {
-  let current = text;
-  const allChanges = [];
-  if (shouldSwapPhrases()) {
-    const { text: swapped, changes } = swapStockPhrases(current, library);
-    current = swapped;
-    allChanges.push(...changes);
-  }
-  if (shouldSwapDashes(strength)) {
-    const { text: swapped, changes } = swapDashes(current);
-    current = swapped;
-    allChanges.push(...changes);
-  }
-  {
-    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
-    current = swapped;
-    allChanges.push(...changes);
-  }
-  return {
-    text: current,
-    changes: allChanges,
-    flaggedStructures: flagStructures(current),
-    elevatedVocabulary: countElevatedVocabulary(current)
-  };
 }
 
 // mcp/hook-check.ts

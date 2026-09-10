@@ -97,8 +97,14 @@ this is not negotiable, and it is enforced in code, not just written down.
 `scripts/mcp-smoke.mts` additionally asserts, against the running MCP server,
 that the rewrite tool is advertised, that its description discloses the
 limitation, that a real rewrite call returns the same limits in its result
-payload (not just in static copy), and that both the standard and advanced
-model options are advertised in its schema.
+payload (not just in static copy), that all three model options are advertised
+in its schema, and that a default call reports which engine ran and why.
+
+`src/lib/rewrite/backend/node-engine.test.ts` covers the engine-selection
+contract itself without downloading anything, including the case this project
+cares most about: a local model that was chosen and then failed to load is
+reported, with the underlying error attached, rather than quietly becoming a
+deterministic result the caller believes came from the model.
 
 `scripts/test-advanced-backend.mts` (`npm run test:models`) is a real,
 opt-in integration test against the advanced backend's actual downloaded

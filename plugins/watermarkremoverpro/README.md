@@ -56,14 +56,49 @@ document. The rewriting itself runs locally and consumes no model tokens at
 all; what you pay for is the request and the response passing through your
 agent's context.
 
+## The two engines, and which one you get
+
+`reduce_ai_evidence` takes `model: "auto" | "standard" | "advanced"`, and
+`auto` is the default.
+
+| Value | What runs | Download |
+|---|---|---|
+| `auto` (default) | the local model when its weights are already on this machine, the deterministic engine when they are not | none, until you ask |
+| `advanced` | a real small local LLM (Qwen2.5, 0.5B on free / 1.5B on pro) via onnxruntime-node | once, on the first call |
+| `standard` | deterministic rule-based substitution | none, ever |
+
+`auto` exists because both flat defaults are wrong. Always downloading stalls
+a first call behind several hundred megabytes nobody asked for; never
+downloading meant a machine that already HAD the model kept getting the weaker
+engine unless the caller remembered to name the better one. So: run
+`reduce_ai_evidence` once with `model: "advanced"`, and every later call uses
+the local model on its own.
+
+Weights are cached under `~/.cache/watermarkremoverpro/models` and fetched from
+the Hugging Face CDN, never from a WatermarkRemoverPro-operated server. Set
+`WATERMARKREMOVERPRO_MODEL_CACHE` to put them somewhere else, or
+`WATERMARKREMOVERPRO_REWRITE_MODEL=advanced` to make the local model the
+default without passing `model` on every call.
+
+Every response carries an `engine` object naming which engine ran and why. If
+the local model was chosen and could not load, `engine.failure` holds the
+reason and the deterministic engine finishes the job rather than the call
+returning nothing. Set `WATERMARKREMOVERPRO_REWRITE_STRICT=1` if you would
+rather that be a hard error.
+
 ## Nothing is transmitted
 
-Rewriting runs on-device or in-process, on every tier, with no hosted mode.
-`check_document` optionally uses a hosted endpoint if you set
-`MARKWITNESS_API_KEY`, which adds detection keys a local process cannot hold;
-leave it unset and everything stays local. (`MARKWITNESS_API_KEY` is the
-variable name used by every deployment of this server, unchanged by the
-product rename below, so existing configuration keeps working.)
+Rewriting runs on-device or in-process, on every tier, with no hosted mode, on
+any value of `model`. `check_document` optionally uses a hosted endpoint if you
+set `WATERMARKREMOVERPRO_API_KEY`, which adds detection keys a local process
+cannot hold; leave it unset, which is the default, and everything stays local.
+That key is the only switch anywhere in this plugin that causes text to leave
+your machine.
+
+`MARKWITNESS_API_KEY` is the pre-rename name of the same variable and still
+works, so a config written before the rename needs no edit. Keys themselves
+still begin `mw_live_`, unchanged. Setting both names to different values is
+refused rather than silently resolved.
 
 ## What it will not claim
 
@@ -79,5 +114,24 @@ bundles that run under plain `node`. That is why installing this is two
 commands and not a checkout plus a build. Rebuild them with
 `npm run build:plugin` from the repository root after changing anything under
 `mcp/` or `src/lib/`.
+
+## Upgrading from the MarkWitness plugin
+
+The product was renamed, and so was the marketplace it publishes from. An
+installation of `markwitness@markwitness` is pinned to the old GitHub
+repository and will never see an update, however long it sits there. Replace
+it:
+
+```bash
+claude plugin uninstall markwitness@markwitness
+claude plugin marketplace remove markwitness
+claude plugin marketplace add maxbeech/watermarkremoverpro
+claude plugin install watermarkremoverpro@watermarkremoverpro
+```
+
+The MCP server id changes from `markwitness` to `watermarkremoverpro`, so tool
+names change with it (`mcp__plugin_markwitness_markwitness__check_document`
+becomes `mcp__plugin_watermarkremoverpro_watermarkremoverpro__check_document`).
+Nothing else carries over, and nothing needs to: the plugin holds no state.
 
 Full documentation: https://watermarkremoverpro.com/docs/mcp

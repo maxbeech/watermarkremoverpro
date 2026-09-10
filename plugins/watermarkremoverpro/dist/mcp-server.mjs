@@ -7193,16 +7193,1916 @@ var require_dist = __commonJS({
         throw new Error(`Unknown format "${name}"`);
       return f;
     };
-    function addFormats(ajv, list, fs, exportName) {
+    function addFormats(ajv, list, fs2, exportName) {
       var _a3;
       var _b;
       (_a3 = (_b = ajv.opts.code).formats) !== null && _a3 !== void 0 ? _a3 : _b.formats = (0, codegen_1._)`require("ajv-formats/dist/formats").${exportName}`;
       for (const f of list)
-        ajv.addFormat(f, fs[f]);
+        ajv.addFormat(f, fs2[f]);
     }
     module.exports = exports = formatsPlugin;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = formatsPlugin;
+  }
+});
+
+// src/lib/calibrate/patterns.ts
+var assemble, DASH_CLAUSE_PATTERN, CORE_STOCK_PHRASES, EXTENDED_STOCK_PHRASES, TRIADIC_LIST_PATTERN, NEGATIVE_PARALLELISM_PATTERN, ELEVATED_VOCABULARY, REGISTER_DOWNSHIFT, REGISTER_DENSITY_THRESHOLD;
+var init_patterns = __esm({
+  "src/lib/calibrate/patterns.ts"() {
+    "use strict";
+    assemble = (...parts) => parts.join("");
+    DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g;
+    CORE_STOCK_PHRASES = {
+      "delve into": ["look at", "examine", "go into"],
+      "it is important to note that": ["note that", "worth noting:", ""],
+      "it's important to note that": ["note that", "worth noting:", ""],
+      "in conclusion": ["overall", "to sum up", "in short"],
+      "in summary": ["overall", "to sum up", "in short"],
+      "plays a crucial role": ["matters", "is central", "is a key part"],
+      "plays a vital role": ["matters", "is central", "is a key part"],
+      "a testament to": ["evidence of", "a sign of", "proof of"],
+      "rich tapestry": ["mix", "range", "variety"],
+      "navigate the complexities of": ["deal with", "work through", "handle"],
+      "in today\u2019s fast-paced world": ["now", "these days", "currently"],
+      "in today's fast-paced world": ["now", "these days", "currently"],
+      "unlock the potential of": ["make the most of", "get value from", "use"],
+      "stands as a": ["is a", "remains a"],
+      "boasts a": ["has a", "offers a"],
+      "underscores the importance of": ["shows why X matters", "highlights", "points to the importance of"],
+      [assemble("seam", "lessly integrate")]: ["fit together", "combine cleanly", "work together"],
+      furthermore: ["also", "and", "beyond that"],
+      moreover: ["also", "and", "on top of that"],
+      additionally: ["also", "and", "on top of that"]
+    };
+    EXTENDED_STOCK_PHRASES = {
+      ...CORE_STOCK_PHRASES,
+      // Announcement and marketing register. This is what an assistant reaches
+      // for when asked to write a launch post, and it is the single most
+      // recognisable block of generated copy on the public web.
+      "we are thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
+      "we're thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
+      "we are excited to announce": ["we are announcing", "today we are launching", "we have launched"],
+      "we're excited to announce": ["we are announcing", "today we are launching", "we have launched"],
+      "we are proud to announce": ["we are announcing", "today we are launching", "we have launched"],
+      "i'm thrilled to share": ["here is", "sharing"],
+      "thrilled to share": ["sharing", "here is"],
+      // Copula avoidance: models systematically prefer a heavier verb where
+      // "is" would do. Documented in the Wikipedia catalogue and in the
+      // biomedical excess-vocabulary study.
+      "serves as a": ["is a", "works as a"],
+      "functions as a": ["is a", "works as a"],
+      "stands as": ["is", "remains"],
+      "marks a significant": ["is a significant", "is an important"],
+      "represents a shift": ["is a shift", "shifts"],
+      // Superficial-analysis verbs and significance puffery.
+      "valuable insights": ["findings", "useful detail", "what it shows"],
+      "a wide range of": ["many", "a lot of", "various"],
+      "a treasure trove of": ["a lot of", "plenty of", "a store of"],
+      "when it comes to": ["for", "with", "on"],
+      "at its core": ["fundamentally", "basically", "essentially"],
+      "that being said": ["even so", "still", "that said"],
+      "to put it simply": ["put simply", "in short"],
+      "it is worth noting that": ["note that", "worth noting:", ""],
+      "it's worth noting that": ["note that", "worth noting:", ""],
+      "needless to say": ["clearly", "obviously", ""],
+      "the fact of the matter is": ["in fact", "actually", ""],
+      "in the realm of": ["in", "within", "across"],
+      "the ever-evolving landscape of": ["the changing world of", "changes in", ""],
+      "the evolving landscape of": ["the changing world of", "changes in", ""],
+      "paradigm shift": ["change", "shift", "break with the past"],
+      "deep dive": ["detailed look", "close look", "thorough review"],
+      "i hope this helps": ["", "hope that helps"],
+      "let me walk you through": ["here is", "the steps are", ""],
+      // Promotional vocabulary. Assembled from fragments (see `assemble`)
+      // because this repo's own house-style test bans these words in source
+      // prose, which is exactly why they belong in a table that flags them.
+      [assemble("super", "charge")]: ["speed up", "improve", "strengthen"],
+      [assemble("game", "-changing")]: ["significant", "major", "important"],
+      [assemble("cutting", "-edge")]: ["recent", "advanced", "current"],
+      [assemble("best", "-in-class")]: ["strong", "leading", "well regarded"],
+      [assemble("effort", "less")]: ["simple", "straightforward", "easy"],
+      [assemble("elevate", " your")]: ["improve your", "strengthen your"],
+      [assemble("harness", " the power of")]: ["use", "make use of", "apply"],
+      [assemble("unlock", " the power of")]: ["use", "make use of", "get value from"],
+      [assemble("revolution", "ise")]: ["change", "transform", "reshape"],
+      [assemble("revolution", "ize")]: ["change", "transform", "reshape"]
+    };
+    TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g;
+    NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi;
+    ELEVATED_VOCABULARY = [
+      "delve",
+      "tapestry",
+      "testament",
+      "underscore",
+      "underscores",
+      "meticulous",
+      "meticulously",
+      "pivotal",
+      "realm",
+      "robust",
+      "leverage",
+      "showcase",
+      "showcasing",
+      "boasts",
+      "bolstered",
+      "garner",
+      "intricate",
+      "intricacies",
+      "interplay",
+      "vibrant",
+      "crucial",
+      "nuanced",
+      "multifaceted",
+      "illuminate",
+      "fostering",
+      "encompassing",
+      "resonate",
+      "align",
+      "holistic",
+      "comprehensive"
+    ];
+    REGISTER_DOWNSHIFT = {
+      underscore: ["stress", "show"],
+      underscores: ["stresses", "shows"],
+      meticulous: ["careful", "thorough"],
+      meticulously: ["carefully", "thoroughly"],
+      pivotal: ["central", "decisive"],
+      realm: ["field", "area"],
+      robust: ["strong", "reliable", "sturdy"],
+      showcase: ["show", "display"],
+      showcasing: ["showing", "displaying"],
+      boasts: ["has", "offers"],
+      bolstered: ["strengthened", "reinforced"],
+      garner: ["gather", "attract"],
+      intricate: ["complex", "detailed"],
+      intricacies: ["details", "complexities"],
+      interplay: ["interaction", "relationship"],
+      vibrant: ["lively", "bright"],
+      crucial: ["essential", "central"],
+      nuanced: ["subtle", "careful"],
+      multifaceted: ["many-sided", "complex"],
+      fostering: ["encouraging", "building"],
+      encompassing: ["covering", "including"],
+      holistic: ["overall", "whole"],
+      comprehensive: ["complete", "full", "thorough"]
+    };
+    REGISTER_DENSITY_THRESHOLD = 2;
+  }
+});
+
+// src/lib/calibrate/ai-tells.ts
+function shouldSwapDashes(strength) {
+  return strength !== "preserve";
+}
+function shouldSwapPhrases() {
+  return true;
+}
+function swapDashes(text) {
+  const changes = [];
+  let useComma = true;
+  let result = "";
+  let lastEnd = 0;
+  DASH_CLAUSE_PATTERN.lastIndex = 0;
+  let match;
+  while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
+    const start = match.index;
+    const end = start + match[0].length;
+    const replacement = useComma ? ", " : ". ";
+    useComma = !useComma;
+    result += text.slice(lastEnd, start) + replacement;
+    changes.push({
+      start,
+      end,
+      original: match[0],
+      replacement,
+      category: "punctuation",
+      note: "Em/en dash used as a clause connector, a construction over-represented in LLM output relative to typical published prose."
+    });
+    lastEnd = end;
+  }
+  result += text.slice(lastEnd);
+  return { text: result, changes };
+}
+function swapStockPhrases(text, library) {
+  const changes = [];
+  const usage = /* @__PURE__ */ new Map();
+  const table = library === "extended" ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES;
+  let result = text;
+  const phrases = Object.keys(table).sort((a, b) => b.length - a.length);
+  for (const phrase of phrases) {
+    const alternatives = table[phrase];
+    const re = new RegExp(escapeRegExp(phrase), "gi");
+    let match;
+    let cursor = 0;
+    let next = "";
+    re.lastIndex = 0;
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(phrase) ?? 0;
+      const replacement = alternatives[idx % alternatives.length];
+      usage.set(phrase, idx + 1);
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: "phrase",
+        note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`
+      });
+      cursor = match.index + match[0].length;
+    }
+    next += result.slice(cursor);
+    result = next;
+  }
+  return { text: result, changes };
+}
+function vocabularyWordsToSwap(text, strength) {
+  const swap = /* @__PURE__ */ new Set();
+  if (strength === "preserve") return swap;
+  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    const count = countWholeWord(text, word);
+    if (count === 0) continue;
+    if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
+    swap.add(word);
+  }
+  return swap;
+}
+function swapElevatedVocabulary(text, strength) {
+  const targets = vocabularyWordsToSwap(text, strength);
+  if (targets.size === 0) return { text, changes: [] };
+  const changes = [];
+  const usage = /* @__PURE__ */ new Map();
+  let result = text;
+  for (const word of targets) {
+    const alternatives = REGISTER_DOWNSHIFT[word];
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    let match;
+    let cursor = 0;
+    let next = "";
+    re.lastIndex = 0;
+    while ((match = re.exec(result)) !== null) {
+      const idx = usage.get(word) ?? 0;
+      const replacement = alternatives[idx % alternatives.length];
+      usage.set(word, idx + 1);
+      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      changes.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        original: match[0],
+        replacement,
+        category: "vocabulary",
+        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
+      });
+      cursor = match.index + match[0].length;
+    }
+    next += result.slice(cursor);
+    result = next;
+  }
+  return { text: result, changes };
+}
+function countWholeWord(text, word) {
+  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+  return text.match(re)?.length ?? 0;
+}
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function applyCase(original, replacement) {
+  if (replacement.length === 0) return replacement;
+  if (original[0] === original[0].toUpperCase() && /[A-Za-z]/.test(original[0])) {
+    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+  }
+  return replacement;
+}
+function flagStructures(text) {
+  const flagged = [];
+  TRIADIC_LIST_PATTERN.lastIndex = 0;
+  let match;
+  while ((match = TRIADIC_LIST_PATTERN.exec(text)) !== null) {
+    flagged.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+      kind: "triadic-list",
+      note: "Three-item list. Ordinary once; a recognisable tic when it recurs through a document."
+    });
+  }
+  NEGATIVE_PARALLELISM_PATTERN.lastIndex = 0;
+  while ((match = NEGATIVE_PARALLELISM_PATTERN.exec(text)) !== null) {
+    flagged.push({
+      start: match.index,
+      end: match.index + match[0].length,
+      text: match[0],
+      kind: "negative-parallelism",
+      note: '"Not just X, but Y" construction, one of the most reliable structural tells in current model output.'
+    });
+  }
+  return flagged.sort((a, b) => a.start - b.start);
+}
+function countElevatedVocabulary(text) {
+  const counts = [];
+  for (const word of ELEVATED_VOCABULARY) {
+    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    const found = text.match(re);
+    if (found && found.length > 0) counts.push({ word, count: found.length });
+  }
+  return counts.sort((a, b) => b.count - a.count);
+}
+function measureStyleTells(text) {
+  const flagged = flagStructures(text);
+  const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0);
+  const weighted = flagged.reduce(
+    (sum, f) => sum + (f.kind === "negative-parallelism" ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
+    0
+  );
+  return {
+    structures: flagged.length,
+    vocabulary,
+    pressure: weighted + Math.floor(vocabulary / 2)
+  };
+}
+function applyDeterministicPass(text, strength = "balanced", library = "core") {
+  let current = text;
+  const allChanges = [];
+  if (shouldSwapPhrases()) {
+    const { text: swapped, changes } = swapStockPhrases(current, library);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  if (shouldSwapDashes(strength)) {
+    const { text: swapped, changes } = swapDashes(current);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
+    current = swapped;
+    allChanges.push(...changes);
+  }
+  return {
+    text: current,
+    changes: allChanges,
+    flaggedStructures: flagStructures(current),
+    elevatedVocabulary: countElevatedVocabulary(current)
+  };
+}
+var PARALLELISM_WEIGHT, TRIADIC_WEIGHT;
+var init_ai_tells = __esm({
+  "src/lib/calibrate/ai-tells.ts"() {
+    "use strict";
+    init_patterns();
+    PARALLELISM_WEIGHT = 2;
+    TRIADIC_WEIGHT = 1;
+  }
+});
+
+// src/lib/detector/stats.ts
+function normalCdf(z) {
+  return 0.5 * (1 + erf(z / Math.SQRT2));
+}
+function erf(x) {
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x);
+  const t = 1 / (1 + 0.3275911 * ax);
+  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax);
+  return sign * y;
+}
+function upperTailP(z) {
+  return 1 - normalCdf(z);
+}
+function binomialZ(successes, trials, p0) {
+  if (trials <= 0) return null;
+  const sd = Math.sqrt(trials * p0 * (1 - p0));
+  if (sd === 0) return null;
+  return (successes - trials * p0) / sd;
+}
+function wilsonInterval(successes, trials, z = 1.959963984540054) {
+  if (trials <= 0) return null;
+  const phat = successes / trials;
+  const z2 = z * z;
+  const denom = 1 + z2 / trials;
+  const centre = phat + z2 / (2 * trials);
+  const margin = z * Math.sqrt((phat * (1 - phat) + z2 / (4 * trials)) / trials);
+  return { low: Math.max(0, (centre - margin) / denom), high: Math.min(1, (centre + margin) / denom) };
+}
+function mean(xs) {
+  if (xs.length === 0) return NaN;
+  let s = 0;
+  for (const x of xs) s += x;
+  return s / xs.length;
+}
+function stdDev(xs) {
+  if (xs.length < 2) return NaN;
+  const m = mean(xs);
+  let acc = 0;
+  for (const x of xs) acc += (x - m) ** 2;
+  return Math.sqrt(acc / (xs.length - 1));
+}
+function quantile(sorted, q) {
+  if (sorted.length === 0) return NaN;
+  if (sorted.length === 1) return sorted[0];
+  const pos = (sorted.length - 1) * q;
+  const lo = Math.floor(pos);
+  const hi = Math.ceil(pos);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+}
+function seededRandom(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = a + 1831565813 >>> 0;
+    let t = a;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function benjaminiHochberg(pValues, fdr = 0.05) {
+  const indexed = pValues.map((p, i) => ({ p, i })).sort((a, b) => a.p - b.p);
+  const m = indexed.length;
+  let maxK = -1;
+  for (let k = 0; k < m; k++) {
+    if (indexed[k].p <= (k + 1) / m * fdr) maxK = k;
+  }
+  if (maxK < 0) return [];
+  return indexed.slice(0, maxK + 1).map((e) => e.i).sort((a, b) => a - b);
+}
+var init_stats = __esm({
+  "src/lib/detector/stats.ts"() {
+    "use strict";
+  }
+});
+
+// src/lib/detector/tokenize.ts
+function tokenize(text) {
+  const tokens = [];
+  WORD_RE.lastIndex = 0;
+  let m;
+  while ((m = WORD_RE.exec(text)) !== null) {
+    const raw = m[0];
+    tokens.push({
+      raw,
+      norm: normalizeToken(raw),
+      start: m.index,
+      end: m.index + raw.length
+    });
+  }
+  return tokens;
+}
+function normalizeToken(raw) {
+  return raw.toLowerCase().replace(/’/g, "'").replace(/^[-']+|[-']+$/g, "");
+}
+function countWords(text) {
+  WORD_RE.lastIndex = 0;
+  let n = 0;
+  while (WORD_RE.exec(text) !== null) n++;
+  return n;
+}
+function splitSentences(text) {
+  const passages = [];
+  const terminator = /[.!?…]+["'”’)\]]*(\s+|$)/g;
+  let cursor = 0;
+  let m;
+  while ((m = terminator.exec(text)) !== null) {
+    const endOfSentence = m.index + m[0].length;
+    const candidate = text.slice(cursor, endOfSentence);
+    const beforeDot = candidate.trimEnd().replace(/[.!?…"'”’)\]]+$/, "");
+    const lastWord = beforeDot.split(/[\s(]+/).pop() ?? "";
+    const lastWordNorm = normalizeToken(lastWord);
+    if (ABBREVIATIONS.has(lastWordNorm) || new RegExp("^\\p{Lu}$", "u").test(lastWord)) continue;
+    pushPassage(passages, text, cursor, endOfSentence);
+    cursor = endOfSentence;
+  }
+  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
+  return passages;
+}
+function splitParagraphs(text) {
+  const passages = [];
+  const re = /\n\s*\n/g;
+  let cursor = 0;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    pushPassage(passages, text, cursor, m.index);
+    cursor = m.index + m[0].length;
+  }
+  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
+  return passages;
+}
+function pushPassage(into, text, start, end) {
+  const slice = text.slice(start, end);
+  const trimmedStart = start + (slice.length - slice.trimStart().length);
+  const trimmed = slice.trim();
+  if (trimmed.length === 0) return;
+  into.push({
+    index: into.length,
+    text: trimmed,
+    start: trimmedStart,
+    end: trimmedStart + trimmed.length
+  });
+}
+function punctuationCounts(text) {
+  const counts = {
+    comma: 0,
+    semicolon: 0,
+    colon: 0,
+    dash: 0,
+    quote: 0,
+    exclamation: 0,
+    question: 0,
+    parenthesis: 0
+  };
+  for (const ch of text) {
+    switch (ch) {
+      case ",":
+        counts.comma++;
+        break;
+      case ";":
+        counts.semicolon++;
+        break;
+      case ":":
+        counts.colon++;
+        break;
+      case "-":
+      case "\u2013":
+      case "\u2014":
+        counts.dash++;
+        break;
+      case '"':
+      case "\u201C":
+      case "\u201D":
+      case "\xAB":
+      case "\xBB":
+        counts.quote++;
+        break;
+      case "!":
+        counts.exclamation++;
+        break;
+      case "?":
+        counts.question++;
+        break;
+      case "(":
+        counts.parenthesis++;
+        break;
+    }
+  }
+  return counts;
+}
+var WORD_RE, ABBREVIATIONS;
+var init_tokenize = __esm({
+  "src/lib/detector/tokenize.ts"() {
+    "use strict";
+    WORD_RE = new RegExp("\\p{L}[\\p{L}\\p{M}\u2019'-]*", "gu");
+    ABBREVIATIONS = /* @__PURE__ */ new Set([
+      "mr",
+      "mrs",
+      "ms",
+      "dr",
+      "prof",
+      "sr",
+      "jr",
+      "st",
+      "vs",
+      "etc",
+      "eg",
+      "ie",
+      "fig",
+      "no",
+      "vol",
+      "al",
+      "ca",
+      "cf",
+      "ed",
+      "esp",
+      "inc",
+      "ltd",
+      "co",
+      "univ",
+      "dept",
+      "approx",
+      // es / pt
+      "sra",
+      "srta",
+      "ud",
+      "uds",
+      "ejemplo",
+      "av",
+      "depto",
+      // fr
+      "mme",
+      "mlle",
+      "bd",
+      "env",
+      // de
+      "bzw",
+      "ggf",
+      "usw",
+      "zb",
+      "evtl",
+      "nr",
+      "abb",
+      "hrsg"
+    ]);
+  }
+});
+
+// src/lib/detector/ai-likelihood.ts
+function bandFor(score) {
+  if (score >= 75) return "high";
+  if (score >= 50) return "elevated";
+  if (score >= 25) return "watch";
+  return "low";
+}
+function saturate(raw) {
+  const s = 100 * (1 - Math.exp(-raw / 34));
+  return Math.round(Math.min(100, Math.max(0, s)));
+}
+function analyzeAiLikelihood(text, language) {
+  const tokens = tokenize(text);
+  const words = tokens.length;
+  if (language !== SUPPORTED) {
+    return {
+      status: "insufficient_data",
+      score: null,
+      band: null,
+      signals: [],
+      wordsScored: words,
+      detail: language === null ? "No language was determined for this document, so this channel did not run." : `This channel currently covers English only, because its phrase and vocabulary tables are English-specific and guessing at another language would misfire silently. Language measured: ${language}.`
+    };
+  }
+  if (words < MIN_WORDS_FOR_LIKELIHOOD) {
+    return {
+      status: "insufficient_data",
+      score: null,
+      band: null,
+      signals: [],
+      wordsScored: words,
+      detail: `Only ${words} words; ${MIN_WORDS_FOR_LIKELIHOOD} are needed before per-1,000-word rates and sentence-rhythm mean anything. No score is reported for this document.`
+    };
+  }
+  const per500 = (count) => count / words * 500;
+  const dashMatches = text.match(DASH_CLAUSE_PATTERN)?.length ?? 0;
+  const dashRate = per500(dashMatches);
+  const dashContribution = dashRate * 7;
+  const tells = measureStyleTells(text);
+  const structureRate = per500(tells.structures);
+  const vocabularyRate = per500(tells.vocabulary);
+  const structureContribution = structureRate * 4;
+  const vocabularyContribution = vocabularyRate * 3;
+  const sentences = splitSentences(text);
+  const lengths = sentences.map((s) => tokenize(s.text).length).filter((l) => l > 0);
+  let uniformityContribution = 0;
+  let cv = null;
+  if (lengths.length >= 6) {
+    const m = mean(lengths);
+    const sd = stdDev(lengths);
+    cv = m > 0 ? sd / m : 0;
+    const HUMAN_TYPICAL_CV = 0.55;
+    uniformityContribution = Math.max(0, HUMAN_TYPICAL_CV - cv) * 40;
+  }
+  const raw = dashContribution + structureContribution + vocabularyContribution + uniformityContribution;
+  const score = saturate(raw);
+  const signals = [
+    {
+      id: "dash-clauses",
+      label: "Em/en dash used as a clause connector",
+      count: dashMatches,
+      ratePer500: dashRate,
+      contribution: dashContribution,
+      detail: "A punctuation habit heavily over-represented in LLM output relative to edited human prose."
+    },
+    {
+      id: "structural-tics",
+      label: "Templated structures (triadic lists, negative parallelism)",
+      count: tells.structures,
+      ratePer500: structureRate,
+      contribution: structureContribution,
+      detail: '"Not just X, but Y" and repeated three-item lists, some of the most reliable structural tells in current model output.'
+    },
+    {
+      id: "elevated-vocabulary",
+      label: 'Elevated vocabulary ("delve", "underscore", "robust", "realm"...)',
+      count: tells.vocabulary,
+      ratePer500: vocabularyRate,
+      contribution: vocabularyContribution,
+      detail: "Words whose rate rises sharply in LLM-assisted text while remaining ordinary English on their own."
+    },
+    {
+      id: "sentence-uniformity",
+      label: "Sentence-length uniformity",
+      count: lengths.length,
+      ratePer500: cv ?? 0,
+      contribution: uniformityContribution,
+      detail: cv === null ? "Too few sentences to measure rhythm." : `Coefficient of variation ${cv.toFixed(2)}; human prose is typically burstier than this.`
+    }
+  ];
+  return {
+    status: "computed",
+    score,
+    band: bandFor(score),
+    signals,
+    wordsScored: words
+  };
+}
+var MIN_WORDS_FOR_LIKELIHOOD, SUPPORTED;
+var init_ai_likelihood = __esm({
+  "src/lib/detector/ai-likelihood.ts"() {
+    "use strict";
+    init_ai_tells();
+    init_patterns();
+    init_stats();
+    init_tokenize();
+    MIN_WORDS_FOR_LIKELIHOOD = 60;
+    SUPPORTED = "en";
+  }
+});
+
+// src/lib/detector/languages.ts
+function isSupportedLanguage(code) {
+  return SUPPORTED_LANGUAGES.includes(code);
+}
+function identifyLanguage(tokens) {
+  const scores = {};
+  const sets = /* @__PURE__ */ new Map();
+  for (const lang of SUPPORTED_LANGUAGES) sets.set(lang, new Set(FUNCTION_WORDS[lang]));
+  for (const lang of SUPPORTED_LANGUAGES) {
+    const set = sets.get(lang);
+    let hits = 0;
+    for (const t of tokens) if (set.has(t.norm)) hits++;
+    scores[lang] = tokens.length > 0 ? hits / tokens.length : 0;
+  }
+  const ranked = [...SUPPORTED_LANGUAGES].sort((a, b) => scores[b] - scores[a]);
+  const best = ranked[0];
+  const margin = scores[best] - scores[ranked[1]];
+  const confident = scores[best] >= MIN_COVERAGE && margin >= MIN_MARGIN;
+  return { language: confident ? best : null, scores, margin, confident };
+}
+var SUPPORTED_LANGUAGES, LANGUAGE_NAMES, FUNCTION_WORDS, MIN_MARGIN, MIN_COVERAGE;
+var init_languages = __esm({
+  "src/lib/detector/languages.ts"() {
+    "use strict";
+    SUPPORTED_LANGUAGES = ["en", "es", "fr", "de", "pt"];
+    LANGUAGE_NAMES = {
+      en: "English",
+      es: "Spanish",
+      fr: "French",
+      de: "German",
+      pt: "Portuguese"
+    };
+    FUNCTION_WORDS = {
+      en: [
+        "the",
+        "of",
+        "and",
+        "to",
+        "a",
+        "in",
+        "that",
+        "is",
+        "was",
+        "it",
+        "for",
+        "as",
+        "with",
+        "his",
+        "he",
+        "be",
+        "on",
+        "i",
+        "by",
+        "at",
+        "this",
+        "had",
+        "not",
+        "are",
+        "but",
+        "from",
+        "or",
+        "have",
+        "an",
+        "they",
+        "which",
+        "you",
+        "were",
+        "her",
+        "all",
+        "she",
+        "there",
+        "would",
+        "their",
+        "we",
+        "him",
+        "been",
+        "has",
+        "when",
+        "who",
+        "will",
+        "no",
+        "more",
+        "if",
+        "out",
+        "so",
+        "said",
+        "what",
+        "up",
+        "its",
+        "about",
+        "into",
+        "than",
+        "them",
+        "can",
+        "only",
+        "other",
+        "new",
+        "some",
+        "could",
+        "time",
+        "these",
+        "two",
+        "may",
+        "then",
+        "do",
+        "first",
+        "any",
+        "my",
+        "now",
+        "such",
+        "like",
+        "our",
+        "over",
+        "man",
+        "me",
+        "even",
+        "most",
+        "made",
+        "after",
+        "also",
+        "did",
+        "many",
+        "before",
+        "must",
+        "through",
+        "back",
+        "years",
+        "where",
+        "much",
+        "your",
+        "way",
+        "well",
+        "down",
+        "should",
+        "because",
+        "each",
+        "just",
+        "those",
+        "people",
+        "how",
+        "too",
+        "little",
+        "state",
+        "good",
+        "very",
+        "make",
+        "world",
+        "still",
+        "own",
+        "see",
+        "men",
+        "work",
+        "long",
+        "get",
+        "here",
+        "between",
+        "both",
+        "life",
+        "being",
+        "under",
+        "never",
+        "day",
+        "same",
+        "another",
+        "know",
+        "while",
+        "last"
+      ],
+      es: [
+        "de",
+        "la",
+        "que",
+        "el",
+        "en",
+        "y",
+        "a",
+        "los",
+        "del",
+        "se",
+        "las",
+        "por",
+        "un",
+        "para",
+        "con",
+        "no",
+        "una",
+        "su",
+        "al",
+        "lo",
+        "como",
+        "m\xE1s",
+        "pero",
+        "sus",
+        "le",
+        "ya",
+        "o",
+        "este",
+        "s\xED",
+        "porque",
+        "esta",
+        "entre",
+        "cuando",
+        "muy",
+        "sin",
+        "sobre",
+        "tambi\xE9n",
+        "me",
+        "hasta",
+        "hay",
+        "donde",
+        "quien",
+        "desde",
+        "todo",
+        "nos",
+        "durante",
+        "todos",
+        "uno",
+        "les",
+        "ni",
+        "contra",
+        "otros",
+        "ese",
+        "eso",
+        "ante",
+        "ellos",
+        "e",
+        "esto",
+        "m\xED",
+        "antes",
+        "algunos",
+        "qu\xE9",
+        "unos",
+        "yo",
+        "otro",
+        "otras",
+        "otra",
+        "\xE9l",
+        "tanto",
+        "esa",
+        "estos",
+        "mucho",
+        "quienes",
+        "nada",
+        "muchos",
+        "cual",
+        "poco",
+        "ella",
+        "estar",
+        "estas",
+        "algunas",
+        "algo",
+        "nosotros",
+        "mi",
+        "mis",
+        "t\xFA",
+        "te",
+        "ti",
+        "tu",
+        "tus",
+        "ellas",
+        "nosotras",
+        "vosotros",
+        "vosotras",
+        "os",
+        "m\xEDo",
+        "m\xEDa",
+        "ser",
+        "es",
+        "son",
+        "era",
+        "fue",
+        "han",
+        "ha",
+        "hab\xEDa",
+        "tiene",
+        "ten\xEDa",
+        "puede",
+        "hacer",
+        "todas",
+        "cada",
+        "aunque",
+        "mientras",
+        "seg\xFAn",
+        "bien",
+        "as\xED",
+        "aqu\xED",
+        "ahora",
+        "siempre"
+      ],
+      fr: [
+        "de",
+        "la",
+        "le",
+        "et",
+        "les",
+        "des",
+        "en",
+        "un",
+        "du",
+        "une",
+        "que",
+        "est",
+        "pour",
+        "qui",
+        "dans",
+        "a",
+        "par",
+        "plus",
+        "pas",
+        "au",
+        "sur",
+        "ne",
+        "se",
+        "ce",
+        "il",
+        "sont",
+        "ou",
+        "avec",
+        "son",
+        "aux",
+        "mais",
+        "nous",
+        "comme",
+        "on",
+        "sans",
+        "elle",
+        "ses",
+        "lui",
+        "leur",
+        "y",
+        "\xE9t\xE9",
+        "\xEAtre",
+        "avoir",
+        "faire",
+        "cette",
+        "ces",
+        "tout",
+        "tous",
+        "toute",
+        "toutes",
+        "m\xEAme",
+        "aussi",
+        "entre",
+        "encore",
+        "quand",
+        "tr\xE8s",
+        "bien",
+        "o\xF9",
+        "peut",
+        "sous",
+        "apr\xE8s",
+        "avant",
+        "depuis",
+        "contre",
+        "vers",
+        "chez",
+        "donc",
+        "car",
+        "si",
+        "ainsi",
+        "alors",
+        "ici",
+        "l\xE0",
+        "cela",
+        "celui",
+        "celle",
+        "ceux",
+        "dont",
+        "quel",
+        "quelle",
+        "leurs",
+        "notre",
+        "votre",
+        "nos",
+        "vos",
+        "mon",
+        "ma",
+        "mes",
+        "ton",
+        "ta",
+        "tes",
+        "je",
+        "tu",
+        "vous",
+        "ils",
+        "elles",
+        "me",
+        "te",
+        "moi",
+        "toi",
+        "\xE9tait",
+        "ont",
+        "avait",
+        "fait",
+        "peu",
+        "jamais",
+        "toujours",
+        "d\xE9j\xE0",
+        "pendant",
+        "selon"
+      ],
+      de: [
+        "der",
+        "die",
+        "und",
+        "in",
+        "den",
+        "von",
+        "zu",
+        "das",
+        "mit",
+        "sich",
+        "des",
+        "auf",
+        "f\xFCr",
+        "ist",
+        "im",
+        "dem",
+        "nicht",
+        "ein",
+        "eine",
+        "als",
+        "auch",
+        "es",
+        "an",
+        "werden",
+        "aus",
+        "er",
+        "hat",
+        "dass",
+        "sie",
+        "nach",
+        "wird",
+        "bei",
+        "einer",
+        "um",
+        "am",
+        "sind",
+        "noch",
+        "wie",
+        "einem",
+        "\xFCber",
+        "einen",
+        "so",
+        "zum",
+        "war",
+        "haben",
+        "nur",
+        "oder",
+        "aber",
+        "vor",
+        "zur",
+        "bis",
+        "mehr",
+        "durch",
+        "man",
+        "sein",
+        "wurde",
+        "sei",
+        "ich",
+        "wir",
+        "ihr",
+        "ihre",
+        "seine",
+        "seiner",
+        "diese",
+        "dieser",
+        "dieses",
+        "kann",
+        "muss",
+        "soll",
+        "wenn",
+        "weil",
+        "doch",
+        "schon",
+        "dann",
+        "da",
+        "wo",
+        "was",
+        "wer",
+        "welche",
+        "alle",
+        "allen",
+        "anderen",
+        "gegen",
+        "ohne",
+        "unter",
+        "zwischen",
+        "w\xE4hrend",
+        "seit",
+        "ihn",
+        "ihm",
+        "uns",
+        "euch",
+        "mein",
+        "dein",
+        "unser",
+        "hatte",
+        "h\xE4tte",
+        "w\xFCrde",
+        "k\xF6nnte",
+        "immer",
+        "wieder",
+        "sehr",
+        "viel",
+        "gut",
+        "jetzt"
+      ],
+      pt: [
+        "de",
+        "a",
+        "o",
+        "que",
+        "e",
+        "do",
+        "da",
+        "em",
+        "um",
+        "para",
+        "com",
+        "n\xE3o",
+        "uma",
+        "os",
+        "no",
+        "se",
+        "na",
+        "por",
+        "mais",
+        "as",
+        "dos",
+        "como",
+        "mas",
+        "ao",
+        "ele",
+        "das",
+        "\xE0",
+        "seu",
+        "sua",
+        "ou",
+        "quando",
+        "muito",
+        "nos",
+        "j\xE1",
+        "eu",
+        "tamb\xE9m",
+        "s\xF3",
+        "pelo",
+        "pela",
+        "at\xE9",
+        "isso",
+        "ela",
+        "entre",
+        "depois",
+        "sem",
+        "mesmo",
+        "aos",
+        "seus",
+        "quem",
+        "nas",
+        "me",
+        "esse",
+        "eles",
+        "voc\xEA",
+        "essa",
+        "num",
+        "nem",
+        "suas",
+        "meu",
+        "\xE0s",
+        "minha",
+        "numa",
+        "pelos",
+        "elas",
+        "qual",
+        "n\xF3s",
+        "lhe",
+        "deles",
+        "essas",
+        "esses",
+        "pelas",
+        "este",
+        "dele",
+        "tu",
+        "te",
+        "voc\xEAs",
+        "vos",
+        "lhes",
+        "meus",
+        "minhas",
+        "teu",
+        "tua",
+        "nosso",
+        "nossa",
+        "dela",
+        "delas",
+        "esta",
+        "estes",
+        "\xE9",
+        "s\xE3o",
+        "era",
+        "foi",
+        "ser",
+        "ter",
+        "tem",
+        "est\xE1",
+        "est\xE3o",
+        "havia",
+        "pode",
+        "fazer",
+        "todos",
+        "toda",
+        "cada",
+        "embora",
+        "enquanto",
+        "segundo",
+        "bem",
+        "assim",
+        "aqui",
+        "agora"
+      ]
+    };
+    MIN_MARGIN = 0.02;
+    MIN_COVERAGE = 0.05;
+  }
+});
+
+// src/lib/detector/features.ts
+function movingAverageTtr(tokens, window = 100) {
+  if (tokens.length === 0) return 0;
+  if (tokens.length <= window) {
+    return new Set(tokens.map((t) => t.norm)).size / tokens.length;
+  }
+  const counts = /* @__PURE__ */ new Map();
+  let distinct = 0;
+  const ratios = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const add = tokens[i].norm;
+    const prevAdd = counts.get(add) ?? 0;
+    if (prevAdd === 0) distinct++;
+    counts.set(add, prevAdd + 1);
+    if (i >= window) {
+      const drop = tokens[i - window].norm;
+      const prevDrop = counts.get(drop) ?? 0;
+      if (prevDrop === 1) distinct--;
+      counts.set(drop, prevDrop - 1);
+    }
+    if (i >= window - 1) ratios.push(distinct / window);
+  }
+  return mean(ratios);
+}
+function hapaxRatio(tokens) {
+  if (tokens.length === 0) return 0;
+  const counts = /* @__PURE__ */ new Map();
+  for (const t of tokens) counts.set(t.norm, (counts.get(t.norm) ?? 0) + 1);
+  let hapax = 0;
+  for (const n of counts.values()) if (n === 1) hapax++;
+  return hapax / counts.size;
+}
+function measureChunk(text, language) {
+  const tokens = tokenize(text);
+  const n = tokens.length;
+  const per1000 = (count) => n > 0 ? count / n * 1e3 : 0;
+  const sentences = splitSentences(text);
+  const sentenceLengths = sentences.map((s) => tokenize(s.text).length).filter((l) => l > 0);
+  const meanSentence = sentenceLengths.length > 0 ? mean(sentenceLengths) : 0;
+  const sdSentence = sentenceLengths.length > 1 ? stdDev(sentenceLengths) : 0;
+  const punct = punctuationCounts(text);
+  const functionWordSet = new Set(FUNCTION_WORDS[language]);
+  let functionWordHits = 0;
+  const wordCounts = /* @__PURE__ */ new Map();
+  let totalChars = 0;
+  for (const t of tokens) {
+    totalChars += t.norm.length;
+    if (functionWordSet.has(t.norm)) {
+      functionWordHits++;
+      wordCounts.set(t.norm, (wordCounts.get(t.norm) ?? 0) + 1);
+    }
+  }
+  const functionWordRates = {};
+  for (const word of FUNCTION_WORDS[language]) {
+    functionWordRates[word] = per1000(wordCounts.get(word) ?? 0);
+  }
+  const features = {
+    meanWordLength: n > 0 ? totalChars / n : 0,
+    mattr: movingAverageTtr(tokens),
+    hapaxRatio: hapaxRatio(tokens),
+    meanSentenceLength: meanSentence,
+    // Coefficient of variation of sentence length, or "burstiness". Reported as a
+    // ratio so it does not simply track mean sentence length.
+    sentenceLengthCv: meanSentence > 0 ? sdSentence / meanSentence : 0,
+    functionWordRate: per1000(functionWordHits),
+    commaRate: per1000(punct.comma),
+    semicolonRate: per1000(punct.semicolon),
+    colonRate: per1000(punct.colon),
+    dashRate: per1000(punct.dash),
+    quoteRate: per1000(punct.quote),
+    parenthesisRate: per1000(punct.parenthesis),
+    exclamationRate: per1000(punct.exclamation),
+    questionRate: per1000(punct.question)
+  };
+  return { features, functionWordRates, tokenCount: n };
+}
+function chunkText(text) {
+  const sentences = splitSentences(text);
+  const chunks = [];
+  let current = [];
+  let currentTokens = 0;
+  for (const sentence of sentences) {
+    const count = tokenize(sentence.text).length;
+    current.push(sentence.text);
+    currentTokens += count;
+    if (currentTokens >= CHUNK_TOKENS) {
+      chunks.push(current.join(" "));
+      current = [];
+      currentTokens = 0;
+    }
+  }
+  if (currentTokens >= MIN_CHUNK_TOKENS) chunks.push(current.join(" "));
+  return chunks;
+}
+var CHUNK_TOKENS, MIN_CHUNK_TOKENS, FEATURE_NAMES;
+var init_features = __esm({
+  "src/lib/detector/features.ts"() {
+    "use strict";
+    init_languages();
+    init_tokenize();
+    init_stats();
+    CHUNK_TOKENS = 400;
+    MIN_CHUNK_TOKENS = 120;
+    FEATURE_NAMES = [
+      "meanWordLength",
+      "mattr",
+      "hapaxRatio",
+      "meanSentenceLength",
+      "sentenceLengthCv",
+      "functionWordRate",
+      "commaRate",
+      "semicolonRate",
+      "colonRate",
+      "dashRate",
+      "quoteRate",
+      "parenthesisRate",
+      "exclamationRate",
+      "questionRate"
+    ];
+  }
+});
+
+// src/lib/detector/distributional.ts
+function rms(values) {
+  if (values.length === 0) return null;
+  let acc = 0;
+  for (const v of values) acc += v * v;
+  return Math.sqrt(acc / values.length);
+}
+function averageMeasurement(chunks, language) {
+  const featureTotals = Object.fromEntries(FEATURE_NAMES.map((f) => [f, 0]));
+  const functionWordTotals = {};
+  let tokens = 0;
+  for (const chunk of chunks) {
+    const m = measureChunk(chunk, language);
+    tokens += m.tokenCount;
+    for (const f of FEATURE_NAMES) featureTotals[f] += m.features[f];
+    for (const [word, rate] of Object.entries(m.functionWordRates)) {
+      functionWordTotals[word] = (functionWordTotals[word] ?? 0) + rate;
+    }
+  }
+  const n = chunks.length || 1;
+  const features = Object.fromEntries(FEATURE_NAMES.map((f) => [f, featureTotals[f] / n]));
+  const functionWords = Object.fromEntries(Object.entries(functionWordTotals).map(([w, t]) => [w, t / n]));
+  return { features, functionWords, tokens };
+}
+function composite(features, baseline6) {
+  const deviations = [];
+  for (const f of FEATURE_NAMES) {
+    const ref = baseline6.features[f];
+    if (!ref || !(ref.sd > 0)) continue;
+    deviations.push({
+      feature: f,
+      observed: features[f],
+      baselineMean: ref.mean,
+      baselineSd: ref.sd,
+      z: (features[f] - ref.mean) / ref.sd
+    });
+  }
+  return { deviations, value: rms(deviations.map((d) => d.z)) };
+}
+function bootstrapInterval(text, language, baseline6, totalTokens, chunkCount) {
+  const sentences = splitSentences(text).map((s) => s.text);
+  if (sentences.length < 8) return null;
+  const sentenceTokens = sentences.map((s) => tokenize(s).length);
+  const targetTokens = Math.min(totalTokens, BOOTSTRAP_TOKEN_CAP);
+  const rand = seededRandom(19799 ^ totalTokens ^ chunkCount);
+  const composites = [];
+  for (let r = 0; r < BOOTSTRAP_REPLICATES; r++) {
+    const picked = [];
+    let tokens = 0;
+    while (tokens < targetTokens) {
+      const i = Math.floor(rand() * sentences.length);
+      picked.push(sentences[i]);
+      tokens += sentenceTokens[i];
+      if (picked.length > sentences.length * 12) break;
+    }
+    const replicateChunks = chunkText(picked.join(" "));
+    if (replicateChunks.length === 0) continue;
+    const { features } = averageMeasurement(replicateChunks, language);
+    const { value } = composite(features, baseline6);
+    if (value !== null) composites.push(value);
+  }
+  if (composites.length < BOOTSTRAP_REPLICATES / 2) return null;
+  composites.sort((a, b) => a - b);
+  return { low: quantile(composites, 0.05), high: quantile(composites, 0.95) };
+}
+function noBaselineResult(language, tokens) {
+  return {
+    status: "no_baseline",
+    language,
+    chunks: 0,
+    tokens,
+    compositeDeviation: null,
+    compositeInterval: null,
+    features: [],
+    functionWordDeviation: null,
+    corpus: null,
+    detail: `No measured reference corpus for "${language}" was supplied to the engine, so no style measurement was made. Nothing is estimated in its place.`
+  };
+}
+function analyzeDistribution(text, language, baseline6) {
+  const chunks = chunkText(text);
+  const tokenCount = tokenize(text).length;
+  if (chunks.length === 0) {
+    return {
+      status: "insufficient_data",
+      language,
+      chunks: 0,
+      tokens: tokenCount,
+      compositeDeviation: null,
+      compositeInterval: null,
+      features: [],
+      functionWordDeviation: null,
+      corpus: baseline6.corpus,
+      detail: `The document holds ${tokenCount} words; at least ${MIN_CHUNK_TOKENS} are needed for a style measurement. Nothing is reported rather than reporting an unreliable figure.`
+    };
+  }
+  const measured = averageMeasurement(chunks, language);
+  const { deviations, value } = composite(measured.features, baseline6);
+  const functionWordZs = [];
+  for (const [word, rate] of Object.entries(measured.functionWords)) {
+    const ref = baseline6.functionWords[word];
+    if (!ref || !(ref.sd > 0)) continue;
+    functionWordZs.push((rate - ref.mean) / ref.sd);
+  }
+  return {
+    status: "computed",
+    language,
+    chunks: chunks.length,
+    tokens: measured.tokens,
+    compositeDeviation: value,
+    compositeInterval: bootstrapInterval(text, language, baseline6, measured.tokens, chunks.length),
+    features: deviations.sort((a, b) => Math.abs(b.z) - Math.abs(a.z)),
+    functionWordDeviation: rms(functionWordZs),
+    corpus: baseline6.corpus
+  };
+}
+var BOOTSTRAP_REPLICATES, BOOTSTRAP_TOKEN_CAP;
+var init_distributional = __esm({
+  "src/lib/detector/distributional.ts"() {
+    "use strict";
+    init_features();
+    init_stats();
+    init_tokenize();
+    BOOTSTRAP_REPLICATES = 200;
+    BOOTSTRAP_TOKEN_CAP = 2e4;
+  }
+});
+
+// src/lib/detector/crypto.ts
+function sha256(input) {
+  const h = new Uint32Array([
+    1779033703,
+    3144134277,
+    1013904242,
+    2773480762,
+    1359893119,
+    2600822924,
+    528734635,
+    1541459225
+  ]);
+  const bitLen = input.length * 8;
+  const padded = new Uint8Array(input.length + 9 + 63 >> 6 << 6);
+  padded.set(input);
+  padded[input.length] = 128;
+  const hi = Math.floor(bitLen / 4294967296);
+  const lo = bitLen >>> 0;
+  const dv = new DataView(padded.buffer);
+  dv.setUint32(padded.length - 8, hi, false);
+  dv.setUint32(padded.length - 4, lo, false);
+  const w = new Uint32Array(64);
+  for (let off = 0; off < padded.length; off += 64) {
+    for (let i = 0; i < 16; i++) w[i] = dv.getUint32(off + i * 4, false);
+    for (let i = 16; i < 64; i++) {
+      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ w[i - 15] >>> 3;
+      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ w[i - 2] >>> 10;
+      w[i] = w[i - 16] + s0 + w[i - 7] + s1 >>> 0;
+    }
+    let [a, b, c, d, e, f, g, hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      const ch = e & f ^ ~e & g;
+      const t1 = hh + S1 + ch + K[i] + w[i] >>> 0;
+      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      const maj = a & b ^ a & c ^ b & c;
+      const t2 = S0 + maj >>> 0;
+      hh = g;
+      g = f;
+      f = e;
+      e = d + t1 >>> 0;
+      d = c;
+      c = b;
+      b = a;
+      a = t1 + t2 >>> 0;
+    }
+    h[0] = h[0] + a >>> 0;
+    h[1] = h[1] + b >>> 0;
+    h[2] = h[2] + c >>> 0;
+    h[3] = h[3] + d >>> 0;
+    h[4] = h[4] + e >>> 0;
+    h[5] = h[5] + f >>> 0;
+    h[6] = h[6] + g >>> 0;
+    h[7] = h[7] + hh >>> 0;
+  }
+  const out = new Uint8Array(32);
+  const odv = new DataView(out.buffer);
+  for (let i = 0; i < 8; i++) odv.setUint32(i * 4, h[i], false);
+  return out;
+}
+function hmacSha256(key, message) {
+  const BLOCK = 64;
+  let k = key;
+  if (k.length > BLOCK) k = sha256(k);
+  const padKey = new Uint8Array(BLOCK);
+  padKey.set(k);
+  const inner = new Uint8Array(BLOCK + message.length);
+  const outer = new Uint8Array(BLOCK + 32);
+  for (let i = 0; i < BLOCK; i++) {
+    inner[i] = padKey[i] ^ 54;
+    outer[i] = padKey[i] ^ 92;
+  }
+  inner.set(message, BLOCK);
+  outer.set(sha256(inner), BLOCK);
+  return sha256(outer);
+}
+function toHex(bytes) {
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
+  return out;
+}
+function hmacUnitInterval(key, message) {
+  const tag = hmacSha256(key, utf8(message));
+  const n = (tag[0] << 24 | tag[1] << 16 | tag[2] << 8 | tag[3]) >>> 0;
+  return n / 4294967296;
+}
+var K, rotr, encoder, utf8, sha256Hex;
+var init_crypto = __esm({
+  "src/lib/detector/crypto.ts"() {
+    "use strict";
+    K = new Uint32Array([
+      1116352408,
+      1899447441,
+      3049323471,
+      3921009573,
+      961987163,
+      1508970993,
+      2453635748,
+      2870763221,
+      3624381080,
+      310598401,
+      607225278,
+      1426881987,
+      1925078388,
+      2162078206,
+      2614888103,
+      3248222580,
+      3835390401,
+      4022224774,
+      264347078,
+      604807628,
+      770255983,
+      1249150122,
+      1555081692,
+      1996064986,
+      2554220882,
+      2821834349,
+      2952996808,
+      3210313671,
+      3336571891,
+      3584528711,
+      113926993,
+      338241895,
+      666307205,
+      773529912,
+      1294757372,
+      1396182291,
+      1695183700,
+      1986661051,
+      2177026350,
+      2456956037,
+      2730485921,
+      2820302411,
+      3259730800,
+      3345764771,
+      3516065817,
+      3600352804,
+      4094571909,
+      275423344,
+      430227734,
+      506948616,
+      659060556,
+      883997877,
+      958139571,
+      1322822218,
+      1537002063,
+      1747873779,
+      1955562222,
+      2024104815,
+      2227730452,
+      2361852424,
+      2428436474,
+      2756734187,
+      3204031479,
+      3329325298
+    ]);
+    rotr = (x, n) => x >>> n | x << 32 - n;
+    encoder = new TextEncoder();
+    utf8 = (s) => encoder.encode(s);
+    sha256Hex = (text) => toHex(sha256(utf8(text)));
+  }
+});
+
+// src/lib/env-names.ts
+function readAliasedEnv(env, name) {
+  const canonical = present(env[name.canonical]);
+  const legacy = present(env[name.legacy]);
+  if (canonical !== void 0 && legacy !== void 0 && canonical !== legacy) {
+    throw new Error(
+      `${name.canonical} and ${name.legacy} are both set to different values. ${name.legacy} is the pre-rename name of the same setting; remove it, or set the two to the same value.`
+    );
+  }
+  if (canonical !== void 0) {
+    return { value: canonical, nameUsed: name.canonical, legacy: false };
+  }
+  if (legacy !== void 0) {
+    return { value: legacy, nameUsed: name.legacy, legacy: true };
+  }
+  return { value: void 0, nameUsed: null, legacy: false };
+}
+function describeLegacyEnvUse(name) {
+  return `${name.legacy} is the pre-rename name of ${name.canonical} and still works. Rename it when convenient.`;
+}
+var ENV_API_KEY, ENV_API_URL, ENV_MODEL_CACHE, ENV_REWRITE_MODEL, ENV_REWRITE_STRICT, present;
+var init_env_names = __esm({
+  "src/lib/env-names.ts"() {
+    "use strict";
+    ENV_API_KEY = {
+      canonical: "WATERMARKREMOVERPRO_API_KEY",
+      legacy: "MARKWITNESS_API_KEY"
+    };
+    ENV_API_URL = {
+      canonical: "WATERMARKREMOVERPRO_API_URL",
+      legacy: "MARKWITNESS_API_URL"
+    };
+    ENV_MODEL_CACHE = "WATERMARKREMOVERPRO_MODEL_CACHE";
+    ENV_REWRITE_MODEL = "WATERMARKREMOVERPRO_REWRITE_MODEL";
+    ENV_REWRITE_STRICT = "WATERMARKREMOVERPRO_REWRITE_STRICT";
+    present = (raw) => {
+      if (typeof raw !== "string") return void 0;
+      return raw.trim().length > 0 ? raw : void 0;
+    };
+  }
+});
+
+// src/lib/detector/keys.ts
+var OPEN_REFERENCE_KEY, describeKey;
+var init_keys = __esm({
+  "src/lib/detector/keys.ts"() {
+    "use strict";
+    init_crypto();
+    init_env_names();
+    OPEN_REFERENCE_KEY = {
+      id: "openmark-ref-1",
+      label: "WatermarkRemoverPro open reference scheme",
+      scheme: "greenlist-bigram-v1",
+      gamma: 0.5,
+      /*
+          NOT renamed with the product, and it must never be.
+      
+          This string is hashed into the pseudorandom function that decides the green
+          list, so it is an INPUT to every statistic the detector reports rather than
+          a label on one. Change it and the key becomes a different key: text marked
+          under the published open reference scheme stops being detected, every
+          evidence report ever issued under it becomes unreproducible, and
+          simulate.ts starts generating text this build cannot see. The value is a
+          cryptographic domain separator that happens to spell the old brand.
+          tests/rename.test.ts pins it so a future rename sweep cannot take it.
+        */
+      secret: utf8("markwitness/open-reference-key/v1"),
+      provenance: "Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
+      vendorPublished: false
+    };
+    describeKey = (k) => ({
+      id: k.id,
+      label: k.label,
+      gamma: k.gamma,
+      provenance: k.provenance,
+      vendorPublished: k.vendorPublished
+    });
+  }
+});
+
+// src/lib/detector/watermark.ts
+function isGreen(key, previous, current) {
+  return hmacUnitInterval(key.secret, `${key.scheme}|${previous}|${current}`) < key.gamma;
+}
+function distinctBigrams(tokens) {
+  const seen = /* @__PURE__ */ new Set();
+  const out = [];
+  for (let i = 1; i < tokens.length; i++) {
+    const prev = tokens[i - 1].norm;
+    const cur = tokens[i].norm;
+    if (prev.length === 0 || cur.length === 0) continue;
+    const id = `${prev}\0${cur}`;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push([prev, cur]);
+  }
+  return out;
+}
+function testWatermark(tokens, key) {
+  const bigrams = distinctBigrams(tokens);
+  const base = {
+    keyId: key.id,
+    keyLabel: key.label,
+    vendorPublished: key.vendorPublished,
+    expectedGreenRate: key.gamma
+  };
+  if (bigrams.length < MIN_TRIALS) {
+    return {
+      ...base,
+      status: "insufficient_data",
+      trials: bigrams.length,
+      greenCount: null,
+      greenRate: null,
+      greenRateInterval: null,
+      z: null,
+      pValue: null,
+      detail: `Only ${bigrams.length} distinct word pairs available; ${MIN_TRIALS} are needed before a z score means anything. No score is reported for this document.`
+    };
+  }
+  let green = 0;
+  for (const [prev, cur] of bigrams) if (isGreen(key, prev, cur)) green++;
+  const z = binomialZ(green, bigrams.length, key.gamma);
+  return {
+    ...base,
+    status: "computed",
+    trials: bigrams.length,
+    greenCount: green,
+    greenRate: green / bigrams.length,
+    greenRateInterval: wilsonInterval(green, bigrams.length),
+    z,
+    pValue: z === null ? null : upperTailP(z)
+  };
+}
+function testWatermarkPassage(tokens, key) {
+  const bigrams = distinctBigrams(tokens);
+  let green = 0;
+  for (const [prev, cur] of bigrams) if (isGreen(key, prev, cur)) green++;
+  const z = binomialZ(green, bigrams.length, key.gamma);
+  return { trials: bigrams.length, green, z, p: z === null ? null : upperTailP(z) };
+}
+var MIN_TRIALS;
+var init_watermark = __esm({
+  "src/lib/detector/watermark.ts"() {
+    "use strict";
+    init_crypto();
+    init_stats();
+    MIN_TRIALS = 40;
   }
 });
 
@@ -9956,6 +11856,869 @@ var init_baselines = __esm({
   }
 });
 
+// src/lib/detector/index.ts
+function statedLimits(keys) {
+  const vendorKeys = keys.filter((k) => k.vendorPublished);
+  return [
+    "A detected mark is not proof of authorship. A mark can be present in text a person wrote with assistance, quoted, translated, or edited.",
+    "An absent mark is not proof of human authorship. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them.",
+    vendorKeys.length === 0 ? "This deployment holds no detection key published by a model vendor. It tested only the keys listed in this report, so it cannot make any statement about marks applied by a vendor whose key is not public." : `Vendor-published keys held by this deployment: ${vendorKeys.map((k) => k.label).join(", ")}.`,
+    "The watermark test operates on word pairs, not on a model\u2019s own subword vocabulary. A vendor\u2019s own detector has access to that vocabulary and can therefore reach a different conclusion on the same document.",
+    "The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced."
+  ];
+}
+function analyzeDocument(text, options) {
+  const analyzedAt = (/* @__PURE__ */ new Date()).toISOString();
+  const documentHash = sha256Hex(text);
+  const tokens = tokenize(text);
+  const limits = statedLimits(options.keys);
+  const keysTested = options.keys.map(describeKey);
+  const empty = {
+    engineVersion: ENGINE_VERSION,
+    status: "empty_document",
+    analyzedAt,
+    documentHash,
+    words: tokens.length,
+    characters: text.length,
+    language: { code: null, name: null, determinedBy: "measurement", scores: {}, margin: 0 },
+    watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
+    distribution: null,
+    aiLikelihood: null,
+    passages: [],
+    passageCorrection: null,
+    limits
+  };
+  if (tokens.length === 0) {
+    return { ...empty, detail: "No words were found in the submitted text." };
+  }
+  const identification = identifyLanguage(tokens);
+  let language = null;
+  let determinedBy = "measurement";
+  if (options.language) {
+    if (!isSupportedLanguage(options.language)) {
+      return {
+        ...empty,
+        status: "unsupported_language",
+        language: {
+          code: null,
+          name: null,
+          determinedBy: "caller",
+          scores: identification.scores,
+          margin: identification.margin
+        },
+        detail: `Language "${options.language}" has no measured baseline in this build. Supported: ${SUPPORTED_LANGUAGES.join(", ")}. No analysis is reported rather than analysing against the wrong reference.`
+      };
+    }
+    language = options.language;
+    determinedBy = "caller";
+  } else {
+    language = identification.language;
+  }
+  if (language === null) {
+    return {
+      ...empty,
+      status: "language_undetermined",
+      language: { code: null, name: null, determinedBy, scores: identification.scores, margin: identification.margin },
+      detail: "The language could not be determined confidently from the text, and analysing against the wrong language baseline would produce a real-looking number that means nothing. Choose the language explicitly and run the check again."
+    };
+  }
+  const watermarkResults = options.keys.map((key) => testWatermark(tokens, key));
+  const anyDetected = watermarkResults.some(
+    (r) => r.status === "computed" && r.pValue !== null && r.pValue < ALPHA
+  );
+  const baseline6 = options.baselines?.[language] ?? null;
+  const distribution = baseline6 ? analyzeDistribution(text, language, baseline6) : noBaselineResult(language, tokens.length);
+  const aiLikelihood = analyzeAiLikelihood(text, language);
+  const granularity = options.granularity ?? "sentence";
+  const rawPassages = granularity === "paragraph" ? splitParagraphs(text) : splitSentences(text);
+  const fdr = options.fdr ?? 0.05;
+  const passages = rawPassages.map((p) => {
+    const passageTokens = tokenize(p.text);
+    let bestZ = null;
+    let bestP = null;
+    let bestKey = null;
+    for (const key of options.keys) {
+      const r = testWatermarkPassage(passageTokens, key);
+      if (r.z === null) continue;
+      if (bestZ === null || r.z > bestZ) {
+        bestZ = r.z;
+        bestP = r.p;
+        bestKey = key.id;
+      }
+    }
+    let styleDeviation = null;
+    if (baseline6 && passageTokens.length >= 40) {
+      const d = analyzeDistribution(p.text, language, baseline6);
+      styleDeviation = d.compositeDeviation;
+    }
+    return {
+      index: p.index,
+      text: p.text,
+      start: p.start,
+      end: p.end,
+      words: passageTokens.length,
+      watermarkZ: bestZ,
+      watermarkP: bestP,
+      watermarkKeyId: bestKey,
+      survivesCorrection: false,
+      styleDeviation
+    };
+  });
+  const testable = passages.filter((p) => p.watermarkP !== null);
+  let passageCorrection = null;
+  if (testable.length > 0) {
+    const survivors = benjaminiHochberg(
+      testable.map((p) => p.watermarkP),
+      fdr
+    );
+    for (const i of survivors) {
+      const target = passages.find((p) => p.index === testable[i].index);
+      if (target) target.survivesCorrection = true;
+    }
+    passageCorrection = {
+      method: "benjamini-hochberg",
+      fdr,
+      tested: testable.length,
+      survived: survivors.length
+    };
+  }
+  return {
+    engineVersion: ENGINE_VERSION,
+    status: "ok",
+    analyzedAt,
+    documentHash,
+    words: tokens.length,
+    characters: text.length,
+    language: {
+      code: language,
+      name: LANGUAGE_NAMES[language],
+      determinedBy,
+      scores: identification.scores,
+      margin: identification.margin
+    },
+    watermark: {
+      keysTested,
+      results: watermarkResults,
+      anyDetected,
+      coverageNotice: coverageNotice(options.keys)
+    },
+    distribution,
+    aiLikelihood,
+    passages,
+    passageCorrection,
+    limits
+  };
+}
+function coverageNotice(keys) {
+  const names = keys.map((k) => k.label).join(", ");
+  const vendor = keys.filter((k) => k.vendorPublished);
+  if (vendor.length === 0) {
+    return `Tested against ${keys.length} key${keys.length === 1 ? "" : "s"} (${names}). None of these is a model vendor's published detection key, because no vendor publishes one. A result of "no mark detected" means no mark was found under these keys, and it is not a statement about marks applied with a key nobody outside the vendor holds.`;
+  }
+  return `Tested against ${keys.length} key${keys.length === 1 ? "" : "s"} (${names}), of which ${vendor.length} ${vendor.length === 1 ? "is" : "are"} vendor-published. A result of "no mark detected" applies only to the keys listed.`;
+}
+function resolveLanguage(text, explicit) {
+  if (explicit) {
+    return isSupportedLanguage(explicit) ? { language: explicit, reason: "caller" } : { language: null, reason: "unsupported" };
+  }
+  const id = identifyLanguage(tokenize(text));
+  return id.language ? { language: id.language, reason: "measured" } : { language: null, reason: "ambiguous" };
+}
+async function checkDocument(text, options) {
+  const { language } = resolveLanguage(text, options.language);
+  let baselines2 = {};
+  if (language) {
+    const { loadBaseline: loadBaseline2 } = await Promise.resolve().then(() => (init_baselines(), baselines_exports));
+    try {
+      baselines2 = { [language]: await loadBaseline2(language) };
+    } catch {
+      baselines2 = {};
+    }
+  }
+  return analyzeDocument(text, { ...options, baselines: baselines2 });
+}
+var ENGINE_VERSION, ALPHA;
+var init_detector = __esm({
+  "src/lib/detector/index.ts"() {
+    "use strict";
+    init_ai_likelihood();
+    init_distributional();
+    init_crypto();
+    init_languages();
+    init_keys();
+    init_stats();
+    init_tokenize();
+    init_watermark();
+    init_ai_likelihood();
+    ENGINE_VERSION = "1.0.0";
+    ALPHA = 0.01;
+  }
+});
+
+// src/lib/calibrate/dictionary.ts
+async function loadDictionary(language) {
+  if (dictionaryCache.has(language)) {
+    return dictionaryCache.get(language);
+  }
+  if (language !== "en") {
+    throw new Error(`Dictionary not yet available for language: ${language}`);
+  }
+  const index = /* @__PURE__ */ new Map();
+  let id = 0;
+  for (const [canonical, variants] of Object.entries(EN_SYNONYMS)) {
+    index.set(canonical, {
+      id: id++,
+      canonical,
+      variants: variants.map((variant) => ({
+        id: id++,
+        term: variant,
+        confidence: 0.8
+        // Default confidence for built-in synonyms
+      })),
+      partOfSpeech: inferPartOfSpeech(canonical)
+    });
+  }
+  const dictionary = {
+    language,
+    version: "1.0.0",
+    builtAt: (/* @__PURE__ */ new Date()).toISOString(),
+    index,
+    getVariants(word) {
+      const group = index.get(word.toLowerCase());
+      return group ? group.variants.map((v) => v.term) : null;
+    }
+  };
+  dictionaryCache.set(language, dictionary);
+  return dictionary;
+}
+function inferPartOfSpeech(word) {
+  const articles = ["a", "an", "the"];
+  const conjunctions = ["and", "or", "but"];
+  const prepositions = ["in", "on", "of", "to", "for", "with", "by", "from", "at"];
+  const verbs = ["make", "get", "go", "know", "think", "see", "come", "take"];
+  if (articles.includes(word)) return "article";
+  if (conjunctions.includes(word)) return "conjunction";
+  if (prepositions.includes(word)) return "preposition";
+  if (verbs.includes(word)) return "verb";
+  return void 0;
+}
+var dictionaryCache, EN_SYNONYMS;
+var init_dictionary = __esm({
+  "src/lib/calibrate/dictionary.ts"() {
+    "use strict";
+    dictionaryCache = /* @__PURE__ */ new Map();
+    EN_SYNONYMS = {
+      // Deliberately excluded, second pass: the function words. Articles,
+      // conjunctions and prepositions were listed here with "safe variants" and
+      // none of them were safe, for the same reason the auxiliaries below are not.
+      // A flat word-list substituter cannot see the slot it is writing into:
+      //
+      //   "to" -> "toward"          breaks every infinitive ("to run" -> "toward run")
+      //   "of" -> "belonging to"    "the set of capabilities" -> "the set belonging to capabilities"
+      //   "by" -> "near"            "written by Max" -> "written near Max", which is a different claim
+      //   "the" -> "that"           swaps a definite article for a demonstrative
+      //   "a" -> "some"             "a reliable set" -> "some reliable set"
+      //   "or" -> "either"          "A or B" -> "A either B"
+      //
+      // These were producing visibly worse English on real documents, which is the
+      // opposite of what someone reaches for this tool to do. Perturbing function
+      // words is also the least useful way to move a watermark statistic: the
+      // detector scores distinct word bigrams, and the AI-tell layer does the work
+      // a reader actually notices. Restoring any of these needs a
+      // part-of-speech-aware substituter, not a longer list.
+      //
+      // Deliberately excluded: is/was/are/be/been/being, have/has/had,
+      // do/does/did, and the modal verbs (can/could/will/would/should/
+      // may/might). These are auxiliaries: they combine with a following verb
+      // form (a participle, a bare infinitive) in ways their dictionary
+      // "synonyms" don't support, since this substituter has no grammar model
+      // and swaps a token for a fixed replacement string regardless of what
+      // surrounds it. Substituting "has" -> "possesses" inside "has been made"
+      // produces "possesses existed made" once "been" is also swapped for
+      // "existed": a real, reported bug, not a hypothetical one. A future
+      // part-of-speech- or context-aware substituter could safely reintroduce
+      // these; a flat word-list substituter cannot.
+      // Common content words.
+      //
+      // Two rules govern what may be listed here, both learned from output this
+      // engine actually produced:
+      //
+      // 1. Every variant must be a near-synonym at the SAME OR LOWER register.
+      //    "use" -> "utilize" was in this table, which had the tool installing one
+      //    of the best-known marks of machine and bureaucratic prose while
+      //    claiming to remove them. Anything that raises register is working
+      //    against the product.
+      // 2. Every variant must be grammatical in the same slot, with no change to
+      //    what follows. "become" -> "turn into" gave "become clear" -> "turn into
+      //    clear"; "let" -> "enable" gave "let us know" -> "enable us know".
+      //    Verbs whose complement pattern differs from the original are out.
+      //
+      // Words with no variant that clears both rules were dropped rather than
+      // given a mediocre one: a smaller table that never damages a sentence beats
+      // a longer one that sometimes does.
+      make: ["create", "produce"],
+      get: ["obtain", "receive"],
+      go: ["travel", "move"],
+      know: ["understand", "realize"],
+      think: ["believe", "reckon"],
+      see: ["observe", "notice"],
+      come: ["arrive", "appear"],
+      take: ["grab", "seize"],
+      give: ["offer", "hand over"],
+      find: ["discover", "locate"],
+      tell: ["inform", "notify"],
+      ask: ["question", "query"],
+      call: ["name", "summon"],
+      try: ["attempt"],
+      need: ["require"],
+      feel: ["sense"],
+      leave: ["depart", "exit"],
+      put: ["place", "set"],
+      keep: ["retain", "hold"],
+      begin: ["start"],
+      seem: ["appear"],
+      help: ["assist", "aid"],
+      talk: ["speak"],
+      start: ["begin"],
+      show: ["display", "reveal"],
+      write: ["compose", "draft"],
+      look: ["gaze", "peer"],
+      want: ["wish", "desire"],
+      move: ["shift", "relocate"]
+    };
+  }
+});
+
+// src/lib/calibrate/substituter.ts
+function performSubstitution(analysis, dictionary, config2 = {}) {
+  const substitutions = [];
+  const confidenceThreshold = config2.confidenceThreshold ?? 0.7;
+  const maxRepeats = config2.maxRepeats ?? 3;
+  const substitutionCounts = /* @__PURE__ */ new Map();
+  for (const [tokenIndex, token] of analysis.tokens.entries()) {
+    const norm = token.norm;
+    if (!analysis.signatureTokens.has(norm)) {
+      continue;
+    }
+    const positions = analysis.repetitionMap.get(norm) ?? [];
+    const isRepetitionViolation = positions.some(
+      (pos) => pos > tokenIndex && pos < tokenIndex + maxRepeats && pos !== tokenIndex
+    );
+    if (isRepetitionViolation) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1,
+        reason: "skipped_repetition"
+      });
+      continue;
+    }
+    const variants = dictionary.getVariants(norm);
+    if (!variants || variants.length === 0) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1,
+        reason: "not_in_dictionary"
+      });
+      continue;
+    }
+    const candidates = variants.map((variant) => ({
+      variant,
+      usageCount: substitutionCounts.get(variant) ?? 0
+    })).sort((a, b) => {
+      if (a.usageCount !== b.usageCount) {
+        return a.usageCount - b.usageCount;
+      }
+      return a.variant.length - b.variant.length;
+    });
+    const selected = candidates[0]?.variant;
+    if (!selected) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1,
+        reason: "below_threshold"
+      });
+      continue;
+    }
+    substitutionCounts.set(selected, (substitutionCounts.get(selected) ?? 0) + 1);
+    const confidence = Math.max(0.1, confidenceThreshold);
+    substitutions.push({
+      index: tokenIndex,
+      original: token.raw,
+      replacement: preserveCase(selected, token.raw),
+      confidence,
+      reason: "synonym",
+      alternatives: variants.slice(0, 3)
+      // Show up to 3 alternatives
+    });
+  }
+  return substitutions;
+}
+function applySubstitutions(text, tokens, substitutions) {
+  const substitutionMap = new Map(
+    substitutions.map((s) => [s.index, s.replacement])
+  );
+  let result = "";
+  let lastEnd = 0;
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    const replacement = substitutionMap.get(i);
+    result += text.slice(lastEnd, token.start);
+    if (replacement) {
+      result += replacement;
+    } else {
+      result += text.slice(token.start, token.end);
+    }
+    lastEnd = token.end;
+  }
+  result += text.slice(lastEnd);
+  return result;
+}
+function preserveCase(replacement, original) {
+  if (original === original.toUpperCase() && original.length > 1) {
+    return replacement.toUpperCase();
+  }
+  if (original[0] === original[0].toUpperCase() && /[A-Z]/.test(original[0])) {
+    return replacement.charAt(0).toUpperCase() + replacement.slice(1).toLowerCase();
+  }
+  return replacement.toLowerCase();
+}
+var init_substituter = __esm({
+  "src/lib/calibrate/substituter.ts"() {
+    "use strict";
+  }
+});
+
+// src/lib/rewrite/backend/rule-based.ts
+function fnv1a(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+async function generateCandidate(passage, language, seed, strength, library) {
+  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library);
+  let dictionary;
+  try {
+    dictionary = await loadDictionary(language);
+  } catch {
+    return tellSwapped;
+  }
+  const tokens = tokenize(tellSwapped);
+  const substitutionRate = strength === "preserve" ? 0.15 : strength === "balanced" ? 0.3 : strength === "aggressive" ? 0.45 : 0.6;
+  let result = "";
+  let lastEnd = 0;
+  for (const token of tokens) {
+    const variants = dictionary.getVariants(token.norm);
+    result += tellSwapped.slice(lastEnd, token.start);
+    if (variants && variants.length > 0) {
+      const gate = fnv1a(`${token.norm}:${token.start}:${seed}`) % 100;
+      if (gate < substitutionRate * 100) {
+        const variantIndex = fnv1a(`${token.norm}:${seed}:pick`) % variants.length;
+        result += preserveCase(variants[variantIndex], token.raw);
+      } else {
+        result += tellSwapped.slice(token.start, token.end);
+      }
+    } else {
+      result += tellSwapped.slice(token.start, token.end);
+    }
+    lastEnd = token.end;
+  }
+  result += tellSwapped.slice(lastEnd);
+  return result;
+}
+function hashedBagOfWordsEmbed(text) {
+  const vec = new Array(EMBED_DIMS).fill(0);
+  const tokens = tokenize(text.toLowerCase());
+  if (tokens.length === 0) return vec;
+  for (const token of tokens) {
+    if (token.norm.length === 0) continue;
+    const bucket = fnv1a(token.norm) % EMBED_DIMS;
+    vec[bucket] += 1;
+  }
+  const norm = Math.sqrt(vec.reduce((sum, v) => sum + v * v, 0));
+  return norm === 0 ? vec : vec.map((v) => v / norm);
+}
+function createRuleBasedBackend(language = "en", library = "core") {
+  return {
+    id: "rule-based",
+    modelTier: "rule-based",
+    async generate(passage, options) {
+      const count = Math.max(1, options.count);
+      const candidates = await Promise.all(
+        Array.from(
+          { length: count },
+          (_, i) => generateCandidate(passage, options.language ?? language, i, options.strength, library)
+        )
+      );
+      return Array.from(new Set(candidates));
+    },
+    async embed(text) {
+      return hashedBagOfWordsEmbed(text);
+    }
+  };
+}
+var EMBED_DIMS;
+var init_rule_based = __esm({
+  "src/lib/rewrite/backend/rule-based.ts"() {
+    "use strict";
+    init_tokenize();
+    init_dictionary();
+    init_substituter();
+    init_ai_tells();
+    EMBED_DIMS = 256;
+  }
+});
+
+// src/lib/rewrite/targeting.ts
+function targetPassages(passages, strength, tellPressure) {
+  const pressure = (p) => tellPressure?.get(p.index) ?? 0;
+  switch (strength) {
+    case "preserve":
+      return passages.filter((p) => p.survivesCorrection);
+    case "balanced":
+      return passages.filter(
+        (p) => p.survivesCorrection || p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z || p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION || pressure(p) >= NOTABLE_TELL_PRESSURE
+      );
+    case "aggressive":
+      return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null || pressure(p) > 0);
+    case "regenerate":
+      return passages;
+  }
+}
+function minSimilarity(strength) {
+  switch (strength) {
+    case "preserve":
+      return 0.92;
+    case "balanced":
+      return 0.85;
+    case "aggressive":
+      return 0.78;
+    case "regenerate":
+      return 0.65;
+  }
+}
+function candidateCount(tier) {
+  return tier === "pro" ? 4 : 2;
+}
+var NOTABLE_Z, NOTABLE_STYLE_DEVIATION, NOTABLE_TELL_PRESSURE, MAX_ROUNDS;
+var init_targeting = __esm({
+  "src/lib/rewrite/targeting.ts"() {
+    "use strict";
+    NOTABLE_Z = 2.5;
+    NOTABLE_STYLE_DEVIATION = 2;
+    NOTABLE_TELL_PRESSURE = 2;
+    MAX_ROUNDS = 5;
+  }
+});
+
+// src/lib/rewrite/backend/types.ts
+function cosineSimilarity(a, b) {
+  if (a.length !== b.length || a.length === 0) return 0;
+  let dot = 0;
+  let magA = 0;
+  let magB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    magA += a[i] * a[i];
+    magB += b[i] * b[i];
+  }
+  if (magA === 0 || magB === 0) return 0;
+  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+}
+var init_types = __esm({
+  "src/lib/rewrite/backend/types.ts"() {
+    "use strict";
+  }
+});
+
+// src/lib/rewrite/fact-lock.ts
+function extractFacts(text) {
+  const numbers = text.match(NUMBER_RE) ?? [];
+  const lower = text.toLowerCase();
+  let negationCount = 0;
+  for (const cue of NEGATION_CUES) {
+    negationCount += countOccurrences(lower, cue);
+  }
+  const properNouns = /* @__PURE__ */ new Set();
+  const sentenceStartWords = /* @__PURE__ */ new Set();
+  SENTENCE_START_RE.lastIndex = 0;
+  let startMatch;
+  while ((startMatch = SENTENCE_START_RE.exec(text)) !== null) {
+    sentenceStartWords.add(startMatch[2]);
+  }
+  PROPER_NOUN_RE.lastIndex = 0;
+  let match;
+  while ((match = PROPER_NOUN_RE.exec(text)) !== null) {
+    properNouns.add(match[0]);
+  }
+  for (const word of sentenceStartWords) {
+    const occurrences = countOccurrences(text, word);
+    const capitalOccurrences = (text.match(new RegExp(`\\b${escapeRegExp2(word)}\\b`, "g")) ?? []).length;
+    if (occurrences === capitalOccurrences && occurrences <= 1) properNouns.delete(word);
+  }
+  return { numbers, negationCount, properNouns };
+}
+function verifyFacts(original, candidateText) {
+  const candidate = extractFacts(candidateText);
+  const missingNumbers = original.numbers.filter((n) => !candidate.numbers.includes(n));
+  if (missingNumbers.length > 0) {
+    return { passed: false, detail: `Number(s) from the original are missing or changed: ${missingNumbers.join(", ")}.` };
+  }
+  if (original.negationCount !== candidate.negationCount) {
+    return {
+      passed: false,
+      detail: `Negation count changed (${original.negationCount} \u2192 ${candidate.negationCount}); a "not" may have been added or dropped, which can invert meaning.`
+    };
+  }
+  const missingNouns = [...original.properNouns].filter((n) => !candidateText.includes(n));
+  if (missingNouns.length > 0) {
+    return { passed: false, detail: `Named term(s) from the original are missing: ${missingNouns.join(", ")}.` };
+  }
+  return { passed: true };
+}
+function countOccurrences(haystack, needle) {
+  if (needle.length === 0) return 0;
+  let count = 0;
+  let pos = haystack.indexOf(needle);
+  while (pos !== -1) {
+    count++;
+    pos = haystack.indexOf(needle, pos + needle.length);
+  }
+  return count;
+}
+function escapeRegExp2(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+var NUMBER_RE, NEGATION_CUES, PROPER_NOUN_RE, SENTENCE_START_RE;
+var init_fact_lock = __esm({
+  "src/lib/rewrite/fact-lock.ts"() {
+    "use strict";
+    NUMBER_RE = /-?\d[\d,]*(\.\d+)?%?/g;
+    NEGATION_CUES = [
+      "not",
+      "n't",
+      "never",
+      "no ",
+      "none",
+      "nothing",
+      "nobody",
+      "neither",
+      "nor",
+      "without",
+      "cannot"
+    ];
+    PROPER_NOUN_RE = /\b[A-Z][a-zA-Z]{2,}\b/g;
+    SENTENCE_START_RE = /(^|[.!?]\s+)([A-Z][a-zA-Z]{2,})/g;
+  }
+});
+
+// src/lib/rewrite/scoring.ts
+async function scoreCandidate(originalText, originalFacts, originalTellPressure, candidateText, backend, options) {
+  const [origEmbed, candEmbed] = await Promise.all([backend.embed(originalText), backend.embed(candidateText)]);
+  const semanticScore = cosineSimilarity(origEmbed, candEmbed);
+  const factLock = verifyFacts(originalFacts, candidateText);
+  const bestZ = bestWatermarkZ(candidateText, options.keys);
+  const tellPressure = measureStyleTells(candidateText).pressure;
+  const gated = !factLock.passed || semanticScore < options.minSimilarity;
+  const paretoScore = gated ? -Infinity : semanticScore - normalizedZPenalty(bestZ) + tellReductionBonus(originalTellPressure, tellPressure);
+  return {
+    text: candidateText,
+    semanticScore,
+    factLockPassed: factLock.passed,
+    factLockDetail: factLock.detail,
+    evidenceZ: bestZ,
+    tellPressure,
+    paretoScore
+  };
+}
+async function scoreCandidates(originalText, candidateTexts, backend, options) {
+  const originalFacts = extractFacts(originalText);
+  const originalTellPressure = measureStyleTells(originalText).pressure;
+  return Promise.all(
+    candidateTexts.map(
+      (c) => scoreCandidate(originalText, originalFacts, originalTellPressure, c, backend, options)
+    )
+  );
+}
+function pickBest(candidates) {
+  const survivors = candidates.filter((c) => c.paretoScore > -Infinity);
+  if (survivors.length === 0) return null;
+  return survivors.sort((a, b) => b.paretoScore - a.paretoScore)[0];
+}
+function bestWatermarkZ(text, keys) {
+  if (keys.length === 0) return null;
+  const tokens = tokenize(text);
+  let best = null;
+  for (const key of keys) {
+    const { z } = testWatermarkPassage(tokens, key);
+    if (z === null) continue;
+    if (best === null || z < best) best = z;
+  }
+  return best;
+}
+function normalizedZPenalty(z) {
+  if (z === null) return 0;
+  return Math.max(0, z) * 0.05;
+}
+function tellReductionBonus(originalPressure, candidatePressure) {
+  const removed = originalPressure - candidatePressure;
+  return Math.max(-0.12, Math.min(0.12, removed * 0.04));
+}
+var init_scoring = __esm({
+  "src/lib/rewrite/scoring.ts"() {
+    "use strict";
+    init_tokenize();
+    init_watermark();
+    init_ai_tells();
+    init_types();
+    init_fact_lock();
+  }
+});
+
+// src/lib/rewrite/orchestrator.ts
+function replacePassages(text, replacements) {
+  const sorted = [...replacements].sort((a, b) => a.start - b.start);
+  let result = "";
+  let cursor = 0;
+  for (const r of sorted) {
+    result += text.slice(cursor, r.start) + r.text;
+    cursor = r.end;
+  }
+  result += text.slice(cursor);
+  return result;
+}
+async function rewriteDocument(request, backend, keys) {
+  const startTime = Date.now();
+  if (!request.text || request.text.trim().length === 0) {
+    return {
+      status: "error",
+      error: "Text is empty.",
+      documentBefore: null,
+      documentAfter: null,
+      passages: [],
+      revisedText: "",
+      tellChangeCount: 0,
+      flaggedStructures: [],
+      elevatedVocabulary: [],
+      additionalTellsInExtendedLibrary: 0,
+      roundsUsed: 0,
+      tier: request.tier,
+      strength: request.strength,
+      processingTimeMs: Date.now() - startTime,
+      limits: REWRITE_LIMITS
+    };
+  }
+  const {
+    text: afterTells,
+    changes: tellChanges,
+    flaggedStructures,
+    elevatedVocabulary
+  } = applyDeterministicPass(
+    request.text,
+    request.strength,
+    request.tier === "pro" ? "extended" : "core"
+  );
+  const additionalTellsInExtendedLibrary = request.tier === "pro" ? 0 : Math.max(
+    0,
+    applyDeterministicPass(request.text, request.strength, "extended").changes.length - tellChanges.length
+  );
+  let currentText = afterTells;
+  let analysis = await checkDocument(currentText, { keys, language: request.language });
+  const documentBefore = analysis;
+  const passageResults = /* @__PURE__ */ new Map();
+  const attempted = /* @__PURE__ */ new Set();
+  let round = 0;
+  for (; round < MAX_ROUNDS; round++) {
+    const tellPressure = new Map(
+      analysis.passages.map((p) => [p.index, measureStyleTells(p.text).pressure])
+    );
+    const targets = targetPassages(analysis.passages, request.strength, tellPressure).filter(
+      (p) => !attempted.has(p.index)
+    );
+    if (targets.length === 0) break;
+    const replacements = [];
+    for (const passage of targets) {
+      attempted.add(passage.index);
+      const candidateTexts = await backend.generate(passage.text, {
+        count: candidateCount(request.tier),
+        strength: request.strength,
+        language: request.language ?? analysis.language.code ?? void 0
+      });
+      const scored = await scoreCandidates(passage.text, candidateTexts, backend, {
+        minSimilarity: minSimilarity(request.strength),
+        keys
+      });
+      const best = pickBest(scored);
+      const chosenText = best?.text ?? passage.text;
+      if (best) {
+        replacements.push({ start: passage.start, end: passage.end, text: chosenText, index: passage.index });
+      }
+      passageResults.set(passage.index, mergeExisting(passageResults.get(passage.index), {
+        index: passage.index,
+        original: passageResults.get(passage.index)?.original ?? passage.text,
+        chosen: best ? chosenText : null,
+        candidates: scored,
+        beforeZ: passageResults.get(passage.index)?.beforeZ ?? passage.watermarkZ,
+        afterZ: best?.evidenceZ ?? passage.watermarkZ,
+        beforeStyleDeviation: passageResults.get(passage.index)?.beforeStyleDeviation ?? passage.styleDeviation,
+        reason: best ? "llm-rewrite" : "unchanged-no-safe-candidate"
+      }));
+    }
+    if (replacements.length === 0) break;
+    currentText = replacePassages(currentText, replacements);
+    const next = await checkDocument(currentText, { keys, language: request.language });
+    const survivedBefore = analysis.passageCorrection?.survived ?? 0;
+    const survivedAfter = next.passageCorrection?.survived ?? 0;
+    analysis = next;
+    if (survivedAfter >= survivedBefore && replacements.length < targets.length) break;
+    if (survivedAfter === 0 && survivedBefore === 0 && request.strength !== "regenerate") break;
+  }
+  return {
+    status: "ok",
+    documentBefore,
+    documentAfter: analysis,
+    passages: [...passageResults.values()].sort((a, b) => a.index - b.index),
+    revisedText: currentText,
+    tellChangeCount: tellChanges.length,
+    flaggedStructures: flaggedStructures.map((f) => ({ kind: f.kind, text: f.text, note: f.note })),
+    elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
+    additionalTellsInExtendedLibrary,
+    roundsUsed: round,
+    tier: request.tier,
+    strength: request.strength,
+    processingTimeMs: Date.now() - startTime,
+    limits: REWRITE_LIMITS
+  };
+}
+function mergeExisting(existing, next) {
+  if (!existing) return next;
+  return { ...next, candidates: [...existing.candidates, ...next.candidates] };
+}
+var REWRITE_LIMITS;
+var init_orchestrator = __esm({
+  "src/lib/rewrite/orchestrator.ts"() {
+    "use strict";
+    init_detector();
+    init_ai_tells();
+    init_targeting();
+    init_scoring();
+    REWRITE_LIMITS = [
+      "This reduces detectable AI-style evidence. It cannot guarantee defeating a model vendor's undisclosed watermark. No tool can, since nobody outside that vendor holds the key it was applied with.",
+      'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
+      "The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro's own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.",
+      "All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier."
+    ];
+  }
+});
+
 // src/lib/rewrite/models.ts
 function effectiveRewriteModel(tier, environment) {
   const weakBrowserHardware = environment.device === "wasm" || environment.device === "webgpu" && environment.lowMemory;
@@ -9998,6 +12761,70 @@ var init_models = __esm({
         dtype: "q4f16"
       }
     };
+  }
+});
+
+// src/lib/rewrite/index.ts
+async function reduceEvidence(request, keys) {
+  const backend = createRuleBasedBackend(
+    request.language ?? "en",
+    request.tier === "pro" ? "extended" : "core"
+  );
+  return rewriteDocument(request, backend, keys);
+}
+var init_rewrite = __esm({
+  "src/lib/rewrite/index.ts"() {
+    "use strict";
+    init_rule_based();
+    init_orchestrator();
+    init_rule_based();
+    init_targeting();
+    init_fact_lock();
+    init_models();
+  }
+});
+
+// src/lib/rewrite/engine-choice.ts
+function decideRewriteEngine({ requested, modelCached, cacheDir }) {
+  if (requested === "standard") {
+    return {
+      engine: "standard",
+      requested,
+      reason: "The deterministic engine was requested by name. It runs instantly, downloads nothing, and varies wording rather than restructuring sentences."
+    };
+  }
+  if (requested === "advanced") {
+    return {
+      engine: "advanced",
+      requested,
+      reason: modelCached ? `The local model was requested by name and its weights are already cached under ${cacheDir}.` : `The local model was requested by name and its weights are not cached yet, so this call downloads them to ${cacheDir} first. Later calls reuse them.`
+    };
+  }
+  return modelCached ? {
+    engine: "advanced",
+    requested,
+    reason: `The local model's weights are already cached under ${cacheDir}, so this ran on the local model rather than the deterministic engine.`
+  } : {
+    engine: "standard",
+    requested,
+    reason: `The local model's weights are not in ${cacheDir} yet, so this ran on the deterministic engine rather than stalling the call behind a download nobody asked for. Pass model "advanced" once to fetch them; after that every call defaults to the local model.`
+  };
+}
+function configuredModelChoice(raw, variableName) {
+  if (typeof raw !== "string" || raw.trim().length === 0) return DEFAULT_MODEL_CHOICE;
+  const value = raw.trim().toLowerCase();
+  if (!isModelChoice(value)) {
+    throw new Error(`${variableName} is "${raw}"; it must be one of: ${MODEL_CHOICES.join(", ")}.`);
+  }
+  return value;
+}
+var MODEL_CHOICES, DEFAULT_MODEL_CHOICE, isModelChoice;
+var init_engine_choice = __esm({
+  "src/lib/rewrite/engine-choice.ts"() {
+    "use strict";
+    MODEL_CHOICES = ["auto", "standard", "advanced"];
+    DEFAULT_MODEL_CHOICE = "auto";
+    isModelChoice = (value) => typeof value === "string" && MODEL_CHOICES.includes(value);
   }
 });
 
@@ -10105,19 +12932,104 @@ var init_transformers_shared = __esm({
   }
 });
 
-// src/lib/rewrite/backend/node.ts
-var node_exports = {};
-__export(node_exports, {
-  createTransformersNodeBackend: () => createTransformersNodeBackend
-});
+// src/lib/rewrite/backend/model-cache.ts
+import fs from "fs";
 import os from "os";
 import path from "path";
+function resolveModelCacheDir(env = process.env, home = os.homedir()) {
+  const configured = env[ENV_MODEL_CACHE];
+  if (typeof configured === "string" && configured.trim().length > 0) {
+    return { dir: path.resolve(configured.trim()), overridden: true };
+  }
+  return { dir: defaultModelCacheDir(home), overridden: false };
+}
+function migrateLegacyModelCache(location, home = os.homedir()) {
+  const from = legacyModelCacheDir(home);
+  const to = location.dir;
+  const base = { from, to };
+  if (location.overridden) {
+    return { ...base, status: "nothing-to-move", note: null };
+  }
+  if (!fs.existsSync(from)) {
+    return { ...base, status: "nothing-to-move", note: null };
+  }
+  if (fs.existsSync(to)) {
+    return {
+      ...base,
+      status: "both-exist",
+      note: `A pre-rename model cache is still at ${from}. ${to} is the one in use, so the old directory is doing nothing and can be deleted.`
+    };
+  }
+  try {
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.renameSync(from, to);
+    pruneEmptyLegacyParent(from);
+    return { ...base, status: "moved", note: `Moved the on-device model cache from ${from} to ${to}.` };
+  } catch (renameErr) {
+    try {
+      fs.cpSync(from, to, { recursive: true });
+      fs.rmSync(from, { recursive: true, force: true });
+      pruneEmptyLegacyParent(from);
+      return { ...base, status: "copied", note: `Copied the on-device model cache from ${from} to ${to}.` };
+    } catch (copyErr) {
+      return {
+        ...base,
+        status: "failed",
+        note: `Could not move the on-device model cache from ${from} to ${to} (${renameErr.message}; copy also failed: ${copyErr.message}). The weights will be downloaded again on first use.`
+      };
+    }
+  }
+}
+function pruneEmptyLegacyParent(legacyModelsDir) {
+  const parent = path.dirname(legacyModelsDir);
+  try {
+    if (fs.readdirSync(parent).length === 0) fs.rmdirSync(parent);
+  } catch {
+  }
+}
+function isModelCached(cacheDir, model) {
+  const dir = path.join(cacheDir, model.repo, model.revision);
+  try {
+    if (!fs.statSync(dir).isDirectory()) return false;
+  } catch {
+    return false;
+  }
+  return containsWeights(dir);
+}
+function containsWeights(dir, depth = 0) {
+  if (depth > 3) return false;
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return false;
+  }
+  for (const entry of entries) {
+    if (entry.isFile() && WEIGHT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))) return true;
+    if (entry.isDirectory() && containsWeights(path.join(dir, entry.name), depth + 1)) return true;
+  }
+  return false;
+}
+var CACHE_NAMESPACE, LEGACY_CACHE_NAMESPACE, defaultModelCacheDir, legacyModelCacheDir, WEIGHT_EXTENSIONS;
+var init_model_cache = __esm({
+  "src/lib/rewrite/backend/model-cache.ts"() {
+    "use strict";
+    init_env_names();
+    CACHE_NAMESPACE = "watermarkremoverpro";
+    LEGACY_CACHE_NAMESPACE = "markwitness";
+    defaultModelCacheDir = (home) => path.join(home, ".cache", CACHE_NAMESPACE, "models");
+    legacyModelCacheDir = (home) => path.join(home, ".cache", LEGACY_CACHE_NAMESPACE, "models");
+    WEIGHT_EXTENSIONS = [".onnx", ".onnx_data"];
+  }
+});
+
+// src/lib/rewrite/backend/node.ts
 function createTransformersNodeBackend(tier) {
   const { model, dtype } = effectiveRewriteModel(tier, { device: "cpu", lowMemory: false });
   const env = {
     device: "cpu",
     dtype,
-    cacheDir: CACHE_DIR
+    cacheDir: resolveModelCacheDir().dir
   };
   return {
     id: `transformers-node:${model.repo}`,
@@ -10130,13 +13042,91 @@ function createTransformersNodeBackend(tier) {
     }
   };
 }
-var CACHE_DIR;
 var init_node = __esm({
   "src/lib/rewrite/backend/node.ts"() {
     "use strict";
     init_transformers_shared();
     init_models();
-    CACHE_DIR = path.join(os.homedir(), ".cache", "markwitness", "models");
+    init_model_cache();
+  }
+});
+
+// src/lib/rewrite/backend/node-engine.ts
+var node_engine_exports = {};
+__export(node_engine_exports, {
+  describeEngine: () => describeEngine,
+  resetModelCacheMigrationForTests: () => resetModelCacheMigrationForTests,
+  runRewriteOnNode: () => runRewriteOnNode
+});
+async function runRewriteOnNode(request, keys, options = {}) {
+  const env = options.env ?? process.env;
+  const requested = options.model ?? configuredModelChoice(env[ENV_REWRITE_MODEL], ENV_REWRITE_MODEL);
+  const strict = (env[ENV_REWRITE_STRICT] ?? "").trim() === "1";
+  const location = resolveModelCacheDir(env);
+  if (migrationForProcess === void 0) {
+    const migration = migrateLegacyModelCache(location);
+    migrationForProcess = migration.note === null ? null : migration;
+  }
+  const { model } = effectiveRewriteModel(request.tier, { device: "cpu", lowMemory: false });
+  const choice = decideRewriteEngine({
+    requested,
+    modelCached: isModelCached(location.dir, model),
+    cacheDir: location.dir
+  });
+  const report = (over) => ({
+    requested,
+    used: choice.engine,
+    backendId: "rule-based",
+    reason: choice.reason,
+    modelCacheDir: location.dir,
+    cacheMigration: migrationForProcess ?? null,
+    failure: null,
+    ...over
+  });
+  if (choice.engine === "advanced") {
+    try {
+      const backend = (options.createBackend ?? createTransformersNodeBackend)(request.tier);
+      const result2 = await rewriteDocument(request, backend, keys);
+      return { result: result2, engine: report({ used: "advanced", backendId: backend.id }) };
+    } catch (err) {
+      const message = err.message;
+      if (strict) {
+        throw new Error(
+          `The local model could not run (${message}), and ${ENV_REWRITE_STRICT}=1 refuses the deterministic engine as a substitute.`
+        );
+      }
+      const result2 = await reduceEvidence(request, keys);
+      return {
+        result: result2,
+        engine: report({
+          used: "standard",
+          reason: `${choice.reason} It then failed to load, so the deterministic engine finished the job instead. Set ${ENV_REWRITE_STRICT}=1 to make this a hard failure.`,
+          failure: { message }
+        })
+      };
+    }
+  }
+  const result = await reduceEvidence(request, keys);
+  return { result, engine: report({ used: "standard" }) };
+}
+function describeEngine(engine) {
+  const head = engine.used === "advanced" ? `advanced (${engine.backendId}; cached under ${engine.modelCacheDir})` : "standard (rule-based, no download)";
+  return `${head}: ${engine.reason}`;
+}
+function resetModelCacheMigrationForTests() {
+  migrationForProcess = void 0;
+}
+var migrationForProcess;
+var init_node_engine = __esm({
+  "src/lib/rewrite/backend/node-engine.ts"() {
+    "use strict";
+    init_env_names();
+    init_rewrite();
+    init_orchestrator();
+    init_models();
+    init_engine_choice();
+    init_node();
+    init_model_cache();
   }
 });
 
@@ -18706,1528 +21696,92 @@ var StdioServerTransport = class {
   }
 };
 
-// src/lib/detector/languages.ts
-var SUPPORTED_LANGUAGES = ["en", "es", "fr", "de", "pt"];
-var LANGUAGE_NAMES = {
-  en: "English",
-  es: "Spanish",
-  fr: "French",
-  de: "German",
-  pt: "Portuguese"
-};
-var FUNCTION_WORDS = {
-  en: [
-    "the",
-    "of",
-    "and",
-    "to",
-    "a",
-    "in",
-    "that",
-    "is",
-    "was",
-    "it",
-    "for",
-    "as",
-    "with",
-    "his",
-    "he",
-    "be",
-    "on",
-    "i",
-    "by",
-    "at",
-    "this",
-    "had",
-    "not",
-    "are",
-    "but",
-    "from",
-    "or",
-    "have",
-    "an",
-    "they",
-    "which",
-    "you",
-    "were",
-    "her",
-    "all",
-    "she",
-    "there",
-    "would",
-    "their",
-    "we",
-    "him",
-    "been",
-    "has",
-    "when",
-    "who",
-    "will",
-    "no",
-    "more",
-    "if",
-    "out",
-    "so",
-    "said",
-    "what",
-    "up",
-    "its",
-    "about",
-    "into",
-    "than",
-    "them",
-    "can",
-    "only",
-    "other",
-    "new",
-    "some",
-    "could",
-    "time",
-    "these",
-    "two",
-    "may",
-    "then",
-    "do",
-    "first",
-    "any",
-    "my",
-    "now",
-    "such",
-    "like",
-    "our",
-    "over",
-    "man",
-    "me",
-    "even",
-    "most",
-    "made",
-    "after",
-    "also",
-    "did",
-    "many",
-    "before",
-    "must",
-    "through",
-    "back",
-    "years",
-    "where",
-    "much",
-    "your",
-    "way",
-    "well",
-    "down",
-    "should",
-    "because",
-    "each",
-    "just",
-    "those",
-    "people",
-    "how",
-    "too",
-    "little",
-    "state",
-    "good",
-    "very",
-    "make",
-    "world",
-    "still",
-    "own",
-    "see",
-    "men",
-    "work",
-    "long",
-    "get",
-    "here",
-    "between",
-    "both",
-    "life",
-    "being",
-    "under",
-    "never",
-    "day",
-    "same",
-    "another",
-    "know",
-    "while",
-    "last"
-  ],
-  es: [
-    "de",
-    "la",
-    "que",
-    "el",
-    "en",
-    "y",
-    "a",
-    "los",
-    "del",
-    "se",
-    "las",
-    "por",
-    "un",
-    "para",
-    "con",
-    "no",
-    "una",
-    "su",
-    "al",
-    "lo",
-    "como",
-    "m\xE1s",
-    "pero",
-    "sus",
-    "le",
-    "ya",
-    "o",
-    "este",
-    "s\xED",
-    "porque",
-    "esta",
-    "entre",
-    "cuando",
-    "muy",
-    "sin",
-    "sobre",
-    "tambi\xE9n",
-    "me",
-    "hasta",
-    "hay",
-    "donde",
-    "quien",
-    "desde",
-    "todo",
-    "nos",
-    "durante",
-    "todos",
-    "uno",
-    "les",
-    "ni",
-    "contra",
-    "otros",
-    "ese",
-    "eso",
-    "ante",
-    "ellos",
-    "e",
-    "esto",
-    "m\xED",
-    "antes",
-    "algunos",
-    "qu\xE9",
-    "unos",
-    "yo",
-    "otro",
-    "otras",
-    "otra",
-    "\xE9l",
-    "tanto",
-    "esa",
-    "estos",
-    "mucho",
-    "quienes",
-    "nada",
-    "muchos",
-    "cual",
-    "poco",
-    "ella",
-    "estar",
-    "estas",
-    "algunas",
-    "algo",
-    "nosotros",
-    "mi",
-    "mis",
-    "t\xFA",
-    "te",
-    "ti",
-    "tu",
-    "tus",
-    "ellas",
-    "nosotras",
-    "vosotros",
-    "vosotras",
-    "os",
-    "m\xEDo",
-    "m\xEDa",
-    "ser",
-    "es",
-    "son",
-    "era",
-    "fue",
-    "han",
-    "ha",
-    "hab\xEDa",
-    "tiene",
-    "ten\xEDa",
-    "puede",
-    "hacer",
-    "todas",
-    "cada",
-    "aunque",
-    "mientras",
-    "seg\xFAn",
-    "bien",
-    "as\xED",
-    "aqu\xED",
-    "ahora",
-    "siempre"
-  ],
-  fr: [
-    "de",
-    "la",
-    "le",
-    "et",
-    "les",
-    "des",
-    "en",
-    "un",
-    "du",
-    "une",
-    "que",
-    "est",
-    "pour",
-    "qui",
-    "dans",
-    "a",
-    "par",
-    "plus",
-    "pas",
-    "au",
-    "sur",
-    "ne",
-    "se",
-    "ce",
-    "il",
-    "sont",
-    "ou",
-    "avec",
-    "son",
-    "aux",
-    "mais",
-    "nous",
-    "comme",
-    "on",
-    "sans",
-    "elle",
-    "ses",
-    "lui",
-    "leur",
-    "y",
-    "\xE9t\xE9",
-    "\xEAtre",
-    "avoir",
-    "faire",
-    "cette",
-    "ces",
-    "tout",
-    "tous",
-    "toute",
-    "toutes",
-    "m\xEAme",
-    "aussi",
-    "entre",
-    "encore",
-    "quand",
-    "tr\xE8s",
-    "bien",
-    "o\xF9",
-    "peut",
-    "sous",
-    "apr\xE8s",
-    "avant",
-    "depuis",
-    "contre",
-    "vers",
-    "chez",
-    "donc",
-    "car",
-    "si",
-    "ainsi",
-    "alors",
-    "ici",
-    "l\xE0",
-    "cela",
-    "celui",
-    "celle",
-    "ceux",
-    "dont",
-    "quel",
-    "quelle",
-    "leurs",
-    "notre",
-    "votre",
-    "nos",
-    "vos",
-    "mon",
-    "ma",
-    "mes",
-    "ton",
-    "ta",
-    "tes",
-    "je",
-    "tu",
-    "vous",
-    "ils",
-    "elles",
-    "me",
-    "te",
-    "moi",
-    "toi",
-    "\xE9tait",
-    "ont",
-    "avait",
-    "fait",
-    "peu",
-    "jamais",
-    "toujours",
-    "d\xE9j\xE0",
-    "pendant",
-    "selon"
-  ],
-  de: [
-    "der",
-    "die",
-    "und",
-    "in",
-    "den",
-    "von",
-    "zu",
-    "das",
-    "mit",
-    "sich",
-    "des",
-    "auf",
-    "f\xFCr",
-    "ist",
-    "im",
-    "dem",
-    "nicht",
-    "ein",
-    "eine",
-    "als",
-    "auch",
-    "es",
-    "an",
-    "werden",
-    "aus",
-    "er",
-    "hat",
-    "dass",
-    "sie",
-    "nach",
-    "wird",
-    "bei",
-    "einer",
-    "um",
-    "am",
-    "sind",
-    "noch",
-    "wie",
-    "einem",
-    "\xFCber",
-    "einen",
-    "so",
-    "zum",
-    "war",
-    "haben",
-    "nur",
-    "oder",
-    "aber",
-    "vor",
-    "zur",
-    "bis",
-    "mehr",
-    "durch",
-    "man",
-    "sein",
-    "wurde",
-    "sei",
-    "ich",
-    "wir",
-    "ihr",
-    "ihre",
-    "seine",
-    "seiner",
-    "diese",
-    "dieser",
-    "dieses",
-    "kann",
-    "muss",
-    "soll",
-    "wenn",
-    "weil",
-    "doch",
-    "schon",
-    "dann",
-    "da",
-    "wo",
-    "was",
-    "wer",
-    "welche",
-    "alle",
-    "allen",
-    "anderen",
-    "gegen",
-    "ohne",
-    "unter",
-    "zwischen",
-    "w\xE4hrend",
-    "seit",
-    "ihn",
-    "ihm",
-    "uns",
-    "euch",
-    "mein",
-    "dein",
-    "unser",
-    "hatte",
-    "h\xE4tte",
-    "w\xFCrde",
-    "k\xF6nnte",
-    "immer",
-    "wieder",
-    "sehr",
-    "viel",
-    "gut",
-    "jetzt"
-  ],
-  pt: [
-    "de",
-    "a",
-    "o",
-    "que",
-    "e",
-    "do",
-    "da",
-    "em",
-    "um",
-    "para",
-    "com",
-    "n\xE3o",
-    "uma",
-    "os",
-    "no",
-    "se",
-    "na",
-    "por",
-    "mais",
-    "as",
-    "dos",
-    "como",
-    "mas",
-    "ao",
-    "ele",
-    "das",
-    "\xE0",
-    "seu",
-    "sua",
-    "ou",
-    "quando",
-    "muito",
-    "nos",
-    "j\xE1",
-    "eu",
-    "tamb\xE9m",
-    "s\xF3",
-    "pelo",
-    "pela",
-    "at\xE9",
-    "isso",
-    "ela",
-    "entre",
-    "depois",
-    "sem",
-    "mesmo",
-    "aos",
-    "seus",
-    "quem",
-    "nas",
-    "me",
-    "esse",
-    "eles",
-    "voc\xEA",
-    "essa",
-    "num",
-    "nem",
-    "suas",
-    "meu",
-    "\xE0s",
-    "minha",
-    "numa",
-    "pelos",
-    "elas",
-    "qual",
-    "n\xF3s",
-    "lhe",
-    "deles",
-    "essas",
-    "esses",
-    "pelas",
-    "este",
-    "dele",
-    "tu",
-    "te",
-    "voc\xEAs",
-    "vos",
-    "lhes",
-    "meus",
-    "minhas",
-    "teu",
-    "tua",
-    "nosso",
-    "nossa",
-    "dela",
-    "delas",
-    "esta",
-    "estes",
-    "\xE9",
-    "s\xE3o",
-    "era",
-    "foi",
-    "ser",
-    "ter",
-    "tem",
-    "est\xE1",
-    "est\xE3o",
-    "havia",
-    "pode",
-    "fazer",
-    "todos",
-    "toda",
-    "cada",
-    "embora",
-    "enquanto",
-    "segundo",
-    "bem",
-    "assim",
-    "aqui",
-    "agora"
-  ]
-};
-function isSupportedLanguage(code) {
-  return SUPPORTED_LANGUAGES.includes(code);
-}
-var MIN_MARGIN = 0.02;
-var MIN_COVERAGE = 0.05;
-function identifyLanguage(tokens) {
-  const scores = {};
-  const sets = /* @__PURE__ */ new Map();
-  for (const lang of SUPPORTED_LANGUAGES) sets.set(lang, new Set(FUNCTION_WORDS[lang]));
-  for (const lang of SUPPORTED_LANGUAGES) {
-    const set = sets.get(lang);
-    let hits = 0;
-    for (const t of tokens) if (set.has(t.norm)) hits++;
-    scores[lang] = tokens.length > 0 ? hits / tokens.length : 0;
-  }
-  const ranked = [...SUPPORTED_LANGUAGES].sort((a, b) => scores[b] - scores[a]);
-  const best = ranked[0];
-  const margin = scores[best] - scores[ranked[1]];
-  const confident = scores[best] >= MIN_COVERAGE && margin >= MIN_MARGIN;
-  return { language: confident ? best : null, scores, margin, confident };
-}
-
-// src/lib/detector/tokenize.ts
-var WORD_RE = new RegExp("\\p{L}[\\p{L}\\p{M}\u2019'-]*", "gu");
-function tokenize(text) {
-  const tokens = [];
-  WORD_RE.lastIndex = 0;
-  let m;
-  while ((m = WORD_RE.exec(text)) !== null) {
-    const raw = m[0];
-    tokens.push({
-      raw,
-      norm: normalizeToken(raw),
-      start: m.index,
-      end: m.index + raw.length
-    });
-  }
-  return tokens;
-}
-function normalizeToken(raw) {
-  return raw.toLowerCase().replace(/’/g, "'").replace(/^[-']+|[-']+$/g, "");
-}
-function countWords(text) {
-  WORD_RE.lastIndex = 0;
-  let n = 0;
-  while (WORD_RE.exec(text) !== null) n++;
-  return n;
-}
-var ABBREVIATIONS = /* @__PURE__ */ new Set([
-  "mr",
-  "mrs",
-  "ms",
-  "dr",
-  "prof",
-  "sr",
-  "jr",
-  "st",
-  "vs",
-  "etc",
-  "eg",
-  "ie",
-  "fig",
-  "no",
-  "vol",
-  "al",
-  "ca",
-  "cf",
-  "ed",
-  "esp",
-  "inc",
-  "ltd",
-  "co",
-  "univ",
-  "dept",
-  "approx",
-  // es / pt
-  "sra",
-  "srta",
-  "ud",
-  "uds",
-  "ejemplo",
-  "av",
-  "depto",
-  // fr
-  "mme",
-  "mlle",
-  "bd",
-  "env",
-  // de
-  "bzw",
-  "ggf",
-  "usw",
-  "zb",
-  "evtl",
-  "nr",
-  "abb",
-  "hrsg"
-]);
-function splitSentences(text) {
-  const passages = [];
-  const terminator = /[.!?…]+["'”’)\]]*(\s+|$)/g;
-  let cursor = 0;
-  let m;
-  while ((m = terminator.exec(text)) !== null) {
-    const endOfSentence = m.index + m[0].length;
-    const candidate = text.slice(cursor, endOfSentence);
-    const beforeDot = candidate.trimEnd().replace(/[.!?…"'”’)\]]+$/, "");
-    const lastWord = beforeDot.split(/[\s(]+/).pop() ?? "";
-    const lastWordNorm = normalizeToken(lastWord);
-    if (ABBREVIATIONS.has(lastWordNorm) || new RegExp("^\\p{Lu}$", "u").test(lastWord)) continue;
-    pushPassage(passages, text, cursor, endOfSentence);
-    cursor = endOfSentence;
-  }
-  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
-  return passages;
-}
-function splitParagraphs(text) {
-  const passages = [];
-  const re = /\n\s*\n/g;
-  let cursor = 0;
-  let m;
-  while ((m = re.exec(text)) !== null) {
-    pushPassage(passages, text, cursor, m.index);
-    cursor = m.index + m[0].length;
-  }
-  if (cursor < text.length) pushPassage(passages, text, cursor, text.length);
-  return passages;
-}
-function pushPassage(into, text, start, end) {
-  const slice = text.slice(start, end);
-  const trimmedStart = start + (slice.length - slice.trimStart().length);
-  const trimmed = slice.trim();
-  if (trimmed.length === 0) return;
-  into.push({
-    index: into.length,
-    text: trimmed,
-    start: trimmedStart,
-    end: trimmedStart + trimmed.length
-  });
-}
-function punctuationCounts(text) {
-  const counts = {
-    comma: 0,
-    semicolon: 0,
-    colon: 0,
-    dash: 0,
-    quote: 0,
-    exclamation: 0,
-    question: 0,
-    parenthesis: 0
-  };
-  for (const ch of text) {
-    switch (ch) {
-      case ",":
-        counts.comma++;
-        break;
-      case ";":
-        counts.semicolon++;
-        break;
-      case ":":
-        counts.colon++;
-        break;
-      case "-":
-      case "\u2013":
-      case "\u2014":
-        counts.dash++;
-        break;
-      case '"':
-      case "\u201C":
-      case "\u201D":
-      case "\xAB":
-      case "\xBB":
-        counts.quote++;
-        break;
-      case "!":
-        counts.exclamation++;
-        break;
-      case "?":
-        counts.question++;
-        break;
-      case "(":
-        counts.parenthesis++;
-        break;
-    }
-  }
-  return counts;
-}
-
-// src/lib/detector/stats.ts
-function normalCdf(z) {
-  return 0.5 * (1 + erf(z / Math.SQRT2));
-}
-function erf(x) {
-  const sign = x < 0 ? -1 : 1;
-  const ax = Math.abs(x);
-  const t = 1 / (1 + 0.3275911 * ax);
-  const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-ax * ax);
-  return sign * y;
-}
-function upperTailP(z) {
-  return 1 - normalCdf(z);
-}
-function binomialZ(successes, trials, p0) {
-  if (trials <= 0) return null;
-  const sd = Math.sqrt(trials * p0 * (1 - p0));
-  if (sd === 0) return null;
-  return (successes - trials * p0) / sd;
-}
-function wilsonInterval(successes, trials, z = 1.959963984540054) {
-  if (trials <= 0) return null;
-  const phat = successes / trials;
-  const z2 = z * z;
-  const denom = 1 + z2 / trials;
-  const centre = phat + z2 / (2 * trials);
-  const margin = z * Math.sqrt((phat * (1 - phat) + z2 / (4 * trials)) / trials);
-  return { low: Math.max(0, (centre - margin) / denom), high: Math.min(1, (centre + margin) / denom) };
-}
-function mean(xs) {
-  if (xs.length === 0) return NaN;
-  let s = 0;
-  for (const x of xs) s += x;
-  return s / xs.length;
-}
-function stdDev(xs) {
-  if (xs.length < 2) return NaN;
-  const m = mean(xs);
-  let acc = 0;
-  for (const x of xs) acc += (x - m) ** 2;
-  return Math.sqrt(acc / (xs.length - 1));
-}
-function quantile(sorted, q) {
-  if (sorted.length === 0) return NaN;
-  if (sorted.length === 1) return sorted[0];
-  const pos = (sorted.length - 1) * q;
-  const lo = Math.floor(pos);
-  const hi = Math.ceil(pos);
-  if (lo === hi) return sorted[lo];
-  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
-}
-function seededRandom(seed) {
-  let a = seed >>> 0;
-  return () => {
-    a = a + 1831565813 >>> 0;
-    let t = a;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-function benjaminiHochberg(pValues, fdr = 0.05) {
-  const indexed = pValues.map((p, i) => ({ p, i })).sort((a, b) => a.p - b.p);
-  const m = indexed.length;
-  let maxK = -1;
-  for (let k = 0; k < m; k++) {
-    if (indexed[k].p <= (k + 1) / m * fdr) maxK = k;
-  }
-  if (maxK < 0) return [];
-  return indexed.slice(0, maxK + 1).map((e) => e.i).sort((a, b) => a - b);
-}
-
-// src/lib/detector/features.ts
-var CHUNK_TOKENS = 400;
-var MIN_CHUNK_TOKENS = 120;
-var FEATURE_NAMES = [
-  "meanWordLength",
-  "mattr",
-  "hapaxRatio",
-  "meanSentenceLength",
-  "sentenceLengthCv",
-  "functionWordRate",
-  "commaRate",
-  "semicolonRate",
-  "colonRate",
-  "dashRate",
-  "quoteRate",
-  "parenthesisRate",
-  "exclamationRate",
-  "questionRate"
-];
-function movingAverageTtr(tokens, window = 100) {
-  if (tokens.length === 0) return 0;
-  if (tokens.length <= window) {
-    return new Set(tokens.map((t) => t.norm)).size / tokens.length;
-  }
-  const counts = /* @__PURE__ */ new Map();
-  let distinct = 0;
-  const ratios = [];
-  for (let i = 0; i < tokens.length; i++) {
-    const add = tokens[i].norm;
-    const prevAdd = counts.get(add) ?? 0;
-    if (prevAdd === 0) distinct++;
-    counts.set(add, prevAdd + 1);
-    if (i >= window) {
-      const drop = tokens[i - window].norm;
-      const prevDrop = counts.get(drop) ?? 0;
-      if (prevDrop === 1) distinct--;
-      counts.set(drop, prevDrop - 1);
-    }
-    if (i >= window - 1) ratios.push(distinct / window);
-  }
-  return mean(ratios);
-}
-function hapaxRatio(tokens) {
-  if (tokens.length === 0) return 0;
-  const counts = /* @__PURE__ */ new Map();
-  for (const t of tokens) counts.set(t.norm, (counts.get(t.norm) ?? 0) + 1);
-  let hapax = 0;
-  for (const n of counts.values()) if (n === 1) hapax++;
-  return hapax / counts.size;
-}
-function measureChunk(text, language) {
-  const tokens = tokenize(text);
-  const n = tokens.length;
-  const per1000 = (count) => n > 0 ? count / n * 1e3 : 0;
-  const sentences = splitSentences(text);
-  const sentenceLengths = sentences.map((s) => tokenize(s.text).length).filter((l) => l > 0);
-  const meanSentence = sentenceLengths.length > 0 ? mean(sentenceLengths) : 0;
-  const sdSentence = sentenceLengths.length > 1 ? stdDev(sentenceLengths) : 0;
-  const punct = punctuationCounts(text);
-  const functionWordSet = new Set(FUNCTION_WORDS[language]);
-  let functionWordHits = 0;
-  const wordCounts = /* @__PURE__ */ new Map();
-  let totalChars = 0;
-  for (const t of tokens) {
-    totalChars += t.norm.length;
-    if (functionWordSet.has(t.norm)) {
-      functionWordHits++;
-      wordCounts.set(t.norm, (wordCounts.get(t.norm) ?? 0) + 1);
-    }
-  }
-  const functionWordRates = {};
-  for (const word of FUNCTION_WORDS[language]) {
-    functionWordRates[word] = per1000(wordCounts.get(word) ?? 0);
-  }
-  const features = {
-    meanWordLength: n > 0 ? totalChars / n : 0,
-    mattr: movingAverageTtr(tokens),
-    hapaxRatio: hapaxRatio(tokens),
-    meanSentenceLength: meanSentence,
-    // Coefficient of variation of sentence length, or "burstiness". Reported as a
-    // ratio so it does not simply track mean sentence length.
-    sentenceLengthCv: meanSentence > 0 ? sdSentence / meanSentence : 0,
-    functionWordRate: per1000(functionWordHits),
-    commaRate: per1000(punct.comma),
-    semicolonRate: per1000(punct.semicolon),
-    colonRate: per1000(punct.colon),
-    dashRate: per1000(punct.dash),
-    quoteRate: per1000(punct.quote),
-    parenthesisRate: per1000(punct.parenthesis),
-    exclamationRate: per1000(punct.exclamation),
-    questionRate: per1000(punct.question)
-  };
-  return { features, functionWordRates, tokenCount: n };
-}
-function chunkText(text) {
-  const sentences = splitSentences(text);
-  const chunks = [];
-  let current = [];
-  let currentTokens = 0;
-  for (const sentence of sentences) {
-    const count = tokenize(sentence.text).length;
-    current.push(sentence.text);
-    currentTokens += count;
-    if (currentTokens >= CHUNK_TOKENS) {
-      chunks.push(current.join(" "));
-      current = [];
-      currentTokens = 0;
-    }
-  }
-  if (currentTokens >= MIN_CHUNK_TOKENS) chunks.push(current.join(" "));
-  return chunks;
-}
-
-// src/lib/detector/distributional.ts
-var BOOTSTRAP_REPLICATES = 200;
-var BOOTSTRAP_TOKEN_CAP = 2e4;
-function rms(values) {
-  if (values.length === 0) return null;
-  let acc = 0;
-  for (const v of values) acc += v * v;
-  return Math.sqrt(acc / values.length);
-}
-function averageMeasurement(chunks, language) {
-  const featureTotals = Object.fromEntries(FEATURE_NAMES.map((f) => [f, 0]));
-  const functionWordTotals = {};
-  let tokens = 0;
-  for (const chunk of chunks) {
-    const m = measureChunk(chunk, language);
-    tokens += m.tokenCount;
-    for (const f of FEATURE_NAMES) featureTotals[f] += m.features[f];
-    for (const [word, rate] of Object.entries(m.functionWordRates)) {
-      functionWordTotals[word] = (functionWordTotals[word] ?? 0) + rate;
-    }
-  }
-  const n = chunks.length || 1;
-  const features = Object.fromEntries(FEATURE_NAMES.map((f) => [f, featureTotals[f] / n]));
-  const functionWords = Object.fromEntries(Object.entries(functionWordTotals).map(([w, t]) => [w, t / n]));
-  return { features, functionWords, tokens };
-}
-function composite(features, baseline6) {
-  const deviations = [];
-  for (const f of FEATURE_NAMES) {
-    const ref = baseline6.features[f];
-    if (!ref || !(ref.sd > 0)) continue;
-    deviations.push({
-      feature: f,
-      observed: features[f],
-      baselineMean: ref.mean,
-      baselineSd: ref.sd,
-      z: (features[f] - ref.mean) / ref.sd
-    });
-  }
-  return { deviations, value: rms(deviations.map((d) => d.z)) };
-}
-function bootstrapInterval(text, language, baseline6, totalTokens, chunkCount) {
-  const sentences = splitSentences(text).map((s) => s.text);
-  if (sentences.length < 8) return null;
-  const sentenceTokens = sentences.map((s) => tokenize(s).length);
-  const targetTokens = Math.min(totalTokens, BOOTSTRAP_TOKEN_CAP);
-  const rand = seededRandom(19799 ^ totalTokens ^ chunkCount);
-  const composites = [];
-  for (let r = 0; r < BOOTSTRAP_REPLICATES; r++) {
-    const picked = [];
-    let tokens = 0;
-    while (tokens < targetTokens) {
-      const i = Math.floor(rand() * sentences.length);
-      picked.push(sentences[i]);
-      tokens += sentenceTokens[i];
-      if (picked.length > sentences.length * 12) break;
-    }
-    const replicateChunks = chunkText(picked.join(" "));
-    if (replicateChunks.length === 0) continue;
-    const { features } = averageMeasurement(replicateChunks, language);
-    const { value } = composite(features, baseline6);
-    if (value !== null) composites.push(value);
-  }
-  if (composites.length < BOOTSTRAP_REPLICATES / 2) return null;
-  composites.sort((a, b) => a - b);
-  return { low: quantile(composites, 0.05), high: quantile(composites, 0.95) };
-}
-function noBaselineResult(language, tokens) {
-  return {
-    status: "no_baseline",
-    language,
-    chunks: 0,
-    tokens,
-    compositeDeviation: null,
-    compositeInterval: null,
-    features: [],
-    functionWordDeviation: null,
-    corpus: null,
-    detail: `No measured reference corpus for "${language}" was supplied to the engine, so no style measurement was made. Nothing is estimated in its place.`
-  };
-}
-function analyzeDistribution(text, language, baseline6) {
-  const chunks = chunkText(text);
-  const tokenCount = tokenize(text).length;
-  if (chunks.length === 0) {
-    return {
-      status: "insufficient_data",
-      language,
-      chunks: 0,
-      tokens: tokenCount,
-      compositeDeviation: null,
-      compositeInterval: null,
-      features: [],
-      functionWordDeviation: null,
-      corpus: baseline6.corpus,
-      detail: `The document holds ${tokenCount} words; at least ${MIN_CHUNK_TOKENS} are needed for a style measurement. Nothing is reported rather than reporting an unreliable figure.`
-    };
-  }
-  const measured = averageMeasurement(chunks, language);
-  const { deviations, value } = composite(measured.features, baseline6);
-  const functionWordZs = [];
-  for (const [word, rate] of Object.entries(measured.functionWords)) {
-    const ref = baseline6.functionWords[word];
-    if (!ref || !(ref.sd > 0)) continue;
-    functionWordZs.push((rate - ref.mean) / ref.sd);
-  }
-  return {
-    status: "computed",
-    language,
-    chunks: chunks.length,
-    tokens: measured.tokens,
-    compositeDeviation: value,
-    compositeInterval: bootstrapInterval(text, language, baseline6, measured.tokens, chunks.length),
-    features: deviations.sort((a, b) => Math.abs(b.z) - Math.abs(a.z)),
-    functionWordDeviation: rms(functionWordZs),
-    corpus: baseline6.corpus
-  };
-}
-
-// src/lib/detector/crypto.ts
-var K = new Uint32Array([
-  1116352408,
-  1899447441,
-  3049323471,
-  3921009573,
-  961987163,
-  1508970993,
-  2453635748,
-  2870763221,
-  3624381080,
-  310598401,
-  607225278,
-  1426881987,
-  1925078388,
-  2162078206,
-  2614888103,
-  3248222580,
-  3835390401,
-  4022224774,
-  264347078,
-  604807628,
-  770255983,
-  1249150122,
-  1555081692,
-  1996064986,
-  2554220882,
-  2821834349,
-  2952996808,
-  3210313671,
-  3336571891,
-  3584528711,
-  113926993,
-  338241895,
-  666307205,
-  773529912,
-  1294757372,
-  1396182291,
-  1695183700,
-  1986661051,
-  2177026350,
-  2456956037,
-  2730485921,
-  2820302411,
-  3259730800,
-  3345764771,
-  3516065817,
-  3600352804,
-  4094571909,
-  275423344,
-  430227734,
-  506948616,
-  659060556,
-  883997877,
-  958139571,
-  1322822218,
-  1537002063,
-  1747873779,
-  1955562222,
-  2024104815,
-  2227730452,
-  2361852424,
-  2428436474,
-  2756734187,
-  3204031479,
-  3329325298
-]);
-var rotr = (x, n) => x >>> n | x << 32 - n;
-function sha256(input) {
-  const h = new Uint32Array([
-    1779033703,
-    3144134277,
-    1013904242,
-    2773480762,
-    1359893119,
-    2600822924,
-    528734635,
-    1541459225
-  ]);
-  const bitLen = input.length * 8;
-  const padded = new Uint8Array(input.length + 9 + 63 >> 6 << 6);
-  padded.set(input);
-  padded[input.length] = 128;
-  const hi = Math.floor(bitLen / 4294967296);
-  const lo = bitLen >>> 0;
-  const dv = new DataView(padded.buffer);
-  dv.setUint32(padded.length - 8, hi, false);
-  dv.setUint32(padded.length - 4, lo, false);
-  const w = new Uint32Array(64);
-  for (let off = 0; off < padded.length; off += 64) {
-    for (let i = 0; i < 16; i++) w[i] = dv.getUint32(off + i * 4, false);
-    for (let i = 16; i < 64; i++) {
-      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ w[i - 15] >>> 3;
-      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ w[i - 2] >>> 10;
-      w[i] = w[i - 16] + s0 + w[i - 7] + s1 >>> 0;
-    }
-    let [a, b, c, d, e, f, g, hh] = h;
-    for (let i = 0; i < 64; i++) {
-      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
-      const ch = e & f ^ ~e & g;
-      const t1 = hh + S1 + ch + K[i] + w[i] >>> 0;
-      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
-      const maj = a & b ^ a & c ^ b & c;
-      const t2 = S0 + maj >>> 0;
-      hh = g;
-      g = f;
-      f = e;
-      e = d + t1 >>> 0;
-      d = c;
-      c = b;
-      b = a;
-      a = t1 + t2 >>> 0;
-    }
-    h[0] = h[0] + a >>> 0;
-    h[1] = h[1] + b >>> 0;
-    h[2] = h[2] + c >>> 0;
-    h[3] = h[3] + d >>> 0;
-    h[4] = h[4] + e >>> 0;
-    h[5] = h[5] + f >>> 0;
-    h[6] = h[6] + g >>> 0;
-    h[7] = h[7] + hh >>> 0;
-  }
-  const out = new Uint8Array(32);
-  const odv = new DataView(out.buffer);
-  for (let i = 0; i < 8; i++) odv.setUint32(i * 4, h[i], false);
-  return out;
-}
-function hmacSha256(key, message) {
-  const BLOCK = 64;
-  let k = key;
-  if (k.length > BLOCK) k = sha256(k);
-  const padKey = new Uint8Array(BLOCK);
-  padKey.set(k);
-  const inner = new Uint8Array(BLOCK + message.length);
-  const outer = new Uint8Array(BLOCK + 32);
-  for (let i = 0; i < BLOCK; i++) {
-    inner[i] = padKey[i] ^ 54;
-    outer[i] = padKey[i] ^ 92;
-  }
-  inner.set(message, BLOCK);
-  outer.set(sha256(inner), BLOCK);
-  return sha256(outer);
-}
-var encoder = new TextEncoder();
-var utf8 = (s) => encoder.encode(s);
-function toHex(bytes) {
-  let out = "";
-  for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
-  return out;
-}
-var sha256Hex = (text) => toHex(sha256(utf8(text)));
-function hmacUnitInterval(key, message) {
-  const tag = hmacSha256(key, utf8(message));
-  const n = (tag[0] << 24 | tag[1] << 16 | tag[2] << 8 | tag[3]) >>> 0;
-  return n / 4294967296;
-}
-
-// src/lib/detector/keys.ts
-var OPEN_REFERENCE_KEY = {
-  id: "openmark-ref-1",
-  label: "WatermarkRemoverPro open reference scheme",
-  scheme: "greenlist-bigram-v1",
-  gamma: 0.5,
-  secret: utf8("markwitness/open-reference-key/v1"),
-  provenance: "Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
-  vendorPublished: false
-};
-var describeKey = (k) => ({
-  id: k.id,
-  label: k.label,
-  gamma: k.gamma,
-  provenance: k.provenance,
-  vendorPublished: k.vendorPublished
-});
-
-// src/lib/detector/watermark.ts
-var MIN_TRIALS = 40;
-function isGreen(key, previous, current) {
-  return hmacUnitInterval(key.secret, `${key.scheme}|${previous}|${current}`) < key.gamma;
-}
-function distinctBigrams(tokens) {
-  const seen = /* @__PURE__ */ new Set();
-  const out = [];
-  for (let i = 1; i < tokens.length; i++) {
-    const prev = tokens[i - 1].norm;
-    const cur = tokens[i].norm;
-    if (prev.length === 0 || cur.length === 0) continue;
-    const id = `${prev}\0${cur}`;
-    if (seen.has(id)) continue;
-    seen.add(id);
-    out.push([prev, cur]);
-  }
-  return out;
-}
-function testWatermark(tokens, key) {
-  const bigrams = distinctBigrams(tokens);
-  const base = {
-    keyId: key.id,
-    keyLabel: key.label,
-    vendorPublished: key.vendorPublished,
-    expectedGreenRate: key.gamma
-  };
-  if (bigrams.length < MIN_TRIALS) {
-    return {
-      ...base,
-      status: "insufficient_data",
-      trials: bigrams.length,
-      greenCount: null,
-      greenRate: null,
-      greenRateInterval: null,
-      z: null,
-      pValue: null,
-      detail: `Only ${bigrams.length} distinct word pairs available; ${MIN_TRIALS} are needed before a z score means anything. No score is reported for this document.`
-    };
-  }
-  let green = 0;
-  for (const [prev, cur] of bigrams) if (isGreen(key, prev, cur)) green++;
-  const z = binomialZ(green, bigrams.length, key.gamma);
-  return {
-    ...base,
-    status: "computed",
-    trials: bigrams.length,
-    greenCount: green,
-    greenRate: green / bigrams.length,
-    greenRateInterval: wilsonInterval(green, bigrams.length),
-    z,
-    pValue: z === null ? null : upperTailP(z)
-  };
-}
-function testWatermarkPassage(tokens, key) {
-  const bigrams = distinctBigrams(tokens);
-  let green = 0;
-  for (const [prev, cur] of bigrams) if (isGreen(key, prev, cur)) green++;
-  const z = binomialZ(green, bigrams.length, key.gamma);
-  return { trials: bigrams.length, green, z, p: z === null ? null : upperTailP(z) };
-}
-
-// src/lib/detector/index.ts
-var ENGINE_VERSION = "1.0.0";
-var ALPHA = 0.01;
-function statedLimits(keys) {
-  const vendorKeys = keys.filter((k) => k.vendorPublished);
-  return [
-    "A detected mark is not proof of authorship. A mark can be present in text a person wrote with assistance, quoted, translated, or edited.",
-    "An absent mark is not proof of human authorship. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them.",
-    vendorKeys.length === 0 ? "This deployment holds no detection key published by a model vendor. It tested only the keys listed in this report, so it cannot make any statement about marks applied by a vendor whose key is not public." : `Vendor-published keys held by this deployment: ${vendorKeys.map((k) => k.label).join(", ")}.`,
-    "The watermark test operates on word pairs, not on a model\u2019s own subword vocabulary. A vendor\u2019s own detector has access to that vocabulary and can therefore reach a different conclusion on the same document.",
-    "The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced."
-  ];
-}
-function analyzeDocument(text, options) {
-  const analyzedAt = (/* @__PURE__ */ new Date()).toISOString();
-  const documentHash = sha256Hex(text);
-  const tokens = tokenize(text);
-  const limits = statedLimits(options.keys);
-  const keysTested = options.keys.map(describeKey);
-  const empty = {
-    engineVersion: ENGINE_VERSION,
-    status: "empty_document",
-    analyzedAt,
-    documentHash,
-    words: tokens.length,
-    characters: text.length,
-    language: { code: null, name: null, determinedBy: "measurement", scores: {}, margin: 0 },
-    watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
-    distribution: null,
-    passages: [],
-    passageCorrection: null,
-    limits
-  };
-  if (tokens.length === 0) {
-    return { ...empty, detail: "No words were found in the submitted text." };
-  }
-  const identification = identifyLanguage(tokens);
-  let language = null;
-  let determinedBy = "measurement";
-  if (options.language) {
-    if (!isSupportedLanguage(options.language)) {
-      return {
-        ...empty,
-        status: "unsupported_language",
-        language: {
-          code: null,
-          name: null,
-          determinedBy: "caller",
-          scores: identification.scores,
-          margin: identification.margin
-        },
-        detail: `Language "${options.language}" has no measured baseline in this build. Supported: ${SUPPORTED_LANGUAGES.join(", ")}. No analysis is reported rather than analysing against the wrong reference.`
-      };
-    }
-    language = options.language;
-    determinedBy = "caller";
-  } else {
-    language = identification.language;
-  }
-  if (language === null) {
-    return {
-      ...empty,
-      status: "language_undetermined",
-      language: { code: null, name: null, determinedBy, scores: identification.scores, margin: identification.margin },
-      detail: "The language could not be determined confidently from the text, and analysing against the wrong language baseline would produce a real-looking number that means nothing. Choose the language explicitly and run the check again."
-    };
-  }
-  const watermarkResults = options.keys.map((key) => testWatermark(tokens, key));
-  const anyDetected = watermarkResults.some(
-    (r) => r.status === "computed" && r.pValue !== null && r.pValue < ALPHA
-  );
-  const baseline6 = options.baselines?.[language] ?? null;
-  const distribution = baseline6 ? analyzeDistribution(text, language, baseline6) : noBaselineResult(language, tokens.length);
-  const granularity = options.granularity ?? "sentence";
-  const rawPassages = granularity === "paragraph" ? splitParagraphs(text) : splitSentences(text);
-  const fdr = options.fdr ?? 0.05;
-  const passages = rawPassages.map((p) => {
-    const passageTokens = tokenize(p.text);
-    let bestZ = null;
-    let bestP = null;
-    let bestKey = null;
-    for (const key of options.keys) {
-      const r = testWatermarkPassage(passageTokens, key);
-      if (r.z === null) continue;
-      if (bestZ === null || r.z > bestZ) {
-        bestZ = r.z;
-        bestP = r.p;
-        bestKey = key.id;
-      }
-    }
-    let styleDeviation = null;
-    if (baseline6 && passageTokens.length >= 40) {
-      const d = analyzeDistribution(p.text, language, baseline6);
-      styleDeviation = d.compositeDeviation;
-    }
-    return {
-      index: p.index,
-      text: p.text,
-      start: p.start,
-      end: p.end,
-      words: passageTokens.length,
-      watermarkZ: bestZ,
-      watermarkP: bestP,
-      watermarkKeyId: bestKey,
-      survivesCorrection: false,
-      styleDeviation
-    };
-  });
-  const testable = passages.filter((p) => p.watermarkP !== null);
-  let passageCorrection = null;
-  if (testable.length > 0) {
-    const survivors = benjaminiHochberg(
-      testable.map((p) => p.watermarkP),
-      fdr
-    );
-    for (const i of survivors) {
-      const target = passages.find((p) => p.index === testable[i].index);
-      if (target) target.survivesCorrection = true;
-    }
-    passageCorrection = {
-      method: "benjamini-hochberg",
-      fdr,
-      tested: testable.length,
-      survived: survivors.length
-    };
-  }
-  return {
-    engineVersion: ENGINE_VERSION,
-    status: "ok",
-    analyzedAt,
-    documentHash,
-    words: tokens.length,
-    characters: text.length,
-    language: {
-      code: language,
-      name: LANGUAGE_NAMES[language],
-      determinedBy,
-      scores: identification.scores,
-      margin: identification.margin
-    },
-    watermark: {
-      keysTested,
-      results: watermarkResults,
-      anyDetected,
-      coverageNotice: coverageNotice(options.keys)
-    },
-    distribution,
-    passages,
-    passageCorrection,
-    limits
-  };
-}
-function coverageNotice(keys) {
-  const names = keys.map((k) => k.label).join(", ");
-  const vendor = keys.filter((k) => k.vendorPublished);
-  if (vendor.length === 0) {
-    return `Tested against ${keys.length} key${keys.length === 1 ? "" : "s"} (${names}). None of these is a model vendor's published detection key, because no vendor publishes one. A result of "no mark detected" means no mark was found under these keys, and it is not a statement about marks applied with a key nobody outside the vendor holds.`;
-  }
-  return `Tested against ${keys.length} key${keys.length === 1 ? "" : "s"} (${names}), of which ${vendor.length} ${vendor.length === 1 ? "is" : "are"} vendor-published. A result of "no mark detected" applies only to the keys listed.`;
-}
-function resolveLanguage(text, explicit) {
-  if (explicit) {
-    return isSupportedLanguage(explicit) ? { language: explicit, reason: "caller" } : { language: null, reason: "unsupported" };
-  }
-  const id = identifyLanguage(tokenize(text));
-  return id.language ? { language: id.language, reason: "measured" } : { language: null, reason: "ambiguous" };
-}
-async function checkDocument(text, options) {
-  const { language } = resolveLanguage(text, options.language);
-  let baselines2 = {};
-  if (language) {
-    const { loadBaseline: loadBaseline2 } = await Promise.resolve().then(() => (init_baselines(), baselines_exports));
-    try {
-      baselines2 = { [language]: await loadBaseline2(language) };
-    } catch {
-      baselines2 = {};
-    }
-  }
-  return analyzeDocument(text, { ...options, baselines: baselines2 });
-}
-
 // mcp/server.ts
+init_detector();
 init_baselines();
+init_keys();
+init_languages();
+init_tokenize();
+
+// src/lib/entitlements/pro-trial.ts
+var PRO_TRIAL_WINDOW_DAYS = 7;
+var PRO_TRIAL_RUNS_PER_WINDOW = 1;
+var WINDOW_MS = PRO_TRIAL_WINDOW_DAYS * 24 * 60 * 60 * 1e3;
 
 // src/lib/site.ts
 var SITE = {
   name: "WatermarkRemoverPro",
   tagline: "Reduce detectable AI-style evidence in your writing, on your device, honestly.",
   description: "WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://watermarkremoverpro.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.watermarkremoverpro.com",
   contactEmail: "hello@watermarkremoverpro.com"
+};
+var proEngineTrialLine = `${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? "One" : PRO_TRIAL_RUNS_PER_WINDOW} free run of the Pro rewrite engine every ${PRO_TRIAL_WINDOW_DAYS} days, then unlimited Standard`;
+var PLANS = {
+  anonymous: {
+    id: "anonymous",
+    name: "No signup",
+    price: 0,
+    wordCap: 1500,
+    checksPerMonth: null,
+    rewrite: {
+      modelTier: "standard",
+      unlimited: true,
+      tellLibrary: "core",
+      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW
+    },
+    features: [
+      "Unlimited on-device rewriting on the Standard engine, core AI-tell library",
+      proEngineTrialLine,
+      "One document at a time to check, up to 1,500 words",
+      "Runs entirely in your browser, and the document is never uploaded",
+      "Confidence band, per-passage breakdown and stated limits on screen"
+    ]
+  },
+  free: {
+    id: "free",
+    name: "Free account",
+    price: 0,
+    wordCap: 5e3,
+    checksPerMonth: 20,
+    rewrite: {
+      modelTier: "standard",
+      unlimited: true,
+      tellLibrary: "core",
+      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW
+    },
+    features: [
+      "Unlimited on-device rewriting on the Standard engine, plus saved history",
+      `${proEngineTrialLine}, counted against your account rather than one browser`,
+      "Up to 5,000 words per document to check, 20 checks a month",
+      "All five supported languages"
+    ]
+  },
+  pro: {
+    id: "pro",
+    name: "Pro",
+    price: 19,
+    currency: "GBP",
+    wordCap: 1e5,
+    checksPerMonth: null,
+    rewrite: {
+      modelTier: "advanced",
+      unlimited: true,
+      tellLibrary: "extended",
+      proEngineRunsPerWindow: null
+    },
+    features: [
+      "The Pro rewrite engine with no weekly limit: a real local model, more candidates per passage, and the extended AI-tell library",
+      "Unlimited checks and batch upload",
+      "The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash",
+      "API and MCP access to checking, metered; rewriting is always on-device, on every tier"
+    ]
+  }
 };
 var API_PRICE_PENCE_PER_1K_WORDS = 2;
 
 // src/lib/calibrate/frequency.ts
+init_tokenize();
 var SIGNATURE_PATTERNS = {
   en: /* @__PURE__ */ new Set([
     // High-frequency function words that vary in human vs. AI writing
@@ -20383,233 +21937,9 @@ function calculateLexicalDiversity(tokenCounts) {
   return Math.max(0, Math.min(1, 1 - gini));
 }
 
-// src/lib/calibrate/dictionary.ts
-var dictionaryCache = /* @__PURE__ */ new Map();
-var EN_SYNONYMS = {
-  // Deliberately excluded, second pass: the function words. Articles,
-  // conjunctions and prepositions were listed here with "safe variants" and
-  // none of them were safe, for the same reason the auxiliaries below are not.
-  // A flat word-list substituter cannot see the slot it is writing into:
-  //
-  //   "to" -> "toward"          breaks every infinitive ("to run" -> "toward run")
-  //   "of" -> "belonging to"    "the set of capabilities" -> "the set belonging to capabilities"
-  //   "by" -> "near"            "written by Max" -> "written near Max", which is a different claim
-  //   "the" -> "that"           swaps a definite article for a demonstrative
-  //   "a" -> "some"             "a reliable set" -> "some reliable set"
-  //   "or" -> "either"          "A or B" -> "A either B"
-  //
-  // These were producing visibly worse English on real documents, which is the
-  // opposite of what someone reaches for this tool to do. Perturbing function
-  // words is also the least useful way to move a watermark statistic: the
-  // detector scores distinct word bigrams, and the AI-tell layer does the work
-  // a reader actually notices. Restoring any of these needs a
-  // part-of-speech-aware substituter, not a longer list.
-  //
-  // Deliberately excluded: is/was/are/be/been/being, have/has/had,
-  // do/does/did, and the modal verbs (can/could/will/would/should/
-  // may/might). These are auxiliaries: they combine with a following verb
-  // form (a participle, a bare infinitive) in ways their dictionary
-  // "synonyms" don't support, since this substituter has no grammar model
-  // and swaps a token for a fixed replacement string regardless of what
-  // surrounds it. Substituting "has" -> "possesses" inside "has been made"
-  // produces "possesses existed made" once "been" is also swapped for
-  // "existed": a real, reported bug, not a hypothetical one. A future
-  // part-of-speech- or context-aware substituter could safely reintroduce
-  // these; a flat word-list substituter cannot.
-  // Common content words.
-  //
-  // Two rules govern what may be listed here, both learned from output this
-  // engine actually produced:
-  //
-  // 1. Every variant must be a near-synonym at the SAME OR LOWER register.
-  //    "use" -> "utilize" was in this table, which had the tool installing one
-  //    of the best-known marks of machine and bureaucratic prose while
-  //    claiming to remove them. Anything that raises register is working
-  //    against the product.
-  // 2. Every variant must be grammatical in the same slot, with no change to
-  //    what follows. "become" -> "turn into" gave "become clear" -> "turn into
-  //    clear"; "let" -> "enable" gave "let us know" -> "enable us know".
-  //    Verbs whose complement pattern differs from the original are out.
-  //
-  // Words with no variant that clears both rules were dropped rather than
-  // given a mediocre one: a smaller table that never damages a sentence beats
-  // a longer one that sometimes does.
-  make: ["create", "produce"],
-  get: ["obtain", "receive"],
-  go: ["travel", "move"],
-  know: ["understand", "realize"],
-  think: ["believe", "reckon"],
-  see: ["observe", "notice"],
-  come: ["arrive", "appear"],
-  take: ["grab", "seize"],
-  give: ["offer", "hand over"],
-  find: ["discover", "locate"],
-  tell: ["inform", "notify"],
-  ask: ["question", "query"],
-  call: ["name", "summon"],
-  try: ["attempt"],
-  need: ["require"],
-  feel: ["sense"],
-  leave: ["depart", "exit"],
-  put: ["place", "set"],
-  keep: ["retain", "hold"],
-  begin: ["start"],
-  seem: ["appear"],
-  help: ["assist", "aid"],
-  talk: ["speak"],
-  start: ["begin"],
-  show: ["display", "reveal"],
-  write: ["compose", "draft"],
-  look: ["gaze", "peer"],
-  want: ["wish", "desire"],
-  move: ["shift", "relocate"]
-};
-async function loadDictionary(language) {
-  if (dictionaryCache.has(language)) {
-    return dictionaryCache.get(language);
-  }
-  if (language !== "en") {
-    throw new Error(`Dictionary not yet available for language: ${language}`);
-  }
-  const index = /* @__PURE__ */ new Map();
-  let id = 0;
-  for (const [canonical, variants] of Object.entries(EN_SYNONYMS)) {
-    index.set(canonical, {
-      id: id++,
-      canonical,
-      variants: variants.map((variant) => ({
-        id: id++,
-        term: variant,
-        confidence: 0.8
-        // Default confidence for built-in synonyms
-      })),
-      partOfSpeech: inferPartOfSpeech(canonical)
-    });
-  }
-  const dictionary = {
-    language,
-    version: "1.0.0",
-    builtAt: (/* @__PURE__ */ new Date()).toISOString(),
-    index,
-    getVariants(word) {
-      const group = index.get(word.toLowerCase());
-      return group ? group.variants.map((v) => v.term) : null;
-    }
-  };
-  dictionaryCache.set(language, dictionary);
-  return dictionary;
-}
-function inferPartOfSpeech(word) {
-  const articles = ["a", "an", "the"];
-  const conjunctions = ["and", "or", "but"];
-  const prepositions = ["in", "on", "of", "to", "for", "with", "by", "from", "at"];
-  const verbs = ["make", "get", "go", "know", "think", "see", "come", "take"];
-  if (articles.includes(word)) return "article";
-  if (conjunctions.includes(word)) return "conjunction";
-  if (prepositions.includes(word)) return "preposition";
-  if (verbs.includes(word)) return "verb";
-  return void 0;
-}
-
-// src/lib/calibrate/substituter.ts
-function performSubstitution(analysis, dictionary, config2 = {}) {
-  const substitutions = [];
-  const confidenceThreshold = config2.confidenceThreshold ?? 0.7;
-  const maxRepeats = config2.maxRepeats ?? 3;
-  const substitutionCounts = /* @__PURE__ */ new Map();
-  for (const [tokenIndex, token] of analysis.tokens.entries()) {
-    const norm = token.norm;
-    if (!analysis.signatureTokens.has(norm)) {
-      continue;
-    }
-    const positions = analysis.repetitionMap.get(norm) ?? [];
-    const isRepetitionViolation = positions.some(
-      (pos) => pos > tokenIndex && pos < tokenIndex + maxRepeats && pos !== tokenIndex
-    );
-    if (isRepetitionViolation) {
-      substitutions.push({
-        index: tokenIndex,
-        original: token.raw,
-        replacement: token.raw,
-        confidence: 1,
-        reason: "skipped_repetition"
-      });
-      continue;
-    }
-    const variants = dictionary.getVariants(norm);
-    if (!variants || variants.length === 0) {
-      substitutions.push({
-        index: tokenIndex,
-        original: token.raw,
-        replacement: token.raw,
-        confidence: 1,
-        reason: "not_in_dictionary"
-      });
-      continue;
-    }
-    const candidates = variants.map((variant) => ({
-      variant,
-      usageCount: substitutionCounts.get(variant) ?? 0
-    })).sort((a, b) => {
-      if (a.usageCount !== b.usageCount) {
-        return a.usageCount - b.usageCount;
-      }
-      return a.variant.length - b.variant.length;
-    });
-    const selected = candidates[0]?.variant;
-    if (!selected) {
-      substitutions.push({
-        index: tokenIndex,
-        original: token.raw,
-        replacement: token.raw,
-        confidence: 1,
-        reason: "below_threshold"
-      });
-      continue;
-    }
-    substitutionCounts.set(selected, (substitutionCounts.get(selected) ?? 0) + 1);
-    const confidence = Math.max(0.1, confidenceThreshold);
-    substitutions.push({
-      index: tokenIndex,
-      original: token.raw,
-      replacement: preserveCase(selected, token.raw),
-      confidence,
-      reason: "synonym",
-      alternatives: variants.slice(0, 3)
-      // Show up to 3 alternatives
-    });
-  }
-  return substitutions;
-}
-function applySubstitutions(text, tokens, substitutions) {
-  const substitutionMap = new Map(
-    substitutions.map((s) => [s.index, s.replacement])
-  );
-  let result = "";
-  let lastEnd = 0;
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    const replacement = substitutionMap.get(i);
-    result += text.slice(lastEnd, token.start);
-    if (replacement) {
-      result += replacement;
-    } else {
-      result += text.slice(token.start, token.end);
-    }
-    lastEnd = token.end;
-  }
-  result += text.slice(lastEnd);
-  return result;
-}
-function preserveCase(replacement, original) {
-  if (original === original.toUpperCase() && original.length > 1) {
-    return replacement.toUpperCase();
-  }
-  if (original[0] === original[0].toUpperCase() && /[A-Z]/.test(original[0])) {
-    return replacement.charAt(0).toUpperCase() + replacement.slice(1).toLowerCase();
-  }
-  return replacement.toLowerCase();
-}
+// src/lib/calibrate/engine.ts
+init_dictionary();
+init_substituter();
 
 // src/lib/calibrate/scoring.ts
 function calculateMetrics(text, language) {
@@ -20639,6 +21969,8 @@ function calculateLexicalChangePercent(totalTokens, substitutions) {
 }
 
 // src/lib/calibrate/engine.ts
+init_detector();
+init_tokenize();
 async function calibrateText(request) {
   const startTime = performance.now();
   const { text, language, mode, config: config2 } = request;
@@ -20736,735 +22068,22 @@ function defaultComparison() {
   };
 }
 
-// src/lib/calibrate/patterns.ts
-var assemble = (...parts) => parts.join("");
-var DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g;
-var CORE_STOCK_PHRASES = {
-  "delve into": ["look at", "examine", "go into"],
-  "it is important to note that": ["note that", "worth noting:", ""],
-  "it's important to note that": ["note that", "worth noting:", ""],
-  "in conclusion": ["overall", "to sum up", "in short"],
-  "in summary": ["overall", "to sum up", "in short"],
-  "plays a crucial role": ["matters", "is central", "is a key part"],
-  "plays a vital role": ["matters", "is central", "is a key part"],
-  "a testament to": ["evidence of", "a sign of", "proof of"],
-  "rich tapestry": ["mix", "range", "variety"],
-  "navigate the complexities of": ["deal with", "work through", "handle"],
-  "in today\u2019s fast-paced world": ["now", "these days", "currently"],
-  "in today's fast-paced world": ["now", "these days", "currently"],
-  "unlock the potential of": ["make the most of", "get value from", "use"],
-  "stands as a": ["is a", "remains a"],
-  "boasts a": ["has a", "offers a"],
-  "underscores the importance of": ["shows why X matters", "highlights", "points to the importance of"],
-  [assemble("seam", "lessly integrate")]: ["fit together", "combine cleanly", "work together"],
-  furthermore: ["also", "and", "beyond that"],
-  moreover: ["also", "and", "on top of that"],
-  additionally: ["also", "and", "on top of that"]
-};
-var EXTENDED_STOCK_PHRASES = {
-  ...CORE_STOCK_PHRASES,
-  // Announcement and marketing register. This is what an assistant reaches
-  // for when asked to write a launch post, and it is the single most
-  // recognisable block of generated copy on the public web.
-  "we are thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we're thrilled to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we are excited to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we're excited to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "we are proud to announce": ["we are announcing", "today we are launching", "we have launched"],
-  "i'm thrilled to share": ["here is", "sharing"],
-  "thrilled to share": ["sharing", "here is"],
-  // Copula avoidance: models systematically prefer a heavier verb where
-  // "is" would do. Documented in the Wikipedia catalogue and in the
-  // biomedical excess-vocabulary study.
-  "serves as a": ["is a", "works as a"],
-  "functions as a": ["is a", "works as a"],
-  "stands as": ["is", "remains"],
-  "marks a significant": ["is a significant", "is an important"],
-  "represents a shift": ["is a shift", "shifts"],
-  // Superficial-analysis verbs and significance puffery.
-  "valuable insights": ["findings", "useful detail", "what it shows"],
-  "a wide range of": ["many", "a lot of", "various"],
-  "a treasure trove of": ["a lot of", "plenty of", "a store of"],
-  "when it comes to": ["for", "with", "on"],
-  "at its core": ["fundamentally", "basically", "essentially"],
-  "that being said": ["even so", "still", "that said"],
-  "to put it simply": ["put simply", "in short"],
-  "it is worth noting that": ["note that", "worth noting:", ""],
-  "it's worth noting that": ["note that", "worth noting:", ""],
-  "needless to say": ["clearly", "obviously", ""],
-  "the fact of the matter is": ["in fact", "actually", ""],
-  "in the realm of": ["in", "within", "across"],
-  "the ever-evolving landscape of": ["the changing world of", "changes in", ""],
-  "the evolving landscape of": ["the changing world of", "changes in", ""],
-  "paradigm shift": ["change", "shift", "break with the past"],
-  "deep dive": ["detailed look", "close look", "thorough review"],
-  "i hope this helps": ["", "hope that helps"],
-  "let me walk you through": ["here is", "the steps are", ""],
-  // Promotional vocabulary. Assembled from fragments (see `assemble`)
-  // because this repo's own house-style test bans these words in source
-  // prose, which is exactly why they belong in a table that flags them.
-  [assemble("super", "charge")]: ["speed up", "improve", "strengthen"],
-  [assemble("game", "-changing")]: ["significant", "major", "important"],
-  [assemble("cutting", "-edge")]: ["recent", "advanced", "current"],
-  [assemble("best", "-in-class")]: ["strong", "leading", "well regarded"],
-  [assemble("effort", "less")]: ["simple", "straightforward", "easy"],
-  [assemble("elevate", " your")]: ["improve your", "strengthen your"],
-  [assemble("harness", " the power of")]: ["use", "make use of", "apply"],
-  [assemble("unlock", " the power of")]: ["use", "make use of", "get value from"],
-  [assemble("revolution", "ise")]: ["change", "transform", "reshape"],
-  [assemble("revolution", "ize")]: ["change", "transform", "reshape"]
-};
-var TRIADIC_LIST_PATTERN = /\b(\w+),\s+(\w+),\s+and\s+(\w+)\b/g;
-var NEGATIVE_PARALLELISM_PATTERN = /\b(?:it(?:'|’)?s not (?:just|only|merely)|not (?:just|only|merely)|isn(?:'|’)?t just)\b[^.!?]{0,80}?\b(?:but|it(?:'|’)?s|its|it is|it was|they(?:'|’)?re|they are)\b/gi;
-var ELEVATED_VOCABULARY = [
-  "delve",
-  "tapestry",
-  "testament",
-  "underscore",
-  "underscores",
-  "meticulous",
-  "meticulously",
-  "pivotal",
-  "realm",
-  "robust",
-  "leverage",
-  "showcase",
-  "showcasing",
-  "boasts",
-  "bolstered",
-  "garner",
-  "intricate",
-  "intricacies",
-  "interplay",
-  "vibrant",
-  "crucial",
-  "nuanced",
-  "multifaceted",
-  "illuminate",
-  "fostering",
-  "encompassing",
-  "resonate",
-  "align",
-  "holistic",
-  "comprehensive"
-];
-var REGISTER_DOWNSHIFT = {
-  underscore: ["stress", "show"],
-  underscores: ["stresses", "shows"],
-  meticulous: ["careful", "thorough"],
-  meticulously: ["carefully", "thoroughly"],
-  pivotal: ["central", "decisive"],
-  realm: ["field", "area"],
-  robust: ["strong", "reliable", "sturdy"],
-  showcase: ["show", "display"],
-  showcasing: ["showing", "displaying"],
-  boasts: ["has", "offers"],
-  bolstered: ["strengthened", "reinforced"],
-  garner: ["gather", "attract"],
-  intricate: ["complex", "detailed"],
-  intricacies: ["details", "complexities"],
-  interplay: ["interaction", "relationship"],
-  vibrant: ["lively", "bright"],
-  crucial: ["essential", "central"],
-  nuanced: ["subtle", "careful"],
-  multifaceted: ["many-sided", "complex"],
-  fostering: ["encouraging", "building"],
-  encompassing: ["covering", "including"],
-  holistic: ["overall", "whole"],
-  comprehensive: ["complete", "full", "thorough"]
-};
-var REGISTER_DENSITY_THRESHOLD = 2;
-
-// src/lib/calibrate/ai-tells.ts
-function shouldSwapDashes(strength) {
-  return strength !== "preserve";
-}
-function shouldSwapPhrases() {
-  return true;
-}
-function swapDashes(text) {
-  const changes = [];
-  let useComma = true;
-  let result = "";
-  let lastEnd = 0;
-  DASH_CLAUSE_PATTERN.lastIndex = 0;
-  let match;
-  while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
-    const start = match.index;
-    const end = start + match[0].length;
-    const replacement = useComma ? ", " : ". ";
-    useComma = !useComma;
-    result += text.slice(lastEnd, start) + replacement;
-    changes.push({
-      start,
-      end,
-      original: match[0],
-      replacement,
-      category: "punctuation",
-      note: "Em/en dash used as a clause connector, a construction over-represented in LLM output relative to typical published prose."
-    });
-    lastEnd = end;
-  }
-  result += text.slice(lastEnd);
-  return { text: result, changes };
-}
-function swapStockPhrases(text, library) {
-  const changes = [];
-  const usage = /* @__PURE__ */ new Map();
-  const table = library === "extended" ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES;
-  let result = text;
-  const phrases = Object.keys(table).sort((a, b) => b.length - a.length);
-  for (const phrase of phrases) {
-    const alternatives = table[phrase];
-    const re = new RegExp(escapeRegExp(phrase), "gi");
-    let match;
-    let cursor = 0;
-    let next = "";
-    re.lastIndex = 0;
-    while ((match = re.exec(result)) !== null) {
-      const idx = usage.get(phrase) ?? 0;
-      const replacement = alternatives[idx % alternatives.length];
-      usage.set(phrase, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
-      changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
-        original: match[0],
-        replacement,
-        category: "phrase",
-        note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`
-      });
-      cursor = match.index + match[0].length;
-    }
-    next += result.slice(cursor);
-    result = next;
-  }
-  return { text: result, changes };
-}
-function vocabularyWordsToSwap(text, strength) {
-  const swap = /* @__PURE__ */ new Set();
-  if (strength === "preserve") return swap;
-  for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
-    const count = countWholeWord(text, word);
-    if (count === 0) continue;
-    if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
-    swap.add(word);
-  }
-  return swap;
-}
-function swapElevatedVocabulary(text, strength) {
-  const targets = vocabularyWordsToSwap(text, strength);
-  if (targets.size === 0) return { text, changes: [] };
-  const changes = [];
-  const usage = /* @__PURE__ */ new Map();
-  let result = text;
-  for (const word of targets) {
-    const alternatives = REGISTER_DOWNSHIFT[word];
-    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
-    let match;
-    let cursor = 0;
-    let next = "";
-    re.lastIndex = 0;
-    while ((match = re.exec(result)) !== null) {
-      const idx = usage.get(word) ?? 0;
-      const replacement = alternatives[idx % alternatives.length];
-      usage.set(word, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
-      changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
-        original: match[0],
-        replacement,
-        category: "vocabulary",
-        note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
-      });
-      cursor = match.index + match[0].length;
-    }
-    next += result.slice(cursor);
-    result = next;
-  }
-  return { text: result, changes };
-}
-function countWholeWord(text, word) {
-  const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
-  return text.match(re)?.length ?? 0;
-}
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-function applyCase(original, replacement) {
-  if (replacement.length === 0) return replacement;
-  if (original[0] === original[0].toUpperCase() && /[A-Za-z]/.test(original[0])) {
-    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-  }
-  return replacement;
-}
-function flagStructures(text) {
-  const flagged = [];
-  TRIADIC_LIST_PATTERN.lastIndex = 0;
-  let match;
-  while ((match = TRIADIC_LIST_PATTERN.exec(text)) !== null) {
-    flagged.push({
-      start: match.index,
-      end: match.index + match[0].length,
-      text: match[0],
-      kind: "triadic-list",
-      note: "Three-item list. Ordinary once; a recognisable tic when it recurs through a document."
-    });
-  }
-  NEGATIVE_PARALLELISM_PATTERN.lastIndex = 0;
-  while ((match = NEGATIVE_PARALLELISM_PATTERN.exec(text)) !== null) {
-    flagged.push({
-      start: match.index,
-      end: match.index + match[0].length,
-      text: match[0],
-      kind: "negative-parallelism",
-      note: '"Not just X, but Y" construction, one of the most reliable structural tells in current model output.'
-    });
-  }
-  return flagged.sort((a, b) => a.start - b.start);
-}
-function countElevatedVocabulary(text) {
-  const counts = [];
-  for (const word of ELEVATED_VOCABULARY) {
-    const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
-    const found = text.match(re);
-    if (found && found.length > 0) counts.push({ word, count: found.length });
-  }
-  return counts.sort((a, b) => b.count - a.count);
-}
-var PARALLELISM_WEIGHT = 2;
-var TRIADIC_WEIGHT = 1;
-function measureStyleTells(text) {
-  const flagged = flagStructures(text);
-  const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0);
-  const weighted = flagged.reduce(
-    (sum, f) => sum + (f.kind === "negative-parallelism" ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
-    0
-  );
-  return {
-    structures: flagged.length,
-    vocabulary,
-    pressure: weighted + Math.floor(vocabulary / 2)
-  };
-}
-function applyDeterministicPass(text, strength = "balanced", library = "core") {
-  let current = text;
-  const allChanges = [];
-  if (shouldSwapPhrases()) {
-    const { text: swapped, changes } = swapStockPhrases(current, library);
-    current = swapped;
-    allChanges.push(...changes);
-  }
-  if (shouldSwapDashes(strength)) {
-    const { text: swapped, changes } = swapDashes(current);
-    current = swapped;
-    allChanges.push(...changes);
-  }
-  {
-    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
-    current = swapped;
-    allChanges.push(...changes);
-  }
-  return {
-    text: current,
-    changes: allChanges,
-    flaggedStructures: flagStructures(current),
-    elevatedVocabulary: countElevatedVocabulary(current)
-  };
-}
-
-// src/lib/rewrite/backend/rule-based.ts
-var EMBED_DIMS = 256;
-function fnv1a(s) {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-async function generateCandidate(passage, language, seed, strength, library) {
-  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library);
-  let dictionary;
-  try {
-    dictionary = await loadDictionary(language);
-  } catch {
-    return tellSwapped;
-  }
-  const tokens = tokenize(tellSwapped);
-  const substitutionRate = strength === "preserve" ? 0.15 : strength === "balanced" ? 0.3 : strength === "aggressive" ? 0.45 : 0.6;
-  let result = "";
-  let lastEnd = 0;
-  for (const token of tokens) {
-    const variants = dictionary.getVariants(token.norm);
-    result += tellSwapped.slice(lastEnd, token.start);
-    if (variants && variants.length > 0) {
-      const gate = fnv1a(`${token.norm}:${token.start}:${seed}`) % 100;
-      if (gate < substitutionRate * 100) {
-        const variantIndex = fnv1a(`${token.norm}:${seed}:pick`) % variants.length;
-        result += preserveCase(variants[variantIndex], token.raw);
-      } else {
-        result += tellSwapped.slice(token.start, token.end);
-      }
-    } else {
-      result += tellSwapped.slice(token.start, token.end);
-    }
-    lastEnd = token.end;
-  }
-  result += tellSwapped.slice(lastEnd);
-  return result;
-}
-function hashedBagOfWordsEmbed(text) {
-  const vec = new Array(EMBED_DIMS).fill(0);
-  const tokens = tokenize(text.toLowerCase());
-  if (tokens.length === 0) return vec;
-  for (const token of tokens) {
-    if (token.norm.length === 0) continue;
-    const bucket = fnv1a(token.norm) % EMBED_DIMS;
-    vec[bucket] += 1;
-  }
-  const norm = Math.sqrt(vec.reduce((sum, v) => sum + v * v, 0));
-  return norm === 0 ? vec : vec.map((v) => v / norm);
-}
-function createRuleBasedBackend(language = "en", library = "core") {
-  return {
-    id: "rule-based",
-    modelTier: "rule-based",
-    async generate(passage, options) {
-      const count = Math.max(1, options.count);
-      const candidates = await Promise.all(
-        Array.from(
-          { length: count },
-          (_, i) => generateCandidate(passage, options.language ?? language, i, options.strength, library)
-        )
-      );
-      return Array.from(new Set(candidates));
-    },
-    async embed(text) {
-      return hashedBagOfWordsEmbed(text);
-    }
-  };
-}
-
-// src/lib/rewrite/targeting.ts
-var NOTABLE_Z = 2.5;
-var NOTABLE_STYLE_DEVIATION = 2;
-var NOTABLE_TELL_PRESSURE = 2;
-function targetPassages(passages, strength, tellPressure) {
-  const pressure = (p) => tellPressure?.get(p.index) ?? 0;
-  switch (strength) {
-    case "preserve":
-      return passages.filter((p) => p.survivesCorrection);
-    case "balanced":
-      return passages.filter(
-        (p) => p.survivesCorrection || p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z || p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION || pressure(p) >= NOTABLE_TELL_PRESSURE
-      );
-    case "aggressive":
-      return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null || pressure(p) > 0);
-    case "regenerate":
-      return passages;
-  }
-}
-function minSimilarity(strength) {
-  switch (strength) {
-    case "preserve":
-      return 0.92;
-    case "balanced":
-      return 0.85;
-    case "aggressive":
-      return 0.78;
-    case "regenerate":
-      return 0.65;
-  }
-}
-function candidateCount(tier) {
-  return tier === "pro" ? 4 : 2;
-}
-var MAX_ROUNDS = 5;
-
-// src/lib/rewrite/backend/types.ts
-function cosineSimilarity(a, b) {
-  if (a.length !== b.length || a.length === 0) return 0;
-  let dot = 0;
-  let magA = 0;
-  let magB = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    magA += a[i] * a[i];
-    magB += b[i] * b[i];
-  }
-  if (magA === 0 || magB === 0) return 0;
-  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
-}
-
-// src/lib/rewrite/fact-lock.ts
-var NUMBER_RE = /-?\d[\d,]*(\.\d+)?%?/g;
-var NEGATION_CUES = [
-  "not",
-  "n't",
-  "never",
-  "no ",
-  "none",
-  "nothing",
-  "nobody",
-  "neither",
-  "nor",
-  "without",
-  "cannot"
-];
-var PROPER_NOUN_RE = /\b[A-Z][a-zA-Z]{2,}\b/g;
-var SENTENCE_START_RE = /(^|[.!?]\s+)([A-Z][a-zA-Z]{2,})/g;
-function extractFacts(text) {
-  const numbers = text.match(NUMBER_RE) ?? [];
-  const lower = text.toLowerCase();
-  let negationCount = 0;
-  for (const cue of NEGATION_CUES) {
-    negationCount += countOccurrences(lower, cue);
-  }
-  const properNouns = /* @__PURE__ */ new Set();
-  const sentenceStartWords = /* @__PURE__ */ new Set();
-  SENTENCE_START_RE.lastIndex = 0;
-  let startMatch;
-  while ((startMatch = SENTENCE_START_RE.exec(text)) !== null) {
-    sentenceStartWords.add(startMatch[2]);
-  }
-  PROPER_NOUN_RE.lastIndex = 0;
-  let match;
-  while ((match = PROPER_NOUN_RE.exec(text)) !== null) {
-    properNouns.add(match[0]);
-  }
-  for (const word of sentenceStartWords) {
-    const occurrences = countOccurrences(text, word);
-    const capitalOccurrences = (text.match(new RegExp(`\\b${escapeRegExp2(word)}\\b`, "g")) ?? []).length;
-    if (occurrences === capitalOccurrences && occurrences <= 1) properNouns.delete(word);
-  }
-  return { numbers, negationCount, properNouns };
-}
-function verifyFacts(original, candidateText) {
-  const candidate = extractFacts(candidateText);
-  const missingNumbers = original.numbers.filter((n) => !candidate.numbers.includes(n));
-  if (missingNumbers.length > 0) {
-    return { passed: false, detail: `Number(s) from the original are missing or changed: ${missingNumbers.join(", ")}.` };
-  }
-  if (original.negationCount !== candidate.negationCount) {
-    return {
-      passed: false,
-      detail: `Negation count changed (${original.negationCount} \u2192 ${candidate.negationCount}); a "not" may have been added or dropped, which can invert meaning.`
-    };
-  }
-  const missingNouns = [...original.properNouns].filter((n) => !candidateText.includes(n));
-  if (missingNouns.length > 0) {
-    return { passed: false, detail: `Named term(s) from the original are missing: ${missingNouns.join(", ")}.` };
-  }
-  return { passed: true };
-}
-function countOccurrences(haystack, needle) {
-  if (needle.length === 0) return 0;
-  let count = 0;
-  let pos = haystack.indexOf(needle);
-  while (pos !== -1) {
-    count++;
-    pos = haystack.indexOf(needle, pos + needle.length);
-  }
-  return count;
-}
-function escapeRegExp2(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-// src/lib/rewrite/scoring.ts
-async function scoreCandidate(originalText, originalFacts, originalTellPressure, candidateText, backend, options) {
-  const [origEmbed, candEmbed] = await Promise.all([backend.embed(originalText), backend.embed(candidateText)]);
-  const semanticScore = cosineSimilarity(origEmbed, candEmbed);
-  const factLock = verifyFacts(originalFacts, candidateText);
-  const bestZ = bestWatermarkZ(candidateText, options.keys);
-  const tellPressure = measureStyleTells(candidateText).pressure;
-  const gated = !factLock.passed || semanticScore < options.minSimilarity;
-  const paretoScore = gated ? -Infinity : semanticScore - normalizedZPenalty(bestZ) + tellReductionBonus(originalTellPressure, tellPressure);
-  return {
-    text: candidateText,
-    semanticScore,
-    factLockPassed: factLock.passed,
-    factLockDetail: factLock.detail,
-    evidenceZ: bestZ,
-    tellPressure,
-    paretoScore
-  };
-}
-async function scoreCandidates(originalText, candidateTexts, backend, options) {
-  const originalFacts = extractFacts(originalText);
-  const originalTellPressure = measureStyleTells(originalText).pressure;
-  return Promise.all(
-    candidateTexts.map(
-      (c) => scoreCandidate(originalText, originalFacts, originalTellPressure, c, backend, options)
-    )
-  );
-}
-function pickBest(candidates) {
-  const survivors = candidates.filter((c) => c.paretoScore > -Infinity);
-  if (survivors.length === 0) return null;
-  return survivors.sort((a, b) => b.paretoScore - a.paretoScore)[0];
-}
-function bestWatermarkZ(text, keys) {
-  if (keys.length === 0) return null;
-  const tokens = tokenize(text);
-  let best = null;
-  for (const key of keys) {
-    const { z } = testWatermarkPassage(tokens, key);
-    if (z === null) continue;
-    if (best === null || z < best) best = z;
-  }
-  return best;
-}
-function normalizedZPenalty(z) {
-  if (z === null) return 0;
-  return Math.max(0, z) * 0.05;
-}
-function tellReductionBonus(originalPressure, candidatePressure) {
-  const removed = originalPressure - candidatePressure;
-  return Math.max(-0.12, Math.min(0.12, removed * 0.04));
-}
-
-// src/lib/rewrite/orchestrator.ts
-var REWRITE_LIMITS = [
-  "This reduces detectable AI-style evidence. It cannot guarantee defeating a model vendor's undisclosed watermark. No tool can, since nobody outside that vendor holds the key it was applied with.",
-  'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
-  "The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro's own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.",
-  "All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier."
-];
-function replacePassages(text, replacements) {
-  const sorted = [...replacements].sort((a, b) => a.start - b.start);
-  let result = "";
-  let cursor = 0;
-  for (const r of sorted) {
-    result += text.slice(cursor, r.start) + r.text;
-    cursor = r.end;
-  }
-  result += text.slice(cursor);
-  return result;
-}
-async function rewriteDocument(request, backend, keys) {
-  const startTime = Date.now();
-  if (!request.text || request.text.trim().length === 0) {
-    return {
-      status: "error",
-      error: "Text is empty.",
-      documentBefore: null,
-      documentAfter: null,
-      passages: [],
-      revisedText: "",
-      tellChangeCount: 0,
-      flaggedStructures: [],
-      elevatedVocabulary: [],
-      additionalTellsInExtendedLibrary: 0,
-      roundsUsed: 0,
-      tier: request.tier,
-      strength: request.strength,
-      processingTimeMs: Date.now() - startTime,
-      limits: REWRITE_LIMITS
-    };
-  }
-  const {
-    text: afterTells,
-    changes: tellChanges,
-    flaggedStructures,
-    elevatedVocabulary
-  } = applyDeterministicPass(
-    request.text,
-    request.strength,
-    request.tier === "pro" ? "extended" : "core"
-  );
-  const additionalTellsInExtendedLibrary = request.tier === "pro" ? 0 : Math.max(
-    0,
-    applyDeterministicPass(request.text, request.strength, "extended").changes.length - tellChanges.length
-  );
-  let currentText = afterTells;
-  let analysis = await checkDocument(currentText, { keys, language: request.language });
-  const documentBefore = analysis;
-  const passageResults = /* @__PURE__ */ new Map();
-  const attempted = /* @__PURE__ */ new Set();
-  let round = 0;
-  for (; round < MAX_ROUNDS; round++) {
-    const tellPressure = new Map(
-      analysis.passages.map((p) => [p.index, measureStyleTells(p.text).pressure])
-    );
-    const targets = targetPassages(analysis.passages, request.strength, tellPressure).filter(
-      (p) => !attempted.has(p.index)
-    );
-    if (targets.length === 0) break;
-    const replacements = [];
-    for (const passage of targets) {
-      attempted.add(passage.index);
-      const candidateTexts = await backend.generate(passage.text, {
-        count: candidateCount(request.tier),
-        strength: request.strength,
-        language: request.language ?? analysis.language.code ?? void 0
-      });
-      const scored = await scoreCandidates(passage.text, candidateTexts, backend, {
-        minSimilarity: minSimilarity(request.strength),
-        keys
-      });
-      const best = pickBest(scored);
-      const chosenText = best?.text ?? passage.text;
-      if (best) {
-        replacements.push({ start: passage.start, end: passage.end, text: chosenText, index: passage.index });
-      }
-      passageResults.set(passage.index, mergeExisting(passageResults.get(passage.index), {
-        index: passage.index,
-        original: passageResults.get(passage.index)?.original ?? passage.text,
-        chosen: best ? chosenText : null,
-        candidates: scored,
-        beforeZ: passageResults.get(passage.index)?.beforeZ ?? passage.watermarkZ,
-        afterZ: best?.evidenceZ ?? passage.watermarkZ,
-        beforeStyleDeviation: passageResults.get(passage.index)?.beforeStyleDeviation ?? passage.styleDeviation,
-        reason: best ? "llm-rewrite" : "unchanged-no-safe-candidate"
-      }));
-    }
-    if (replacements.length === 0) break;
-    currentText = replacePassages(currentText, replacements);
-    const next = await checkDocument(currentText, { keys, language: request.language });
-    const survivedBefore = analysis.passageCorrection?.survived ?? 0;
-    const survivedAfter = next.passageCorrection?.survived ?? 0;
-    analysis = next;
-    if (survivedAfter >= survivedBefore && replacements.length < targets.length) break;
-    if (survivedAfter === 0 && survivedBefore === 0 && request.strength !== "regenerate") break;
-  }
-  return {
-    status: "ok",
-    documentBefore,
-    documentAfter: analysis,
-    passages: [...passageResults.values()].sort((a, b) => a.index - b.index),
-    revisedText: currentText,
-    tellChangeCount: tellChanges.length,
-    flaggedStructures: flaggedStructures.map((f) => ({ kind: f.kind, text: f.text, note: f.note })),
-    elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
-    additionalTellsInExtendedLibrary,
-    roundsUsed: round,
-    tier: request.tier,
-    strength: request.strength,
-    processingTimeMs: Date.now() - startTime,
-    limits: REWRITE_LIMITS
-  };
-}
-function mergeExisting(existing, next) {
-  if (!existing) return next;
-  return { ...next, candidates: [...existing.candidates, ...next.candidates] };
-}
-
-// src/lib/rewrite/index.ts
-init_models();
-async function reduceEvidence(request, keys) {
-  const backend = createRuleBasedBackend(
-    request.language ?? "en",
-    request.tier === "pro" ? "extended" : "core"
-  );
-  return rewriteDocument(request, backend, keys);
-}
+// src/lib/calibrate/index.ts
+init_dictionary();
+init_substituter();
 
 // mcp/server.ts
-var API_BASE = (process.env.MARKWITNESS_API_URL || "https://watermarkremoverpro.com").replace(/\/$/, "");
-var API_KEY = process.env.MARKWITNESS_API_KEY || "";
+init_rewrite();
+init_engine_choice();
+init_env_names();
+var apiUrl = readAliasedEnv(process.env, ENV_API_URL);
+var apiKey = readAliasedEnv(process.env, ENV_API_KEY);
+var API_BASE = (apiUrl.value || "https://www.watermarkremoverpro.com").replace(/\/$/, "");
+var API_KEY = apiKey.value || "";
+var LEGACY_ENV_NOTICES = [
+  apiKey.legacy ? describeLegacyEnvUse(ENV_API_KEY) : null,
+  apiUrl.legacy ? describeLegacyEnvUse(ENV_API_URL) : null
+].filter((notice) => notice !== null);
 var server = new Server({ name: "watermarkremoverpro", version: ENGINE_VERSION }, { capabilities: { tools: {} } });
 var checkDocumentSchema = {
   type: "object",
@@ -21488,7 +22107,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
       name: "check_document",
-      description: 'Check a document for a statistical AI provenance mark (green-list watermark) and report the signal strength with a confidence band, a per-passage breakdown, and the stated limits of the method.\n\nCall this before handing text to a person or system that cares how it was produced. disclosing provenance up front is cheaper than being asked afterwards.\n\nREAD THE LIMITS IN THE RESPONSE BEFORE ACTING ON IT. Two of them decide how the result may be used: a detected mark is NOT proof of authorship, and an absent mark is NOT proof of human authorship. A green-list mark is keyed, and no model vendor publishes its detection key, so "no mark detected" always means "under the keys this deployment holds" which the response lists explicitly. Do not report this result as a verdict on who wrote something.\n\n' + (API_KEY ? `Configured with an API key: calls go to ${API_BASE}, which applies any vendor keys that deployment holds, saves the check to the account history, and meters it at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.` : "No MARKWITNESS_API_KEY is set, so this runs locally in this process against the published open reference key only. Nothing leaves the machine, nothing is recorded, and nothing is billed. Set MARKWITNESS_API_KEY to use vendor keys and saved history."),
+      description: 'Check a document for a statistical AI provenance mark (green-list watermark) and report the signal strength with a confidence band, a per-passage breakdown, and the stated limits of the method. The result also carries aiLikelihood: a separate, key-free heuristic score (0-100) for surface habits common in LLM output (dash-clause connectors, stock phrasing, elevated vocabulary, uniform sentence length), tuned to flag more real AI writing at the cost of more false positives. It is not a statistical test and never substitutes for the watermark result.\n\nCall this before handing text to a person or system that cares how it was produced. disclosing provenance up front is cheaper than being asked afterwards.\n\nREAD THE LIMITS IN THE RESPONSE BEFORE ACTING ON IT. Two of them decide how the result may be used: a detected mark is NOT proof of authorship, and an absent mark is NOT proof of human authorship. A green-list mark is keyed, and no model vendor publishes its detection key, so "no mark detected" always means "under the keys this deployment holds" which the response lists explicitly. Do not report this result, or the aiLikelihood score, as a verdict on who wrote something.\n\n' + (API_KEY ? `Configured with an API key: calls go to ${API_BASE}, which applies any vendor keys that deployment holds, saves the check to the account history, and meters it at ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.` : `No ${ENV_API_KEY.canonical} is set, so this runs locally in this process against the published open reference key only. Nothing leaves the machine, nothing is recorded, and nothing is billed. This is the default. Setting ${ENV_API_KEY.canonical} opts in to the hosted endpoint, which adds vendor keys and saved history and is the only mode in which the document is transmitted.`),
       inputSchema: checkDocumentSchema
     },
     {
@@ -21544,8 +22163,8 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
           },
           model: {
             type: "string",
-            enum: ["standard", "advanced"],
-            description: '"standard" (default) is the deterministic rule-based engine: instant, no download. "advanced" runs a real small local LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) via onnxruntime-node, downloaded from the Hugging Face CDN and cached under ~/.cache/markwitness/models on first use, never from a WatermarkRemoverPro-operated server, and still on-device only. First call with "advanced" can take a while (model download); later calls reuse the cache. If the model cannot be loaded (offline, unsupported platform), this automatically falls back to "standard" and the response says so in `model`.'
+            enum: [...MODEL_CHOICES],
+            description: '"auto" (the default) runs the local model when its weights are already cached on this machine and the deterministic engine when they are not, so a machine that has the model gets it without asking and one that does not is never stalled behind an unrequested download. "advanced" runs the local model either way, downloading the weights on the first call. "standard" is the deterministic rule-based engine: instant, no download. The local model is a real small LLM (Qwen2.5, 0.5B for free / 1.5B for pro tier) run via onnxruntime-node, fetched from the Hugging Face CDN and cached under ~/.cache/watermarkremoverpro/models, never from a WatermarkRemoverPro-operated server, and still on-device only. Every response carries an `engine` object naming which one ran and why; if the local model was chosen and could not load, `engine.failure` carries the reason and the deterministic engine finishes the job. Set WATERMARKREMOVERPRO_REWRITE_STRICT=1 to make that a hard error instead.'
           },
           detail: {
             type: "string",
@@ -21590,12 +22209,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return json({
         engineVersion: ENGINE_VERSION,
         mode: API_KEY ? "hosted" : "local",
+        modeNote: API_KEY ? `Hosted mode, opted in by setting ${apiKey.nameUsed}. check_document sends the document to ${API_BASE}; no other tool here transmits anything.` : "Local mode, the default. No tool in this server transmits a document in this mode.",
         endpoint: API_KEY ? `${API_BASE}/api/v1/check` : null,
+        ...LEGACY_ENV_NOTICES.length > 0 ? { configurationNotices: LEGACY_ENV_NOTICES } : {},
         detectionKeys: API_KEY ? "Determined by the hosted deployment; returned on every check as watermark.keysTested." : [describeKey(OPEN_REFERENCE_KEY)],
         languages: SUPPORTED_LANGUAGES.map((code) => ({ code, name: LANGUAGE_NAMES[code] })),
         method: {
           watermark: "Keyed green-list test (Kirchenbauer et al. 2023). Distinct word bigrams are scored once each; the statistic is the one-proportion z test against the key\u2019s expected green fraction.",
           style: "Register measurement against a per-language reference corpus of contemporary prose. Reports distance in standard deviations. This does NOT detect AI and is not evidence of authorship.",
+          aiLikelihood: "Heuristic, key-free, English-only score (0-100) for surface habits common in LLM output: dash-clause connectors, stock phrasing, elevated vocabulary, and sentence-length uniformity. Deliberately biased toward flagging. Not a statistical test, not a provenance mark, and not evidence of authorship.",
           passages: "Per-passage findings are corrected for multiple comparisons (Benjamini-Hochberg) before any is reported."
         },
         limits: [
@@ -21657,28 +22279,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const language = typeof args?.language === "string" ? args.language : void 0;
       const strength = typeof args?.strength === "string" ? args.strength : "balanced";
       const tier = typeof args?.tier === "string" ? args.tier : "free";
-      const modelChoice = typeof args?.model === "string" ? args.model : "standard";
-      let result;
-      let model = "standard (rule-based, no download)";
-      if (modelChoice === "advanced") {
-        try {
-          const { createTransformersNodeBackend: createTransformersNodeBackend2 } = await Promise.resolve().then(() => (init_node(), node_exports));
-          const backend = createTransformersNodeBackend2(tier);
-          result = await rewriteDocument({ text, language, strength, tier }, backend, [OPEN_REFERENCE_KEY]);
-          model = `advanced (${backend.id}; cached under ~/.cache/markwitness/models)`;
-        } catch (err) {
-          result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY]);
-          model = `standard (rule-based); advanced model unavailable: ${err.message}`;
-        }
-      } else {
-        result = await reduceEvidence({ text, language, strength, tier }, [OPEN_REFERENCE_KEY]);
+      if (args?.model !== void 0 && !isModelChoice(args.model)) {
+        throw new Error(`"model" must be one of: ${MODEL_CHOICES.join(", ")}.`);
       }
+      const modelChoice = args?.model;
+      const { runRewriteOnNode: runRewriteOnNode2, describeEngine: describeEngine2 } = await Promise.resolve().then(() => (init_node_engine(), node_engine_exports));
+      const { result, engine } = await runRewriteOnNode2(
+        { text, language, strength, tier },
+        [OPEN_REFERENCE_KEY],
+        { model: modelChoice }
+      );
       const detail = args?.detail === "full" ? "full" : "summary";
       return json({
         result: detail === "full" ? result : summarizeRewrite(result),
         detail,
         mode: "local",
-        model,
+        // `model` is the one-line human form and stays for readers who print
+        // it; `engine` is the structured version a caller can branch on.
+        model: describeEngine2(engine),
+        engine,
         note: `Rewrite completed entirely in this process (${countWords(text)} words). Nothing was transmitted. This tool has no hosted mode on any tier.`
       });
     }
@@ -21733,6 +22352,8 @@ async function main() {
     `watermarkremoverpro MCP server ready (${API_KEY ? `hosted via ${API_BASE}` : "local mode, open reference key only"})
 `
   );
+  for (const notice of LEGACY_ENV_NOTICES) process.stderr.write(`${notice}
+`);
 }
 main().catch((err) => {
   process.stderr.write(`watermarkremoverpro MCP server failed to start: ${err}

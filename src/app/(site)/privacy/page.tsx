@@ -66,7 +66,7 @@ export default function PrivacyPage() {
         <Section title="Server-side checks: API and MCP">
           <P>
             A check made through the JSON API or the hosted MCP mode (i.e. with{' '}
-            <code className="figure">MARKWITNESS_API_KEY</code> set) necessarily runs on our servers,
+            <code className="figure">WATERMARKREMOVERPRO_API_KEY</code> set) necessarily runs on our servers,
             because a programmatic caller has no browser to run the on-device engine in. We record the
             word count, the billable units, and a SHA-256 hash of the document (not the document
             itself) against your account, purely to meter usage and enforce plan limits. The{' '}
