@@ -37,8 +37,67 @@ const SUPPORTED: LanguageCode = 'en'
 
 export type AiLikelihoodBand = 'low' | 'watch' | 'elevated' | 'high'
 
+/**
+ * Emphasis/connective adverbs whose rate rises in LLM-assisted prose, in the
+ * same "ordinary English word, tell only at density" spirit as
+ * ELEVATED_VOCABULARY in calibrate/patterns.ts. Kept as a separate table here
+ * rather than added to that one, because these are adverbs used to hedge
+ * or transition rather than a register upgrade with a plain-English
+ * downshift, so there is no safe rewrite for the deterministic pass to offer
+ * and no reason for the rewrite engine to see them. This channel only counts.
+ */
+const CONNECTIVE_ADVERBS: readonly string[] = [
+  'notably',
+  'significantly',
+  'ultimately',
+  'importantly',
+  'essentially',
+  'particularly',
+  'especially',
+  'arguably',
+  'undoubtedly',
+  'invariably',
+  'fundamentally',
+]
+
+/**
+ * The sentence-openers worth tracking for repetition at all: discourse
+ * markers and demonstratives an LLM leans on to open a sentence, not the
+ * ordinary function words ("the", "a", "it" as a grammatical subject) that
+ * dominate human sentence-openers too and would make this signal fire on
+ * completely unremarkable prose. Deliberately narrow for that reason.
+ */
+const DISCOURSE_OPENERS = new Set([
+  'this',
+  'these',
+  'it',
+  'that',
+  'however',
+  'moreover',
+  'furthermore',
+  'additionally',
+  'overall',
+  'notably',
+  'meanwhile',
+  'consequently',
+  'therefore',
+  'thus',
+  'indeed',
+])
+
+/** How many times one discourse-marker word has to open a sentence in the same document before it counts as a repeated tic rather than an unremarkable coincidence. */
+const OPENER_REPEAT_THRESHOLD = 3
+
 export interface AiLikelihoodSignal {
-  id: 'dash-clauses' | 'stock-phrases' | 'elevated-vocabulary' | 'structural-tics' | 'sentence-uniformity'
+  id:
+    | 'dash-clauses'
+    | 'stock-phrases'
+    | 'elevated-vocabulary'
+    | 'structural-tics'
+    | 'sentence-uniformity'
+    | 'connective-density'
+    | 'opener-repetition'
+    | 'emoji-density'
   label: string
   /** Raw occurrences this signal is based on. */
   count: number
@@ -142,8 +201,56 @@ export function analyzeAiLikelihood(text: string, language: LanguageCode | null)
     uniformityContribution = Math.max(0, HUMAN_TYPICAL_CV - cv) * 40
   }
 
+  // --- Connective/emphasis-adverb density ---------------------------------
+  let connectiveMatches = 0
+  for (const word of CONNECTIVE_ADVERBS) {
+    const re = new RegExp(`\\b${word}\\b`, 'gi')
+    connectiveMatches += text.match(re)?.length ?? 0
+  }
+  const connectiveRate = per500(connectiveMatches)
+  const connectiveContribution = connectiveRate * 3
+
+  // --- Sentence-opener repetition ------------------------------------------
+  // LLM output leans on a small rotation of discourse-marker sentence openers
+  // ("This...", "It...", "These..."); human prose varies them far more. Only
+  // DISCOURSE_OPENERS are tracked (not ordinary articles/pronouns, which
+  // dominate human sentence-openers too for entirely unremarkable reasons),
+  // and only a word that opens OPENER_REPEAT_THRESHOLD or more sentences in
+  // the same document counts: two coincidental repeats is not a tic.
+  let openerContribution = 0
+  let openerRepeatRate: number | null = null
+  if (lengths.length >= 6) {
+    const openers = sentences.map((s) => firstWord(s.text)).filter((w) => DISCOURSE_OPENERS.has(w))
+    const counts = new Map<string, number>()
+    for (const opener of openers) counts.set(opener, (counts.get(opener) ?? 0) + 1)
+    const repeatedCount = [...counts.values()]
+      .filter((c) => c >= OPENER_REPEAT_THRESHOLD)
+      .reduce((sum, c) => sum + c, 0)
+    openerRepeatRate = repeatedCount / lengths.length
+    openerContribution = openerRepeatRate * 90
+  }
+
+  // --- Emoji ---------------------------------------------------------------
+  // Reuses the exact same count the rewrite engine's own emoji-strip pass
+  // measures (calibrate/ai-tells.ts, measureStyleTells), for the same reason
+  // the tell tables are shared: this channel and the rewriter must never
+  // disagree about what an "AI tell" is. Weighted second-highest, just under
+  // the dash-clause habit: a checkmark or a rocket used as emphasis or a
+  // bullet-point marker is one of the most visually recognisable habits in
+  // current announcement-register model output, at a rate that is genuinely
+  // rare as a *repeated* device in edited human prose.
+  const emojiCount = tells.emoji
+  const emojiRate = per500(emojiCount)
+  const emojiContribution = emojiRate * 6
+
   const raw =
-    dashContribution + structureContribution + vocabularyContribution + uniformityContribution
+    dashContribution +
+    structureContribution +
+    vocabularyContribution +
+    uniformityContribution +
+    connectiveContribution +
+    openerContribution +
+    emojiContribution
   const score = saturate(raw)
 
   const signals: AiLikelihoodSignal[] = [
@@ -182,6 +289,34 @@ export function analyzeAiLikelihood(text: string, language: LanguageCode | null)
           ? 'Too few sentences to measure rhythm.'
           : `Coefficient of variation ${cv.toFixed(2)}; human prose is typically burstier than this.`,
     },
+    {
+      id: 'connective-density',
+      label: 'Emphasis/connective adverbs ("notably", "ultimately", "arguably"...)',
+      count: connectiveMatches,
+      ratePer500: connectiveRate,
+      contribution: connectiveContribution,
+      detail:
+        'Hedging and transition adverbs whose rate rises in LLM-assisted prose without any single use standing out as unusual English on its own.',
+    },
+    {
+      id: 'emoji-density',
+      label: 'Emoji used as decoration or emphasis',
+      count: emojiCount,
+      ratePer500: emojiRate,
+      contribution: emojiContribution,
+      detail: 'Checkmarks, rockets, sparkles and similar symbols used as bullet points or emphasis, a visual habit far more common in current model output than in edited human prose.',
+    },
+    {
+      id: 'opener-repetition',
+      label: 'Repeated sentence openers',
+      count: lengths.length >= 6 ? Math.round((openerRepeatRate ?? 0) * lengths.length) : 0,
+      ratePer500: openerRepeatRate ?? 0,
+      contribution: openerContribution,
+      detail:
+        openerRepeatRate === null
+          ? 'Too few sentences to measure how often openers repeat.'
+          : `${Math.round(openerRepeatRate * 100)}% of sentences open on a discourse marker ("this", "however"...) that opens ${OPENER_REPEAT_THRESHOLD} or more sentences here; human prose usually rotates these more.`,
+    },
   ]
 
   return {
@@ -191,4 +326,10 @@ export function analyzeAiLikelihood(text: string, language: LanguageCode | null)
     signals,
     wordsScored: words,
   }
+}
+
+/** The sentence's first alphabetic token, lowercased. Empty for a sentence with no letters at all (rare, but a fragment of only punctuation or digits is possible in real input). */
+function firstWord(text: string): string {
+  const match = text.trim().match(/[A-Za-z']+/)
+  return match ? match[0].toLowerCase() : ''
 }

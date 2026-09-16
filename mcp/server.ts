@@ -40,11 +40,10 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
-import { analyzeDocument, ENGINE_VERSION, resolveLanguage } from '../src/lib/detector'
-import { loadBaseline } from '../src/lib/detector/baselines'
+import { checkDocument, ENGINE_VERSION, type MlClassifierEnv } from '../src/lib/detector'
+import { resolveModelCacheDir } from '../src/lib/rewrite/backend/model-cache'
 import { OPEN_REFERENCE_KEY, describeKey } from '../src/lib/detector/keys'
-import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES, type LanguageCode } from '../src/lib/detector/languages'
-import type { Baseline } from '../src/lib/detector/distributional'
+import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../src/lib/detector/languages'
 import { countWords } from '../src/lib/detector/tokenize'
 import { API_PRICE_PENCE_PER_1K_WORDS } from '../src/lib/site'
 import { calibrateText } from '../src/lib/calibrate'
@@ -153,6 +152,13 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             enum: ['preview', 'apply'],
             description: 'Preview mode returns suggestions without commitment; apply mode applies them.',
           },
+          excludeWords: {
+            type: 'array',
+            items: { type: 'string' },
+            description:
+              'Words or short phrases that must never be substituted, e.g. SEO terms you are trying to ' +
+              'rank for. Matched case-insensitively; a multi-word entry is matched as a phrase.',
+          },
         },
         required: ['text'],
         additionalProperties: false,
@@ -242,6 +248,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
               '14,000 tokens for a 600-word document versus about 4,000), so ask for it only when ' +
               'you are going to read the per-passage arrays.',
           },
+          excludeWords: {
+            type: 'array',
+            items: { type: 'string' },
+            description:
+              'Words or short phrases that must never be changed, e.g. SEO terms you are trying to rank ' +
+              'for. Enforced at every layer: the deterministic tell/synonym passes never touch them, the ' +
+              'model-backed backend is instructed to leave them untouched, and any candidate that alters ' +
+              'one anyway is rejected outright by the same fact-lock that protects numbers and names.',
+          },
         },
         required: ['text'],
         additionalProperties: false,
@@ -250,19 +265,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   ],
 }))
 
-const baselines: Partial<Record<LanguageCode, Baseline>> = {}
+let mlEnv: MlClassifierEnv | null = null
+function localMlEnv(): MlClassifierEnv {
+  if (!mlEnv) mlEnv = { device: 'cpu', cacheDir: resolveModelCacheDir().dir }
+  return mlEnv
+}
 
+/** checkDocument() fetches its own baseline, so no manual loading is needed here. */
 async function runLocally(text: string, language?: string, granularity?: 'sentence' | 'paragraph') {
-  const resolved = resolveLanguage(text, language)
-  if (resolved.language && !baselines[resolved.language]) {
-    try {
-      baselines[resolved.language] = await loadBaseline(resolved.language)
-    } catch {
-      // The style channel then reports 'no_baseline' with its reason; the
-      // watermark test still runs.
-    }
-  }
-  return analyzeDocument(text, { keys: [OPEN_REFERENCE_KEY], language, granularity, baselines })
+  return checkDocument(text, {
+    keys: [OPEN_REFERENCE_KEY],
+    language,
+    granularity,
+    includeModel: true,
+    mlEnv: localMlEnv(),
+  })
 }
 
 async function runHosted(text: string, language?: string, granularity?: 'sentence' | 'paragraph') {
@@ -357,6 +374,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
       const language = typeof args?.language === 'string' ? args.language : undefined
       const mode = args?.mode === 'apply' ? 'apply' : 'preview'
+      const excludeWords = readExcludeWords(args?.excludeWords)
 
       const result = await calibrateText({
         text,
@@ -365,6 +383,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         config: {
           confidenceThreshold: 0.7,
           maxRepeats: 3,
+          excludedWords: excludeWords,
         },
       })
 
@@ -390,12 +409,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         throw new Error(`"model" must be one of: ${MODEL_CHOICES.join(', ')}.`)
       }
       const modelChoice = args?.model as ModelChoice | undefined
+      const excludeWords = readExcludeWords(args?.excludeWords)
 
       // Lazy, so a caller who never rewrites anything never loads the engine
       // selector or the model backend behind it.
       const { runRewriteOnNode, describeEngine } = await import('../src/lib/rewrite/backend/node-engine')
       const { result, engine } = await runRewriteOnNode(
-        { text, language, strength, tier },
+        { text, language, strength, tier, excludedWords: excludeWords },
         [OPEN_REFERENCE_KEY],
         { model: modelChoice },
       )
@@ -424,6 +444,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
   }
 })
+
+/** Validates the optional `excludeWords` argument: an array of non-empty strings, or undefined. */
+function readExcludeWords(value: unknown): string[] | undefined {
+  if (value === undefined) return undefined
+  if (!Array.isArray(value) || !value.every((v) => typeof v === 'string')) {
+    throw new Error('"excludeWords" must be an array of strings.')
+  }
+  const cleaned = value.map((v) => v.trim()).filter((v) => v.length > 0)
+  return cleaned.length > 0 ? cleaned : undefined
+}
 
 function json(payload: unknown) {
   return { content: [{ type: 'text' as const, text: JSON.stringify(payload, null, 2) }] }

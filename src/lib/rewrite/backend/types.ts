@@ -22,6 +22,17 @@ export interface GenerateOptions {
   count: number
   strength: 'preserve' | 'balanced' | 'aggressive' | 'regenerate'
   language?: string
+  /** Words/phrases a candidate must never change, e.g. SEO terms the caller is trying to rank for. */
+  excludedWords?: string[]
+  /**
+   * The document's own British/American spelling, detected once from the
+   * whole document (see src/lib/detector/english-variant.ts), or null when
+   * the document showed no preference. A candidate must never introduce the
+   * other variant's spelling: swapping a British writer's "realise" for a
+   * dictionary alternative spelled "realize" changes their dialect, not just
+   * their word choice.
+   */
+  englishVariant?: 'en-GB' | 'en-US' | null
 }
 
 export interface RewriteBackend {

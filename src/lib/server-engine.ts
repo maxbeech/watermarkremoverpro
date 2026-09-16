@@ -1,8 +1,10 @@
 import { analyzeDocument, resolveLanguage, type AnalysisResult } from '@/lib/detector'
 import { loadBaseline } from '@/lib/detector/baselines'
 import { loadDetectionKeys, type DetectionKey } from '@/lib/detector/keys'
+import { classifyDocument, type MlClassifierEnv } from '@/lib/detector/ml-classifier'
 import type { Baseline } from '@/lib/detector/distributional'
 import type { LanguageCode } from '@/lib/detector/languages'
+import { resolveModelCacheDir } from '@/lib/rewrite/backend/model-cache'
 
 /**
  * The server-side entry point shared by the JSON API, the MCP server and the
@@ -25,9 +27,21 @@ export function serverKeys(): DetectionKey[] {
   return keys
 }
 
+let mlEnv: MlClassifierEnv | null = null
+function serverMlEnv(): MlClassifierEnv {
+  if (!mlEnv) mlEnv = { device: 'cpu', cacheDir: resolveModelCacheDir().dir }
+  return mlEnv
+}
+
 export async function analyzeOnServer(
   text: string,
-  options: { language?: string; granularity?: 'sentence' | 'paragraph'; fdr?: number } = {},
+  options: {
+    language?: string
+    granularity?: 'sentence' | 'paragraph'
+    fdr?: number
+    /** Also run the model-backed classifier (see ml-classifier.ts). Defaults to true here: a server call is a single request/response round trip, so the extra latency buys a materially better answer. */
+    includeModel?: boolean
+  } = {},
 ): Promise<AnalysisResult> {
   const { language } = resolveLanguage(text, options.language)
 
@@ -41,11 +55,16 @@ export async function analyzeOnServer(
     }
   }
 
-  return analyzeDocument(text, {
+  const result = analyzeDocument(text, {
     keys: serverKeys(),
     language: options.language,
     granularity: options.granularity,
     fdr: options.fdr,
     baselines,
   })
+
+  if (options.includeModel === false || result.status !== 'ok') return result
+
+  const mlClassifier = await classifyDocument(text, result.language.code, serverMlEnv())
+  return { ...result, mlClassifier }
 }

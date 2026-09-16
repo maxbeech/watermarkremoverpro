@@ -4,13 +4,15 @@ import { useId, useState } from 'react'
 import Link from 'next/link'
 import type { Strength } from '@/lib/rewrite'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/detector/languages'
-import { describeReset, type ProTrialStatus } from '@/lib/entitlements/pro-trial'
+import { splitExcludedWordsInput } from '@/lib/calibrate/excluded-terms'
 import { ENGINES, STRENGTH_OPTIONS, engine, type EngineId } from './settings'
 
 export interface WorkspaceSettings {
   language: string
   strength: Strength
   engineId: EngineId
+  /** Words or phrases the rewrite must never swap out, unchanged wherever they occur. Useful for SEO keywords, product names or other terms worth keeping byte-for-byte. */
+  excludedWords: string[]
 }
 
 /**
@@ -26,17 +28,13 @@ export function AdvancedSettings({
   settings,
   onChange,
   disabled,
-  trial,
   subscriber,
-  trialLoading,
 }: {
   settings: WorkspaceSettings
   onChange: (next: WorkspaceSettings) => void
   disabled: boolean
-  /** Null while the allowance is still being read. */
-  trial: ProTrialStatus | null
+  /** True for a paying subscriber, who is the only one the Pro engine is offered to. */
   subscriber: boolean
-  trialLoading: boolean
 }) {
   const [open, setOpen] = useState(false)
   const id = useId()
@@ -80,30 +78,33 @@ export function AdvancedSettings({
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {ENGINES.map((option) => {
                 const selected = settings.engineId === option.id
-                const locked =
-                  option.id === 'pro' && !subscriber && !trialLoading && trial !== null && !trial.entitled
+                // The Pro engine is a paid feature, not a metered one: a free
+                // visitor cannot select it at all, rather than selecting it and
+                // discovering afterward that the rewrite silently ran on
+                // Standard. It stays visible, disabled, so the upgrade is a
+                // known thing rather than a hidden one.
+                const locked = option.id === 'pro' && !subscriber
                 return (
                   <button
                     key={option.id}
                     type="button"
+                    disabled={locked}
+                    aria-pressed={selected}
                     onClick={() => set('engineId', option.id)}
                     className={
                       'rounded-[var(--radius-control)] border p-3 text-left transition-colors duration-150 ' +
                       (selected
                         ? 'border-seal-500 bg-seal-50 ring-1 ring-seal-200'
                         : 'border-ink-200 hover:border-ink-300 hover:bg-ink-50') +
-                      (disabled ? ' opacity-60' : '')
+                      (disabled || locked ? ' opacity-60' : '')
                     }
                   >
                     <span className="flex items-center justify-between gap-2">
                       <span className="text-sm font-semibold text-ink-900">{option.label}</span>
                       {option.id === 'pro' && (
-                        <ProBadge
-                          subscriber={subscriber}
-                          trial={trial}
-                          loading={trialLoading}
-                          locked={locked}
-                        />
+                        <Pill tone={subscriber ? 'mint' : 'ink'}>
+                          {subscriber ? 'Included' : 'Pro plan'}
+                        </Pill>
                       )}
                     </span>
                     <span className="mt-1 block text-[13px] leading-relaxed text-ink-500">
@@ -113,8 +114,14 @@ export function AdvancedSettings({
                 )
               })}
             </div>
-            {settings.engineId === 'pro' && (
-              <ProEngineNote subscriber={subscriber} trial={trial} loading={trialLoading} />
+            {!subscriber && (
+              <p className="mt-3 rounded-[var(--radius-control)] bg-ink-50 px-3.5 py-2.5 text-[13px] leading-relaxed text-ink-600">
+                The Pro engine comes with the Pro plan.{' '}
+                <Link href="/pricing" className="font-semibold text-seal-700 underline underline-offset-2">
+                  What it changes
+                </Link>
+                .
+              </p>
             )}
           </fieldset>
 
@@ -164,77 +171,30 @@ export function AdvancedSettings({
               ))}
             </select>
           </div>
+
+          {/* --------------------------------------------------- excluded words */}
+          <div>
+            <label htmlFor={`${id}-excluded`} className="text-sm font-semibold text-ink-800">
+              Never swap these words or phrases
+            </label>
+            <p className="mt-1 text-[13px] text-ink-500">
+              One per line, or comma-separated. The rewrite leaves each of these exactly as written,
+              wherever it occurs. Useful for SEO keywords, product names or terms you need to keep
+              byte-for-byte.
+            </p>
+            <textarea
+              id={`${id}-excluded`}
+              rows={3}
+              value={settings.excludedWords.join('\n')}
+              onChange={(e) => set('excludedWords', splitExcludedWordsInput(e.target.value))}
+              disabled={disabled}
+              placeholder={'e.g. WatermarkRemoverPro\non-device AI detector'}
+              className="mt-2 block w-full rounded-[var(--radius-control)] border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 transition-colors hover:border-ink-300 disabled:opacity-60"
+            />
+          </div>
         </div>
       )}
     </div>
-  )
-}
-
-function ProBadge({
-  subscriber,
-  trial,
-  loading,
-  locked,
-}: {
-  subscriber: boolean
-  trial: ProTrialStatus | null
-  loading: boolean
-  locked: boolean
-}) {
-  if (subscriber) {
-    return <Pill tone="mint">Included</Pill>
-  }
-  if (loading || trial === null) {
-    return <Pill tone="ink">Checking…</Pill>
-  }
-  if (locked) {
-    return <Pill tone="ink">Used this week</Pill>
-  }
-  return (
-    <Pill tone="seal">
-      {trial.remaining} free {trial.remaining === 1 ? 'run' : 'runs'} left
-    </Pill>
-  )
-}
-
-function ProEngineNote({
-  subscriber,
-  trial,
-  loading,
-}: {
-  subscriber: boolean
-  trial: ProTrialStatus | null
-  loading: boolean
-}) {
-  if (subscriber) {
-    return (
-      <p className="mt-3 rounded-[var(--radius-control)] bg-mint-100 px-3.5 py-2.5 text-[13px] leading-relaxed text-mint-700">
-        Your Pro subscription includes unlimited runs of this engine.
-      </p>
-    )
-  }
-  if (loading || trial === null) return null
-
-  if (trial.entitled) {
-    return (
-      <p className="mt-3 rounded-[var(--radius-control)] bg-seal-50 px-3.5 py-2.5 text-[13px] leading-relaxed text-seal-800">
-        You have {trial.remaining} free {trial.remaining === 1 ? 'run' : 'runs'} of the Pro engine
-        this week. It is spent when a rewrite actually starts, not by opening this panel. After
-        that, Standard keeps working, unlimited, for free.
-      </p>
-    )
-  }
-
-  const back = describeReset(trial.resetsAt)
-  return (
-    <p className="mt-3 rounded-[var(--radius-control)] bg-signal-100 px-3.5 py-2.5 text-[13px] leading-relaxed text-signal-800">
-      You have used your free Pro run for this week{back ? `; the next one is available ${back}` : ''}.
-      Rewrites will use the Standard engine, which stays unlimited and free.{' '}
-      <Link href="/pricing" className="font-semibold underline underline-offset-2">
-        See Pro
-      </Link>
-      .
-    </p>
   )
 }
 

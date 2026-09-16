@@ -15,6 +15,18 @@
 
 import { pruneRuns, type RunRecord } from './runs'
 
+/**
+ * A record already sitting in a visitor's IndexedDB predates whatever field
+ * this build added most recently: `versions` did not exist before it, so a
+ * run saved by an earlier build and read back by this one is missing it
+ * entirely, not merely empty. Every record leaving this file goes through
+ * here so the rest of the app can keep treating `RunRecord` as fully formed
+ * rather than re-deriving "was this saved by an old build" at every call site.
+ */
+export function normalize(record: RunRecord): RunRecord {
+  return record.versions ? record : { ...record, versions: [] }
+}
+
 const DB_NAME = 'wmrp_workspace'
 const DB_VERSION = 1
 const STORE = 'runs'
@@ -101,7 +113,7 @@ export async function saveRun(record: RunRecord): Promise<RunRecord> {
 }
 
 export async function loadRun(id: string): Promise<RunRecord | null> {
-  return run<RunRecord | null>(
+  const record = await run<RunRecord | null>(
     'readonly',
     (store, resolve) => {
       const request = store.get(id)
@@ -110,6 +122,7 @@ export async function loadRun(id: string): Promise<RunRecord | null> {
     },
     null,
   )
+  return record ? normalize(record) : null
 }
 
 /** Newest first. */
@@ -123,7 +136,7 @@ export async function listRuns(): Promise<RunRecord[]> {
     },
     [],
   )
-  return records.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+  return records.map(normalize).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
 }
 
 export async function deleteRun(id: string): Promise<void> {

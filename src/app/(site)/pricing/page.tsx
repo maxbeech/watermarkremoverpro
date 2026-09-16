@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { API_PRICE_PENCE_PER_1K_WORDS, PLANS } from '@/lib/site'
-import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
+import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlements/rewrite-budget'
 import { JsonLd, faqPageLd, softwareApplicationLd } from '@/components/json-ld'
 import { Faq } from '@/components/faq'
 import { BandRule } from '@/components/brand/band'
@@ -14,15 +14,20 @@ import { stripeConfigured } from '@/lib/billing'
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Unlimited on-device rewriting on the Standard engine, free or Pro, plus a free weekly run of the Pro rewrite engine for everyone. Free on-device checks with no signup, a free account tier, and Pro with the unlimited Pro engine, the dated PDF evidence report, and metered API/MCP access to checking.',
+    'Checking is free and unlimited, in your browser, with no account. Rewriting is free up to a weekly token budget on the Standard engine; Pro removes the budget, adds the Pro rewrite engine, the dated PDF evidence report and metered API/MCP access to checking.',
   alternates: { canonical: '/pricing' },
 }
 
 const FAQ = [
   {
-    question: 'What does Pro give me that free does not?',
+    question: 'What is free, and what am I paying for?',
     answer:
-      `For rewriting: the Pro engine, a real local language model, with no weekly limit, plus more candidates generated per passage and the extended AI-tell library. Everyone gets ${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free Pro-engine run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free Pro-engine runs`} every ${PRO_TRIAL_WINDOW_DAYS} days and unlimited use of the Standard engine, so you can see exactly what the upgrade buys on your own text before paying for it. For checking: the dated evidence report, which the free tier structurally cannot produce, since the free check runs in your browser and deliberately leaves nothing behind. Pro also runs checks server-side against every detection key the deployment holds, plus batch upload and metered API/MCP access to checking.`,
+      `Checking is free, unlimited and needs no account: it runs in your browser, so it costs us nothing to serve and there is no honest reason to ration it. What is metered is rewriting. The free plan gives you ${REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')} tokens of rewriting every ${REWRITE_WINDOW_DAYS} days on the Standard engine. Pro removes that budget entirely and adds the Pro rewrite engine, which is a real language model running in your browser with the extended AI-tell library and more candidate rewrites per passage. For checking, Pro also adds the dated evidence report, which the free tier structurally cannot produce, since the free check runs in your browser and deliberately leaves nothing behind.`,
+  },
+  {
+    question: 'What counts as a token?',
+    answer:
+      'One word, as this product counts them, using the same tokenizer every measurement in the detector is built on. It is not an estimate of another vendor\'s subword count. You can reconcile it against the word count shown next to your text, and the same document costs the same on every machine. Only text you actually send through a rewrite is charged; checking, reading a result and editing text by hand cost nothing.',
   },
   {
     question: 'Is the API billed separately from the subscription?',
@@ -31,7 +36,7 @@ const FAQ = [
   {
     question: 'Is there a discount for students?',
     answer:
-      'The free account tier is intended to cover the student case: 5,000 words per document and 20 checks a month is more than an appeal needs. If you need the evidence report and cost is the obstacle, write to us.',
+      'The free plan is intended to cover the student case: unlimited checking, and enough rewriting for an appeal or a dissertation chapter. If you need the evidence report and cost is the obstacle, write to us.',
   },
 ]
 
@@ -44,9 +49,9 @@ export default async function PricingPage() {
       <JsonLd data={[softwareApplicationLd(), faqPageLd(FAQ)]} />
       <PageHeader
         eyebrow="Pricing"
-        title="Rewriting is free and unlimited. Pay for the bigger engine."
+        title="Checking is free and unlimited. Pay for the rewriting."
         wide
-        lead={`On-device rewriting has no server cost, so the Standard engine is unlimited whether you pay or not, forever. Everyone also gets ${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free runs`} of the Pro engine every ${PRO_TRIAL_WINDOW_DAYS} days. What you pay for is the Pro engine without that limit, and, for checking, the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else.`}
+        lead={`Everything runs on your device, so checking costs us nothing to serve and is not rationed: no account, no word cap, no monthly count. What you pay for is correction. The free plan rewrites ${REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')} tokens every ${REWRITE_WINDOW_DAYS} days on the Standard engine; Pro removes that budget, adds the Pro rewrite engine, and, for checking, the server-side path: keys a browser cannot hold, a stored record, and a document you can hand to someone else.`}
       />
 
       <Section tight>
@@ -62,20 +67,16 @@ export default async function PricingPage() {
           </div>
         )}
 
-        <div className="grid gap-5 lg:grid-cols-3">
+        {/* Two plans, not three. The old middle column bought an account rather
+            than a capability, and the only line that differed from the first
+            column was where a counter was stored. */}
+        <div className="grid gap-5 lg:grid-cols-2">
           <Tier
             name={PLANS.anonymous.name}
-            price="Free"
-            note="No account"
+            price="£0"
+            note="No account needed"
             features={[...PLANS.anonymous.features]}
-            cta={{ label: 'Run a check', href: '/check' }}
-          />
-          <Tier
-            name={PLANS.free.name}
-            price="Free"
-            note="Sign up"
-            features={[...PLANS.free.features]}
-            cta={{ label: 'Create an account', href: '/signup' }}
+            cta={{ label: 'Start rewriting', href: '/app' }}
           />
           <Tier
             name={PLANS.pro.name}
@@ -105,8 +106,8 @@ export default async function PricingPage() {
             </p>
             <p className="mt-5 text-sm leading-relaxed text-ink-500">
               Rewriting itself is <Link href="/rewrite" className="link-quiet">a separate feature</Link>,
-              always on-device and unlimited on the Standard engine. It cannot guarantee defeating a
-              model vendor&apos;s undisclosed watermark, on any tier, at any price.
+              always on-device, on both plans. It cannot guarantee defeating a model vendor&apos;s
+              undisclosed watermark, on any tier, at any price.
             </p>
           </div>
 

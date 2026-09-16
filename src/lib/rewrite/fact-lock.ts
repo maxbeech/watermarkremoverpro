@@ -11,7 +11,19 @@
  * fact survive), not general entity typing, and a rule-based check is fast,
  * has no download cost, and is exactly as auditable as the rest of the
  * detector it sits beside.
+ *
+ * The caller's excluded-words list (src/lib/calibrate/excluded-terms.ts) is
+ * treated as a fact too: a protected term present in the original is exactly
+ * as non-negotiable as a number or a name, so a model-backed candidate that
+ * drops or rewords it is rejected here rather than merely discouraged in
+ * scoring. The rule-based backend already never touches these terms at
+ * generation time; this is the equivalent hard gate for the model-backed
+ * backends, which generate free text an exact-match check can't otherwise
+ * constrain.
  */
+
+import { normalizeExcludedTerms, termOccursIn, allExcludedTerms } from '@/lib/calibrate/excluded-terms'
+import { properNounSet } from '@/lib/calibrate/proper-nouns'
 
 const NUMBER_RE = /-?\d[\d,]*(\.\d+)?%?/g
 const NEGATION_CUES = [
@@ -27,17 +39,19 @@ const NEGATION_CUES = [
   'without',
   'cannot',
 ]
-/** A crude, deliberately conservative proper-noun heuristic: capitalised words that are not the first word of a sentence. */
-const PROPER_NOUN_RE = /\b[A-Z][a-zA-Z]{2,}\b/g
-const SENTENCE_START_RE = /(^|[.!?]\s+)([A-Z][a-zA-Z]{2,})/g
 
 export interface ExtractedFacts {
   numbers: string[]
   negationCount: number
   properNouns: Set<string>
+  /** Excluded terms (from the caller's excludedWords) that actually occur in the original passage. */
+  excludedTermsPresent: string[]
 }
 
-export function extractFacts(text: string): ExtractedFacts {
+export function extractFacts(text: string, excludedWords?: string[]): ExtractedFacts {
+  const excludedTermsPresent = allExcludedTerms(normalizeExcludedTerms(excludedWords)).filter((term) =>
+    termOccursIn(term, text),
+  )
   const numbers = text.match(NUMBER_RE) ?? []
   const lower = text.toLowerCase()
   let negationCount = 0
@@ -45,33 +59,9 @@ export function extractFacts(text: string): ExtractedFacts {
     negationCount += countOccurrences(lower, cue)
   }
 
-  const properNouns = new Set<string>()
-  const sentenceStartWords = new Set<string>()
-  SENTENCE_START_RE.lastIndex = 0
-  let startMatch: RegExpExecArray | null
-  while ((startMatch = SENTENCE_START_RE.exec(text)) !== null) {
-    sentenceStartWords.add(startMatch[2])
-  }
+  const properNouns = properNounSet(text)
 
-  PROPER_NOUN_RE.lastIndex = 0
-  let match: RegExpExecArray | null
-  while ((match = PROPER_NOUN_RE.exec(text)) !== null) {
-    // Keep a word flagged as a sentence-start capital only if it recurs
-    // capitalised somewhere NOT at a sentence start, which is reasonably
-    // strong evidence it is a genuine proper noun rather than ordinary
-    // sentence-initial capitalisation.
-    properNouns.add(match[0])
-  }
-  // Words that only ever appear capitalised at a sentence start, and nowhere
-  // else in the passage, are ambiguous; drop them to keep the lock
-  // conservative (a false positive here would block a perfectly safe rewrite).
-  for (const word of sentenceStartWords) {
-    const occurrences = countOccurrences(text, word)
-    const capitalOccurrences = (text.match(new RegExp(`\\b${escapeRegExp(word)}\\b`, 'g')) ?? []).length
-    if (occurrences === capitalOccurrences && occurrences <= 1) properNouns.delete(word)
-  }
-
-  return { numbers, negationCount, properNouns }
+  return { numbers, negationCount, properNouns, excludedTermsPresent }
 }
 
 export interface FactLockResult {
@@ -87,6 +77,14 @@ export interface FactLockResult {
  */
 export function verifyFacts(original: ExtractedFacts, candidateText: string): FactLockResult {
   const candidate = extractFacts(candidateText)
+
+  const droppedExclusions = original.excludedTermsPresent.filter((term) => !termOccursIn(term, candidateText))
+  if (droppedExclusions.length > 0) {
+    return {
+      passed: false,
+      detail: `Protected term(s) from the never-swap list are missing or changed: ${droppedExclusions.join(', ')}.`,
+    }
+  }
 
   const missingNumbers = original.numbers.filter((n) => !candidate.numbers.includes(n))
   if (missingNumbers.length > 0) {
@@ -117,8 +115,4 @@ function countOccurrences(haystack: string, needle: string): number {
     pos = haystack.indexOf(needle, pos + needle.length)
   }
   return count
-}
-
-function escapeRegExp(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

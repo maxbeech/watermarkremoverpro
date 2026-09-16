@@ -48,6 +48,7 @@ const BodySchema = z.object({
       confidenceThreshold: z.number().min(0).max(1).optional(),
       maxRepeats: z.number().int().min(1).optional(),
       targetDiversity: z.number().optional(),
+      excludedWords: z.array(z.string().min(1)).max(200).optional(),
     })
     .optional(),
 })

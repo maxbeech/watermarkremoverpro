@@ -43,6 +43,8 @@ export interface RewriteRequest {
   language?: string
   strength: Strength
   tier: Tier
+  /** Words/phrases that must never be swapped out, e.g. SEO terms the caller is trying to rank for. */
+  excludedWords?: string[]
 }
 
 export interface RewriteResult {
@@ -68,6 +70,14 @@ export interface RewriteResult {
    * tier, because the extended library already ran.
    */
   additionalTellsInExtendedLibrary: number
+  /**
+   * 0-100: how much of the document's own word-pair (bigram) makeup moved
+   * between the original text and this result, regardless of whether the
+   * detector found anything. See lexical-shift.ts. Answers "how much did you
+   * actually mix up the wording" on its own terms, separate from the
+   * evidence-reduction numbers above, which are scoped to detected findings.
+   */
+  lexicalShiftPercent: number
   roundsUsed: number
   tier: Tier
   strength: Strength

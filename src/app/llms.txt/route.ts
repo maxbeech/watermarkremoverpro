@@ -1,7 +1,7 @@
 import { API_PRICE_PENCE_PER_1K_WORDS, MIRROR_PRODUCT, PLANS, SITE } from '@/lib/site'
+import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlements/rewrite-budget'
 import { SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '@/lib/detector/languages'
 import { CORE_FAQ } from '@/components/faq'
-import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
 
 export const dynamic = 'force-static'
 
@@ -148,17 +148,16 @@ against a substitute.
 
 ## Pricing
 
-- ${PLANS.anonymous.name}: free. Unlimited on-device rewriting on the Standard engine,
-  ${PRO_TRIAL_RUNS_PER_WINDOW} free run of the Pro rewrite engine every ${PRO_TRIAL_WINDOW_DAYS} days,
-  ${PLANS.anonymous.wordCap.toLocaleString()} words per check document, in-browser only.
-- ${PLANS.free.name}: free. The same, with the weekly Pro-engine allowance counted against the
-  account rather than one browser, ${PLANS.free.wordCap.toLocaleString()} words per check document,
-  ${PLANS.free.checksPerMonth} checks a month, saved history.
-- ${PLANS.pro.name}: £${PLANS.pro.price}/month: the Pro rewrite engine with no weekly limit,
-  more candidates per passage and the extended AI-tell library, unlimited checks, batch upload,
-  the dated PDF evidence report, and API/MCP access to checking metered at
+- ${PLANS.anonymous.name}: £0. Unlimited checking in the browser, never metered, no account needed.
+  Rewriting on the Standard engine, metered at ${REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')}
+  tokens every ${REWRITE_WINDOW_DAYS} days, where a token is one word as this product counts them.
+  The Pro rewrite engine is not included. ${PLANS.anonymous.wordCap.toLocaleString()} words per
+  document on the hosted checking paths; the in-browser check has no word cap.
+- ${PLANS.pro.name}: £${PLANS.pro.price}/month: unlimited rewriting with no token budget, the Pro
+  rewrite engine, more candidates per passage and the extended AI-tell library, unlimited checks,
+  batch upload, the dated PDF evidence report, and API/MCP access to checking metered at
   ${API_PRICE_PENCE_PER_1K_WORDS}p per 1,000 words.
-  Rewriting is never metered and never leaves your device, on any plan.
+  Rewriting never leaves your device on any plan. Checking is never metered on any plan.
 
 ## Questions this product gets asked
 

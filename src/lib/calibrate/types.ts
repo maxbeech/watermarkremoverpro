@@ -10,6 +10,23 @@ export interface CalibrationConfig {
   maxRepeats?: number
   /** Optional target lexical diversity (TTR). Engine tries to approach this. */
   targetDiversity?: number
+  /**
+   * Words or phrases that must never be substituted, e.g. SEO terms the caller
+   * is trying to rank for. Matched case-insensitively against the normalized
+   * token. A single-word entry blocks that word; a multi-word entry is matched
+   * against the passage text before any phrase-level swap runs (see
+   * ai-tells.ts), since word-level substitution alone can't see multi-word
+   * phrases.
+   */
+  excludedWords?: string[]
+  /**
+   * The document's own detected British/American spelling (see
+   * src/lib/detector/english-variant.ts), or undefined/null to leave a
+   * replacement's spelling exactly as the dictionary wrote it. A candidate
+   * synonym must never introduce the other variant's spelling into a
+   * document that already committed to one.
+   */
+  englishVariant?: 'en-GB' | 'en-US' | null
 }
 
 /** A single token from the text */
@@ -41,7 +58,7 @@ export interface Substitution {
   original: string
   replacement: string
   confidence: number
-  reason: 'synonym' | 'skipped_repetition' | 'below_threshold' | 'not_in_dictionary'
+  reason: 'synonym' | 'skipped_repetition' | 'below_threshold' | 'not_in_dictionary' | 'excluded'
   alternatives?: string[]
 }
 

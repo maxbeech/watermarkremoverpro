@@ -19,9 +19,12 @@
 
 import { tokenize } from '@/lib/detector/tokenize'
 import type { LanguageCode } from '@/lib/detector/languages'
+import { applyEnglishVariant, type EnglishVariant } from '@/lib/detector/english-variant'
 import { loadDictionary } from '@/lib/calibrate/dictionary'
 import { preserveCase } from '@/lib/calibrate/substituter'
 import { applyDeterministicPass, type TellLibrary } from '@/lib/calibrate/ai-tells'
+import { normalizeExcludedTerms, isExcludedWord } from '@/lib/calibrate/excluded-terms'
+import { isProtectedProperNoun } from '@/lib/calibrate/proper-nouns'
 import type { GenerateOptions, RewriteBackend } from './types'
 
 const EMBED_DIMS = 256
@@ -42,8 +45,11 @@ async function generateCandidate(
   seed: number,
   strength: GenerateOptions['strength'],
   library: TellLibrary,
+  excludedWords: string[] | undefined,
+  englishVariant: EnglishVariant | null | undefined,
 ): Promise<string> {
-  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library)
+  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library, excludedWords)
+  const excluded = normalizeExcludedTerms(excludedWords)
 
   let dictionary
   try {
@@ -53,12 +59,24 @@ async function generateCandidate(
   }
 
   const tokens = tokenize(tellSwapped)
-  const substitutionRate = strength === 'preserve' ? 0.15 : strength === 'balanced' ? 0.3 : strength === 'aggressive' ? 0.45 : 0.6
+  // "balanced" was 0.3, then 0.4: on a passage that IS targeted, 0.3 was
+  // roughly one dictionary-eligible word in three changing, which on a short
+  // passage reads as "basically one swap". The gap to "aggressive" was then
+  // too narrow to notice ("Strong" vs "Rewrite all" barely differed), so the
+  // top two strengths are now spread further apart: "aggressive" earns its
+  // name (well past halfway) and "regenerate" earns its promise of touching
+  // nearly every eligible word, not a modest bump over "aggressive". See
+  // BASELINE_SAMPLE_EVERY in ./targeting.ts for the matching change to how
+  // many passages get targeted at all.
+  const substitutionRate =
+    strength === 'preserve' ? 0.15 : strength === 'balanced' ? 0.4 : strength === 'aggressive' ? 0.6 : 0.85
 
   let result = ''
   let lastEnd = 0
   for (const token of tokens) {
-    const variants = dictionary.getVariants(token.norm)
+    const protectedNoun = isProtectedProperNoun(tellSwapped, token.raw, token.start, token.end)
+    const variants =
+      protectedNoun || isExcludedWord(excluded, token.norm) ? null : dictionary.getVariants(token.norm)
     result += tellSwapped.slice(lastEnd, token.start)
 
     if (variants && variants.length > 0) {
@@ -69,7 +87,8 @@ async function generateCandidate(
       const gate = fnv1a(`${token.norm}:${token.start}:${seed}`) % 100
       if (gate < substitutionRate * 100) {
         const variantIndex = fnv1a(`${token.norm}:${seed}:pick`) % variants.length
-        result += preserveCase(variants[variantIndex], token.raw)
+        const chosen = applyEnglishVariant(variants[variantIndex], englishVariant ?? null)
+        result += preserveCase(chosen, token.raw)
       } else {
         result += tellSwapped.slice(token.start, token.end)
       }
@@ -111,7 +130,15 @@ export function createRuleBasedBackend(
       const count = Math.max(1, options.count)
       const candidates = await Promise.all(
         Array.from({ length: count }, (_, i) =>
-          generateCandidate(passage, (options.language as LanguageCode) ?? language, i, options.strength, library),
+          generateCandidate(
+            passage,
+            (options.language as LanguageCode) ?? language,
+            i,
+            options.strength,
+            library,
+            options.excludedWords,
+            options.englishVariant,
+          ),
         ),
       )
       // De-duplicate: a passage with no dictionary hits produces identical

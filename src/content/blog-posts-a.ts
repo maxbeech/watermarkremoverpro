@@ -115,7 +115,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         id: "getting-started-with-your-own-check",
         heading: "Getting Started With Your Own Check",
         body: [
-          "If you want to see this working on your own words, the Check page is the place to start. Paste in up to 1,500 words, free, no account needed, and the test runs there in your browser.",
+          "If you want to see this working on your own words, the Check page is the place to start. Paste in up to 1,500 words for free, and the test runs there in your browser.",
           "Read the result alongside the /limits page before drawing any conclusions from it. A high z-score under a key you tested is real information. It's just not the only piece of information a fair judgement needs.",
           "Interest in this kind of provenance checking is only growing as frameworks like the NIST AI Risk Management Framework, and transparency rules such as the EU AI Act's, put more weight on being able to show your working. For a deeper look at the statistics specifically, WatermarkRemoverPro has a longer explainer on green-list watermarking.",
         ],
@@ -413,7 +413,7 @@ export const BLOG_POSTS_A: BlogPost[] = [
         heading: "Step 3: Run Your Essay Through a Free WatermarkRemoverPro Check",
         body: [
           "Head to the Check page and paste in the flagged essay, or the specific flagged sections if it's long. The test runs entirely in your browser, and nothing gets uploaded anywhere, which matters when the document is still under review.",
-          "The free check covers up to 1,500 words with no account. If your essay is longer, a free account raises that to 5,000 words and 20 checks a month.",
+          "The free check covers up to 1,500 words. If your essay is longer, a free account raises that to 5,000 words and 20 checks a month.",
         ],
       },
       {

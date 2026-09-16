@@ -794,7 +794,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'Which tool actually fits your situation',
         body: [
           'An institution running bulk screening across hundreds of submissions wants a classifier with a published false-positive rate and an established appeals process: Turnitin, GPTZero or Originality.ai, depending on existing systems and budget.',
-          'An individual who wants to check their own writing privately, before submitting it anywhere, wants something free, fast and local, which is what the Check page is built for, with no signup needed for a first look.',
+          'An individual who wants to check their own writing privately, before submitting it anywhere, wants something free, fast and local, which is what the Check page is built for.',
           'A developer building a pipeline that needs to attach a documented, metered check to its own output, whether an editorial tool, an agent workflow, or anything that has to disclose provenance before handoff, wants an actual API. WatermarkRemoverPro offers a metered JSON API and an MCP server for exactly that case.',
         ],
       },

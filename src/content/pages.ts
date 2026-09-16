@@ -344,7 +344,7 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
     keyDifference: [
       'WatermarkRemoverPro\'s rewrite runs entirely on your device or in your own process, on every tier: nothing about the document is ever sent to a WatermarkRemoverPro-operated server, and there is no REST endpoint for it by design. Most humanizer tools are the opposite: a cloud service you paste your draft into.',
       'The claim is the other real difference. WatermarkRemoverPro states a reduction, not a guarantee: the same conservative language used everywhere else on this site. It also shows the before/after evidence delta using the same arithmetic its own detector uses, so the change is something you can verify rather than take on faith.',
-      'The Standard engine is unlimited on every plan, because the computation runs on your device rather than metering server compute. The Pro engine is a real local model, free once a week for everyone and unlimited on a Pro subscription.',
+      'Checking is unlimited on every plan, because the computation runs on your device rather than metering server compute. Rewriting on the free plan has a weekly token budget; a Pro subscription removes it and adds the Pro engine, a real local model.',
     ],
   },
 ]
@@ -639,7 +639,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'What editing can and cannot promise',
         body: [
           'WatermarkRemoverPro does now offer an on-device rewrite feature (see /rewrite), and it is bound by the same physics this page describes: it can reduce detectable evidence, and it cannot fabricate certainty about a watermark it has no key for. No tool, including this one, can honestly guarantee defeating a specific vendor\'s undisclosed watermark.',
-          'If you edited generated text and want to know whether a signal remains, that is a diagnostic question and this tool answers it, directly and for free, with no account required.',
+          'If you edited generated text and want to know whether a signal remains, that is a diagnostic question and this tool answers it, directly and for free.',
         ],
       },
     ],
@@ -684,7 +684,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'What WatermarkRemoverPro\'s rewrite actually does',
         body: [
           'Two mechanisms, run together, entirely on your device: a deterministic pass over AI-tell punctuation and phrasing, and targeted candidate rewrites of the specific passages a real per-passage check flags, gated so a candidate that changes a number, a name or a negation is rejected outright rather than used. See /rewrite.',
-          'The Standard engine is unlimited on every plan, because the computation runs on your device rather than metering server compute. The Pro engine adds a real local language model, more candidates per passage and the extended AI-tell library; everyone gets a free run of it each week, and a Pro subscription removes that limit. Nothing about the document is ever sent anywhere, on any tier: see docs/REWRITE_PHILOSOPHY.md for exactly what is and is not claimed.',
+          'Checking is unlimited on every plan, because the computation runs on your device rather than metering server compute. Rewriting on the free plan has a weekly token budget on the Standard engine; a Pro subscription removes it and adds the Pro engine, a real local language model with more candidates per passage and the extended AI-tell library. Nothing about the document is ever sent anywhere, on any tier: see docs/REWRITE_PHILOSOPHY.md for exactly what is and is not claimed.',
         ],
       },
     ],
@@ -729,7 +729,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'The legitimate use this page is actually for',
         body: [
           'Second-language phrasing, an unusually formal register, or just an editing pass that happens to read as "smooth" can trigger a classifier\'s false positives on writing a person genuinely wrote themselves. That is the well-documented failure mode /guide/ai-detection-false-positive covers, and it is where a rewrite of your own honest draft is a reasonable, defensible thing to do before submitting.',
-          'If that is your situation: check first (/check, free, no account, nothing uploaded), see what is actually flagged, and use /rewrite\'s "preserve" strength, which only touches passages a real check would flag, rather than rewriting the whole document.',
+          'If that is your situation: check first (/check, free, nothing uploaded), see what is actually flagged, and use /rewrite\'s "preserve" strength, which only touches passages a real check would flag, rather than rewriting the whole document.',
         ],
       },
     ],

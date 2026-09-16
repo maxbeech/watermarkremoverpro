@@ -18,10 +18,12 @@
 import { checkDocument } from '@/lib/detector'
 import type { DetectionKey } from '@/lib/detector/keys'
 import type { PassageFinding } from '@/lib/detector'
+import { detectEnglishVariant } from '@/lib/detector/english-variant'
 import { applyDeterministicPass, measureStyleTells } from '@/lib/calibrate/ai-tells'
 import type { RewriteBackend } from './backend/types'
 import { candidateCount, minSimilarity, targetPassages, MAX_ROUNDS } from './targeting'
 import { scoreCandidates, pickBest } from './scoring'
+import { lexicalShiftPercent } from './lexical-shift'
 import type { PassageRewrite, RewriteRequest, RewriteResult } from './types'
 
 export const REWRITE_LIMITS: string[] = [
@@ -29,6 +31,7 @@ export const REWRITE_LIMITS: string[] = [
   'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
   'The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro\'s own check, tested against the keys this deployment holds, not a specific vendor\'s undisclosed detector.',
   'All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.',
+  '"Balanced" also lightly varies a bounded sample of passages that showed no detectable signal at all, as a hedge against a watermark scheme this deployment cannot test for. "Preserve" never does this; "aggressive" and "regenerate" already vary most or all passages regardless of signal.',
 ]
 
 function replacePassages(text: string, replacements: Array<{ start: number; end: number; text: string }>): string {
@@ -62,6 +65,7 @@ export async function rewriteDocument(
       flaggedStructures: [],
       elevatedVocabulary: [],
       additionalTellsInExtendedLibrary: 0,
+      lexicalShiftPercent: 0,
       roundsUsed: 0,
       tier: request.tier,
       strength: request.strength,
@@ -82,6 +86,7 @@ export async function rewriteDocument(
     request.text,
     request.strength,
     request.tier === 'pro' ? 'extended' : 'core',
+    request.excludedWords,
   )
 
   // What the extended library would additionally have caught here. Measured
@@ -93,9 +98,16 @@ export async function rewriteDocument(
       ? 0
       : Math.max(
           0,
-          applyDeterministicPass(request.text, request.strength, 'extended').changes.length -
-            tellChanges.length,
+          applyDeterministicPass(request.text, request.strength, 'extended', request.excludedWords).changes
+            .length - tellChanges.length,
         )
+
+  // Detected once from the visitor's own original text, not the tell-swapped
+  // or rewritten text: their own spelling is the ground truth a candidate
+  // must not drift away from. Null (no clear preference, e.g. no
+  // variant-specific word appears at all) means every backend leaves
+  // spelling exactly as generated, which is the same as today's behaviour.
+  const englishVariant = detectEnglishVariant(request.text).variant
 
   let currentText = afterTells
   let analysis = await checkDocument(currentText, { keys, language: request.language })
@@ -133,11 +145,14 @@ export async function rewriteDocument(
         count: candidateCount(request.tier),
         strength: request.strength,
         language: request.language ?? analysis.language.code ?? undefined,
+        excludedWords: request.excludedWords,
+        englishVariant,
       })
 
       const scored = await scoreCandidates(passage.text, candidateTexts, backend, {
         minSimilarity: minSimilarity(request.strength),
         keys,
+        excludedWords: request.excludedWords,
       })
 
       const best = pickBest(scored)
@@ -181,6 +196,7 @@ export async function rewriteDocument(
     flaggedStructures: flaggedStructures.map((f) => ({ kind: f.kind, text: f.text, note: f.note })),
     elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
     additionalTellsInExtendedLibrary,
+    lexicalShiftPercent: lexicalShiftPercent(request.text, currentText),
     roundsUsed: round,
     tier: request.tier,
     strength: request.strength,

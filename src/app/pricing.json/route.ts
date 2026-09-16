@@ -28,17 +28,7 @@ export function GET() {
           machineCallable: false,
           rewrite: { ...PLANS.anonymous.rewrite, onDevice: true },
           notes:
-            'Checking runs entirely in the browser and the document is not uploaded, so there is no server-side path for a programmatic caller to use. Rewriting is always on-device on every plan, and unlimited on the Standard engine; the Pro engine is limited to a weekly free allowance unless you subscribe.',
-        },
-        {
-          id: PLANS.free.id,
-          name: PLANS.free.name,
-          price: 0,
-          interval: null,
-          wordsPerDocument: PLANS.free.wordCap,
-          checksPerMonth: PLANS.free.checksPerMonth,
-          machineCallable: false,
-          rewrite: { ...PLANS.free.rewrite, onDevice: true },
+            'Checking runs entirely in the browser and the document is not uploaded, so there is no server-side path for a programmatic caller to use. Checking is unlimited and never metered. Rewriting is always on-device on every plan, and is metered on this plan by a weekly token budget; the Pro rewrite engine is not included on this plan at all.',
         },
         {
           id: PLANS.pro.id,
@@ -68,7 +58,7 @@ export function GET() {
       // same document, not just the capability.
       rewriteCapability: {
         summary:
-          'Reduces detectable AI-style evidence (statistical watermark signal, where structurally possible, and human-perceptible AI tells). Always on-device, unlimited use, on every plan.',
+          'Reduces detectable AI-style evidence (statistical watermark signal, where structurally possible, and human-perceptible AI tells). Always on-device, on every plan. Metered by a weekly token budget on the free plan and unmetered on Pro; the local package and the MCP server run it in the caller\'s own process and are not metered at all.',
         limitations: [
           'Cannot guarantee defeating a model vendor\'s undisclosed watermark. Nobody outside that vendor holds the key it was applied with.',
           'Heavier rewriting trades fidelity to the original wording for a larger evidence reduction.',

@@ -113,9 +113,8 @@ export async function LongTailPageView({ page }: { page: LongTailPage }) {
             <div className="mt-8 rounded-[var(--radius-panel)] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
               <h2 className="t-heading text-ink-900">Check a document now</h2>
               <p className="mt-2.5 text-sm leading-relaxed text-ink-600">
-                Up to {PLANS.anonymous.wordCap.toLocaleString()} words without an account, analysed
-                in your browser. The document is not uploaded, and you can watch the network tab
-                while it runs.
+                Up to {PLANS.anonymous.wordCap.toLocaleString()} words, analysed in your browser.
+                The document is not uploaded, and you can watch the network tab while it runs.
               </p>
               <ButtonLink href="/check" className="mt-5">
                 Run a check

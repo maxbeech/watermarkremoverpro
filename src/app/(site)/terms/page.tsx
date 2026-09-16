@@ -48,8 +48,9 @@ export default function TermsPage() {
 
         <Section title="3. Plans and billing">
           <P>
-            The free plan includes {PLANS.free.wordCap.toLocaleString()} words per document and{' '}
-            {PLANS.free.checksPerMonth} checks a month, at no cost. The Pro plan is a £{PLANS.pro.price}{' '}
+            The free plan includes unlimited in-browser checking at no cost, and a weekly budget for
+            rewriting; the current figure is on <Link href="/pricing">the pricing page</Link>. The
+            Pro plan is a £{PLANS.pro.price}{' '}
             per month subscription, billed in advance and processed by Stripe;
             current plan details are always shown on <Link href="/pricing">the pricing page</Link>,
             which is the source of truth if it ever differs from this paragraph.

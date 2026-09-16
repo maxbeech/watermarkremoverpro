@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import { Workspace } from '@/components/workspace/workspace'
 import { PageHeader, Section, Wrap } from '@/components/brand/ui'
-import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
+import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlements/rewrite-budget'
 
 export const metadata: Metadata = {
   title: 'Free On-Device AI Text Rewriter',
   description:
-    'Free, unlimited, on-device rewrite: reduce detectable AI-style evidence in your own writing, both statistical watermark signal where structurally possible and AI tells like em dashes and stock phrasing. No signup, no upload, no "undetectable" claim.',
+    'Free, unlimited, on-device rewrite: reduce detectable AI-style evidence in your own writing, both statistical watermark signal where structurally possible and AI tells like em dashes and stock phrasing. Nothing is uploaded, and it makes no "undetectable" claim.',
   alternates: { canonical: '/rewrite' },
 }
 
@@ -21,7 +21,7 @@ export default function RewritePage() {
   return (
     <>
       <PageHeader
-        eyebrow="Free · no account · nothing uploaded"
+        eyebrow="Free · nothing uploaded"
         title="Reduce detectable AI-style evidence in your writing"
         lead="Targets the passages that actually carry evidence, on your device, with no server involved, then shows you what a detector still measures in the result. It cannot guarantee defeating a model vendor's undisclosed watermark; see what it does and doesn't claim below."
       />
@@ -59,11 +59,11 @@ export default function RewritePage() {
 
             <Question q="What is the difference between the Standard and Pro engines?">
               Standard is deterministic substitution against the core AI-tell library: instant, no
-              download, unlimited on every plan, forever. Pro is a small language model that
-              downloads once and runs in your browser, with the extended AI-tell library and more
-              candidate rewrites per passage. Everyone gets{' '}
-              {PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free Pro run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free Pro runs`}{' '}
-              every {PRO_TRIAL_WINDOW_DAYS} days; a Pro subscription removes the limit.
+              download, and included on every plan. Pro is a language model that runs in your
+              browser, with the extended AI-tell library and more candidate rewrites per passage. It
+              comes with a Pro subscription, which also removes the free plan&apos;s weekly budget of{' '}
+              {REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')} rewriting tokens every{' '}
+              {REWRITE_WINDOW_DAYS} days. Checking is unlimited on both.
             </Question>
           </div>
         </Wrap>

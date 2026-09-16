@@ -90,6 +90,78 @@ export function GET() {
             },
           },
         },
+        '/api/v1/calibrate': {
+          post: {
+            summary: 'Suggest word-frequency substitutions for a document',
+            operationId: 'calibrateText',
+            description:
+              'The lighter, deterministic layer behind the on-device rewrite engine: suggests substitutions with before/after statistical-profile metrics rather than producing a finished, targeted rewrite. Authentication is optional, as with /check; an anonymous call is capped at the no-account word limit instead of a tracked monthly allowance.',
+            requestBody: {
+              required: true,
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    required: ['text'],
+                    properties: {
+                      text: { type: 'string', minLength: 1, description: 'The document to calibrate.' },
+                      language: { type: 'string', enum: [...SUPPORTED_LANGUAGES] },
+                      mode: {
+                        type: 'string',
+                        enum: ['preview', 'apply'],
+                        default: 'preview',
+                        description: '"preview" returns suggested substitutions without applying them; "apply" returns the calibrated text.',
+                      },
+                      config: {
+                        type: 'object',
+                        properties: {
+                          confidenceThreshold: { type: 'number', minimum: 0, maximum: 1 },
+                          maxRepeats: { type: 'integer', minimum: 1 },
+                          targetDiversity: { type: 'number' },
+                          excludedWords: {
+                            type: 'array',
+                            items: { type: 'string', minLength: 1 },
+                            maxItems: 200,
+                            description:
+                              'Words or phrases this call must never substitute, matched case-insensitively on whole words or phrases. Useful for SEO keywords, product names or other terms that need to survive calibration unchanged. A skipped substitution is reported back with reason "excluded".',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            responses: {
+              '200': {
+                description: 'The calibration result, plus what the call cost.',
+                content: {
+                  'application/json': {
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        result: { type: 'object', description: 'A CalibrationResult: status, the calibrated or previewed text, the substitutions considered (each with a reason when skipped), and before/after frequency metrics.' },
+                        usage: {
+                          type: 'object',
+                          properties: {
+                            tokens: { type: 'integer' },
+                            billableWords: { type: 'integer' },
+                            billableCost: { type: ['string', 'null'] },
+                          },
+                        },
+                        mode: { type: 'string', enum: ['authenticated', 'anonymous'] },
+                      },
+                    },
+                  },
+                },
+              },
+              '400': { description: 'The body was not valid JSON, did not validate, or the text was empty.' },
+              '401': { description: 'Missing, unknown or revoked API key.' },
+              '402': { description: 'The account is outside its calibration allowance.' },
+              '413': { description: 'An anonymous request exceeded the no-account word cap. Provide an API key for a higher, metered limit.' },
+            },
+          },
+        },
       },
       components: {
         securitySchemes: {

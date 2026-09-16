@@ -8,6 +8,7 @@ import { countWords } from '@/lib/detector/tokenize'
 import { PLANS } from '@/lib/site'
 import { buttonClass } from '@/components/brand/ui'
 import { DocumentInput } from '@/components/workspace/document-input'
+import { useMlClassifier } from '@/components/workspace/use-ml-classifier'
 import { track } from '@/lib/openhelm-analytics'
 import { ResultView } from './result-view'
 
@@ -37,6 +38,8 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' })
   const [fileError, setFileError] = useState<string | null>(null)
 
+  const ml = useMlClassifier()
+
   const words = useMemo(() => countWords(text), [text])
   const overCap = words > wordCap
   const overCapReported = useRef(false)
@@ -49,6 +52,7 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
 
   const run = useCallback(async () => {
     setPhase({ kind: 'measuring' })
+    ml.reset()
     track('check_started', { language })
     // Yield a frame so the measuring state paints before the main thread is
     // occupied. The analysis is genuinely CPU-bound work happening right here.
@@ -62,13 +66,16 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
       // value derived from its content.
       track('check_completed', { language, status: result.status, mark_detected: result.watermark.anyDetected })
       setPhase({ kind: 'done', result })
+      // The heuristic channels above are instant; the model classifier is not,
+      // so it runs separately and patches into the result view once it settles.
+      if (result.status === 'ok') ml.run(text, result.language.code)
     } catch (err) {
       // Surface the real failure. A check that silently produced nothing would
       // be indistinguishable from a check that found nothing.
       track('check_failed', { language })
       setPhase({ kind: 'error', message: (err as Error).message })
     }
-  }, [text, language])
+  }, [text, language, ml.run, ml.reset])
 
   return (
     <div className="space-y-4">
@@ -133,7 +140,9 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
         </div>
       )}
 
-      {phase.kind === 'done' && <ResultView result={phase.result} />}
+      {phase.kind === 'done' && (
+        <ResultView result={phase.result} mlClassifier={ml.result} mlClassifierLoading={ml.loading} />
+      )}
     </div>
   )
 }

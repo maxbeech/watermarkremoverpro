@@ -56,7 +56,7 @@ export default async function DashboardPage() {
   // casting at each use.
   const recent = recentRows as unknown as CheckRow[]
 
-  const plan = entitlements.pro ? PLANS.pro : PLANS.free
+  const plan = entitlements.pro ? PLANS.pro : PLANS.anonymous
 
   return (
     <section className="mx-auto max-w-3xl px-5 py-12">

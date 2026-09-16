@@ -333,8 +333,8 @@ export function BlogPostView({ post }: { post: BlogPost }) {
             <div className="mt-6 rounded-[var(--radius-panel)] border border-ink-200 bg-white p-6 shadow-[var(--shadow-panel)]">
               <h2 className="t-heading text-ink-900">Check a document now</h2>
               <p className="mt-2.5 text-sm leading-relaxed text-ink-600">
-                Free, no signup, up to 1,500 words. The document is analysed in your browser and
-                never uploaded.
+                Free, up to 1,500 words. The document is analysed in your browser and never
+                uploaded.
               </p>
               <ButtonLink href="/check" className="mt-5 w-full">
                 Run a check

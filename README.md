@@ -94,24 +94,42 @@ footer live in a `(site)` route group
 the document shell and nothing else; `/app` sits outside the group with its own
 sidebar. Route groups do not appear in URLs, so nothing changed address.
 
-### Engines and the weekly allowance
+### What is free, and what is paid
 
-| Engine | What it is | Who gets it |
+| | Checking | Rewriting |
 |---|---|---|
-| Standard | Deterministic substitution against the core AI-tell library. Instant, no download. | Everyone, unlimited, forever |
-| Pro | A real small language model (Qwen2.5), downloaded once from the Hugging Face CDN and run in your browser on WebGPU, plus the extended AI-tell library and more candidates per passage. | One free run every 7 days for everyone; unlimited on a Pro subscription |
+| Free | Unlimited, no account, no word cap | 20,000 tokens every 7 days, Standard engine only |
+| Pro | Unlimited, plus the server-side path and the dated evidence report | Unlimited, plus the Pro engine |
 
-The Pro engine costs this product nothing to run, so that allowance is a
-commercial boundary rather than a capacity one, and it is set to be generous
-enough that anyone can see what they would be paying for on their own text
-before deciding. The arithmetic is
-[`src/lib/entitlements/pro-trial.ts`](src/lib/entitlements/pro-trial.ts): pure
-functions over a list of timestamps, with a **rolling** window rather than a
-calendar week. Signed-in visitors are counted per account through
-`/api/v1/pro-trial`; anonymous visitors are counted in that browser. Neither
-verb on that endpoint accepts a request body, and the client sends none, so
-the one network call anywhere near the document flow provably cannot carry a
-document. A test asserts it.
+The split follows from where the work happens. Both features run on the
+visitor's own hardware, so neither costs this product server compute, and
+rationing the measurement would be indefensible: checking is therefore free and
+unlimited forever. Correction is the thing being sold, so it carries a weekly
+budget on the free plan.
+
+The Pro *engine* is not metered on the free plan, it is simply not included. A
+taste of a better engine that runs out mid-session teaches someone less about
+whether to buy it than an honest description does, and it produced the worst
+possible failure mode: a rewrite silently downgrading to a different engine
+partway through a working session.
+
+A token is one word-token from this product's own `tokenize()`, the same
+tokenizer every measurement in the detector is built on. Not an estimate of
+another vendor's subword count: a unit nobody can reproduce is a unit nobody
+can check, and this one can be counted by hand.
+
+The arithmetic is
+[`src/lib/entitlements/rewrite-budget.ts`](src/lib/entitlements/rewrite-budget.ts):
+pure functions over a ledger, with a **rolling** window rather than a calendar
+week. It is counted in the browser's own storage
+([`rewrite-budget-store.ts`](src/lib/entitlements/rewrite-budget-store.ts)) and
+there is no endpoint, because a token count is a measurement of the visitor's
+document and posting one per rewrite would contradict the promise the product
+is built on. Someone who clears their site data gets a fresh allowance; that is
+the stated price of having no hole in
+[`tests/product-constraints.test.ts`](tests/product-constraints.test.ts), which
+asserts that no module on the document-holding path makes a network call at
+all.
 
 ## Design system
 

@@ -1,8 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import type { RewriteResult } from '@/lib/rewrite'
-import { newRun, pruneRuns, runTitle, summariseRun, trimResultForStorage, type RunRecord } from './runs'
+import {
+  appendVersion,
+  describeVersionAge,
+  MAX_VERSIONS,
+  newRun,
+  pruneRuns,
+  runTitle,
+  summariseRun,
+  trimResultForStorage,
+  type RunRecord,
+  type RunVersion,
+} from './runs'
 
-const SETTINGS = { language: '', strength: 'balanced', engineId: 'standard' } as const
+const SETTINGS = { language: '', strength: 'balanced', engineId: 'standard', excludedWords: [] as string[] } as const
 
 describe('runTitle', () => {
   it('uses the first non-empty line', () => {
@@ -67,8 +78,8 @@ describe('trimResultForStorage', () => {
 describe('summariseRun', () => {
   const base = {
     passages: [
-      { index: 0, chosen: 'x' },
-      { index: 1, chosen: null },
+      { index: 0, original: 'a', chosen: 'x' },
+      { index: 1, original: 'b', chosen: null },
     ],
     tellChangeCount: 4,
     processingTimeMs: 120,
@@ -99,8 +110,24 @@ describe('summariseRun', () => {
       survivedBefore: 2,
       survivedAfter: 0,
       markDetected: false,
+      markDetectedBefore: true,
       processingTimeMs: 120,
+      // The fixture above has no lexicalShiftPercent (it predates the field,
+      // same as a real run stored before this change), so this exercises the
+      // `?? 0` fallback rather than a real measurement.
+      lexicalShift: 0,
     })
+  })
+
+  it('does not count a passage whose winning candidate was the passage itself', () => {
+    // pickBest can return the original text as the best candidate. Counting
+    // that as a rewrite produced "1 of 3 passages rewritten" next to a diff
+    // that correctly showed nothing changed.
+    const unchanged = {
+      ...base,
+      passages: [{ index: 0, original: 'a', chosen: 'a' }],
+    } as unknown as RewriteResult
+    expect(summariseRun(unchanged).passagesRewritten).toBe(0)
   })
 
   it('keeps a figure that could not be measured as null rather than zero', () => {
@@ -111,6 +138,75 @@ describe('summariseRun', () => {
     expect(summary.watermarkAfter).toBeNull()
     expect(summary.survivedAfter).toBeNull()
     expect(summary.passagesInDocument).toBeNull()
+  })
+})
+
+describe('appendVersion', () => {
+  it('starts a history from nothing', () => {
+    const versions = appendVersion([], 'first draft', 'rewrite', 24)
+    expect(versions).toHaveLength(1)
+    expect(versions[0]).toMatchObject({ text: 'first draft', source: 'rewrite', likelihood: 24 })
+    expect(versions[0].id).toBeTruthy()
+    expect(versions[0].createdAt).toBeTruthy()
+  })
+
+  it('appends distinct text, oldest first', () => {
+    let versions = appendVersion([], 'v1', 'rewrite', 50)
+    versions = appendVersion(versions, 'v2', 'edit', 40)
+    versions = appendVersion(versions, 'v3', 'paragraph', null)
+    expect(versions.map((v) => v.text)).toEqual(['v1', 'v2', 'v3'])
+    expect(versions.map((v) => v.source)).toEqual(['rewrite', 'edit', 'paragraph'])
+  })
+
+  it('does not record a version identical to the current one', () => {
+    let versions = appendVersion([], 'same text', 'rewrite', 50)
+    versions = appendVersion(versions, 'same text', 'rerun', 50)
+    expect(versions).toHaveLength(1)
+  })
+
+  it('does record a change back to earlier text as its own new version (a restore is not a no-op)', () => {
+    let versions = appendVersion([], 'v1', 'rewrite', 50)
+    versions = appendVersion(versions, 'v2', 'edit', 40)
+    versions = appendVersion(versions, 'v1', 'restore', 50)
+    expect(versions.map((v) => v.text)).toEqual(['v1', 'v2', 'v1'])
+    expect(versions[2].source).toBe('restore')
+  })
+
+  it('keeps a null likelihood as null rather than reusing the previous score', () => {
+    const versions = appendVersion([{ id: 'a', text: 'v1', source: 'rewrite', likelihood: 60, createdAt: 't' }], 'v2', 'edit', null)
+    expect(versions[1].likelihood).toBeNull()
+  })
+
+  it('caps history at MAX_VERSIONS, dropping the oldest first', () => {
+    let versions: RunVersion[] = []
+    for (let i = 0; i < MAX_VERSIONS + 5; i++) {
+      versions = appendVersion(versions, `v${i}`, 'edit', i)
+    }
+    expect(versions).toHaveLength(MAX_VERSIONS)
+    expect(versions[0].text).toBe(`v${5}`)
+    expect(versions[versions.length - 1].text).toBe(`v${MAX_VERSIONS + 4}`)
+  })
+})
+
+describe('describeVersionAge', () => {
+  const now = new Date('2026-09-10T12:00:00.000Z')
+
+  it('says "just now" for anything under 30 seconds', () => {
+    expect(describeVersionAge('2026-09-10T11:59:45.000Z', now)).toBe('just now')
+  })
+
+  it('reports whole minutes', () => {
+    expect(describeVersionAge('2026-09-10T11:55:00.000Z', now)).toBe('5 minutes ago')
+    expect(describeVersionAge('2026-09-10T11:59:00.000Z', now)).toBe('1 minute ago')
+  })
+
+  it('reports whole hours once past 60 minutes', () => {
+    expect(describeVersionAge('2026-09-10T09:00:00.000Z', now)).toBe('3 hours ago')
+    expect(describeVersionAge('2026-09-10T11:00:00.000Z', now)).toBe('1 hour ago')
+  })
+
+  it('reports whole days once past 24 hours', () => {
+    expect(describeVersionAge('2026-09-08T12:00:00.000Z', now)).toBe('2 days ago')
   })
 })
 

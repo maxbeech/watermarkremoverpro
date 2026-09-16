@@ -47,6 +47,39 @@ describe('applyDeterministicPass', () => {
     expect(text).toBe(input)
     expect(changes).toEqual([])
   })
+
+  describe('excludedWords', () => {
+    it('does not replace an excluded stock phrase', () => {
+      const input = 'Moreover, the data supports this.'
+      const { text, changes } = applyDeterministicPass(input, 'balanced', 'core', ['Moreover'])
+      expect(text).toBe(input)
+      expect(changes).toEqual([])
+    })
+
+    it('does not replace excluded elevated vocabulary', () => {
+      // 'aggressive' rewrites every covered occurrence regardless of density,
+      // so a single instance is enough to prove the exclusion, not just the
+      // density threshold, is what is holding it back.
+      const input = 'The plan was crucial to the outcome.'
+      const { text } = applyDeterministicPass(input, 'aggressive', 'core', ['crucial'])
+      expect(text).toBe(input)
+    })
+
+    it('does not swap a dash-clause connector when it falls inside an excluded phrase', () => {
+      const dash = String.fromCharCode(0x2014)
+      const input = `Our Product ${dash} Launch happened today.`
+      const { text, changes } = applyDeterministicPass(input, 'balanced', 'core', [`Product ${dash} Launch`])
+      expect(text).toBe(input)
+      expect(changes).toEqual([])
+    })
+
+    it('still swaps a dash clause that does not overlap any excluded term', () => {
+      const dash = String.fromCharCode(0x2014)
+      const input = `WatermarkRemoverPro is great ${dash} nobody disputes it.`
+      const { text } = applyDeterministicPass(input, 'balanced', 'core', ['WatermarkRemoverPro'])
+      expect(text).not.toContain(dash)
+    })
+  })
 })
 
 describe('tell library tiers', () => {
@@ -172,7 +205,7 @@ describe('structural tells and elevated vocabulary', () => {
     const plain = 'The committee met on Tuesday and asked whether the survey had been completed.'
 
     expect(measureStyleTells(heavy).pressure).toBeGreaterThanOrEqual(2)
-    expect(measureStyleTells(plain)).toEqual({ structures: 0, vocabulary: 0, pressure: 0 })
+    expect(measureStyleTells(plain)).toEqual({ structures: 0, vocabulary: 0, emoji: 0, pressure: 0 })
   })
 
   it('counts two elevated words as one unit of pressure, so a single one cannot trigger a rewrite', () => {
@@ -195,5 +228,51 @@ describe('structural tells and elevated vocabulary', () => {
     const { flaggedStructures, elevatedVocabulary } = applyDeterministicPass(input, 'balanced', 'extended')
     expect(flaggedStructures).toEqual([])
     expect(elevatedVocabulary).toEqual([])
+  })
+})
+
+describe('emoji', () => {
+  it('leaves a single emoji alone at "balanced": one is a choice, not yet a tell', () => {
+    const input = 'The launch went well \u{1F680} and the team is proud of it.'
+    const { text } = applyDeterministicPass(input, 'balanced')
+    expect(text).toContain('\u{1F680}')
+  })
+
+  it('strips emoji once density crosses the threshold at "balanced"', () => {
+    const input = 'Huge news ✅ the launch is live \u{1F680} and everyone is thrilled ✨ today.'
+    const { text, changes } = applyDeterministicPass(input, 'balanced')
+    expect(text).not.toMatch(/[✅\u{1F680}✨]/u)
+    expect(changes.some((c) => c.category === 'emoji')).toBe(true)
+  })
+
+  it('strips even a single emoji at "aggressive"', () => {
+    const input = 'The launch went well \u{1F680} and the team is proud of it.'
+    const { text } = applyDeterministicPass(input, 'aggressive')
+    expect(text).not.toContain('\u{1F680}')
+  })
+
+  it('never strips emoji at "preserve", regardless of density', () => {
+    const input = 'Huge news ✅ the launch is live \u{1F680} and everyone is thrilled ✨ today.'
+    const { text } = applyDeterministicPass(input, 'preserve')
+    expect(text).toContain('✅')
+    expect(text).toContain('\u{1F680}')
+    expect(text).toContain('✨')
+  })
+
+  it('does not leave a doubled space where an emoji was removed', () => {
+    const input = 'Huge news ✅ the launch is live \u{1F680} today ✨ for everyone.'
+    const { text } = applyDeterministicPass(input, 'aggressive')
+    expect(text).not.toMatch(/ {2,}/)
+  })
+
+  it('counts emoji into style-tell pressure so an emoji-heavy passage routes to the rewriter', () => {
+    const heavy = 'Huge news ✅ the launch is live \u{1F680} and everyone is thrilled ✨ today.'
+    expect(measureStyleTells(heavy).emoji).toBe(3)
+    expect(measureStyleTells(heavy).pressure).toBeGreaterThanOrEqual(2)
+  })
+
+  it('reports zero emoji for ordinary prose', () => {
+    const input = 'The committee met on Tuesday and asked whether the survey had been completed.'
+    expect(measureStyleTells(input).emoji).toBe(0)
   })
 })

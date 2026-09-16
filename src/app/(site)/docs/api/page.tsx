@@ -59,6 +59,37 @@ export default function ApiDocsPage() {
         </p>
       </Section>
 
+      <Section title="POST /api/v1/calibrate">
+        <p>
+          The lighter, deterministic layer behind the on-device rewrite engine: suggests
+          word-frequency substitutions with before/after metrics, rather than producing a finished,
+          targeted rewrite. Authentication is optional, as with <code className="figure">/check</code>;
+          an anonymous call is capped at the no-account word limit rather than a tracked monthly
+          allowance.
+        </p>
+        <Code>{`curl -X POST ${SITE.url}/api/v1/calibrate \\
+  -H "Authorization: Bearer $WATERMARKREMOVERPRO_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "text": "The text you want to calibrate...",
+    "language": "en",
+    "mode": "preview",
+    "config": {
+      "excludedWords": ["WatermarkRemoverPro", "on-device AI detector"]
+    }
+  }'`}</Code>
+        <p className="mt-3">
+          <code className="figure">mode</code> is <code className="figure">preview</code> (the
+          default, returns suggested substitutions without applying them) or{' '}
+          <code className="figure">apply</code> (returns the calibrated text).{' '}
+          <code className="figure">config.excludedWords</code> lists words or phrases this call must
+          never substitute, matched case-insensitively as whole words or phrases: useful for SEO
+          keywords, product names or other terms that need to survive calibration unchanged. A
+          substitution skipped for this reason is reported back with{' '}
+          <code className="figure">reason: &quot;excluded&quot;</code> rather than silently omitted.
+        </p>
+      </Section>
+
       <Section title="Reading the response">
         <p>
           <strong>Every statistic is either a number or null.</strong> Null means the value was not
@@ -112,10 +143,12 @@ export default function ApiDocsPage() {
 
       <Section title="What this API does not offer">
         <p>
-          There is no endpoint or parameter, on any plan, that rewrites a document to reduce
-          detectable evidence. That is a deliberate omission, not a missing feature: rewriting is
-          on-device only, on every tier, and a REST endpoint that accepted your document text would
-          break that guarantee. Call the on-device rewrite engine instead via the MCP server&apos;s{' '}
+          <code className="figure">/calibrate</code> above is the lighter, deterministic layer:
+          word-frequency substitutions with before/after metrics, not a finished, targeted rewrite.
+          There is no endpoint or parameter, on any plan, that runs the fuller rewrite engine over
+          this REST API. That is a deliberate omission, not a missing feature: the targeted rewrite is
+          on-device only, on every tier, and a REST endpoint that accepted your document text for it
+          would break that guarantee. Call it instead via the MCP server&apos;s{' '}
           <Link href="/docs/mcp" className="link-quiet">reduce_ai_evidence tool</Link>, or the
           published local package/CLI, both of which run in your own process and never transmit the
           document.

@@ -41,9 +41,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../node_modules/ajv/dist/compile/codegen/code.js
+// node_modules/ajv/dist/compile/codegen/code.js
 var require_code = __commonJS({
-  "../../../node_modules/ajv/dist/compile/codegen/code.js"(exports) {
+  "node_modules/ajv/dist/compile/codegen/code.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.regexpCode = exports.getEsmExportName = exports.getProperty = exports.safeStringify = exports.stringify = exports.strConcat = exports.addCodeArg = exports.str = exports._ = exports.nil = exports._Code = exports.Name = exports.IDENTIFIER = exports._CodeOrName = void 0;
@@ -195,9 +195,9 @@ var require_code = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/codegen/scope.js
+// node_modules/ajv/dist/compile/codegen/scope.js
 var require_scope = __commonJS({
-  "../../../node_modules/ajv/dist/compile/codegen/scope.js"(exports) {
+  "node_modules/ajv/dist/compile/codegen/scope.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ValueScope = exports.ValueScopeName = exports.Scope = exports.varKinds = exports.UsedValueState = void 0;
@@ -340,9 +340,9 @@ var require_scope = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/codegen/index.js
+// node_modules/ajv/dist/compile/codegen/index.js
 var require_codegen = __commonJS({
-  "../../../node_modules/ajv/dist/compile/codegen/index.js"(exports) {
+  "node_modules/ajv/dist/compile/codegen/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.or = exports.and = exports.not = exports.CodeGen = exports.operators = exports.varKinds = exports.ValueScopeName = exports.ValueScope = exports.Scope = exports.Name = exports.regexpCode = exports.stringify = exports.getProperty = exports.nil = exports.strConcat = exports.str = exports._ = void 0;
@@ -1060,9 +1060,9 @@ var require_codegen = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/util.js
+// node_modules/ajv/dist/compile/util.js
 var require_util = __commonJS({
-  "../../../node_modules/ajv/dist/compile/util.js"(exports) {
+  "node_modules/ajv/dist/compile/util.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.checkStrictMode = exports.getErrorPath = exports.Type = exports.useFunc = exports.setEvaluated = exports.evaluatedPropsToName = exports.mergeEvaluated = exports.eachItem = exports.unescapeJsonPointer = exports.escapeJsonPointer = exports.escapeFragment = exports.unescapeFragment = exports.schemaRefOrVal = exports.schemaHasRulesButRef = exports.schemaHasRules = exports.checkUnknownRules = exports.alwaysValidSchema = exports.toHash = void 0;
@@ -1227,9 +1227,9 @@ var require_util = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/names.js
+// node_modules/ajv/dist/compile/names.js
 var require_names = __commonJS({
-  "../../../node_modules/ajv/dist/compile/names.js"(exports) {
+  "node_modules/ajv/dist/compile/names.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -1266,9 +1266,9 @@ var require_names = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/errors.js
+// node_modules/ajv/dist/compile/errors.js
 var require_errors = __commonJS({
-  "../../../node_modules/ajv/dist/compile/errors.js"(exports) {
+  "node_modules/ajv/dist/compile/errors.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.extendErrors = exports.resetErrorsCount = exports.reportExtraError = exports.reportError = exports.keyword$DataError = exports.keywordError = void 0;
@@ -1388,9 +1388,9 @@ var require_errors = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/boolSchema.js
+// node_modules/ajv/dist/compile/validate/boolSchema.js
 var require_boolSchema = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/boolSchema.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/boolSchema.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.boolOrEmptySchema = exports.topBoolOrEmptySchema = void 0;
@@ -1439,9 +1439,9 @@ var require_boolSchema = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/rules.js
+// node_modules/ajv/dist/compile/rules.js
 var require_rules = __commonJS({
-  "../../../node_modules/ajv/dist/compile/rules.js"(exports) {
+  "node_modules/ajv/dist/compile/rules.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getRules = exports.isJSONType = void 0;
@@ -1470,9 +1470,9 @@ var require_rules = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/applicability.js
+// node_modules/ajv/dist/compile/validate/applicability.js
 var require_applicability = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/applicability.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/applicability.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.shouldUseRule = exports.shouldUseGroup = exports.schemaHasRulesForType = void 0;
@@ -1493,9 +1493,9 @@ var require_applicability = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/dataType.js
+// node_modules/ajv/dist/compile/validate/dataType.js
 var require_dataType = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/dataType.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/dataType.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.reportTypeError = exports.checkDataTypes = exports.checkDataType = exports.coerceAndCheckDataType = exports.getJSONTypes = exports.getSchemaTypes = exports.DataType = void 0;
@@ -1677,9 +1677,9 @@ var require_dataType = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/defaults.js
+// node_modules/ajv/dist/compile/validate/defaults.js
 var require_defaults = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/defaults.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/defaults.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.assignDefaults = void 0;
@@ -1714,9 +1714,9 @@ var require_defaults = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/code.js
+// node_modules/ajv/dist/vocabularies/code.js
 var require_code2 = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/code.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/code.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.validateUnion = exports.validateArray = exports.usePattern = exports.callValidateCode = exports.schemaProperties = exports.allSchemaProperties = exports.noPropertyInData = exports.propertyInData = exports.isOwnProperty = exports.hasPropFunc = exports.reportMissingProp = exports.checkMissingProp = exports.checkReportMissingProp = void 0;
@@ -1847,9 +1847,9 @@ var require_code2 = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/keyword.js
+// node_modules/ajv/dist/compile/validate/keyword.js
 var require_keyword = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/keyword.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/keyword.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.validateKeywordUsage = exports.validSchemaType = exports.funcKeywordCode = exports.macroKeywordCode = void 0;
@@ -1965,9 +1965,9 @@ var require_keyword = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/subschema.js
+// node_modules/ajv/dist/compile/validate/subschema.js
 var require_subschema = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/subschema.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/subschema.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.extendSubschemaMode = exports.extendSubschemaData = exports.getSubschema = void 0;
@@ -2048,9 +2048,9 @@ var require_subschema = __commonJS({
   }
 });
 
-// ../../../node_modules/fast-deep-equal/index.js
+// node_modules/fast-deep-equal/index.js
 var require_fast_deep_equal = __commonJS({
-  "../../../node_modules/fast-deep-equal/index.js"(exports, module) {
+  "node_modules/fast-deep-equal/index.js"(exports, module) {
     "use strict";
     module.exports = function equal(a, b) {
       if (a === b) return true;
@@ -2083,9 +2083,9 @@ var require_fast_deep_equal = __commonJS({
   }
 });
 
-// ../../../node_modules/json-schema-traverse/index.js
+// node_modules/json-schema-traverse/index.js
 var require_json_schema_traverse = __commonJS({
-  "../../../node_modules/json-schema-traverse/index.js"(exports, module) {
+  "node_modules/json-schema-traverse/index.js"(exports, module) {
     "use strict";
     var traverse = module.exports = function(schema, opts, cb) {
       if (typeof opts == "function") {
@@ -2171,9 +2171,9 @@ var require_json_schema_traverse = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/resolve.js
+// node_modules/ajv/dist/compile/resolve.js
 var require_resolve = __commonJS({
-  "../../../node_modules/ajv/dist/compile/resolve.js"(exports) {
+  "node_modules/ajv/dist/compile/resolve.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getSchemaRefs = exports.resolveUrl = exports.normalizeId = exports._getFullPath = exports.getFullPath = exports.inlineRef = void 0;
@@ -2327,9 +2327,9 @@ var require_resolve = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/validate/index.js
+// node_modules/ajv/dist/compile/validate/index.js
 var require_validate = __commonJS({
-  "../../../node_modules/ajv/dist/compile/validate/index.js"(exports) {
+  "node_modules/ajv/dist/compile/validate/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getData = exports.KeywordCxt = exports.validateFunctionCode = void 0;
@@ -2835,9 +2835,9 @@ var require_validate = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/runtime/validation_error.js
+// node_modules/ajv/dist/runtime/validation_error.js
 var require_validation_error = __commonJS({
-  "../../../node_modules/ajv/dist/runtime/validation_error.js"(exports) {
+  "node_modules/ajv/dist/runtime/validation_error.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var ValidationError = class extends Error {
@@ -2851,9 +2851,9 @@ var require_validation_error = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/ref_error.js
+// node_modules/ajv/dist/compile/ref_error.js
 var require_ref_error = __commonJS({
-  "../../../node_modules/ajv/dist/compile/ref_error.js"(exports) {
+  "node_modules/ajv/dist/compile/ref_error.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var resolve_1 = require_resolve();
@@ -2868,9 +2868,9 @@ var require_ref_error = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/compile/index.js
+// node_modules/ajv/dist/compile/index.js
 var require_compile = __commonJS({
-  "../../../node_modules/ajv/dist/compile/index.js"(exports) {
+  "node_modules/ajv/dist/compile/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.resolveSchema = exports.getCompilingSchema = exports.resolveRef = exports.compileSchema = exports.SchemaEnv = void 0;
@@ -3092,9 +3092,9 @@ var require_compile = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/refs/data.json
+// node_modules/ajv/dist/refs/data.json
 var require_data = __commonJS({
-  "../../../node_modules/ajv/dist/refs/data.json"(exports, module) {
+  "node_modules/ajv/dist/refs/data.json"(exports, module) {
     module.exports = {
       $id: "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
       description: "Meta-schema for $data reference (JSON AnySchema extension proposal)",
@@ -3111,9 +3111,9 @@ var require_data = __commonJS({
   }
 });
 
-// ../../../node_modules/fast-uri/lib/utils.js
+// node_modules/fast-uri/lib/utils.js
 var require_utils = __commonJS({
-  "../../../node_modules/fast-uri/lib/utils.js"(exports, module) {
+  "node_modules/fast-uri/lib/utils.js"(exports, module) {
     "use strict";
     var isUUID = RegExp.prototype.test.bind(/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/iu);
     var isIPv4 = RegExp.prototype.test.bind(/^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)$/u);
@@ -3613,9 +3613,9 @@ var require_utils = __commonJS({
   }
 });
 
-// ../../../node_modules/fast-uri/lib/schemes.js
+// node_modules/fast-uri/lib/schemes.js
 var require_schemes = __commonJS({
-  "../../../node_modules/fast-uri/lib/schemes.js"(exports, module) {
+  "node_modules/fast-uri/lib/schemes.js"(exports, module) {
     "use strict";
     var { isUUID } = require_utils();
     var URN_REG = /^([\da-z][\d\-a-z]{0,31}):((?:[\w!$'()*+,\-./:;=@]|%[\da-f]{2})+)$/iu;
@@ -3824,9 +3824,9 @@ var require_schemes = __commonJS({
   }
 });
 
-// ../../../node_modules/fast-uri/index.js
+// node_modules/fast-uri/index.js
 var require_fast_uri = __commonJS({
-  "../../../node_modules/fast-uri/index.js"(exports, module) {
+  "node_modules/fast-uri/index.js"(exports, module) {
     "use strict";
     var { normalizeIPv6, removeDotSegments, recomposeAuthority, normalizePercentEncoding, normalizePathEncoding, serializePathEncoding, normalizeQueryFragmentEncoding, encodeQuery, encodeFragment, reescapeHostDelimiters, isIPv4, nonSimpleDomain } = require_utils();
     var { SCHEMES, getSchemeHandler } = require_schemes();
@@ -4229,9 +4229,9 @@ var require_fast_uri = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/runtime/uri.js
+// node_modules/ajv/dist/runtime/uri.js
 var require_uri = __commonJS({
-  "../../../node_modules/ajv/dist/runtime/uri.js"(exports) {
+  "node_modules/ajv/dist/runtime/uri.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var uri = require_fast_uri();
@@ -4240,9 +4240,9 @@ var require_uri = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/core.js
+// node_modules/ajv/dist/core.js
 var require_core = __commonJS({
-  "../../../node_modules/ajv/dist/core.js"(exports) {
+  "node_modules/ajv/dist/core.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CodeGen = exports.Name = exports.nil = exports.stringify = exports.str = exports._ = exports.KeywordCxt = void 0;
@@ -4851,9 +4851,9 @@ var require_core = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/core/id.js
+// node_modules/ajv/dist/vocabularies/core/id.js
 var require_id = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/core/id.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/core/id.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var def = {
@@ -4866,9 +4866,9 @@ var require_id = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/core/ref.js
+// node_modules/ajv/dist/vocabularies/core/ref.js
 var require_ref = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/core/ref.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/core/ref.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.callRef = exports.getValidate = void 0;
@@ -4988,9 +4988,9 @@ var require_ref = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/core/index.js
+// node_modules/ajv/dist/vocabularies/core/index.js
 var require_core2 = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/core/index.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/core/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var id_1 = require_id();
@@ -5009,9 +5009,9 @@ var require_core2 = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/limitNumber.js
+// node_modules/ajv/dist/vocabularies/validation/limitNumber.js
 var require_limitNumber = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/limitNumber.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/limitNumber.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5041,9 +5041,9 @@ var require_limitNumber = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/multipleOf.js
+// node_modules/ajv/dist/vocabularies/validation/multipleOf.js
 var require_multipleOf = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/multipleOf.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/multipleOf.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5069,9 +5069,9 @@ var require_multipleOf = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/runtime/ucs2length.js
+// node_modules/ajv/dist/runtime/ucs2length.js
 var require_ucs2length = __commonJS({
-  "../../../node_modules/ajv/dist/runtime/ucs2length.js"(exports) {
+  "node_modules/ajv/dist/runtime/ucs2length.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function ucs2length(str) {
@@ -5095,9 +5095,9 @@ var require_ucs2length = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/limitLength.js
+// node_modules/ajv/dist/vocabularies/validation/limitLength.js
 var require_limitLength = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/limitLength.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/limitLength.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5127,9 +5127,9 @@ var require_limitLength = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/pattern.js
+// node_modules/ajv/dist/vocabularies/validation/pattern.js
 var require_pattern = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/pattern.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/pattern.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var code_1 = require_code2();
@@ -5164,9 +5164,9 @@ var require_pattern = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/limitProperties.js
+// node_modules/ajv/dist/vocabularies/validation/limitProperties.js
 var require_limitProperties = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/limitProperties.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/limitProperties.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5193,9 +5193,9 @@ var require_limitProperties = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/required.js
+// node_modules/ajv/dist/vocabularies/validation/required.js
 var require_required = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/required.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/required.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var code_1 = require_code2();
@@ -5275,9 +5275,9 @@ var require_required = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/limitItems.js
+// node_modules/ajv/dist/vocabularies/validation/limitItems.js
 var require_limitItems = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/limitItems.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/limitItems.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5304,9 +5304,9 @@ var require_limitItems = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/runtime/equal.js
+// node_modules/ajv/dist/runtime/equal.js
 var require_equal = __commonJS({
-  "../../../node_modules/ajv/dist/runtime/equal.js"(exports) {
+  "node_modules/ajv/dist/runtime/equal.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var equal = require_fast_deep_equal();
@@ -5315,9 +5315,9 @@ var require_equal = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/uniqueItems.js
+// node_modules/ajv/dist/vocabularies/validation/uniqueItems.js
 var require_uniqueItems = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/uniqueItems.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/uniqueItems.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var dataType_1 = require_dataType();
@@ -5382,9 +5382,9 @@ var require_uniqueItems = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/const.js
+// node_modules/ajv/dist/vocabularies/validation/const.js
 var require_const = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/const.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/const.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5411,9 +5411,9 @@ var require_const = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/enum.js
+// node_modules/ajv/dist/vocabularies/validation/enum.js
 var require_enum = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/enum.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/enum.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5460,9 +5460,9 @@ var require_enum = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/validation/index.js
+// node_modules/ajv/dist/vocabularies/validation/index.js
 var require_validation = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/validation/index.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/validation/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var limitNumber_1 = require_limitNumber();
@@ -5498,9 +5498,9 @@ var require_validation = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/additionalItems.js
+// node_modules/ajv/dist/vocabularies/applicator/additionalItems.js
 var require_additionalItems = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/additionalItems.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/additionalItems.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.validateAdditionalItems = void 0;
@@ -5551,9 +5551,9 @@ var require_additionalItems = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/items.js
+// node_modules/ajv/dist/vocabularies/applicator/items.js
 var require_items = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/items.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/items.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.validateTuple = void 0;
@@ -5608,9 +5608,9 @@ var require_items = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/prefixItems.js
+// node_modules/ajv/dist/vocabularies/applicator/prefixItems.js
 var require_prefixItems = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/prefixItems.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/prefixItems.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var items_1 = require_items();
@@ -5625,9 +5625,9 @@ var require_prefixItems = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/items2020.js
+// node_modules/ajv/dist/vocabularies/applicator/items2020.js
 var require_items2020 = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/items2020.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/items2020.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5660,9 +5660,9 @@ var require_items2020 = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/contains.js
+// node_modules/ajv/dist/vocabularies/applicator/contains.js
 var require_contains = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/contains.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/contains.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5754,9 +5754,9 @@ var require_contains = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/dependencies.js
+// node_modules/ajv/dist/vocabularies/applicator/dependencies.js
 var require_dependencies = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/dependencies.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/dependencies.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.validateSchemaDeps = exports.validatePropertyDeps = exports.error = void 0;
@@ -5848,9 +5848,9 @@ var require_dependencies = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/propertyNames.js
+// node_modules/ajv/dist/vocabularies/applicator/propertyNames.js
 var require_propertyNames = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/propertyNames.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/propertyNames.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -5891,9 +5891,9 @@ var require_propertyNames = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js
+// node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js
 var require_additionalProperties = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/additionalProperties.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var code_1 = require_code2();
@@ -5997,9 +5997,9 @@ var require_additionalProperties = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/properties.js
+// node_modules/ajv/dist/vocabularies/applicator/properties.js
 var require_properties = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/properties.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/properties.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var validate_1 = require_validate();
@@ -6055,9 +6055,9 @@ var require_properties = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/patternProperties.js
+// node_modules/ajv/dist/vocabularies/applicator/patternProperties.js
 var require_patternProperties = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/patternProperties.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/patternProperties.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var code_1 = require_code2();
@@ -6129,9 +6129,9 @@ var require_patternProperties = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/not.js
+// node_modules/ajv/dist/vocabularies/applicator/not.js
 var require_not = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/not.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/not.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var util_1 = require_util();
@@ -6160,9 +6160,9 @@ var require_not = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/anyOf.js
+// node_modules/ajv/dist/vocabularies/applicator/anyOf.js
 var require_anyOf = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/anyOf.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/anyOf.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var code_1 = require_code2();
@@ -6177,9 +6177,9 @@ var require_anyOf = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/oneOf.js
+// node_modules/ajv/dist/vocabularies/applicator/oneOf.js
 var require_oneOf = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/oneOf.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/oneOf.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -6235,9 +6235,9 @@ var require_oneOf = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/allOf.js
+// node_modules/ajv/dist/vocabularies/applicator/allOf.js
 var require_allOf = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/allOf.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/allOf.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var util_1 = require_util();
@@ -6262,9 +6262,9 @@ var require_allOf = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/if.js
+// node_modules/ajv/dist/vocabularies/applicator/if.js
 var require_if = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/if.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/if.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -6331,9 +6331,9 @@ var require_if = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/thenElse.js
+// node_modules/ajv/dist/vocabularies/applicator/thenElse.js
 var require_thenElse = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/thenElse.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/thenElse.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var util_1 = require_util();
@@ -6349,9 +6349,9 @@ var require_thenElse = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/applicator/index.js
+// node_modules/ajv/dist/vocabularies/applicator/index.js
 var require_applicator = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/applicator/index.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/applicator/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var additionalItems_1 = require_additionalItems();
@@ -6397,9 +6397,9 @@ var require_applicator = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/format/format.js
+// node_modules/ajv/dist/vocabularies/format/format.js
 var require_format = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/format/format.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/format/format.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -6487,9 +6487,9 @@ var require_format = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/format/index.js
+// node_modules/ajv/dist/vocabularies/format/index.js
 var require_format2 = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/format/index.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/format/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var format_1 = require_format();
@@ -6498,9 +6498,9 @@ var require_format2 = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/metadata.js
+// node_modules/ajv/dist/vocabularies/metadata.js
 var require_metadata = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/metadata.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/metadata.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.contentVocabulary = exports.metadataVocabulary = void 0;
@@ -6521,9 +6521,9 @@ var require_metadata = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/draft7.js
+// node_modules/ajv/dist/vocabularies/draft7.js
 var require_draft7 = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/draft7.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/draft7.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var core_1 = require_core2();
@@ -6543,9 +6543,9 @@ var require_draft7 = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/discriminator/types.js
+// node_modules/ajv/dist/vocabularies/discriminator/types.js
 var require_types = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/discriminator/types.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/discriminator/types.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DiscrError = void 0;
@@ -6557,9 +6557,9 @@ var require_types = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/vocabularies/discriminator/index.js
+// node_modules/ajv/dist/vocabularies/discriminator/index.js
 var require_discriminator = __commonJS({
-  "../../../node_modules/ajv/dist/vocabularies/discriminator/index.js"(exports) {
+  "node_modules/ajv/dist/vocabularies/discriminator/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var codegen_1 = require_codegen();
@@ -6662,9 +6662,9 @@ var require_discriminator = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/refs/json-schema-draft-07.json
+// node_modules/ajv/dist/refs/json-schema-draft-07.json
 var require_json_schema_draft_07 = __commonJS({
-  "../../../node_modules/ajv/dist/refs/json-schema-draft-07.json"(exports, module) {
+  "node_modules/ajv/dist/refs/json-schema-draft-07.json"(exports, module) {
     module.exports = {
       $schema: "http://json-schema.org/draft-07/schema#",
       $id: "http://json-schema.org/draft-07/schema#",
@@ -6819,9 +6819,9 @@ var require_json_schema_draft_07 = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv/dist/ajv.js
+// node_modules/ajv/dist/ajv.js
 var require_ajv = __commonJS({
-  "../../../node_modules/ajv/dist/ajv.js"(exports, module) {
+  "node_modules/ajv/dist/ajv.js"(exports, module) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MissingRefError = exports.ValidationError = exports.CodeGen = exports.Name = exports.nil = exports.stringify = exports.str = exports._ = exports.KeywordCxt = exports.Ajv = void 0;
@@ -6889,9 +6889,9 @@ var require_ajv = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv-formats/dist/formats.js
+// node_modules/ajv-formats/dist/formats.js
 var require_formats = __commonJS({
-  "../../../node_modules/ajv-formats/dist/formats.js"(exports) {
+  "node_modules/ajv-formats/dist/formats.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.formatNames = exports.fastFormats = exports.fullFormats = void 0;
@@ -7092,9 +7092,9 @@ var require_formats = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv-formats/dist/limit.js
+// node_modules/ajv-formats/dist/limit.js
 var require_limit = __commonJS({
-  "../../../node_modules/ajv-formats/dist/limit.js"(exports) {
+  "node_modules/ajv-formats/dist/limit.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.formatLimitDefinition = void 0;
@@ -7164,9 +7164,9 @@ var require_limit = __commonJS({
   }
 });
 
-// ../../../node_modules/ajv-formats/dist/index.js
+// node_modules/ajv-formats/dist/index.js
 var require_dist = __commonJS({
-  "../../../node_modules/ajv-formats/dist/index.js"(exports, module) {
+  "node_modules/ajv-formats/dist/index.js"(exports, module) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var formats_1 = require_formats();
@@ -7207,12 +7207,13 @@ var require_dist = __commonJS({
 });
 
 // src/lib/calibrate/patterns.ts
-var assemble, DASH_CLAUSE_PATTERN, CORE_STOCK_PHRASES, EXTENDED_STOCK_PHRASES, TRIADIC_LIST_PATTERN, NEGATIVE_PARALLELISM_PATTERN, ELEVATED_VOCABULARY, REGISTER_DOWNSHIFT, REGISTER_DENSITY_THRESHOLD;
+var assemble, DASH_CLAUSE_PATTERN, EMOJI_PATTERN, CORE_STOCK_PHRASES, EXTENDED_STOCK_PHRASES, TRIADIC_LIST_PATTERN, NEGATIVE_PARALLELISM_PATTERN, ELEVATED_VOCABULARY, REGISTER_DOWNSHIFT, REGISTER_DENSITY_THRESHOLD;
 var init_patterns = __esm({
   "src/lib/calibrate/patterns.ts"() {
     "use strict";
     assemble = (...parts) => parts.join("");
     DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g;
+    EMOJI_PATTERN = /[\u{1F1E6}-\u{1F1FF}\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}](?:\u{FE0F}|\u{200D}[\u{1F300}-\u{1FAFF}])?/gu;
     CORE_STOCK_PHRASES = {
       "delve into": ["look at", "examine", "go into"],
       "it is important to note that": ["note that", "worth noting:", ""],
@@ -7351,6 +7352,65 @@ var init_patterns = __esm({
   }
 });
 
+// src/lib/calibrate/excluded-terms.ts
+function normalizeExcludedTerms(raw) {
+  if (!raw || raw.length === 0) return EMPTY;
+  const words = /* @__PURE__ */ new Set();
+  const phrases = [];
+  for (const entry of raw) {
+    const trimmed = entry.trim().toLowerCase();
+    if (!trimmed) continue;
+    if (/\s/.test(trimmed)) {
+      phrases.push(trimmed);
+    } else {
+      words.add(trimmed);
+    }
+  }
+  return { words, phrases };
+}
+function isExcludedWord(terms, norm) {
+  return terms.words.has(norm);
+}
+function allExcludedTerms(terms) {
+  return [...terms.words, ...terms.phrases];
+}
+function termOccursIn(term, text) {
+  return phraseRegex(term).test(text);
+}
+function phraseRegex(phrase) {
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![\\w])${escaped}(?![\\w])`, "gi");
+}
+function excludedSpans(terms, text) {
+  if (terms.words.size === 0 && terms.phrases.length === 0) return [];
+  const spans = [];
+  for (const word of terms.words) {
+    const re = phraseRegex(word);
+    let match;
+    while ((match = re.exec(text)) !== null) {
+      spans.push([match.index, match.index + match[0].length]);
+    }
+  }
+  for (const phrase of terms.phrases) {
+    const re = phraseRegex(phrase);
+    let match;
+    while ((match = re.exec(text)) !== null) {
+      spans.push([match.index, match.index + match[0].length]);
+    }
+  }
+  return spans;
+}
+function overlapsAny(spans, start, end) {
+  return spans.some(([s, e]) => start < e && end > s);
+}
+var EMPTY;
+var init_excluded_terms = __esm({
+  "src/lib/calibrate/excluded-terms.ts"() {
+    "use strict";
+    EMPTY = { words: /* @__PURE__ */ new Set(), phrases: [] };
+  }
+});
+
 // src/lib/calibrate/ai-tells.ts
 function shouldSwapDashes(strength) {
   return strength !== "preserve";
@@ -7358,8 +7418,9 @@ function shouldSwapDashes(strength) {
 function shouldSwapPhrases() {
   return true;
 }
-function swapDashes(text) {
+function swapDashes(text, excluded) {
   const changes = [];
+  const protectedSpans = excludedSpans(excluded, text);
   let useComma = true;
   let result = "";
   let lastEnd = 0;
@@ -7368,6 +7429,7 @@ function swapDashes(text) {
   while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
     const start = match.index;
     const end = start + match[0].length;
+    if (overlapsAny(protectedSpans, start, end)) continue;
     const replacement = useComma ? ", " : ". ";
     useComma = !useComma;
     result += text.slice(lastEnd, start) + replacement;
@@ -7384,7 +7446,7 @@ function swapDashes(text) {
   result += text.slice(lastEnd);
   return { text: result, changes };
 }
-function swapStockPhrases(text, library) {
+function swapStockPhrases(text, library, excluded) {
   const changes = [];
   const usage = /* @__PURE__ */ new Map();
   const table = library === "extended" ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES;
@@ -7393,34 +7455,39 @@ function swapStockPhrases(text, library) {
   for (const phrase of phrases) {
     const alternatives = table[phrase];
     const re = new RegExp(escapeRegExp(phrase), "gi");
+    const protectedSpans = excludedSpans(excluded, result);
     let match;
     let cursor = 0;
     let next = "";
     re.lastIndex = 0;
     while ((match = re.exec(result)) !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (overlapsAny(protectedSpans, start, end)) continue;
       const idx = usage.get(phrase) ?? 0;
       const replacement = alternatives[idx % alternatives.length];
       usage.set(phrase, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      next += result.slice(cursor, start) + applyCase(match[0], replacement);
       changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
+        start,
+        end,
         original: match[0],
         replacement,
         category: "phrase",
         note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`
       });
-      cursor = match.index + match[0].length;
+      cursor = end;
     }
     next += result.slice(cursor);
     result = next;
   }
   return { text: result, changes };
 }
-function vocabularyWordsToSwap(text, strength) {
+function vocabularyWordsToSwap(text, strength, excluded) {
   const swap = /* @__PURE__ */ new Set();
   if (strength === "preserve") return swap;
   for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    if (excluded.words.has(word)) continue;
     const count = countWholeWord(text, word);
     if (count === 0) continue;
     if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
@@ -7428,8 +7495,8 @@ function vocabularyWordsToSwap(text, strength) {
   }
   return swap;
 }
-function swapElevatedVocabulary(text, strength) {
-  const targets = vocabularyWordsToSwap(text, strength);
+function swapElevatedVocabulary(text, strength, excluded) {
+  const targets = vocabularyWordsToSwap(text, strength, excluded);
   if (targets.size === 0) return { text, changes: [] };
   const changes = [];
   const usage = /* @__PURE__ */ new Map();
@@ -7437,28 +7504,65 @@ function swapElevatedVocabulary(text, strength) {
   for (const word of targets) {
     const alternatives = REGISTER_DOWNSHIFT[word];
     const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    const protectedSpans = excludedSpans(excluded, result);
     let match;
     let cursor = 0;
     let next = "";
     re.lastIndex = 0;
     while ((match = re.exec(result)) !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (overlapsAny(protectedSpans, start, end)) continue;
       const idx = usage.get(word) ?? 0;
       const replacement = alternatives[idx % alternatives.length];
       usage.set(word, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      next += result.slice(cursor, start) + applyCase(match[0], replacement);
       changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
+        start,
+        end,
         original: match[0],
         replacement,
         category: "vocabulary",
         note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
       });
-      cursor = match.index + match[0].length;
+      cursor = end;
     }
     next += result.slice(cursor);
     result = next;
   }
+  return { text: result, changes };
+}
+function shouldStripEmoji(count, strength) {
+  if (strength === "preserve" || count === 0) return false;
+  if (strength === "balanced") return count >= EMOJI_DENSITY_THRESHOLD;
+  return true;
+}
+function stripEmoji(text, excluded, strength) {
+  const changes = [];
+  const totalCount = text.match(EMOJI_PATTERN)?.length ?? 0;
+  if (!shouldStripEmoji(totalCount, strength)) return { text, changes };
+  const protectedSpans = excludedSpans(excluded, text);
+  let result = "";
+  let lastEnd = 0;
+  EMOJI_PATTERN.lastIndex = 0;
+  let match;
+  while ((match = EMOJI_PATTERN.exec(text)) !== null) {
+    const start = match.index;
+    const end = start + match[0].length;
+    if (overlapsAny(protectedSpans, start, end)) continue;
+    result += text.slice(lastEnd, start);
+    changes.push({
+      start,
+      end,
+      original: match[0],
+      replacement: "",
+      category: "emoji",
+      note: "Emoji used as decoration, emphasis, or a bullet-point marker, a rate of use over-represented in LLM output relative to edited human prose."
+    });
+    lastEnd = end;
+  }
+  result += text.slice(lastEnd);
+  result = result.replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+/gm, "");
   return { text: result, changes };
 }
 function countWholeWord(text, word) {
@@ -7512,6 +7616,7 @@ function countElevatedVocabulary(text) {
 function measureStyleTells(text) {
   const flagged = flagStructures(text);
   const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0);
+  const emoji2 = text.match(EMOJI_PATTERN)?.length ?? 0;
   const weighted = flagged.reduce(
     (sum, f) => sum + (f.kind === "negative-parallelism" ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
     0
@@ -7519,24 +7624,31 @@ function measureStyleTells(text) {
   return {
     structures: flagged.length,
     vocabulary,
-    pressure: weighted + Math.floor(vocabulary / 2)
+    emoji: emoji2,
+    pressure: weighted + Math.floor(vocabulary / 2) + emoji2 * EMOJI_WEIGHT
   };
 }
-function applyDeterministicPass(text, strength = "balanced", library = "core") {
+function applyDeterministicPass(text, strength = "balanced", library = "core", excludedWords) {
   let current = text;
   const allChanges = [];
+  const excluded = normalizeExcludedTerms(excludedWords);
   if (shouldSwapPhrases()) {
-    const { text: swapped, changes } = swapStockPhrases(current, library);
+    const { text: swapped, changes } = swapStockPhrases(current, library, excluded);
     current = swapped;
     allChanges.push(...changes);
   }
   if (shouldSwapDashes(strength)) {
-    const { text: swapped, changes } = swapDashes(current);
+    const { text: swapped, changes } = swapDashes(current, excluded);
     current = swapped;
     allChanges.push(...changes);
   }
   {
-    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
+    const { text: stripped, changes } = stripEmoji(current, excluded, strength);
+    current = stripped;
+    allChanges.push(...changes);
+  }
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength, excluded);
     current = swapped;
     allChanges.push(...changes);
   }
@@ -7547,13 +7659,16 @@ function applyDeterministicPass(text, strength = "balanced", library = "core") {
     elevatedVocabulary: countElevatedVocabulary(current)
   };
 }
-var PARALLELISM_WEIGHT, TRIADIC_WEIGHT;
+var EMOJI_DENSITY_THRESHOLD, PARALLELISM_WEIGHT, TRIADIC_WEIGHT, EMOJI_WEIGHT;
 var init_ai_tells = __esm({
   "src/lib/calibrate/ai-tells.ts"() {
     "use strict";
     init_patterns();
+    init_excluded_terms();
+    EMOJI_DENSITY_THRESHOLD = 2;
     PARALLELISM_WEIGHT = 2;
     TRIADIC_WEIGHT = 1;
+    EMOJI_WEIGHT = 1;
   }
 });
 
@@ -7860,7 +7975,27 @@ function analyzeAiLikelihood(text, language) {
     const HUMAN_TYPICAL_CV = 0.55;
     uniformityContribution = Math.max(0, HUMAN_TYPICAL_CV - cv) * 40;
   }
-  const raw = dashContribution + structureContribution + vocabularyContribution + uniformityContribution;
+  let connectiveMatches = 0;
+  for (const word of CONNECTIVE_ADVERBS) {
+    const re = new RegExp(`\\b${word}\\b`, "gi");
+    connectiveMatches += text.match(re)?.length ?? 0;
+  }
+  const connectiveRate = per500(connectiveMatches);
+  const connectiveContribution = connectiveRate * 3;
+  let openerContribution = 0;
+  let openerRepeatRate = null;
+  if (lengths.length >= 6) {
+    const openers = sentences.map((s) => firstWord(s.text)).filter((w) => DISCOURSE_OPENERS.has(w));
+    const counts = /* @__PURE__ */ new Map();
+    for (const opener of openers) counts.set(opener, (counts.get(opener) ?? 0) + 1);
+    const repeatedCount = [...counts.values()].filter((c) => c >= OPENER_REPEAT_THRESHOLD).reduce((sum, c) => sum + c, 0);
+    openerRepeatRate = repeatedCount / lengths.length;
+    openerContribution = openerRepeatRate * 90;
+  }
+  const emojiCount = tells.emoji;
+  const emojiRate = per500(emojiCount);
+  const emojiContribution = emojiRate * 6;
+  const raw = dashContribution + structureContribution + vocabularyContribution + uniformityContribution + connectiveContribution + openerContribution + emojiContribution;
   const score = saturate(raw);
   const signals = [
     {
@@ -7894,6 +8029,30 @@ function analyzeAiLikelihood(text, language) {
       ratePer500: cv ?? 0,
       contribution: uniformityContribution,
       detail: cv === null ? "Too few sentences to measure rhythm." : `Coefficient of variation ${cv.toFixed(2)}; human prose is typically burstier than this.`
+    },
+    {
+      id: "connective-density",
+      label: 'Emphasis/connective adverbs ("notably", "ultimately", "arguably"...)',
+      count: connectiveMatches,
+      ratePer500: connectiveRate,
+      contribution: connectiveContribution,
+      detail: "Hedging and transition adverbs whose rate rises in LLM-assisted prose without any single use standing out as unusual English on its own."
+    },
+    {
+      id: "emoji-density",
+      label: "Emoji used as decoration or emphasis",
+      count: emojiCount,
+      ratePer500: emojiRate,
+      contribution: emojiContribution,
+      detail: "Checkmarks, rockets, sparkles and similar symbols used as bullet points or emphasis, a visual habit far more common in current model output than in edited human prose."
+    },
+    {
+      id: "opener-repetition",
+      label: "Repeated sentence openers",
+      count: lengths.length >= 6 ? Math.round((openerRepeatRate ?? 0) * lengths.length) : 0,
+      ratePer500: openerRepeatRate ?? 0,
+      contribution: openerContribution,
+      detail: openerRepeatRate === null ? "Too few sentences to measure how often openers repeat." : `${Math.round(openerRepeatRate * 100)}% of sentences open on a discourse marker ("this", "however"...) that opens ${OPENER_REPEAT_THRESHOLD} or more sentences here; human prose usually rotates these more.`
     }
   ];
   return {
@@ -7904,7 +8063,11 @@ function analyzeAiLikelihood(text, language) {
     wordsScored: words
   };
 }
-var MIN_WORDS_FOR_LIKELIHOOD, SUPPORTED;
+function firstWord(text) {
+  const match = text.trim().match(/[A-Za-z']+/);
+  return match ? match[0].toLowerCase() : "";
+}
+var MIN_WORDS_FOR_LIKELIHOOD, SUPPORTED, CONNECTIVE_ADVERBS, DISCOURSE_OPENERS, OPENER_REPEAT_THRESHOLD;
 var init_ai_likelihood = __esm({
   "src/lib/detector/ai-likelihood.ts"() {
     "use strict";
@@ -7914,6 +8077,122 @@ var init_ai_likelihood = __esm({
     init_tokenize();
     MIN_WORDS_FOR_LIKELIHOOD = 60;
     SUPPORTED = "en";
+    CONNECTIVE_ADVERBS = [
+      "notably",
+      "significantly",
+      "ultimately",
+      "importantly",
+      "essentially",
+      "particularly",
+      "especially",
+      "arguably",
+      "undoubtedly",
+      "invariably",
+      "fundamentally"
+    ];
+    DISCOURSE_OPENERS = /* @__PURE__ */ new Set([
+      "this",
+      "these",
+      "it",
+      "that",
+      "however",
+      "moreover",
+      "furthermore",
+      "additionally",
+      "overall",
+      "notably",
+      "meanwhile",
+      "consequently",
+      "therefore",
+      "thus",
+      "indeed"
+    ]);
+    OPENER_REPEAT_THRESHOLD = 3;
+  }
+});
+
+// src/lib/detector/models.ts
+var DETECTOR_MODEL, DETECTOR_MODEL_LABELS, DETECTOR_MODEL_LANGUAGES;
+var init_models = __esm({
+  "src/lib/detector/models.ts"() {
+    "use strict";
+    DETECTOR_MODEL = {
+      repo: "onnx-community/roberta-base-openai-detector-ONNX",
+      // Verified reachable at pin time (2026-09-10) via the Hugging Face Hub API:
+      // RobertaForSequenceClassification, id2label {0: "Real", 1: "Fake"}, MIT license.
+      revision: "54895bd11f34b47a01369d25b2255224717409b8"
+    };
+    DETECTOR_MODEL_LABELS = { ai: "Fake", human: "Real" };
+    DETECTOR_MODEL_LANGUAGES = ["en"];
+  }
+});
+
+// src/lib/detector/ml-classifier.ts
+async function loadTransformers() {
+  return import("@huggingface/transformers");
+}
+function keyFor(env) {
+  return `${MODEL_ID}:${env.device}`;
+}
+async function getClassifier(env) {
+  const key = keyFor(env);
+  let entry = classifierCache.get(key);
+  if (!entry) {
+    entry = (async () => {
+      const { pipeline, env: tjsEnv } = await loadTransformers();
+      if (env.cacheDir) tjsEnv.cacheDir = env.cacheDir;
+      return pipeline("text-classification", DETECTOR_MODEL.repo, {
+        revision: DETECTOR_MODEL.revision,
+        device: env.device,
+        // int8 is the quantization this repo explicitly publishes
+        // (onnx/model_int8.onnx), avoiding any dtype-to-filename ambiguity.
+        dtype: "int8",
+        progress_callback: env.onProgress
+      });
+    })();
+    classifierCache.set(key, entry);
+  }
+  return entry;
+}
+async function classifyText(text, env) {
+  const classifier = await getClassifier(env);
+  const output = await classifier(text, { top_k: null });
+  const scores = Array.isArray(output[0]) ? output[0] : output;
+  const aiScore = scores.find((s) => s.label === DETECTOR_MODEL_LABELS.ai)?.score ?? null;
+  const humanScore = scores.find((s) => s.label === DETECTOR_MODEL_LABELS.human)?.score ?? null;
+  const aiProbability = aiScore ?? (humanScore !== null ? 1 - humanScore : null);
+  return { aiProbability, label: (aiProbability ?? 0) >= 0.5 ? "ai" : "human" };
+}
+async function classifyDocument(text, language, env) {
+  if (!language || !DETECTOR_MODEL_LANGUAGES.includes(language)) {
+    return {
+      status: "unsupported_language",
+      aiProbability: null,
+      label: null,
+      modelId: MODEL_ID,
+      detail: `This model is trained on English text only. Document language: ${language ?? "undetermined"}.`
+    };
+  }
+  try {
+    const { aiProbability, label } = await classifyText(text, env);
+    return { status: "ok", aiProbability, label, modelId: MODEL_ID };
+  } catch (err) {
+    return {
+      status: "error",
+      aiProbability: null,
+      label: null,
+      modelId: MODEL_ID,
+      detail: err.message
+    };
+  }
+}
+var MODEL_ID, classifierCache;
+var init_ml_classifier = __esm({
+  "src/lib/detector/ml-classifier.ts"() {
+    "use strict";
+    init_models();
+    MODEL_ID = `${DETECTOR_MODEL.repo}@${DETECTOR_MODEL.revision}`;
+    classifierCache = /* @__PURE__ */ new Map();
   }
 });
 
@@ -11864,7 +12143,8 @@ function statedLimits(keys) {
     "An absent mark is not proof of human authorship. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them.",
     vendorKeys.length === 0 ? "This deployment holds no detection key published by a model vendor. It tested only the keys listed in this report, so it cannot make any statement about marks applied by a vendor whose key is not public." : `Vendor-published keys held by this deployment: ${vendorKeys.map((k) => k.label).join(", ")}.`,
     "The watermark test operates on word pairs, not on a model\u2019s own subword vocabulary. A vendor\u2019s own detector has access to that vocabulary and can therefore reach a different conclusion on the same document.",
-    "The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced."
+    "The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced.",
+    "The model-backed classifier (mlClassifier) is trained primarily on English text from a broad set of generators. It only runs on English documents, and its confidence is lower on very short passages or on AI-written text that has been substantially edited afterward."
   ];
 }
 function analyzeDocument(text, options) {
@@ -11884,6 +12164,7 @@ function analyzeDocument(text, options) {
     watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
     distribution: null,
     aiLikelihood: null,
+    mlClassifier: null,
     passages: [],
     passageCorrection: null,
     limits
@@ -12004,6 +12285,7 @@ function analyzeDocument(text, options) {
     },
     distribution,
     aiLikelihood,
+    mlClassifier: null,
     passages,
     passageCorrection,
     limits
@@ -12026,22 +12308,38 @@ function resolveLanguage(text, explicit) {
 }
 async function checkDocument(text, options) {
   const { language } = resolveLanguage(text, options.language);
-  let baselines2 = {};
+  let baselines = {};
   if (language) {
     const { loadBaseline: loadBaseline2 } = await Promise.resolve().then(() => (init_baselines(), baselines_exports));
     try {
-      baselines2 = { [language]: await loadBaseline2(language) };
+      baselines = { [language]: await loadBaseline2(language) };
     } catch {
-      baselines2 = {};
+      baselines = {};
     }
   }
-  return analyzeDocument(text, { ...options, baselines: baselines2 });
+  const result = analyzeDocument(text, { ...options, baselines });
+  if (!options.includeModel || result.status !== "ok") return result;
+  if (!options.mlEnv) {
+    return {
+      ...result,
+      mlClassifier: {
+        status: "unavailable",
+        aiProbability: null,
+        label: null,
+        modelId: "",
+        detail: "includeModel was set but no mlEnv (runtime device) was provided."
+      }
+    };
+  }
+  const mlClassifier = await classifyDocument(text, result.language.code, options.mlEnv);
+  return { ...result, mlClassifier };
 }
 var ENGINE_VERSION, ALPHA;
 var init_detector = __esm({
   "src/lib/detector/index.ts"() {
     "use strict";
     init_ai_likelihood();
+    init_ml_classifier();
     init_distributional();
     init_crypto();
     init_languages();
@@ -12050,8 +12348,100 @@ var init_detector = __esm({
     init_tokenize();
     init_watermark();
     init_ai_likelihood();
+    init_models();
     ENGINE_VERSION = "1.0.0";
     ALPHA = 0.01;
+  }
+});
+
+// src/lib/rewrite/backend/model-cache.ts
+import fs from "fs";
+import os from "os";
+import path from "path";
+function resolveModelCacheDir(env = process.env, home = os.homedir()) {
+  const configured = env[ENV_MODEL_CACHE];
+  if (typeof configured === "string" && configured.trim().length > 0) {
+    return { dir: path.resolve(configured.trim()), overridden: true };
+  }
+  return { dir: defaultModelCacheDir(home), overridden: false };
+}
+function migrateLegacyModelCache(location, home = os.homedir()) {
+  const from = legacyModelCacheDir(home);
+  const to = location.dir;
+  const base = { from, to };
+  if (location.overridden) {
+    return { ...base, status: "nothing-to-move", note: null };
+  }
+  if (!fs.existsSync(from)) {
+    return { ...base, status: "nothing-to-move", note: null };
+  }
+  if (fs.existsSync(to)) {
+    return {
+      ...base,
+      status: "both-exist",
+      note: `A pre-rename model cache is still at ${from}. ${to} is the one in use, so the old directory is doing nothing and can be deleted.`
+    };
+  }
+  try {
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.renameSync(from, to);
+    pruneEmptyLegacyParent(from);
+    return { ...base, status: "moved", note: `Moved the on-device model cache from ${from} to ${to}.` };
+  } catch (renameErr) {
+    try {
+      fs.cpSync(from, to, { recursive: true });
+      fs.rmSync(from, { recursive: true, force: true });
+      pruneEmptyLegacyParent(from);
+      return { ...base, status: "copied", note: `Copied the on-device model cache from ${from} to ${to}.` };
+    } catch (copyErr) {
+      return {
+        ...base,
+        status: "failed",
+        note: `Could not move the on-device model cache from ${from} to ${to} (${renameErr.message}; copy also failed: ${copyErr.message}). The weights will be downloaded again on first use.`
+      };
+    }
+  }
+}
+function pruneEmptyLegacyParent(legacyModelsDir) {
+  const parent = path.dirname(legacyModelsDir);
+  try {
+    if (fs.readdirSync(parent).length === 0) fs.rmdirSync(parent);
+  } catch {
+  }
+}
+function isModelCached(cacheDir, model) {
+  const dir = path.join(cacheDir, model.repo, model.revision);
+  try {
+    if (!fs.statSync(dir).isDirectory()) return false;
+  } catch {
+    return false;
+  }
+  return containsWeights(dir);
+}
+function containsWeights(dir, depth = 0) {
+  if (depth > 3) return false;
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return false;
+  }
+  for (const entry of entries) {
+    if (entry.isFile() && WEIGHT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))) return true;
+    if (entry.isDirectory() && containsWeights(path.join(dir, entry.name), depth + 1)) return true;
+  }
+  return false;
+}
+var CACHE_NAMESPACE, LEGACY_CACHE_NAMESPACE, defaultModelCacheDir, legacyModelCacheDir, WEIGHT_EXTENSIONS;
+var init_model_cache = __esm({
+  "src/lib/rewrite/backend/model-cache.ts"() {
+    "use strict";
+    init_env_names();
+    CACHE_NAMESPACE = "watermarkremoverpro";
+    LEGACY_CACHE_NAMESPACE = "markwitness";
+    defaultModelCacheDir = (home) => path.join(home, ".cache", CACHE_NAMESPACE, "models");
+    legacyModelCacheDir = (home) => path.join(home, ".cache", LEGACY_CACHE_NAMESPACE, "models");
+    WEIGHT_EXTENSIONS = [".onnx", ".onnx_data"];
   }
 });
 
@@ -12189,15 +12579,197 @@ var init_dictionary = __esm({
   }
 });
 
+// src/lib/calibrate/proper-nouns.ts
+function looksCapitalized(raw) {
+  return /^[A-Z][a-zA-Z]*$/.test(raw);
+}
+function isSentenceStart(text, start, end) {
+  let i = start - 1;
+  while (i >= 0 && /\s/.test(text[i])) i--;
+  if (i < 0) return true;
+  return /[.!?"'‘’“”]/.test(text[i]) || start === 0 || end === 0;
+}
+function properNounSet(text) {
+  const candidates = /* @__PURE__ */ new Set();
+  const sentenceStartWords = /* @__PURE__ */ new Set();
+  SENTENCE_START_RE.lastIndex = 0;
+  let match;
+  while ((match = SENTENCE_START_RE.exec(text)) !== null) {
+    sentenceStartWords.add(match[2]);
+  }
+  const wordRe = /\b[A-Z][a-zA-Z]{2,}\b/g;
+  wordRe.lastIndex = 0;
+  while ((match = wordRe.exec(text)) !== null) {
+    candidates.add(match[0]);
+  }
+  for (const word of sentenceStartWords) {
+    const wordBoundary = new RegExp(`\\b${escapeRegExp2(word)}\\b`, "g");
+    const occurrences = (text.match(wordBoundary) ?? []).length;
+    if (occurrences <= 1) candidates.delete(word);
+  }
+  return candidates;
+}
+function isProtectedProperNoun(text, raw, start, end) {
+  if (!looksCapitalized(raw) || raw.length < 2) return false;
+  if (isSentenceStart(text, start, end)) return false;
+  return true;
+}
+function escapeRegExp2(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+var SENTENCE_START_RE;
+var init_proper_nouns = __esm({
+  "src/lib/calibrate/proper-nouns.ts"() {
+    "use strict";
+    SENTENCE_START_RE = /(^|[.!?]\s+)([A-Z][a-zA-Z]{2,})/g;
+  }
+});
+
+// src/lib/detector/english-variant.ts
+function detectEnglishVariant(text) {
+  const lower = text.toLowerCase();
+  let usHits = 0;
+  let gbHits = 0;
+  for (const word of Object.keys(US_TO_GB)) {
+    usHits += countWholeWord2(lower, word);
+  }
+  for (const word of Object.keys(GB_TO_US)) {
+    gbHits += countWholeWord2(lower, word);
+  }
+  if (usHits === 0 && gbHits === 0) return { variant: null, usHits, gbHits };
+  if (usHits === gbHits) return { variant: null, usHits, gbHits };
+  return { variant: usHits > gbHits ? "en-US" : "en-GB", usHits, gbHits };
+}
+function applyEnglishVariant(word, variant) {
+  if (!variant) return word;
+  const lower = word.toLowerCase();
+  const table = variant === "en-GB" ? US_TO_GB : GB_TO_US;
+  const target = table[lower];
+  if (!target || target === lower) return word;
+  return matchCase(word, target);
+}
+function matchCase(original, replacement) {
+  if (original === original.toUpperCase() && original.length > 1) return replacement.toUpperCase();
+  if (original[0] === original[0].toUpperCase()) return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+  return replacement;
+}
+function countWholeWord2(lowerText, word) {
+  const re = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "g");
+  return lowerText.match(re)?.length ?? 0;
+}
+var US_TO_GB, GB_TO_US;
+var init_english_variant = __esm({
+  "src/lib/detector/english-variant.ts"() {
+    "use strict";
+    US_TO_GB = {
+      realize: "realise",
+      realizes: "realises",
+      realized: "realised",
+      realizing: "realising",
+      organize: "organise",
+      organizes: "organises",
+      organized: "organised",
+      organizing: "organising",
+      organization: "organisation",
+      organizations: "organisations",
+      recognize: "recognise",
+      recognizes: "recognises",
+      recognized: "recognised",
+      recognizing: "recognising",
+      analyze: "analyse",
+      analyzes: "analyses",
+      analyzed: "analysed",
+      analyzing: "analysing",
+      criticize: "criticise",
+      criticized: "criticised",
+      emphasize: "emphasise",
+      emphasized: "emphasised",
+      summarize: "summarise",
+      summarized: "summarised",
+      color: "colour",
+      colors: "colours",
+      colored: "coloured",
+      coloring: "colouring",
+      favor: "favour",
+      favors: "favours",
+      favored: "favoured",
+      favorite: "favourite",
+      favorites: "favourites",
+      honor: "honour",
+      honors: "honours",
+      honored: "honoured",
+      humor: "humour",
+      neighbor: "neighbour",
+      neighbors: "neighbours",
+      behavior: "behaviour",
+      behaviors: "behaviours",
+      labor: "labour",
+      rumor: "rumour",
+      center: "centre",
+      centers: "centres",
+      centered: "centred",
+      theater: "theatre",
+      theaters: "theatres",
+      liter: "litre",
+      meter: "metre",
+      meters: "metres",
+      defense: "defence",
+      offense: "offence",
+      pretense: "pretence",
+      traveling: "travelling",
+      traveled: "travelled",
+      traveler: "traveller",
+      travelers: "travellers",
+      canceled: "cancelled",
+      canceling: "cancelling",
+      modeled: "modelled",
+      modeling: "modelling",
+      labeled: "labelled",
+      labeling: "labelling",
+      program: "programme",
+      programs: "programmes",
+      gray: "grey",
+      mold: "mould",
+      fulfill: "fulfil",
+      enrollment: "enrolment",
+      skillful: "skilful"
+    };
+    GB_TO_US = Object.fromEntries(
+      Object.entries(US_TO_GB).filter(([us, gb]) => us !== gb).map(([us, gb]) => [gb, us])
+    );
+  }
+});
+
 // src/lib/calibrate/substituter.ts
-function performSubstitution(analysis, dictionary, config2 = {}) {
+function performSubstitution(analysis, dictionary, config2 = {}, sourceText) {
   const substitutions = [];
   const confidenceThreshold = config2.confidenceThreshold ?? 0.7;
   const maxRepeats = config2.maxRepeats ?? 3;
+  const excluded = normalizeExcludedTerms(config2.excludedWords);
   const substitutionCounts = /* @__PURE__ */ new Map();
   for (const [tokenIndex, token] of analysis.tokens.entries()) {
     const norm = token.norm;
     if (!analysis.signatureTokens.has(norm)) {
+      continue;
+    }
+    if (isExcludedWord(excluded, norm)) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1,
+        reason: "excluded"
+      });
+      continue;
+    }
+    if (sourceText !== void 0 && isProtectedProperNoun(sourceText, token.raw, token.start, token.end)) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1,
+        reason: "excluded"
+      });
       continue;
     }
     const positions = analysis.repetitionMap.get(norm) ?? [];
@@ -12247,10 +12819,11 @@ function performSubstitution(analysis, dictionary, config2 = {}) {
     }
     substitutionCounts.set(selected, (substitutionCounts.get(selected) ?? 0) + 1);
     const confidence = Math.max(0.1, confidenceThreshold);
+    const spelled = applyEnglishVariant(selected, config2.englishVariant ?? null);
     substitutions.push({
       index: tokenIndex,
       original: token.raw,
-      replacement: preserveCase(selected, token.raw),
+      replacement: preserveCase(spelled, token.raw),
       confidence,
       reason: "synonym",
       alternatives: variants.slice(0, 3)
@@ -12291,6 +12864,9 @@ function preserveCase(replacement, original) {
 var init_substituter = __esm({
   "src/lib/calibrate/substituter.ts"() {
     "use strict";
+    init_excluded_terms();
+    init_proper_nouns();
+    init_english_variant();
   }
 });
 
@@ -12303,8 +12879,9 @@ function fnv1a(s) {
   }
   return h >>> 0;
 }
-async function generateCandidate(passage, language, seed, strength, library) {
-  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library);
+async function generateCandidate(passage, language, seed, strength, library, excludedWords, englishVariant) {
+  const { text: tellSwapped } = applyDeterministicPass(passage, strength, library, excludedWords);
+  const excluded = normalizeExcludedTerms(excludedWords);
   let dictionary;
   try {
     dictionary = await loadDictionary(language);
@@ -12312,17 +12889,19 @@ async function generateCandidate(passage, language, seed, strength, library) {
     return tellSwapped;
   }
   const tokens = tokenize(tellSwapped);
-  const substitutionRate = strength === "preserve" ? 0.15 : strength === "balanced" ? 0.3 : strength === "aggressive" ? 0.45 : 0.6;
+  const substitutionRate = strength === "preserve" ? 0.15 : strength === "balanced" ? 0.4 : strength === "aggressive" ? 0.6 : 0.85;
   let result = "";
   let lastEnd = 0;
   for (const token of tokens) {
-    const variants = dictionary.getVariants(token.norm);
+    const protectedNoun = isProtectedProperNoun(tellSwapped, token.raw, token.start, token.end);
+    const variants = protectedNoun || isExcludedWord(excluded, token.norm) ? null : dictionary.getVariants(token.norm);
     result += tellSwapped.slice(lastEnd, token.start);
     if (variants && variants.length > 0) {
       const gate = fnv1a(`${token.norm}:${token.start}:${seed}`) % 100;
       if (gate < substitutionRate * 100) {
         const variantIndex = fnv1a(`${token.norm}:${seed}:pick`) % variants.length;
-        result += preserveCase(variants[variantIndex], token.raw);
+        const chosen = applyEnglishVariant(variants[variantIndex], englishVariant ?? null);
+        result += preserveCase(chosen, token.raw);
       } else {
         result += tellSwapped.slice(token.start, token.end);
       }
@@ -12355,7 +12934,15 @@ function createRuleBasedBackend(language = "en", library = "core") {
       const candidates = await Promise.all(
         Array.from(
           { length: count },
-          (_, i) => generateCandidate(passage, options.language ?? language, i, options.strength, library)
+          (_, i) => generateCandidate(
+            passage,
+            options.language ?? language,
+            i,
+            options.strength,
+            library,
+            options.excludedWords,
+            options.englishVariant
+          )
         )
       );
       return Array.from(new Set(candidates));
@@ -12370,23 +12957,28 @@ var init_rule_based = __esm({
   "src/lib/rewrite/backend/rule-based.ts"() {
     "use strict";
     init_tokenize();
+    init_english_variant();
     init_dictionary();
     init_substituter();
     init_ai_tells();
+    init_excluded_terms();
+    init_proper_nouns();
     EMBED_DIMS = 256;
   }
 });
 
 // src/lib/rewrite/targeting.ts
+function isBaselineSample(index) {
+  return index % BASELINE_SAMPLE_EVERY === 0;
+}
 function targetPassages(passages, strength, tellPressure) {
   const pressure = (p) => tellPressure?.get(p.index) ?? 0;
+  const hasSignal = (p) => p.survivesCorrection || p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z || p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION || pressure(p) >= NOTABLE_TELL_PRESSURE;
   switch (strength) {
     case "preserve":
       return passages.filter((p) => p.survivesCorrection);
     case "balanced":
-      return passages.filter(
-        (p) => p.survivesCorrection || p.watermarkZ !== null && p.watermarkZ > NOTABLE_Z || p.styleDeviation !== null && p.styleDeviation > NOTABLE_STYLE_DEVIATION || pressure(p) >= NOTABLE_TELL_PRESSURE
-      );
+      return passages.filter((p) => hasSignal(p) || isBaselineSample(p.index));
     case "aggressive":
       return passages.filter((p) => p.watermarkP !== null || p.styleDeviation !== null || pressure(p) > 0);
     case "regenerate":
@@ -12408,13 +13000,14 @@ function minSimilarity(strength) {
 function candidateCount(tier) {
   return tier === "pro" ? 4 : 2;
 }
-var NOTABLE_Z, NOTABLE_STYLE_DEVIATION, NOTABLE_TELL_PRESSURE, MAX_ROUNDS;
+var NOTABLE_Z, NOTABLE_STYLE_DEVIATION, NOTABLE_TELL_PRESSURE, BASELINE_SAMPLE_EVERY, MAX_ROUNDS;
 var init_targeting = __esm({
   "src/lib/rewrite/targeting.ts"() {
     "use strict";
     NOTABLE_Z = 2.5;
     NOTABLE_STYLE_DEVIATION = 2;
     NOTABLE_TELL_PRESSURE = 2;
+    BASELINE_SAMPLE_EVERY = 2;
     MAX_ROUNDS = 5;
   }
 });
@@ -12440,34 +13033,28 @@ var init_types = __esm({
 });
 
 // src/lib/rewrite/fact-lock.ts
-function extractFacts(text) {
+function extractFacts(text, excludedWords) {
+  const excludedTermsPresent = allExcludedTerms(normalizeExcludedTerms(excludedWords)).filter(
+    (term) => termOccursIn(term, text)
+  );
   const numbers = text.match(NUMBER_RE) ?? [];
   const lower = text.toLowerCase();
   let negationCount = 0;
   for (const cue of NEGATION_CUES) {
     negationCount += countOccurrences(lower, cue);
   }
-  const properNouns = /* @__PURE__ */ new Set();
-  const sentenceStartWords = /* @__PURE__ */ new Set();
-  SENTENCE_START_RE.lastIndex = 0;
-  let startMatch;
-  while ((startMatch = SENTENCE_START_RE.exec(text)) !== null) {
-    sentenceStartWords.add(startMatch[2]);
-  }
-  PROPER_NOUN_RE.lastIndex = 0;
-  let match;
-  while ((match = PROPER_NOUN_RE.exec(text)) !== null) {
-    properNouns.add(match[0]);
-  }
-  for (const word of sentenceStartWords) {
-    const occurrences = countOccurrences(text, word);
-    const capitalOccurrences = (text.match(new RegExp(`\\b${escapeRegExp2(word)}\\b`, "g")) ?? []).length;
-    if (occurrences === capitalOccurrences && occurrences <= 1) properNouns.delete(word);
-  }
-  return { numbers, negationCount, properNouns };
+  const properNouns = properNounSet(text);
+  return { numbers, negationCount, properNouns, excludedTermsPresent };
 }
 function verifyFacts(original, candidateText) {
   const candidate = extractFacts(candidateText);
+  const droppedExclusions = original.excludedTermsPresent.filter((term) => !termOccursIn(term, candidateText));
+  if (droppedExclusions.length > 0) {
+    return {
+      passed: false,
+      detail: `Protected term(s) from the never-swap list are missing or changed: ${droppedExclusions.join(", ")}.`
+    };
+  }
   const missingNumbers = original.numbers.filter((n) => !candidate.numbers.includes(n));
   if (missingNumbers.length > 0) {
     return { passed: false, detail: `Number(s) from the original are missing or changed: ${missingNumbers.join(", ")}.` };
@@ -12494,13 +13081,12 @@ function countOccurrences(haystack, needle) {
   }
   return count;
 }
-function escapeRegExp2(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-var NUMBER_RE, NEGATION_CUES, PROPER_NOUN_RE, SENTENCE_START_RE;
+var NUMBER_RE, NEGATION_CUES;
 var init_fact_lock = __esm({
   "src/lib/rewrite/fact-lock.ts"() {
     "use strict";
+    init_excluded_terms();
+    init_proper_nouns();
     NUMBER_RE = /-?\d[\d,]*(\.\d+)?%?/g;
     NEGATION_CUES = [
       "not",
@@ -12515,8 +13101,6 @@ var init_fact_lock = __esm({
       "without",
       "cannot"
     ];
-    PROPER_NOUN_RE = /\b[A-Z][a-zA-Z]{2,}\b/g;
-    SENTENCE_START_RE = /(^|[.!?]\s+)([A-Z][a-zA-Z]{2,})/g;
   }
 });
 
@@ -12540,7 +13124,7 @@ async function scoreCandidate(originalText, originalFacts, originalTellPressure,
   };
 }
 async function scoreCandidates(originalText, candidateTexts, backend, options) {
-  const originalFacts = extractFacts(originalText);
+  const originalFacts = extractFacts(originalText, options.excludedWords);
   const originalTellPressure = measureStyleTells(originalText).pressure;
   return Promise.all(
     candidateTexts.map(
@@ -12583,6 +13167,24 @@ var init_scoring = __esm({
   }
 });
 
+// src/lib/rewrite/lexical-shift.ts
+function lexicalShiftPercent(before, after) {
+  const a = new Set(distinctBigrams(tokenize(before)).map(([prev, cur]) => `${prev} ${cur}`));
+  const b = new Set(distinctBigrams(tokenize(after)).map(([prev, cur]) => `${prev} ${cur}`));
+  if (a.size === 0 && b.size === 0) return 0;
+  let shared = 0;
+  for (const pair of a) if (b.has(pair)) shared++;
+  const unionSize = a.size + b.size - shared;
+  return Math.round((1 - shared / unionSize) * 100);
+}
+var init_lexical_shift = __esm({
+  "src/lib/rewrite/lexical-shift.ts"() {
+    "use strict";
+    init_tokenize();
+    init_watermark();
+  }
+});
+
 // src/lib/rewrite/orchestrator.ts
 function replacePassages(text, replacements) {
   const sorted = [...replacements].sort((a, b) => a.start - b.start);
@@ -12609,6 +13211,7 @@ async function rewriteDocument(request, backend, keys) {
       flaggedStructures: [],
       elevatedVocabulary: [],
       additionalTellsInExtendedLibrary: 0,
+      lexicalShiftPercent: 0,
       roundsUsed: 0,
       tier: request.tier,
       strength: request.strength,
@@ -12624,12 +13227,14 @@ async function rewriteDocument(request, backend, keys) {
   } = applyDeterministicPass(
     request.text,
     request.strength,
-    request.tier === "pro" ? "extended" : "core"
+    request.tier === "pro" ? "extended" : "core",
+    request.excludedWords
   );
   const additionalTellsInExtendedLibrary = request.tier === "pro" ? 0 : Math.max(
     0,
-    applyDeterministicPass(request.text, request.strength, "extended").changes.length - tellChanges.length
+    applyDeterministicPass(request.text, request.strength, "extended", request.excludedWords).changes.length - tellChanges.length
   );
+  const englishVariant = detectEnglishVariant(request.text).variant;
   let currentText = afterTells;
   let analysis = await checkDocument(currentText, { keys, language: request.language });
   const documentBefore = analysis;
@@ -12650,11 +13255,14 @@ async function rewriteDocument(request, backend, keys) {
       const candidateTexts = await backend.generate(passage.text, {
         count: candidateCount(request.tier),
         strength: request.strength,
-        language: request.language ?? analysis.language.code ?? void 0
+        language: request.language ?? analysis.language.code ?? void 0,
+        excludedWords: request.excludedWords,
+        englishVariant
       });
       const scored = await scoreCandidates(passage.text, candidateTexts, backend, {
         minSimilarity: minSimilarity(request.strength),
-        keys
+        keys,
+        excludedWords: request.excludedWords
       });
       const best = pickBest(scored);
       const chosenText = best?.text ?? passage.text;
@@ -12691,6 +13299,7 @@ async function rewriteDocument(request, backend, keys) {
     flaggedStructures: flaggedStructures.map((f) => ({ kind: f.kind, text: f.text, note: f.note })),
     elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
     additionalTellsInExtendedLibrary,
+    lexicalShiftPercent: lexicalShiftPercent(request.text, currentText),
     roundsUsed: round,
     tier: request.tier,
     strength: request.strength,
@@ -12707,14 +13316,17 @@ var init_orchestrator = __esm({
   "src/lib/rewrite/orchestrator.ts"() {
     "use strict";
     init_detector();
+    init_english_variant();
     init_ai_tells();
     init_targeting();
     init_scoring();
+    init_lexical_shift();
     REWRITE_LIMITS = [
       "This reduces detectable AI-style evidence. It cannot guarantee defeating a model vendor's undisclosed watermark. No tool can, since nobody outside that vendor holds the key it was applied with.",
       'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
       "The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro's own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.",
-      "All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier."
+      "All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.",
+      '"Balanced" also lightly varies a bounded sample of passages that showed no detectable signal at all, as a hedge against a watermark scheme this deployment cannot test for. "Preserve" never does this; "aggressive" and "regenerate" already vary most or all passages regardless of signal.'
     ];
   }
 });
@@ -12728,7 +13340,7 @@ function effectiveRewriteModel(tier, environment) {
   return { model: info.rewriteModel ?? MODEL_TIERS.free.rewriteModel, dtype };
 }
 var EMBEDDING_MODEL, MODEL_TIERS;
-var init_models = __esm({
+var init_models2 = __esm({
   "src/lib/rewrite/models.ts"() {
     "use strict";
     EMBEDDING_MODEL = {
@@ -12780,7 +13392,7 @@ var init_rewrite = __esm({
     init_rule_based();
     init_targeting();
     init_fact_lock();
-    init_models();
+    init_models2();
   }
 });
 
@@ -12829,18 +13441,18 @@ var init_engine_choice = __esm({
 });
 
 // src/lib/rewrite/backend/transformers-shared.ts
-async function loadTransformers() {
+async function loadTransformers2() {
   return import("@huggingface/transformers");
 }
-function keyFor(model, device, dtype) {
+function keyFor2(model, device, dtype) {
   return `${model.repo}@${model.revision}:${device}:${dtype}`;
 }
 async function getGenerator(model, env) {
-  const key = keyFor(model, env.device, env.dtype);
+  const key = keyFor2(model, env.device, env.dtype);
   let entry = generatorCache.get(key);
   if (!entry) {
     entry = (async () => {
-      const { pipeline, env: tjsEnv } = await loadTransformers();
+      const { pipeline, env: tjsEnv } = await loadTransformers2();
       if (env.cacheDir) tjsEnv.cacheDir = env.cacheDir;
       return pipeline("text-generation", model.repo, {
         revision: model.revision,
@@ -12854,11 +13466,11 @@ async function getGenerator(model, env) {
   return entry;
 }
 async function getEmbedder(env) {
-  const key = keyFor(EMBEDDING_MODEL, env.device, "q8");
+  const key = keyFor2(EMBEDDING_MODEL, env.device, "q8");
   let entry = embedderCache.get(key);
   if (!entry) {
     entry = (async () => {
-      const { pipeline, env: tjsEnv } = await loadTransformers();
+      const { pipeline, env: tjsEnv } = await loadTransformers2();
       if (env.cacheDir) tjsEnv.cacheDir = env.cacheDir;
       return pipeline("feature-extraction", EMBEDDING_MODEL.repo, {
         revision: EMBEDDING_MODEL.revision,
@@ -12871,9 +13483,11 @@ async function getEmbedder(env) {
   }
   return entry;
 }
-function buildMessages(passage, strength, language) {
+function buildMessages(passage, strength, language, excludedWords, englishVariant) {
   const languageClause = language && language !== "en" ? ` Respond in the same language as the passage (code: ${language}).` : "";
-  const system = "You are a careful copy editor reducing statistical AI-writing patterns in a passage the user wrote themselves. Strictly preserve every fact, number, date, name and negation in the passage. Reply with ONLY the rewritten passage text: no preamble, no quotation marks, no explanation." + languageClause;
+  const excludedClause = excludedWords && excludedWords.length > 0 ? ` Leave these exact words and phrases untouched, unchanged, wherever they occur: ${excludedWords.join(", ")}.` : "";
+  const variantClause = englishVariant === "en-GB" ? ' Write in British English spelling and conventions throughout (e.g. "colour", "realise", "organise"), never American spelling.' : englishVariant === "en-US" ? ' Write in American English spelling and conventions throughout (e.g. "color", "realize", "organize"), never British spelling.' : "";
+  const system = "You are a careful copy editor reducing statistical AI-writing patterns in a passage the user wrote themselves. Strictly preserve every fact, number, date, name and negation in the passage. Never change, replace, abbreviate, or rephrase a proper noun (the name of a person, place, organization, product, or brand): copy every one character-for-character exactly as given. Reply with ONLY the rewritten passage text: no preamble, no quotation marks, no explanation." + languageClause + excludedClause + variantClause;
   return [
     { role: "system", content: system },
     { role: "user", content: `${STRENGTH_INSTRUCTION[strength]}
@@ -12893,12 +13507,12 @@ function extractReply(output) {
 }
 async function generateWithTransformers(passage, options, model, env) {
   const generator = await getGenerator(model, env);
-  const messages = buildMessages(passage, options.strength, options.language);
+  const messages = buildMessages(passage, options.strength, options.language, options.excludedWords, options.englishVariant);
   const count = Math.max(1, options.count);
   const maxNewTokens = Math.min(500, Math.max(60, Math.ceil(passage.length / 3) + 40));
   const results = [];
   for (let i = 0; i < count; i++) {
-    const temperature = 0.45 + i * 0.22;
+    const temperature = Math.min(1.1, STRENGTH_BASE_TEMPERATURE[options.strength] + i * 0.15);
     const output = await generator(messages, {
       max_new_tokens: maxNewTokens,
       do_sample: true,
@@ -12916,11 +13530,11 @@ async function embedWithTransformers(text, env) {
   const output = await embedder(text, { pooling: "mean", normalize: true });
   return Array.from(output.data);
 }
-var generatorCache, embedderCache, STRENGTH_INSTRUCTION;
+var generatorCache, embedderCache, STRENGTH_INSTRUCTION, STRENGTH_BASE_TEMPERATURE;
 var init_transformers_shared = __esm({
   "src/lib/rewrite/backend/transformers-shared.ts"() {
     "use strict";
-    init_models();
+    init_models2();
     generatorCache = /* @__PURE__ */ new Map();
     embedderCache = /* @__PURE__ */ new Map();
     STRENGTH_INSTRUCTION = {
@@ -12929,97 +13543,12 @@ var init_transformers_shared = __esm({
       aggressive: "Rewrite this substantially: restructure sentences, change word choice throughout, and write as a person would, while keeping every fact, number, name and claim exactly as given.",
       regenerate: "Rewrite this passage completely in a distinct voice, reorganizing sentence structure and phrasing, while keeping every fact, number, name and claim exactly as given."
     };
-  }
-});
-
-// src/lib/rewrite/backend/model-cache.ts
-import fs from "fs";
-import os from "os";
-import path from "path";
-function resolveModelCacheDir(env = process.env, home = os.homedir()) {
-  const configured = env[ENV_MODEL_CACHE];
-  if (typeof configured === "string" && configured.trim().length > 0) {
-    return { dir: path.resolve(configured.trim()), overridden: true };
-  }
-  return { dir: defaultModelCacheDir(home), overridden: false };
-}
-function migrateLegacyModelCache(location, home = os.homedir()) {
-  const from = legacyModelCacheDir(home);
-  const to = location.dir;
-  const base = { from, to };
-  if (location.overridden) {
-    return { ...base, status: "nothing-to-move", note: null };
-  }
-  if (!fs.existsSync(from)) {
-    return { ...base, status: "nothing-to-move", note: null };
-  }
-  if (fs.existsSync(to)) {
-    return {
-      ...base,
-      status: "both-exist",
-      note: `A pre-rename model cache is still at ${from}. ${to} is the one in use, so the old directory is doing nothing and can be deleted.`
+    STRENGTH_BASE_TEMPERATURE = {
+      preserve: 0.25,
+      balanced: 0.45,
+      aggressive: 0.65,
+      regenerate: 0.85
     };
-  }
-  try {
-    fs.mkdirSync(path.dirname(to), { recursive: true });
-    fs.renameSync(from, to);
-    pruneEmptyLegacyParent(from);
-    return { ...base, status: "moved", note: `Moved the on-device model cache from ${from} to ${to}.` };
-  } catch (renameErr) {
-    try {
-      fs.cpSync(from, to, { recursive: true });
-      fs.rmSync(from, { recursive: true, force: true });
-      pruneEmptyLegacyParent(from);
-      return { ...base, status: "copied", note: `Copied the on-device model cache from ${from} to ${to}.` };
-    } catch (copyErr) {
-      return {
-        ...base,
-        status: "failed",
-        note: `Could not move the on-device model cache from ${from} to ${to} (${renameErr.message}; copy also failed: ${copyErr.message}). The weights will be downloaded again on first use.`
-      };
-    }
-  }
-}
-function pruneEmptyLegacyParent(legacyModelsDir) {
-  const parent = path.dirname(legacyModelsDir);
-  try {
-    if (fs.readdirSync(parent).length === 0) fs.rmdirSync(parent);
-  } catch {
-  }
-}
-function isModelCached(cacheDir, model) {
-  const dir = path.join(cacheDir, model.repo, model.revision);
-  try {
-    if (!fs.statSync(dir).isDirectory()) return false;
-  } catch {
-    return false;
-  }
-  return containsWeights(dir);
-}
-function containsWeights(dir, depth = 0) {
-  if (depth > 3) return false;
-  let entries;
-  try {
-    entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return false;
-  }
-  for (const entry of entries) {
-    if (entry.isFile() && WEIGHT_EXTENSIONS.some((ext) => entry.name.endsWith(ext))) return true;
-    if (entry.isDirectory() && containsWeights(path.join(dir, entry.name), depth + 1)) return true;
-  }
-  return false;
-}
-var CACHE_NAMESPACE, LEGACY_CACHE_NAMESPACE, defaultModelCacheDir, legacyModelCacheDir, WEIGHT_EXTENSIONS;
-var init_model_cache = __esm({
-  "src/lib/rewrite/backend/model-cache.ts"() {
-    "use strict";
-    init_env_names();
-    CACHE_NAMESPACE = "watermarkremoverpro";
-    LEGACY_CACHE_NAMESPACE = "markwitness";
-    defaultModelCacheDir = (home) => path.join(home, ".cache", CACHE_NAMESPACE, "models");
-    legacyModelCacheDir = (home) => path.join(home, ".cache", LEGACY_CACHE_NAMESPACE, "models");
-    WEIGHT_EXTENSIONS = [".onnx", ".onnx_data"];
   }
 });
 
@@ -13046,7 +13575,7 @@ var init_node = __esm({
   "src/lib/rewrite/backend/node.ts"() {
     "use strict";
     init_transformers_shared();
-    init_models();
+    init_models2();
     init_model_cache();
   }
 });
@@ -13123,14 +13652,14 @@ var init_node_engine = __esm({
     init_env_names();
     init_rewrite();
     init_orchestrator();
-    init_models();
+    init_models2();
     init_engine_choice();
     init_node();
     init_model_cache();
   }
 });
 
-// ../../../node_modules/zod/v4/core/core.js
+// node_modules/zod/v4/core/core.js
 var _a;
 // @__NO_SIDE_EFFECTS__
 function $constructor(name, initializer3, params) {
@@ -13203,7 +13732,7 @@ function config(newConfig) {
   return globalConfig;
 }
 
-// ../../../node_modules/zod/v4/core/util.js
+// node_modules/zod/v4/core/util.js
 var util_exports = {};
 __export(util_exports, {
   BIGINT_FORMAT_RANGES: () => BIGINT_FORMAT_RANGES,
@@ -13899,7 +14428,7 @@ var Class = class {
   }
 };
 
-// ../../../node_modules/zod/v4/core/errors.js
+// node_modules/zod/v4/core/errors.js
 var initializer = (inst, def) => {
   inst.name = "$ZodError";
   Object.defineProperty(inst, "_zod", {
@@ -13968,7 +14497,7 @@ function formatError(error2, mapper = (issue2) => issue2.message) {
   return fieldErrors;
 }
 
-// ../../../node_modules/zod/v4/core/parse.js
+// node_modules/zod/v4/core/parse.js
 var _parse = (_Err) => (schema, value, _ctx, _params) => {
   const ctx = _ctx ? { ..._ctx, async: false } : { async: false };
   const result = schema._zod.run({ value, issues: [] }, ctx);
@@ -14046,7 +14575,7 @@ var _safeDecodeAsync = (_Err) => async (schema, value, _ctx) => {
   return _safeParseAsync(_Err)(schema, value, _ctx);
 };
 
-// ../../../node_modules/zod/v4/core/regexes.js
+// node_modules/zod/v4/core/regexes.js
 var cuid = /^[cC][0-9a-z]{6,}$/;
 var cuid2 = /^[0-9a-z]+$/;
 var ulid = /^[0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{26}$/;
@@ -14104,7 +14633,7 @@ var _null = /^null$/i;
 var lowercase = /^[^A-Z]*$/;
 var uppercase = /^[^a-z]*$/;
 
-// ../../../node_modules/zod/v4/core/checks.js
+// node_modules/zod/v4/core/checks.js
 var $ZodCheck = /* @__PURE__ */ $constructor("$ZodCheck", (inst, def) => {
   var _a3;
   inst._zod ?? (inst._zod = {});
@@ -14494,7 +15023,7 @@ var $ZodCheckOverwrite = /* @__PURE__ */ $constructor("$ZodCheckOverwrite", (ins
   };
 });
 
-// ../../../node_modules/zod/v4/core/doc.js
+// node_modules/zod/v4/core/doc.js
 var Doc = class {
   constructor(args = []) {
     this.content = [];
@@ -14530,14 +15059,14 @@ var Doc = class {
   }
 };
 
-// ../../../node_modules/zod/v4/core/versions.js
+// node_modules/zod/v4/core/versions.js
 var version = {
   major: 4,
   minor: 4,
   patch: 3
 };
 
-// ../../../node_modules/zod/v4/core/schemas.js
+// node_modules/zod/v4/core/schemas.js
 var $ZodType = /* @__PURE__ */ $constructor("$ZodType", (inst, def) => {
   var _a3;
   inst ?? (inst = {});
@@ -16017,7 +16546,7 @@ function handleRefineResult(result, payload, input, inst) {
   }
 }
 
-// ../../../node_modules/zod/v4/locales/en.js
+// node_modules/zod/v4/locales/en.js
 var error = () => {
   const Sizable = {
     string: { unit: "characters", verb: "to have" },
@@ -16130,7 +16659,7 @@ function en_default() {
   };
 }
 
-// ../../../node_modules/zod/v4/core/registries.js
+// node_modules/zod/v4/core/registries.js
 var _a2;
 var $ZodRegistry = class {
   constructor() {
@@ -16178,7 +16707,7 @@ function registry() {
 (_a2 = globalThis).__zod_globalRegistry ?? (_a2.__zod_globalRegistry = registry());
 var globalRegistry = globalThis.__zod_globalRegistry;
 
-// ../../../node_modules/zod/v4/core/api.js
+// node_modules/zod/v4/core/api.js
 // @__NO_SIDE_EFFECTS__
 function _string(Class2, params) {
   return new Class2({
@@ -16706,7 +17235,7 @@ function _check(fn, params) {
   return ch;
 }
 
-// ../../../node_modules/zod/v4/core/to-json-schema.js
+// node_modules/zod/v4/core/to-json-schema.js
 function initializeContext(params) {
   let target = params?.target ?? "draft-2020-12";
   if (target === "draft-4")
@@ -17065,7 +17594,7 @@ var createStandardJSONSchemaMethod = (schema, io, processors = {}) => (params) =
   return finalize(ctx, schema);
 };
 
-// ../../../node_modules/zod/v4/core/json-schema-processors.js
+// node_modules/zod/v4/core/json-schema-processors.js
 var formatMap = {
   guid: "uuid",
   url: "uri",
@@ -17398,7 +17927,7 @@ var optionalProcessor = (schema, ctx, _json, params) => {
   seen.ref = def.innerType;
 };
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-compat.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-compat.js
 function isZ4Schema(s) {
   const schema = s;
   return !!schema._zod;
@@ -17461,7 +17990,7 @@ function getLiteralValue(schema) {
   return void 0;
 }
 
-// ../../../node_modules/zod/v4/classic/iso.js
+// node_modules/zod/v4/classic/iso.js
 var iso_exports = {};
 __export(iso_exports, {
   ZodISODate: () => ZodISODate,
@@ -17502,7 +18031,7 @@ function duration2(params) {
   return _isoDuration(ZodISODuration, params);
 }
 
-// ../../../node_modules/zod/v4/classic/errors.js
+// node_modules/zod/v4/classic/errors.js
 var initializer2 = (inst, issues) => {
   $ZodError.init(inst, issues);
   inst.name = "ZodError";
@@ -17541,7 +18070,7 @@ var ZodRealError = /* @__PURE__ */ $constructor("ZodError", initializer2, {
   Parent: Error
 });
 
-// ../../../node_modules/zod/v4/classic/parse.js
+// node_modules/zod/v4/classic/parse.js
 var parse2 = /* @__PURE__ */ _parse(ZodRealError);
 var parseAsync2 = /* @__PURE__ */ _parseAsync(ZodRealError);
 var safeParse3 = /* @__PURE__ */ _safeParse(ZodRealError);
@@ -17555,7 +18084,7 @@ var safeDecode2 = /* @__PURE__ */ _safeDecode(ZodRealError);
 var safeEncodeAsync2 = /* @__PURE__ */ _safeEncodeAsync(ZodRealError);
 var safeDecodeAsync2 = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
 
-// ../../../node_modules/zod/v4/classic/schemas.js
+// node_modules/zod/v4/classic/schemas.js
 var _installedGroups = /* @__PURE__ */ new WeakMap();
 function _installLazyMethods(inst, group, methods) {
   const proto = Object.getPrototypeOf(inst);
@@ -18397,10 +18926,10 @@ function preprocess(fn, schema) {
   });
 }
 
-// ../../../node_modules/zod/v4/classic/external.js
+// node_modules/zod/v4/classic/external.js
 config(en_default());
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/types.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/types.js
 var LATEST_PROTOCOL_VERSION = "2025-11-25";
 var SUPPORTED_PROTOCOL_VERSIONS = [LATEST_PROTOCOL_VERSION, "2025-06-18", "2025-03-26", "2024-11-05", "2024-10-07"];
 var RELATED_TASK_META_KEY = "io.modelcontextprotocol/related-task";
@@ -19919,15 +20448,15 @@ var UrlElicitationRequiredError = class extends McpError {
   }
 };
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/interfaces.js
 function isTerminal(status) {
   return status === "completed" || status === "failed" || status === "cancelled";
 }
 
-// ../../../node_modules/zod-to-json-schema/dist/esm/parsers/string.js
+// node_modules/zod-to-json-schema/dist/esm/parsers/string.js
 var ALPHA_NUMERIC = new Set("ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789");
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-json-schema-compat.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/server/zod-json-schema-compat.js
 function getMethodLiteral(schema) {
   const shape = getObjectShape(schema);
   const methodSchema = shape?.method;
@@ -19948,7 +20477,7 @@ function parseWithCompat(schema, data) {
   return result.data;
 }
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js
 var DEFAULT_REQUEST_TIMEOUT_MSEC = 6e4;
 var Protocol = class {
   constructor(_options) {
@@ -20902,7 +21431,7 @@ function mergeCapabilities(base, additional) {
   return result;
 }
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/validation/ajv-provider.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/validation/ajv-provider.js
 var import_ajv = __toESM(require_ajv(), 1);
 var import_ajv_formats = __toESM(require_dist(), 1);
 function createDefaultAjvInstance() {
@@ -20970,7 +21499,7 @@ var AjvJsonSchemaValidator = class {
   }
 };
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/server.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/server.js
 var ExperimentalServerTasks = class {
   constructor(_server) {
     this._server = _server;
@@ -21183,7 +21712,7 @@ var ExperimentalServerTasks = class {
   }
 };
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/helpers.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/experimental/tasks/helpers.js
 function assertToolsCallTaskCapability(requests, method, entityName) {
   if (!requests) {
     throw new Error(`${entityName} does not support task creation (required for ${method})`);
@@ -21218,7 +21747,7 @@ function assertClientRequestTaskCapability(requests, method, entityName) {
   }
 }
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/server/index.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/server/index.js
 var Server = class extends Protocol {
   /**
    * Initializes this server with the given name and version information.
@@ -21589,10 +22118,10 @@ var Server = class extends Protocol {
   }
 };
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
 import process3 from "process";
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js
 var STDIO_DEFAULT_MAX_BUFFER_SIZE = 10 * 1024 * 1024;
 var ReadBuffer = class {
   constructor(options) {
@@ -21629,7 +22158,7 @@ function serializeMessage(message) {
   return JSON.stringify(message) + "\n";
 }
 
-// ../../../node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
+// node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
 var StdioServerTransport = class {
   constructor(_stdin = process3.stdin, _stdout = process3.stdout, options) {
     this._stdin = _stdin;
@@ -21698,15 +22227,16 @@ var StdioServerTransport = class {
 
 // mcp/server.ts
 init_detector();
-init_baselines();
+init_model_cache();
 init_keys();
 init_languages();
 init_tokenize();
 
-// src/lib/entitlements/pro-trial.ts
-var PRO_TRIAL_WINDOW_DAYS = 7;
-var PRO_TRIAL_RUNS_PER_WINDOW = 1;
-var WINDOW_MS = PRO_TRIAL_WINDOW_DAYS * 24 * 60 * 60 * 1e3;
+// src/lib/entitlements/rewrite-budget.ts
+init_tokenize();
+var REWRITE_WINDOW_DAYS = 7;
+var REWRITE_TOKENS_PER_WINDOW = 2e4;
+var WINDOW_MS = REWRITE_WINDOW_DAYS * 24 * 60 * 60 * 1e3;
 
 // src/lib/site.ts
 var SITE = {
@@ -21716,45 +22246,26 @@ var SITE = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.watermarkremoverpro.com",
   contactEmail: "hello@watermarkremoverpro.com"
 };
-var proEngineTrialLine = `${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? "One" : PRO_TRIAL_RUNS_PER_WINDOW} free run of the Pro rewrite engine every ${PRO_TRIAL_WINDOW_DAYS} days, then unlimited Standard`;
+var correctionLine = `${REWRITE_TOKENS_PER_WINDOW.toLocaleString("en-GB")} tokens of rewriting every ${REWRITE_WINDOW_DAYS} days`;
 var PLANS = {
   anonymous: {
     id: "anonymous",
-    name: "No signup",
+    name: "Free",
     price: 0,
     wordCap: 1500,
     checksPerMonth: null,
     rewrite: {
       modelTier: "standard",
-      unlimited: true,
+      unlimited: false,
       tellLibrary: "core",
-      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW
+      tokensPerWindow: REWRITE_TOKENS_PER_WINDOW,
+      windowDays: REWRITE_WINDOW_DAYS
     },
     features: [
-      "Unlimited on-device rewriting on the Standard engine, core AI-tell library",
-      proEngineTrialLine,
-      "One document at a time to check, up to 1,500 words",
-      "Runs entirely in your browser, and the document is never uploaded",
-      "Confidence band, per-passage breakdown and stated limits on screen"
-    ]
-  },
-  free: {
-    id: "free",
-    name: "Free account",
-    price: 0,
-    wordCap: 5e3,
-    checksPerMonth: 20,
-    rewrite: {
-      modelTier: "standard",
-      unlimited: true,
-      tellLibrary: "core",
-      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW
-    },
-    features: [
-      "Unlimited on-device rewriting on the Standard engine, plus saved history",
-      `${proEngineTrialLine}, counted against your account rather than one browser`,
-      "Up to 5,000 words per document to check, 20 checks a month",
-      "All five supported languages"
+      "Unlimited checking, in your browser, with no account and no word limit",
+      `${correctionLine}, on the Standard engine`,
+      "Confidence band, per-passage breakdown and stated limits on screen",
+      "Your document is never uploaded, on any feature"
     ]
   },
   pro: {
@@ -21768,11 +22279,12 @@ var PLANS = {
       modelTier: "advanced",
       unlimited: true,
       tellLibrary: "extended",
-      proEngineRunsPerWindow: null
+      tokensPerWindow: null,
+      windowDays: null
     },
     features: [
-      "The Pro rewrite engine with no weekly limit: a real local model, more candidates per passage, and the extended AI-tell library",
-      "Unlimited checks and batch upload",
+      "Unlimited rewriting, with no weekly token budget",
+      "The Pro rewrite engine: a real language model in your browser, more candidates per passage, and the extended AI-tell library",
       "The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash",
       "API and MCP access to checking, metered; rewriting is always on-device, on every tier"
     ]
@@ -21971,6 +22483,7 @@ function calculateLexicalChangePercent(totalTokens, substitutions) {
 // src/lib/calibrate/engine.ts
 init_detector();
 init_tokenize();
+init_english_variant();
 async function calibrateText(request) {
   const startTime = performance.now();
   const { text, language, mode, config: config2 } = request;
@@ -22003,7 +22516,8 @@ async function calibrateText(request) {
         processingTimeMs: performance.now() - startTime
       };
     }
-    const substitutions = performSubstitution(analysis, dictionary, config2);
+    const englishVariant = config2?.englishVariant ?? detectEnglishVariant(text).variant;
+    const substitutions = performSubstitution(analysis, dictionary, { ...config2, englishVariant }, text);
     const revisedText = applySubstitutions(text, analysis.tokens, substitutions);
     const originalMetrics = calculateMetrics(text, targetLanguage);
     const revisedMetrics = calculateMetrics(revisedText, targetLanguage);
@@ -22131,6 +22645,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
             type: "string",
             enum: ["preview", "apply"],
             description: "Preview mode returns suggestions without commitment; apply mode applies them."
+          },
+          excludeWords: {
+            type: "array",
+            items: { type: "string" },
+            description: "Words or short phrases that must never be substituted, e.g. SEO terms you are trying to rank for. Matched case-insensitively; a multi-word entry is matched as a phrase."
           }
         },
         required: ["text"],
@@ -22170,6 +22689,11 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
             type: "string",
             enum: ["summary", "full"],
             description: '"summary" (default) returns the revised text, the change counts, the before/after headline evidence numbers, and what is still present, which is everything needed to decide what to do next. "full" additionally returns both complete AnalysisResult objects and every scored candidate per passage: roughly 3x the response size (about 14,000 tokens for a 600-word document versus about 4,000), so ask for it only when you are going to read the per-passage arrays.'
+          },
+          excludeWords: {
+            type: "array",
+            items: { type: "string" },
+            description: "Words or short phrases that must never be changed, e.g. SEO terms you are trying to rank for. Enforced at every layer: the deterministic tell/synonym passes never touch them, the model-backed backend is instructed to leave them untouched, and any candidate that alters one anyway is rejected outright by the same fact-lock that protects numbers and names."
           }
         },
         required: ["text"],
@@ -22178,16 +22702,19 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
     }
   ]
 }));
-var baselines = {};
+var mlEnv = null;
+function localMlEnv() {
+  if (!mlEnv) mlEnv = { device: "cpu", cacheDir: resolveModelCacheDir().dir };
+  return mlEnv;
+}
 async function runLocally(text, language, granularity) {
-  const resolved = resolveLanguage(text, language);
-  if (resolved.language && !baselines[resolved.language]) {
-    try {
-      baselines[resolved.language] = await loadBaseline(resolved.language);
-    } catch {
-    }
-  }
-  return analyzeDocument(text, { keys: [OPEN_REFERENCE_KEY], language, granularity, baselines });
+  return checkDocument(text, {
+    keys: [OPEN_REFERENCE_KEY],
+    language,
+    granularity,
+    includeModel: true,
+    mlEnv: localMlEnv()
+  });
 }
 async function runHosted(text, language, granularity) {
   const res = await fetch(`${API_BASE}/api/v1/check`, {
@@ -22256,13 +22783,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
       const language = typeof args?.language === "string" ? args.language : void 0;
       const mode = args?.mode === "apply" ? "apply" : "preview";
+      const excludeWords = readExcludeWords(args?.excludeWords);
       const result = await calibrateText({
         text,
         language,
         mode,
         config: {
           confidenceThreshold: 0.7,
-          maxRepeats: 3
+          maxRepeats: 3,
+          excludedWords: excludeWords
         }
       });
       return json({
@@ -22283,9 +22812,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         throw new Error(`"model" must be one of: ${MODEL_CHOICES.join(", ")}.`);
       }
       const modelChoice = args?.model;
+      const excludeWords = readExcludeWords(args?.excludeWords);
       const { runRewriteOnNode: runRewriteOnNode2, describeEngine: describeEngine2 } = await Promise.resolve().then(() => (init_node_engine(), node_engine_exports));
       const { result, engine } = await runRewriteOnNode2(
-        { text, language, strength, tier },
+        { text, language, strength, tier, excludedWords: excludeWords },
         [OPEN_REFERENCE_KEY],
         { model: modelChoice }
       );
@@ -22309,6 +22839,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 });
+function readExcludeWords(value) {
+  if (value === void 0) return void 0;
+  if (!Array.isArray(value) || !value.every((v) => typeof v === "string")) {
+    throw new Error('"excludeWords" must be an array of strings.');
+  }
+  const cleaned = value.map((v) => v.trim()).filter((v) => v.length > 0);
+  return cleaned.length > 0 ? cleaned : void 0;
+}
 function json(payload) {
   return { content: [{ type: "text", text: JSON.stringify(payload, null, 2) }] };
 }

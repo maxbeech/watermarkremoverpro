@@ -1,5 +1,5 @@
 import { Section, SectionHead, Wrap } from '@/components/brand/ui'
-import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
+import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlements/rewrite-budget'
 
 export interface FaqItem {
   question: string
@@ -79,7 +79,7 @@ export const CORE_FAQ: FaqItem[] = [
   {
     question: 'What\'s the difference between the Standard and Pro rewrite engines?',
     answer:
-      `Standard is deterministic substitution against the core AI-tell library: instant, no download, and unlimited on every plan with no word cap or monthly limit, because the computation happens on your device rather than on our servers. Pro is a real small language model that downloads once and runs in your browser, generating more candidate rewrites per passage and using the extended AI-tell library. Everyone gets ${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'one free Pro-engine run' : `${PRO_TRIAL_RUNS_PER_WINDOW} free Pro-engine runs`} every ${PRO_TRIAL_WINDOW_DAYS} days so you can compare them on your own text, and a Pro subscription removes that limit. Neither engine ever sends your text anywhere.`,
+      `Standard is deterministic substitution against the core AI-tell library: instant, no download, and included on every plan. Pro is a real language model that runs in your browser, generating more candidate rewrites per passage and using the extended AI-tell library; it comes with a Pro subscription rather than being metered on the free plan. What the free plan meters is how much rewriting you do: ${REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')} tokens every ${REWRITE_WINDOW_DAYS} days, where a token is one word as this product counts them. Checking is never metered on either plan. Neither engine ever sends your text anywhere.`,
   },
   {
     question: 'Does my document ever leave my device?',

@@ -1,5 +1,96 @@
 # Changelog
 
+## 2026-09-10 (later still) - the workspace stops reading like a lab report
+
+Six things, all of them the same complaint from different angles: the app at
+`/app` had grown a column of chrome, a column of tabs, and a column of prose,
+and none of the three was answering the question a visitor arrives with.
+
+### Pricing now meters the thing that is actually being sold
+
+Checking is free and unlimited on every plan, with no account, no word cap and
+no monthly count. It always could have been: it runs on the visitor's own
+hardware. What is metered now is CORRECTION, at 20,000 tokens per rolling seven
+days on the free plan, where a token is one word-token from this product's own
+`tokenize()` rather than an estimate of somebody else's subword count.
+
+The Pro rewrite engine is no longer metered on the free plan; it is not
+included on it. The old "one free Pro run a week" produced the worst failure
+mode available: a rewrite that silently ran on a different engine partway
+through a session, and a badge in the settings sheet that never visibly
+changed. It is now a locked, visible option that says what it costs.
+
+The signed-in-but-free tier is gone. It sold an account rather than a
+capability, and the only line separating it from the anonymous column was where
+a counter was stored. Two plans now: Free, and Pro.
+
+The budget is counted in the browser's own storage, with no endpoint at all.
+A token count is a measurement of the visitor's document, so counting it per
+account would have meant posting one on every rewrite. The exemption that used
+to sit in `tests/product-constraints.test.ts` for the allowance endpoint is
+therefore deleted, and the constraint is now the stronger claim it always
+should have been: no module on the document-holding path makes a network call.
+
+### The analysis column is drawn rather than written
+
+Five stacked panels of prose became an arc, three tracks and four tiles, in
+`src/components/app/charts.tsx`. The headline is the trained classifier; the
+tracks below it are the heuristic channels the rewrite steers by, with a ghost
+tick showing where the draft sat. They disagree sometimes, and the layout says
+so instead of picking a winner. Every remaining sentence is a caption or is
+folded into one disclosure.
+
+### The headline waits for the detector
+
+The classifier model is tens of megabytes, and it was started only once there
+was rewritten text to hand it. So the rewrite finished, the analysis painted,
+and only then did the thing that produces the actual verdict begin arriving:
+a complete-looking result, produced before the detector existed in the tab. The
+download now starts when a run is opened, and the arc renders as its own
+download progress until the model can answer.
+
+### The centre column has one deliverable, not three peers
+
+Split, Unified and New were three equal options with the diff selected by
+default, so someone who pasted a draft landed on a paragraph-by-paragraph
+comparison of a document they had not read. It is two tabs now, Result and
+Changes, and Result is where you land. Side-by-side versus inline is a setting
+inside Changes rather than a peer of the text itself. The version strip is
+chips rather than two-line cards.
+
+### The sidebar is a list again
+
+The identity label, the storage paragraph, the plan panel, the delete-all link,
+the three-sentence panel about the sibling product and the row of site links
+were six things stacked in a 288px column. What is left is the list, one line
+of plan status with a bar, and a single link row. The pointer to the sibling
+product stays, because someone who came here to screen work that is not theirs
+still has to be told; it is one link rather than a panel.
+
+### Bugs found while testing this, not by reading it
+
+- **Restoring a version left stale text in the editor.** The textarea only
+  re-synced when the tab or the run changed, which was survivable when the diff
+  was the default view and became data loss when the editor was: the next blur
+  wrote the stale text back over the restore. It now adopts any change it did
+  not make itself, tracked through a ref so the caret is never yanked back
+  mid-sentence by the visitor's own debounced save.
+- **A refused rerun destroyed the result the visitor already had.** Hitting the
+  weekly budget put the whole run into the error state, throwing away the text,
+  the diff and the version history over a paywall. A run that already has a
+  result now keeps it and gets the reason as a notice.
+- **"That pass produced exactly the same text"** was shown for a rerun that
+  never ran, replacing the one message that explained what had happened with
+  advice that could not help.
+- **"1 of 8 passages rewritten" beside a diff correctly reporting no change.**
+  `summariseRun` counted a passage whose winning candidate was the passage
+  itself. Fixed and pinned by a test.
+
+`src/lib/workspace/identity.ts` is deleted: its whole stated purpose was the
+sidebar label that is gone, and the "On this device" heading over the list it
+describes carries the meaning better than an opaque id did.
+
+
 ## 2026-09-10 (later) - the content hook stops checking working notes
 
 The hook fires on every Write and Edit a session makes, and it treated any

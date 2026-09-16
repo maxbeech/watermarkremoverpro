@@ -1,4 +1,4 @@
-import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
+import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlements/rewrite-budget'
 
 /**
  * Site-wide constants. Single source of truth for anything that appears in more
@@ -29,61 +29,52 @@ export const MIRROR_PRODUCT = {
 } as const
 
 /**
- * Two axes, not one. `wordCap`/`checksPerMonth` describe CHECKING, which still
- * costs server compute on the Pro/API/MCP hosted paths and keeps its existing
- * word-cap shape. `rewrite` describes the on-device REWRITE feature, which
- * runs in the caller's own browser or process and therefore costs this product
- * nothing to serve.
+ * Two axes, not one, and they are metered differently on purpose.
  *
- * Rewriting is UNLIMITED on every plan on the Standard engine, forever. What a
- * plan changes is which ENGINE you can reach for: the Pro engine is a real
- * local language model, and everyone gets PRO_TRIAL_RUNS_PER_WINDOW run of it
- * every PRO_TRIAL_WINDOW_DAYS days before falling back to Standard. A Pro
- * subscription removes that limit. The numbers below are read from
- * lib/entitlements/pro-trial rather than retyped, so the pricing page, the
- * machine-readable pricing document and the code that actually enforces the
- * allowance cannot disagree.
+ * CHECKING is free and unlimited on every plan when it runs in the visitor's
+ * own browser, because it costs this product nothing to serve. `wordCap` and
+ * `checksPerMonth` describe only the HOSTED checking paths (the API, the MCP
+ * server and the signed-in server-side check), which do cost server compute.
+ *
+ * CORRECTION is the feature this product sells. It also runs on the visitor's
+ * device, so the limit below is a commercial boundary rather than a capacity
+ * one, and it is set generously: REWRITE_TOKENS_PER_WINDOW tokens every
+ * REWRITE_WINDOW_DAYS days on the free plan, unlimited on Pro. The Pro rewrite
+ * engine is not metered at all on the free plan, it is simply not included:
+ * a taste of it that runs out mid-session teaches someone less about whether
+ * to buy it than an honest description does.
+ *
+ * TWO PLANS, NOT THREE. There used to be a third, "Free account", between
+ * anonymous and Pro. It existed to sell an account rather than a capability,
+ * and reading down the pricing table the difference between the first two
+ * columns was a sentence about where a counter is stored. It is gone, and
+ * signing in now means exactly one thing: you are on Pro.
+ *
+ * The numbers are read from lib/entitlements/rewrite-budget rather than
+ * retyped, so the pricing page, the machine-readable pricing document and the
+ * code that actually enforces the budget cannot disagree.
  */
-const proEngineTrialLine = `${PRO_TRIAL_RUNS_PER_WINDOW === 1 ? 'One' : PRO_TRIAL_RUNS_PER_WINDOW} free run of the Pro rewrite engine every ${PRO_TRIAL_WINDOW_DAYS} days, then unlimited Standard`
+const correctionLine = `${REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')} tokens of rewriting every ${REWRITE_WINDOW_DAYS} days`
 
 export const PLANS = {
   anonymous: {
     id: 'anonymous',
-    name: 'No signup',
+    name: 'Free',
     price: 0,
     wordCap: 1500,
     checksPerMonth: null,
     rewrite: {
       modelTier: 'standard',
-      unlimited: true,
+      unlimited: false,
       tellLibrary: 'core',
-      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW,
+      tokensPerWindow: REWRITE_TOKENS_PER_WINDOW,
+      windowDays: REWRITE_WINDOW_DAYS,
     },
     features: [
-      'Unlimited on-device rewriting on the Standard engine, core AI-tell library',
-      proEngineTrialLine,
-      'One document at a time to check, up to 1,500 words',
-      'Runs entirely in your browser, and the document is never uploaded',
+      'Unlimited checking, in your browser, with no account and no word limit',
+      `${correctionLine}, on the Standard engine`,
       'Confidence band, per-passage breakdown and stated limits on screen',
-    ],
-  },
-  free: {
-    id: 'free',
-    name: 'Free account',
-    price: 0,
-    wordCap: 5000,
-    checksPerMonth: 20,
-    rewrite: {
-      modelTier: 'standard',
-      unlimited: true,
-      tellLibrary: 'core',
-      proEngineRunsPerWindow: PRO_TRIAL_RUNS_PER_WINDOW,
-    },
-    features: [
-      'Unlimited on-device rewriting on the Standard engine, plus saved history',
-      `${proEngineTrialLine}, counted against your account rather than one browser`,
-      'Up to 5,000 words per document to check, 20 checks a month',
-      'All five supported languages',
+      'Your document is never uploaded, on any feature',
     ],
   },
   pro: {
@@ -97,11 +88,12 @@ export const PLANS = {
       modelTier: 'advanced',
       unlimited: true,
       tellLibrary: 'extended',
-      proEngineRunsPerWindow: null,
+      tokensPerWindow: null,
+      windowDays: null,
     },
     features: [
-      'The Pro rewrite engine with no weekly limit: a real local model, more candidates per passage, and the extended AI-tell library',
-      'Unlimited checks and batch upload',
+      'Unlimited rewriting, with no weekly token budget',
+      'The Pro rewrite engine: a real language model in your browser, more candidates per passage, and the extended AI-tell library',
       'The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash',
       'API and MCP access to checking, metered; rewriting is always on-device, on every tier',
     ],

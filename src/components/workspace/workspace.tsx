@@ -14,7 +14,6 @@ import { workspaceUrl } from '@/lib/workspace/route'
 import { DocumentInput } from './document-input'
 import { AdvancedSettings, type WorkspaceSettings } from './advanced-settings'
 import { DEFAULT_STRENGTH } from './settings'
-import { useProTrial } from './use-pro-trial'
 
 /**
  * The front door: put text in, and get taken to the workspace.
@@ -27,10 +26,9 @@ import { useProTrial } from './use-pro-trial'
  * history sidebar, and the draft travels there in memory rather than through a
  * server or a query string.
  *
- * NOTHING HERE IS UPLOADED. The draft goes into this browser's own database and
- * is rewritten in the next page's JavaScript. The only network call in this
- * tree is the weekly-allowance count in ./use-pro-trial, which carries no
- * document, no hash and no word count.
+ * NOTHING HERE IS UPLOADED, and there is no network call in this tree at all.
+ * The draft goes into this browser's own database and is rewritten in the next
+ * page's JavaScript.
  */
 export function Workspace({
   subscriber = false,
@@ -49,10 +47,9 @@ export function Workspace({
     language: '',
     strength: DEFAULT_STRENGTH,
     engineId: 'standard',
+    excludedWords: [],
   })
 
-  const trial = useProTrial({ subscriber })
-  const isSubscriber = subscriber || trial.unlimited
   const words = useMemo(() => countWords(text), [text])
 
   const open = useCallback(async () => {
@@ -128,13 +125,11 @@ export function Workspace({
         settings={settings}
         onChange={setSettings}
         disabled={opening}
-        trial={trial.status}
-        subscriber={isSubscriber}
-        trialLoading={trial.loading}
+        subscriber={subscriber}
       />
 
       <p className="text-center text-[13px] text-ink-500">
-        Free, no account needed. Your text is processed in this browser tab and never uploaded.{' '}
+        Your text is processed in this browser tab and never uploaded.{' '}
         <Link href="/method" className="link-quiet">
           Here is how that works
         </Link>

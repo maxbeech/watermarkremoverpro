@@ -40,6 +40,12 @@ export const DEFAULT_STRENGTH: Strength = 'balanced'
  * This collapses what used to be two separate menus, a "model tier" and a
  * "rewrite engine", that could be set to contradictory combinations. There is
  * one choice now, and it is the choice that actually changes the output.
+ *
+ * WHICH MODEL BACKS THE PRO ENGINE IS NOT NAMED HERE, and must not be named
+ * anywhere a visitor can see. It is an implementation detail that changes when
+ * a better one is pinned, and a version string in the interface only invites
+ * someone to make a decision on information that will be stale by the time they
+ * act on it. What the copy owes them is what the choice does to their text.
  */
 export type EngineId = 'standard' | 'pro'
 
@@ -54,14 +60,14 @@ export const ENGINES: {
     label: 'Standard',
     short: 'Instant, no download',
     description:
-      'Deterministic substitution against the core AI-tell library. Runs immediately, needs no download, and is unlimited on every plan.',
+      'Deterministic substitution against the core AI-tell library. Runs immediately and needs no download.',
   },
   {
     id: 'pro',
     label: 'Pro',
-    short: 'A real local model',
+    short: 'A real language model',
     description:
-      'A small language model that downloads once from the Hugging Face CDN and runs in your browser on WebGPU, plus the extended AI-tell library and more candidate rewrites per passage. Slower on the first run while the weights download.',
+      'A language model that runs in your browser, plus the extended AI-tell library and more candidate rewrites per passage. It downloads once before the first rewrite starts.',
   },
 ]
 

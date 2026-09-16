@@ -8,6 +8,9 @@
  */
 
 import type { Token, Substitution, FrequencyAnalysis, CalibrationConfig, SynonymDictionary } from './types'
+import { normalizeExcludedTerms, isExcludedWord } from './excluded-terms'
+import { isProtectedProperNoun } from './proper-nouns'
+import { applyEnglishVariant } from '@/lib/detector/english-variant'
 
 /**
  * Performs substitution pass on analyzed text.
@@ -24,16 +27,24 @@ import type { Token, Substitution, FrequencyAnalysis, CalibrationConfig, Synonym
  * @param analysis - Result from analyzeFrequency()
  * @param dictionary - Loaded synonym dictionary
  * @param config - Configuration options
+ * @param sourceText - The original text the tokens were cut from, used only to
+ *   tell a proper noun (a capitalised word that is not a sentence opener) from
+ *   an ordinary word, so a name is never handed a synonym. Optional for
+ *   backward compatibility with a caller that already has no text to give
+ *   (proper-noun protection is simply skipped then, matching this function's
+ *   long-standing behaviour before that protection existed).
  * @returns Array of substitutions (may be empty if none applicable)
  */
 export function performSubstitution(
   analysis: FrequencyAnalysis,
   dictionary: SynonymDictionary,
   config: CalibrationConfig = {},
+  sourceText?: string,
 ): Substitution[] {
   const substitutions: Substitution[] = []
   const confidenceThreshold = config.confidenceThreshold ?? 0.7
   const maxRepeats = config.maxRepeats ?? 3
+  const excluded = normalizeExcludedTerms(config.excludedWords)
 
   // Track substitution counts to avoid re-using the same synonym too often
   const substitutionCounts = new Map<string, number>()
@@ -43,6 +54,31 @@ export function performSubstitution(
 
     // Skip if not a signature token
     if (!analysis.signatureTokens.has(norm)) {
+      continue
+    }
+
+    // Skip if this exact word is on the caller's never-swap list
+    if (isExcludedWord(excluded, norm)) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1.0,
+        reason: 'excluded',
+      })
+      continue
+    }
+
+    // Skip a capitalised proper noun: a name must never be handed a synonym,
+    // however coincidentally its lowercase form matches a dictionary entry.
+    if (sourceText !== undefined && isProtectedProperNoun(sourceText, token.raw, token.start, token.end)) {
+      substitutions.push({
+        index: tokenIndex,
+        original: token.raw,
+        replacement: token.raw,
+        confidence: 1.0,
+        reason: 'excluded',
+      })
       continue
     }
 
@@ -108,10 +144,11 @@ export function performSubstitution(
 
     // Record substitution
     const confidence = Math.max(0.1, confidenceThreshold) // Ensure positive confidence
+    const spelled = applyEnglishVariant(selected, config.englishVariant ?? null)
     substitutions.push({
       index: tokenIndex,
       original: token.raw,
-      replacement: preserveCase(selected, token.raw),
+      replacement: preserveCase(spelled, token.raw),
       confidence,
       reason: 'synonym',
       alternatives: variants.slice(0, 3), // Show up to 3 alternatives

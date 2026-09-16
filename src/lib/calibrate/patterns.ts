@@ -56,6 +56,21 @@ export interface TellPattern {
 export const DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g
 
 /**
+ * Emoji, including the standalone symbol/dingbat blocks (\u2600-\u27bf,
+ * \u2b00-\u2bff: checkmarks, arrows, stars, sparkles) that render as emoji in
+ * most fonts even without a variation selector, plus an optional trailing
+ * emoji-presentation selector (U+FE0F) or zero-width joiner for a combined
+ * glyph. This is a visual tell, not a linguistic one: current models reach
+ * for a rocket, a checkmark, or a sparkle as a bullet-point or emphasis
+ * marker at a rate ordinary published prose does not, especially in
+ * announcement and "here's the breakdown" registers. See
+ * measureVisualTells in ai-tells.ts for how this is scored and, at density,
+ * stripped.
+ */
+export const EMOJI_PATTERN =
+  /[\u{1F1E6}-\u{1F1FF}\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}](?:\u{FE0F}|\u{200D}[\u{1F300}-\u{1FAFF}])?/gu
+
+/**
  * The core library: the most recognisable tells, shipped on every tier.
  *
  * Each entry maps to one or more natural, meaning-preserving alternatives;

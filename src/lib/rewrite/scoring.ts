@@ -15,6 +15,7 @@ import type { ScoredCandidate } from './types'
 export interface ScoreOptions {
   minSimilarity: number
   keys: DetectionKey[]
+  excludedWords?: string[]
 }
 
 export async function scoreCandidate(
@@ -55,7 +56,7 @@ export async function scoreCandidates(
   backend: RewriteBackend,
   options: ScoreOptions,
 ): Promise<ScoredCandidate[]> {
-  const originalFacts = extractFacts(originalText)
+  const originalFacts = extractFacts(originalText, options.excludedWords)
   const originalTellPressure = measureStyleTells(originalText).pressure
   return Promise.all(
     candidateTexts.map((c) =>

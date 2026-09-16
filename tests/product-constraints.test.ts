@@ -214,23 +214,23 @@ describe('constraint: the free check never transmits the document', () => {
    * now, so the constraint has to follow the document there rather than stay
    * pointed at the components it used to live in.
    *
-   * One file in that directory is exempt and named here rather than pattern
-   * matched. `use-pro-trial.ts` reads the weekly Pro-engine allowance over the
-   * network; it never sees the document, and the test below asserts that the
-   * module it calls cannot carry one.
+   * There is no exemption. There used to be one, for the hook that read the
+   * weekly Pro-engine allowance from an endpoint. That allowance is gone, and
+   * what replaced it (the weekly correction budget) is counted in the browser's
+   * own storage precisely so this list can have no holes in it. See
+   * src/lib/entitlements/rewrite-budget-store.ts, and the test below.
    */
-  const TRIAL_HOOK = join(ROOT, 'src', 'components', 'workspace', 'use-pro-trial.ts')
-
   const onDevicePath = [
     ...walk(join(ROOT, 'src', 'lib', 'detector')),
     ...walk(join(ROOT, 'src', 'lib', 'diff')),
     ...walk(join(ROOT, 'src', 'lib', 'workspace')),
+    ...walk(join(ROOT, 'src', 'lib', 'entitlements')),
     ...walk(join(ROOT, 'src', 'components', 'checker')),
     ...walk(join(ROOT, 'src', 'components', 'workspace')),
     // The workspace at /app: it holds the draft, the rewrite and the whole
     // history, so it is the single most important directory on this list.
     ...walk(join(ROOT, 'src', 'components', 'app')),
-  ].filter((f) => !f.endsWith('.test.ts') && f !== TRIAL_HOOK)
+  ].filter((f) => !f.endsWith('.test.ts'))
 
   it('has no network call anywhere on the on-device path', () => {
     const offenders = onDevicePath
@@ -282,31 +282,35 @@ describe('constraint: the free check never transmits the document', () => {
   })
 
   /**
-   * The one network call anywhere near the document flow, pinned down.
+   * The commercial boundary is counted without measuring the document to a
+   * server.
    *
-   * The weekly Pro-engine allowance has to be countable per account rather
-   * than per browser, which means one endpoint. This asserts that endpoint
-   * cannot carry a document: no request body is constructed anywhere in the
-   * client, and the route accepts none.
+   * The free plan meters CORRECTION by token count, and a token count is a
+   * measurement of the visitor's text. Counting it per account would mean
+   * posting that measurement on every rewrite, which is exactly the kind of
+   * quiet leak this whole file exists to prevent. It is counted in the
+   * browser's own storage instead, and there is no endpoint to send it to.
    */
-  it('counts the Pro-engine allowance without a request body of any kind', () => {
-    const client = read(join(ROOT, 'src/lib/entitlements/pro-trial-store.ts'))
-    // Every fetch in this module targets the allowance endpoint, and no call
-    // passes a request body: the options object is matched directly rather
-    // than searching the file for the word, which would also hit the local
-    // variable holding the RESPONSE body.
-    const calls = [...client.matchAll(/fetch\((.*?)\)\s*$/gm)].map((m) => m[1])
-    expect(calls.length).toBeGreaterThan(0)
-    for (const call of calls) {
-      expect(call).toContain("'/api/v1/pro-trial'")
-      expect(call).not.toMatch(/\bbody\b|FormData|JSON\.stringify/)
-    }
+  it('counts the weekly correction budget on the device, with no endpoint to leak it to', () => {
+    const store = read(join(ROOT, 'src/lib/entitlements/rewrite-budget-store.ts'))
+    expect(store).toContain('localStorage')
+    expect(store).not.toMatch(/fetch\(|FormData|XMLHttpRequest|navigator\.sendBeacon/)
 
-    const route = read(join(ROOT, 'src/app/api/v1/pro-trial/route.ts'))
-    expect(route).not.toMatch(/request\.(json|text|formData|arrayBuffer)\(/)
-    // The handlers take no Request argument at all, so there is nothing to read.
-    expect(route).toContain('export async function GET()')
-    expect(route).toContain('export async function POST()')
+    // And no route was left behind that would accept one.
+    expect(existsSync(join(ROOT, 'src/app/api/v1/pro-trial/route.ts'))).toBe(false)
+    expect(existsSync(join(ROOT, 'src/app/api/v1/rewrite-budget'))).toBe(false)
+  })
+
+  it('never meters checking, which is the free half of the product', () => {
+    // A budget that quietly started charging for measurement would invert the
+    // pricing the whole site describes, and would do it somewhere no page says.
+    const runner = read(join(ROOT, 'src/components/workspace/use-rewrite-runner.ts'))
+    // The single spend in the runner is charged on the rewrite input, and there
+    // is exactly one of them.
+    expect([...runner.matchAll(/\bspend\(/g)]).toHaveLength(1)
+
+    const checker = read(join(ROOT, 'src/components/checker/checker.tsx'))
+    expect(checker).not.toMatch(/rewrite-budget|useRewriteBudget|spend\(/)
   })
 })
 

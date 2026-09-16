@@ -93,4 +93,49 @@ describe('analyzeAiLikelihood', () => {
       expect(s.contribution).toBeGreaterThanOrEqual(0)
     }
   })
+
+  it('does not flag ordinary human prose for repeating "the" as a sentence-opener', () => {
+    // HUMAN legitimately opens five of its eleven sentences with "The" and two
+    // with "It" (ordinary English), which is exactly what a naive "repeated
+    // opener" heuristic would over-flag. DISCOURSE_OPENERS deliberately
+    // excludes plain articles/pronouns for this reason.
+    const result = analyzeAiLikelihood(HUMAN, 'en')
+    const opener = result.signals.find((s) => s.id === 'opener-repetition')
+    expect(opener?.contribution).toBe(0)
+  })
+
+  it('flags a document that repeatedly opens sentences on the same discourse marker', () => {
+    const repeated = `
+      This approach improves throughput across the whole pipeline. This method reduces latency for
+      every request that passes through the system. This design simplifies operations for the whole
+      team, cutting the on-call load significantly. This change lowers cost across every environment
+      the service runs in. The team shipped it last week to good results, and the rollout went
+      smoothly across every region. Another release is planned for next quarter once feedback comes
+      in from early users of the current build.
+    `.trim()
+    const result = analyzeAiLikelihood(repeated, 'en')
+    const opener = result.signals.find((s) => s.id === 'opener-repetition')
+    expect(opener?.contribution).toBeGreaterThan(0)
+  })
+
+  it('flags a document dense with decorative emoji', () => {
+    const decorated = `${HUMAN} Huge news ✅ the proposal is finally moving forward \u{1F680} and the
+      whole team is thrilled about it ✨ which is a great result for everyone involved today.`
+    const plain = analyzeAiLikelihood(HUMAN, 'en')
+    const result = analyzeAiLikelihood(decorated, 'en')
+    const emoji = result.signals.find((s) => s.id === 'emoji-density')
+    expect(emoji?.count).toBe(3)
+    expect(result.score as number).toBeGreaterThan(plain.score as number)
+  })
+
+  it('flags a document dense with emphasis/connective adverbs', () => {
+    const dense = `${HUMAN} Notably, the outcome was significantly different than expected. Arguably,
+      this was fundamentally undoubtedly the right call, and importantly, essentially everyone
+      particularly agreed, especially the chair, who was ultimately satisfied with the result.`
+    const plain = analyzeAiLikelihood(HUMAN, 'en')
+    const result = analyzeAiLikelihood(dense, 'en')
+    const connective = result.signals.find((s) => s.id === 'connective-density')
+    expect(connective?.count).toBeGreaterThan(0)
+    expect(result.score as number).toBeGreaterThan(plain.score as number)
+  })
 })

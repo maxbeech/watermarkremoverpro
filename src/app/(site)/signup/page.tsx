@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AuthForm } from '@/components/auth-form'
 import { AuthShell } from '@/components/auth-shell'
-import { PLANS } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Create an account',
@@ -14,7 +13,7 @@ export default function SignupPage() {
   return (
     <AuthShell
       title="Create an account"
-      lead={`Free: ${PLANS.free.wordCap.toLocaleString()} words per document, ${PLANS.free.checksPerMonth} checks a month, every supported language, and saved history you can return to.`}
+      lead="An account is how a Pro subscription is held: unlimited rewriting, the Pro rewrite engine, the dated evidence report, and API access. Checking is free and unlimited without one."
       footer={
         <>
           <p>

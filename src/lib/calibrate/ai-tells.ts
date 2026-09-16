@@ -17,12 +17,14 @@ import {
   CORE_STOCK_PHRASES,
   DASH_CLAUSE_PATTERN,
   ELEVATED_VOCABULARY,
+  EMOJI_PATTERN,
   EXTENDED_STOCK_PHRASES,
   NEGATIVE_PARALLELISM_PATTERN,
   REGISTER_DENSITY_THRESHOLD,
   REGISTER_DOWNSHIFT,
   TRIADIC_LIST_PATTERN,
 } from './patterns'
+import { excludedSpans, normalizeExcludedTerms, overlapsAny, type ExcludedTerms } from './excluded-terms'
 
 /**
  * Which phrase table to run.
@@ -47,7 +49,7 @@ export interface TellChange {
   end: number
   original: string
   replacement: string
-  category: 'punctuation' | 'phrase' | 'vocabulary'
+  category: 'punctuation' | 'phrase' | 'vocabulary' | 'emoji'
   note: string
 }
 
@@ -97,8 +99,9 @@ function shouldSwapPhrases(): boolean {
  * Replaces an em/en dash clause connector with a comma or period, alternating
  * so the same document doesn't just trade one repeated tic for another.
  */
-function swapDashes(text: string): { text: string; changes: TellChange[] } {
+function swapDashes(text: string, excluded: ExcludedTerms): { text: string; changes: TellChange[] } {
   const changes: TellChange[] = []
+  const protectedSpans = excludedSpans(excluded, text)
   let useComma = true
   let result = ''
   let lastEnd = 0
@@ -108,6 +111,8 @@ function swapDashes(text: string): { text: string; changes: TellChange[] } {
   while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
     const start = match.index
     const end = start + match[0].length
+    if (overlapsAny(protectedSpans, start, end)) continue
+
     const replacement = useComma ? ', ' : '. '
     useComma = !useComma
 
@@ -132,7 +137,11 @@ function swapDashes(text: string): { text: string; changes: TellChange[] } {
  * doesn't collapse to the same replacement three times, which would just
  * install a new, equally detectable tic.
  */
-function swapStockPhrases(text: string, library: TellLibrary): { text: string; changes: TellChange[] } {
+function swapStockPhrases(
+  text: string,
+  library: TellLibrary,
+  excluded: ExcludedTerms,
+): { text: string; changes: TellChange[] } {
   const changes: TellChange[] = []
   const usage = new Map<string, number>()
   const table = library === 'extended' ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES
@@ -145,6 +154,7 @@ function swapStockPhrases(text: string, library: TellLibrary): { text: string; c
   for (const phrase of phrases) {
     const alternatives = table[phrase]
     const re = new RegExp(escapeRegExp(phrase), 'gi')
+    const protectedSpans = excludedSpans(excluded, result)
     let match: RegExpExecArray | null
     // Rebuild result incrementally; offsets below are into `result` as it
     // stood at the start of this phrase's own pass (see TellChange's doc).
@@ -152,20 +162,24 @@ function swapStockPhrases(text: string, library: TellLibrary): { text: string; c
     let next = ''
     re.lastIndex = 0
     while ((match = re.exec(result)) !== null) {
+      const start = match.index
+      const end = start + match[0].length
+      if (overlapsAny(protectedSpans, start, end)) continue
+
       const idx = usage.get(phrase) ?? 0
       const replacement = alternatives[idx % alternatives.length]
       usage.set(phrase, idx + 1)
 
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement)
+      next += result.slice(cursor, start) + applyCase(match[0], replacement)
       changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
+        start,
+        end,
         original: match[0],
         replacement,
         category: 'phrase',
         note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`,
       })
-      cursor = match.index + match[0].length
+      cursor = end
     }
     next += result.slice(cursor)
     result = next
@@ -183,11 +197,12 @@ function swapStockPhrases(text: string, library: TellLibrary): { text: string; c
  * strengths rewrite every covered occurrence, which is what the user is asking
  * for by choosing them.
  */
-function vocabularyWordsToSwap(text: string, strength: TellStrength): Set<string> {
+function vocabularyWordsToSwap(text: string, strength: TellStrength, excluded: ExcludedTerms): Set<string> {
   const swap = new Set<string>()
   if (strength === 'preserve') return swap
 
   for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    if (excluded.words.has(word)) continue
     const count = countWholeWord(text, word)
     if (count === 0) continue
     if (strength === 'balanced' && count < REGISTER_DENSITY_THRESHOLD) continue
@@ -204,8 +219,9 @@ function vocabularyWordsToSwap(text: string, strength: TellStrength): Set<string
 function swapElevatedVocabulary(
   text: string,
   strength: TellStrength,
+  excluded: ExcludedTerms,
 ): { text: string; changes: TellChange[] } {
-  const targets = vocabularyWordsToSwap(text, strength)
+  const targets = vocabularyWordsToSwap(text, strength, excluded)
   if (targets.size === 0) return { text, changes: [] }
 
   const changes: TellChange[] = []
@@ -215,30 +231,95 @@ function swapElevatedVocabulary(
   for (const word of targets) {
     const alternatives = REGISTER_DOWNSHIFT[word]
     const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'gi')
+    const protectedSpans = excludedSpans(excluded, result)
     let match: RegExpExecArray | null
     let cursor = 0
     let next = ''
     re.lastIndex = 0
     while ((match = re.exec(result)) !== null) {
+      const start = match.index
+      const end = start + match[0].length
+      if (overlapsAny(protectedSpans, start, end)) continue
+
       const idx = usage.get(word) ?? 0
       const replacement = alternatives[idx % alternatives.length]
       usage.set(word, idx + 1)
 
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement)
+      next += result.slice(cursor, start) + applyCase(match[0], replacement)
       changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
+        start,
+        end,
         original: match[0],
         replacement,
         category: 'vocabulary',
         note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`,
       })
-      cursor = match.index + match[0].length
+      cursor = end
     }
     next += result.slice(cursor)
     result = next
   }
 
+  return { text: result, changes }
+}
+
+/**
+ * How many emoji a document needs before "balanced" strips them. One emoji
+ * can be a deliberate, ordinary choice; several in the same document is the
+ * habit of reaching for a rocket, a checkmark or a sparkle as emphasis or a
+ * bullet-point marker, which reads unmistakably as AI-generated copy
+ * ("balanced" and vocabulary use the same reasoning: recurrence is what
+ * turns a choice into a tell). "aggressive" and "regenerate" strip on sight,
+ * matching how they treat elevated vocabulary.
+ */
+const EMOJI_DENSITY_THRESHOLD = 2
+
+function shouldStripEmoji(count: number, strength: TellStrength): boolean {
+  if (strength === 'preserve' || count === 0) return false
+  if (strength === 'balanced') return count >= EMOJI_DENSITY_THRESHOLD
+  return true
+}
+
+/**
+ * Removes emoji entirely (not swapped for anything, since there is no
+ * text equivalent that preserves intent) once density crosses the threshold
+ * for the given strength, along with one adjacent run of whitespace so
+ * deletion doesn't leave a doubled space or a dangling leading space at the
+ * start of a line.
+ */
+function stripEmoji(text: string, excluded: ExcludedTerms, strength: TellStrength): { text: string; changes: TellChange[] } {
+  const changes: TellChange[] = []
+  const totalCount = text.match(EMOJI_PATTERN)?.length ?? 0
+  if (!shouldStripEmoji(totalCount, strength)) return { text, changes }
+
+  const protectedSpans = excludedSpans(excluded, text)
+  let result = ''
+  let lastEnd = 0
+
+  EMOJI_PATTERN.lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = EMOJI_PATTERN.exec(text)) !== null) {
+    const start = match.index
+    const end = start + match[0].length
+    if (overlapsAny(protectedSpans, start, end)) continue
+
+    result += text.slice(lastEnd, start)
+    changes.push({
+      start,
+      end,
+      original: match[0],
+      replacement: '',
+      category: 'emoji',
+      note: 'Emoji used as decoration, emphasis, or a bullet-point marker, a rate of use over-represented in LLM output relative to edited human prose.',
+    })
+    lastEnd = end
+  }
+  result += text.slice(lastEnd)
+
+  // Collapse the whitespace an emoji's removal leaves behind: a doubled
+  // space where one sat mid-line, and a line that now opens on a stray space
+  // because the emoji was the line's first visible character.
+  result = result.replace(/[ \t]{2,}/g, ' ').replace(/^[ \t]+/gm, '')
   return { text: result, changes }
 }
 
@@ -331,12 +412,26 @@ const TRIADIC_WEIGHT = 1
 export interface StyleTellMeasurement {
   structures: number
   vocabulary: number
+  /** Emoji count, measured the same way regardless of strength (see stripEmoji for when they are actually removed). */
+  emoji: number
   pressure: number
 }
+
+/**
+ * Each emoji in a passage counts a full pressure point, the same weight as a
+ * templated three-item list: a single decorative emoji is unremarkable, but
+ * because EMOJI_DENSITY_THRESHOLD already requires two before "balanced" acts
+ * on them at all, one emoji contributes here without over-triggering a
+ * routing decision on its own, and two or more reliably clears
+ * NOTABLE_TELL_PRESSURE in targeting.ts, which is the point: emoji-as-bullet
+ * is exactly the passage a rewrite should touch even with no other signal.
+ */
+const EMOJI_WEIGHT = 1
 
 export function measureStyleTells(text: string): StyleTellMeasurement {
   const flagged = flagStructures(text)
   const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0)
+  const emoji = text.match(EMOJI_PATTERN)?.length ?? 0
 
   const weighted = flagged.reduce(
     (sum, f) => sum + (f.kind === 'negative-parallelism' ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
@@ -346,7 +441,8 @@ export function measureStyleTells(text: string): StyleTellMeasurement {
   return {
     structures: flagged.length,
     vocabulary,
-    pressure: weighted + Math.floor(vocabulary / 2),
+    emoji,
+    pressure: weighted + Math.floor(vocabulary / 2) + emoji * EMOJI_WEIGHT,
   }
 }
 
@@ -360,19 +456,27 @@ export function applyDeterministicPass(
   text: string,
   strength: TellStrength = 'balanced',
   library: TellLibrary = 'core',
+  excludedWords?: string[],
 ): DeterministicPassResult {
   let current = text
   const allChanges: TellChange[] = []
+  const excluded = normalizeExcludedTerms(excludedWords)
 
   if (shouldSwapPhrases()) {
-    const { text: swapped, changes } = swapStockPhrases(current, library)
+    const { text: swapped, changes } = swapStockPhrases(current, library, excluded)
     current = swapped
     allChanges.push(...changes)
   }
 
   if (shouldSwapDashes(strength)) {
-    const { text: swapped, changes } = swapDashes(current)
+    const { text: swapped, changes } = swapDashes(current, excluded)
     current = swapped
+    allChanges.push(...changes)
+  }
+
+  {
+    const { text: stripped, changes } = stripEmoji(current, excluded, strength)
+    current = stripped
     allChanges.push(...changes)
   }
 
@@ -380,7 +484,7 @@ export function applyDeterministicPass(
   // stock-phrase replacement is measured for density along with the rest
   // rather than escaping the count on a technicality.
   {
-    const { text: swapped, changes } = swapElevatedVocabulary(current, strength)
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength, excluded)
     current = swapped
     allChanges.push(...changes)
   }

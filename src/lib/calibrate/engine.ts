@@ -17,6 +17,7 @@ import { calculateMetrics, calculateMetricsShift, calculateLexicalChangePercent 
 import { resolveLanguage } from '@/lib/detector'
 import { tokenize } from '@/lib/detector/tokenize'
 import type { LanguageCode } from '@/lib/detector/languages'
+import { detectEnglishVariant } from '@/lib/detector/english-variant'
 
 /**
  * Main calibration function.
@@ -80,8 +81,11 @@ export async function calibrateText(request: CalibrationRequest): Promise<Calibr
       }
     }
 
-    // Step 3: Perform substitutions with repetition mitigation
-    const substitutions = performSubstitution(analysis, dictionary, config)
+    // Step 3: Perform substitutions with repetition mitigation. The variant
+    // is read off the visitor's own text, not asked for, and only overridden
+    // by an explicit config value from a caller that already knows it.
+    const englishVariant = config?.englishVariant ?? detectEnglishVariant(text).variant
+    const substitutions = performSubstitution(analysis, dictionary, { ...config, englishVariant }, text)
 
     // Step 4: Apply substitutions to text
     const revisedText = applySubstitutions(text, analysis.tokens, substitutions)

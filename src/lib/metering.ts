@@ -76,7 +76,11 @@ export async function checkAllowance(
   plan: string,
   words: number,
 ): Promise<AllowanceDecision> {
-  const spec = plan === 'pro' ? PLANS.pro : PLANS.free
+  // Anything that is not Pro is metered on the free plan's hosted limits. There
+  // used to be a third, signed-in-but-free tier between the two; when it was
+  // removed, an account that had been on it fell here rather than being handed
+  // Pro's caps by a `plan` string the database still holds.
+  const spec = plan === 'pro' ? PLANS.pro : PLANS.anonymous
   const usage = await monthToDateUsage(accountId)
 
   const decision: AllowanceDecision = {

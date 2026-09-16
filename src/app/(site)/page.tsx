@@ -7,7 +7,7 @@ import { Reveal } from '@/components/marketing/parallax'
 import { markedSpecimenResult } from '@/components/marketing/specimen'
 import { TrustedByCarousel } from '@/components/marketing/trusted-by'
 import { Workspace } from '@/components/workspace/workspace'
-import { PRO_TRIAL_RUNS_PER_WINDOW, PRO_TRIAL_WINDOW_DAYS } from '@/lib/entitlements/pro-trial'
+import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlements/rewrite-budget'
 import { MIRROR_PRODUCT, SITE, SUPPORTED_LANGUAGE_NAMES } from '@/lib/site'
 
 /**
@@ -34,7 +34,7 @@ export default async function HomePage() {
       <div className="paper wash border-b border-ink-200">
         <Wrap wide className="pt-14 pb-16 sm:pt-20">
           <div className="mx-auto max-w-3xl text-center">
-            <Eyebrow>Free · nothing is uploaded · no account</Eyebrow>
+            <Eyebrow>Free · nothing is uploaded</Eyebrow>
             <h1 className="t-display mt-6 text-ink-900">
               Make your writing sound like you wrote it.
             </h1>
@@ -53,7 +53,8 @@ export default async function HomePage() {
             <TrustItem>Runs on your device: open the network tab and watch</TrustItem>
             <TrustItem>{SUPPORTED_LANGUAGE_NAMES.join(', ')}</TrustItem>
             <TrustItem>
-              {PRO_TRIAL_RUNS_PER_WINDOW} free Pro-engine run every {PRO_TRIAL_WINDOW_DAYS} days
+              {REWRITE_TOKENS_PER_WINDOW.toLocaleString('en-GB')} free rewriting tokens every{' '}
+              {REWRITE_WINDOW_DAYS} days
             </TrustItem>
           </ul>
         </Wrap>

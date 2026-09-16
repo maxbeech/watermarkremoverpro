@@ -8,13 +8,15 @@ import {
   type BrowserBackendProgress,
 } from '@/lib/rewrite/backend/browser'
 import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
+import { describeReset, tokensIn } from '@/lib/entitlements/rewrite-budget'
 import { track } from '@/lib/openhelm-analytics'
 import type { WorkspaceSettings } from './advanced-settings'
 import type { EngineId } from './settings'
-import { useProTrial, type ProTrialHandle } from './use-pro-trial'
+import { useRewriteBudget, type RewriteBudgetHandle } from './use-rewrite-budget'
 
 /**
- * Choosing an engine, spending the weekly allowance, and running a rewrite.
+ * Choosing an engine, spending the weekly correction budget, and running a
+ * rewrite.
  *
  * This is the single implementation of that sequence. It used to live inside
  * the homepage component, which meant the workspace could not rerun a document
@@ -23,10 +25,21 @@ import { useProTrial, type ProTrialHandle } from './use-pro-trial'
  * this instead, so "what happens when the Pro engine cannot start" has one
  * answer rather than two that drift.
  *
- * EVERYTHING HERE RUNS ON THE VISITOR'S DEVICE. The only network calls reachable
- * from this file are the weekly-allowance count inside ./use-pro-trial and the
- * analytics events below, and neither carries a document, a hash or a word
- * count: every event property here is an engine id, a device name or a boolean.
+ * TWO BOUNDARIES, and they are different in kind:
+ *
+ *   the Pro engine   A paid feature. A free visitor does not get it at all,
+ *                    not a taste of it: a rewrite that asks for it without a
+ *                    subscription runs on Standard and says so.
+ *
+ *   the budget       How much CORRECTION a free visitor gets per week, counted
+ *                    in tokens against the text actually submitted. CHECKING IS
+ *                    NEVER METERED, here or anywhere: nothing in this file
+ *                    charges for a measurement.
+ *
+ * EVERYTHING HERE RUNS ON THE VISITOR'S DEVICE, including the budget, which is
+ * counted in this browser's own storage (see ./use-rewrite-budget). There is no
+ * network call reachable from this file except the analytics events below, and
+ * none of those carries a document, a hash or a token count.
  */
 
 export interface RunOutcome {
@@ -35,14 +48,16 @@ export interface RunOutcome {
   engineUsed: string
   /** Set when the requested engine could not be used, saying exactly why. */
   downgraded: string | null
+  /** Tokens charged for this run. Zero for a subscriber, who has no budget. */
+  tokensCharged: number
 }
 
 export type RunAttempt = ({ ok: true } & RunOutcome) | { ok: false; message: string }
 
 export interface RewriteRunner {
   progress: BrowserBackendProgress | null
-  trial: ProTrialHandle
-  /** True for a paying subscriber, or for a trial endpoint that answered "unlimited". */
+  budget: RewriteBudgetHandle
+  /** True for a paying subscriber: unlimited correction, and the Pro engine. */
   isSubscriber: boolean
   /** Run one rewrite. Never throws; a failure comes back as `{ ok: false }`. */
   execute: (text: string, settings: WorkspaceSettings) => Promise<RunAttempt>
@@ -50,21 +65,8 @@ export interface RewriteRunner {
 
 export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean } = {}): RewriteRunner {
   const [progress, setProgress] = useState<BrowserBackendProgress | null>(null)
-  const trial = useProTrial({ subscriber })
-  // The server does not have to tell the page who is looking at it: the
-  // allowance endpoint answers `unlimited` for a paying subscriber, which keeps
-  // the marketing pages statically rendered on the CDN instead of becoming a
-  // per-request function invocation just to read a session cookie.
-  const isSubscriber = subscriber || trial.unlimited
-  /*
-    Depend on the claim function rather than on the handle.
-
-    `useProTrial` returns a fresh object every render, so a callback that
-    depended on the handle would get a new identity every render, and an effect
-    downstream that depended on THAT would re-run forever. `claim` is itself a
-    stable `useCallback`, so this keeps `execute` stable between renders.
-  */
-  const claim = trial.claim
+  const budget = useRewriteBudget({ subscriber })
+  const spend = budget.spend
 
   const execute = useCallback(
     async (text: string, settings: WorkspaceSettings): Promise<RunAttempt> => {
@@ -74,19 +76,34 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
       let engineId: EngineId = settings.engineId
       let downgraded: string | null = null
 
-      try {
-        if (engineId === 'pro') {
-          const granted = await claim()
-          if (!granted) {
-            engineId = 'standard'
-            downgraded =
-              'Your free Pro-engine run for this week is already used, so this rewrite ran on the Standard engine.'
+      // Charged before any work starts, so a rewrite that runs is always a
+      // rewrite that was paid for. A refusal is a hard stop with the reason,
+      // never a quietly smaller rewrite.
+      const cost = tokensIn(text)
+      if (!subscriber) {
+        if (!spend(cost)) {
+          const back = describeReset(budget.status?.resetsAt ?? null)
+          return {
+            ok: false,
+            message: `Your free rewriting allowance for this week is used up${
+              back ? `; it starts refilling ${back}` : ''
+            }. Checking your text stays free and unlimited in the meantime, and Pro removes the limit entirely.`,
           }
         }
+        if (engineId === 'pro') {
+          engineId = 'standard'
+          downgraded =
+            'The Pro engine is part of the Pro plan, so this rewrite ran on the Standard engine.'
+        }
+      }
 
+      try {
         if (engineId === 'pro') {
           try {
-            const { backend, model, device } = await createTransformersBrowserBackend({
+            // Awaited in full: the model is loaded and ready before a single
+            // passage is rewritten, so a result can never be presented as
+            // though it came from an engine that had not finished downloading.
+            const { backend, device } = await createTransformersBrowserBackend({
               tier: 'pro',
               onProgress: setProgress,
             })
@@ -96,6 +113,7 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
                 language: settings.language || undefined,
                 strength: settings.strength,
                 tier: 'pro',
+                excludedWords: settings.excludedWords,
               },
               backend,
               PUBLIC_DETECTION_KEYS,
@@ -108,8 +126,9 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
             return {
               ok: true,
               result: res,
-              engineUsed: `Pro engine · ${model.repo} on ${device === 'webgpu' ? 'WebGPU' : 'WASM (this device has no WebGPU)'}`,
+              engineUsed: 'Pro engine',
               downgraded,
+              tokensCharged: subscriber ? 0 : cost,
             }
           } catch (advancedErr) {
             // A real failure state: the local model genuinely could not load (no
@@ -132,7 +151,8 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
             strength: settings.strength,
             // A subscriber gets the extended tell library on the Standard engine
             // too; that is part of what the subscription buys.
-            tier: isSubscriber ? 'pro' : 'free',
+            tier: subscriber ? 'pro' : 'free',
+            excludedWords: settings.excludedWords,
           },
           PUBLIC_DETECTION_KEYS,
         )
@@ -144,8 +164,9 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
         return {
           ok: true,
           result: res,
-          engineUsed: 'Standard engine · rule-based, no download',
+          engineUsed: 'Standard engine',
           downgraded,
+          tokensCharged: subscriber ? 0 : cost,
         }
       } catch (err) {
         Sentry.captureException(err, { tags: { feature: 'rewrite' } })
@@ -155,8 +176,8 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
         setProgress(null)
       }
     },
-    [claim, isSubscriber],
+    [budget.status?.resetsAt, spend, subscriber],
   )
 
-  return { progress, trial, isSubscriber, execute }
+  return { progress, budget, isSubscriber: subscriber, execute }
 }

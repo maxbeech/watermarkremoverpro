@@ -2767,6 +2767,7 @@ var init_baselines = __esm({
 // src/lib/calibrate/patterns.ts
 var assemble = (...parts) => parts.join("");
 var DASH_CLAUSE_PATTERN = /\s[\u2014\u2013]\s/g;
+var EMOJI_PATTERN = /[\u{1F1E6}-\u{1F1FF}\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}](?:\u{FE0F}|\u{200D}[\u{1F300}-\u{1FAFF}])?/gu;
 var CORE_STOCK_PHRASES = {
   "delve into": ["look at", "examine", "go into"],
   "it is important to note that": ["note that", "worth noting:", ""],
@@ -2903,6 +2904,50 @@ var REGISTER_DOWNSHIFT = {
 };
 var REGISTER_DENSITY_THRESHOLD = 2;
 
+// src/lib/calibrate/excluded-terms.ts
+var EMPTY = { words: /* @__PURE__ */ new Set(), phrases: [] };
+function normalizeExcludedTerms(raw) {
+  if (!raw || raw.length === 0) return EMPTY;
+  const words = /* @__PURE__ */ new Set();
+  const phrases = [];
+  for (const entry of raw) {
+    const trimmed = entry.trim().toLowerCase();
+    if (!trimmed) continue;
+    if (/\s/.test(trimmed)) {
+      phrases.push(trimmed);
+    } else {
+      words.add(trimmed);
+    }
+  }
+  return { words, phrases };
+}
+function phraseRegex(phrase) {
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![\\w])${escaped}(?![\\w])`, "gi");
+}
+function excludedSpans(terms, text) {
+  if (terms.words.size === 0 && terms.phrases.length === 0) return [];
+  const spans = [];
+  for (const word of terms.words) {
+    const re = phraseRegex(word);
+    let match;
+    while ((match = re.exec(text)) !== null) {
+      spans.push([match.index, match.index + match[0].length]);
+    }
+  }
+  for (const phrase of terms.phrases) {
+    const re = phraseRegex(phrase);
+    let match;
+    while ((match = re.exec(text)) !== null) {
+      spans.push([match.index, match.index + match[0].length]);
+    }
+  }
+  return spans;
+}
+function overlapsAny(spans, start, end) {
+  return spans.some(([s, e]) => start < e && end > s);
+}
+
 // src/lib/calibrate/ai-tells.ts
 function shouldSwapDashes(strength) {
   return strength !== "preserve";
@@ -2910,8 +2955,9 @@ function shouldSwapDashes(strength) {
 function shouldSwapPhrases() {
   return true;
 }
-function swapDashes(text) {
+function swapDashes(text, excluded) {
   const changes = [];
+  const protectedSpans = excludedSpans(excluded, text);
   let useComma = true;
   let result = "";
   let lastEnd = 0;
@@ -2920,6 +2966,7 @@ function swapDashes(text) {
   while ((match = DASH_CLAUSE_PATTERN.exec(text)) !== null) {
     const start = match.index;
     const end = start + match[0].length;
+    if (overlapsAny(protectedSpans, start, end)) continue;
     const replacement = useComma ? ", " : ". ";
     useComma = !useComma;
     result += text.slice(lastEnd, start) + replacement;
@@ -2936,7 +2983,7 @@ function swapDashes(text) {
   result += text.slice(lastEnd);
   return { text: result, changes };
 }
-function swapStockPhrases(text, library) {
+function swapStockPhrases(text, library, excluded) {
   const changes = [];
   const usage = /* @__PURE__ */ new Map();
   const table = library === "extended" ? EXTENDED_STOCK_PHRASES : CORE_STOCK_PHRASES;
@@ -2945,34 +2992,39 @@ function swapStockPhrases(text, library) {
   for (const phrase of phrases) {
     const alternatives = table[phrase];
     const re = new RegExp(escapeRegExp(phrase), "gi");
+    const protectedSpans = excludedSpans(excluded, result);
     let match;
     let cursor = 0;
     let next = "";
     re.lastIndex = 0;
     while ((match = re.exec(result)) !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (overlapsAny(protectedSpans, start, end)) continue;
       const idx = usage.get(phrase) ?? 0;
       const replacement = alternatives[idx % alternatives.length];
       usage.set(phrase, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      next += result.slice(cursor, start) + applyCase(match[0], replacement);
       changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
+        start,
+        end,
         original: match[0],
         replacement,
         category: "phrase",
         note: `"${phrase}" is a stock transition/hedge disproportionately common in LLM output.`
       });
-      cursor = match.index + match[0].length;
+      cursor = end;
     }
     next += result.slice(cursor);
     result = next;
   }
   return { text: result, changes };
 }
-function vocabularyWordsToSwap(text, strength) {
+function vocabularyWordsToSwap(text, strength, excluded) {
   const swap = /* @__PURE__ */ new Set();
   if (strength === "preserve") return swap;
   for (const word of Object.keys(REGISTER_DOWNSHIFT)) {
+    if (excluded.words.has(word)) continue;
     const count = countWholeWord(text, word);
     if (count === 0) continue;
     if (strength === "balanced" && count < REGISTER_DENSITY_THRESHOLD) continue;
@@ -2980,8 +3032,8 @@ function vocabularyWordsToSwap(text, strength) {
   }
   return swap;
 }
-function swapElevatedVocabulary(text, strength) {
-  const targets = vocabularyWordsToSwap(text, strength);
+function swapElevatedVocabulary(text, strength, excluded) {
+  const targets = vocabularyWordsToSwap(text, strength, excluded);
   if (targets.size === 0) return { text, changes: [] };
   const changes = [];
   const usage = /* @__PURE__ */ new Map();
@@ -2989,28 +3041,66 @@ function swapElevatedVocabulary(text, strength) {
   for (const word of targets) {
     const alternatives = REGISTER_DOWNSHIFT[word];
     const re = new RegExp(`\\b${escapeRegExp(word)}\\b`, "gi");
+    const protectedSpans = excludedSpans(excluded, result);
     let match;
     let cursor = 0;
     let next = "";
     re.lastIndex = 0;
     while ((match = re.exec(result)) !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (overlapsAny(protectedSpans, start, end)) continue;
       const idx = usage.get(word) ?? 0;
       const replacement = alternatives[idx % alternatives.length];
       usage.set(word, idx + 1);
-      next += result.slice(cursor, match.index) + applyCase(match[0], replacement);
+      next += result.slice(cursor, start) + applyCase(match[0], replacement);
       changes.push({
-        start: match.index,
-        end: match.index + match[0].length,
+        start,
+        end,
         original: match[0],
         replacement,
         category: "vocabulary",
         note: `"${word}" appears at a rate characteristic of LLM-assisted prose. Swapped for a plainer equivalent that fits the same slot.`
       });
-      cursor = match.index + match[0].length;
+      cursor = end;
     }
     next += result.slice(cursor);
     result = next;
   }
+  return { text: result, changes };
+}
+var EMOJI_DENSITY_THRESHOLD = 2;
+function shouldStripEmoji(count, strength) {
+  if (strength === "preserve" || count === 0) return false;
+  if (strength === "balanced") return count >= EMOJI_DENSITY_THRESHOLD;
+  return true;
+}
+function stripEmoji(text, excluded, strength) {
+  const changes = [];
+  const totalCount = text.match(EMOJI_PATTERN)?.length ?? 0;
+  if (!shouldStripEmoji(totalCount, strength)) return { text, changes };
+  const protectedSpans = excludedSpans(excluded, text);
+  let result = "";
+  let lastEnd = 0;
+  EMOJI_PATTERN.lastIndex = 0;
+  let match;
+  while ((match = EMOJI_PATTERN.exec(text)) !== null) {
+    const start = match.index;
+    const end = start + match[0].length;
+    if (overlapsAny(protectedSpans, start, end)) continue;
+    result += text.slice(lastEnd, start);
+    changes.push({
+      start,
+      end,
+      original: match[0],
+      replacement: "",
+      category: "emoji",
+      note: "Emoji used as decoration, emphasis, or a bullet-point marker, a rate of use over-represented in LLM output relative to edited human prose."
+    });
+    lastEnd = end;
+  }
+  result += text.slice(lastEnd);
+  result = result.replace(/[ \t]{2,}/g, " ").replace(/^[ \t]+/gm, "");
   return { text: result, changes };
 }
 function countWholeWord(text, word) {
@@ -3063,9 +3153,11 @@ function countElevatedVocabulary(text) {
 }
 var PARALLELISM_WEIGHT = 2;
 var TRIADIC_WEIGHT = 1;
+var EMOJI_WEIGHT = 1;
 function measureStyleTells(text) {
   const flagged = flagStructures(text);
   const vocabulary = countElevatedVocabulary(text).reduce((sum, v) => sum + v.count, 0);
+  const emoji = text.match(EMOJI_PATTERN)?.length ?? 0;
   const weighted = flagged.reduce(
     (sum, f) => sum + (f.kind === "negative-parallelism" ? PARALLELISM_WEIGHT : TRIADIC_WEIGHT),
     0
@@ -3073,24 +3165,31 @@ function measureStyleTells(text) {
   return {
     structures: flagged.length,
     vocabulary,
-    pressure: weighted + Math.floor(vocabulary / 2)
+    emoji,
+    pressure: weighted + Math.floor(vocabulary / 2) + emoji * EMOJI_WEIGHT
   };
 }
-function applyDeterministicPass(text, strength = "balanced", library = "core") {
+function applyDeterministicPass(text, strength = "balanced", library = "core", excludedWords) {
   let current = text;
   const allChanges = [];
+  const excluded = normalizeExcludedTerms(excludedWords);
   if (shouldSwapPhrases()) {
-    const { text: swapped, changes } = swapStockPhrases(current, library);
+    const { text: swapped, changes } = swapStockPhrases(current, library, excluded);
     current = swapped;
     allChanges.push(...changes);
   }
   if (shouldSwapDashes(strength)) {
-    const { text: swapped, changes } = swapDashes(current);
+    const { text: swapped, changes } = swapDashes(current, excluded);
     current = swapped;
     allChanges.push(...changes);
   }
   {
-    const { text: swapped, changes } = swapElevatedVocabulary(current, strength);
+    const { text: stripped, changes } = stripEmoji(current, excluded, strength);
+    current = stripped;
+    allChanges.push(...changes);
+  }
+  {
+    const { text: swapped, changes } = swapElevatedVocabulary(current, strength, excluded);
     current = swapped;
     allChanges.push(...changes);
   }
@@ -3343,6 +3442,37 @@ function punctuationCounts(text) {
 // src/lib/detector/ai-likelihood.ts
 var MIN_WORDS_FOR_LIKELIHOOD = 60;
 var SUPPORTED = "en";
+var CONNECTIVE_ADVERBS = [
+  "notably",
+  "significantly",
+  "ultimately",
+  "importantly",
+  "essentially",
+  "particularly",
+  "especially",
+  "arguably",
+  "undoubtedly",
+  "invariably",
+  "fundamentally"
+];
+var DISCOURSE_OPENERS = /* @__PURE__ */ new Set([
+  "this",
+  "these",
+  "it",
+  "that",
+  "however",
+  "moreover",
+  "furthermore",
+  "additionally",
+  "overall",
+  "notably",
+  "meanwhile",
+  "consequently",
+  "therefore",
+  "thus",
+  "indeed"
+]);
+var OPENER_REPEAT_THRESHOLD = 3;
 function bandFor(score) {
   if (score >= 75) return "high";
   if (score >= 50) return "elevated";
@@ -3396,7 +3526,27 @@ function analyzeAiLikelihood(text, language) {
     const HUMAN_TYPICAL_CV = 0.55;
     uniformityContribution = Math.max(0, HUMAN_TYPICAL_CV - cv) * 40;
   }
-  const raw = dashContribution + structureContribution + vocabularyContribution + uniformityContribution;
+  let connectiveMatches = 0;
+  for (const word of CONNECTIVE_ADVERBS) {
+    const re = new RegExp(`\\b${word}\\b`, "gi");
+    connectiveMatches += text.match(re)?.length ?? 0;
+  }
+  const connectiveRate = per500(connectiveMatches);
+  const connectiveContribution = connectiveRate * 3;
+  let openerContribution = 0;
+  let openerRepeatRate = null;
+  if (lengths.length >= 6) {
+    const openers = sentences.map((s) => firstWord(s.text)).filter((w) => DISCOURSE_OPENERS.has(w));
+    const counts = /* @__PURE__ */ new Map();
+    for (const opener of openers) counts.set(opener, (counts.get(opener) ?? 0) + 1);
+    const repeatedCount = [...counts.values()].filter((c) => c >= OPENER_REPEAT_THRESHOLD).reduce((sum, c) => sum + c, 0);
+    openerRepeatRate = repeatedCount / lengths.length;
+    openerContribution = openerRepeatRate * 90;
+  }
+  const emojiCount = tells.emoji;
+  const emojiRate = per500(emojiCount);
+  const emojiContribution = emojiRate * 6;
+  const raw = dashContribution + structureContribution + vocabularyContribution + uniformityContribution + connectiveContribution + openerContribution + emojiContribution;
   const score = saturate(raw);
   const signals = [
     {
@@ -3430,6 +3580,30 @@ function analyzeAiLikelihood(text, language) {
       ratePer500: cv ?? 0,
       contribution: uniformityContribution,
       detail: cv === null ? "Too few sentences to measure rhythm." : `Coefficient of variation ${cv.toFixed(2)}; human prose is typically burstier than this.`
+    },
+    {
+      id: "connective-density",
+      label: 'Emphasis/connective adverbs ("notably", "ultimately", "arguably"...)',
+      count: connectiveMatches,
+      ratePer500: connectiveRate,
+      contribution: connectiveContribution,
+      detail: "Hedging and transition adverbs whose rate rises in LLM-assisted prose without any single use standing out as unusual English on its own."
+    },
+    {
+      id: "emoji-density",
+      label: "Emoji used as decoration or emphasis",
+      count: emojiCount,
+      ratePer500: emojiRate,
+      contribution: emojiContribution,
+      detail: "Checkmarks, rockets, sparkles and similar symbols used as bullet points or emphasis, a visual habit far more common in current model output than in edited human prose."
+    },
+    {
+      id: "opener-repetition",
+      label: "Repeated sentence openers",
+      count: lengths.length >= 6 ? Math.round((openerRepeatRate ?? 0) * lengths.length) : 0,
+      ratePer500: openerRepeatRate ?? 0,
+      contribution: openerContribution,
+      detail: openerRepeatRate === null ? "Too few sentences to measure how often openers repeat." : `${Math.round(openerRepeatRate * 100)}% of sentences open on a discourse marker ("this", "however"...) that opens ${OPENER_REPEAT_THRESHOLD} or more sentences here; human prose usually rotates these more.`
     }
   ];
   return {
@@ -3439,6 +3613,82 @@ function analyzeAiLikelihood(text, language) {
     signals,
     wordsScored: words
   };
+}
+function firstWord(text) {
+  const match = text.trim().match(/[A-Za-z']+/);
+  return match ? match[0].toLowerCase() : "";
+}
+
+// src/lib/detector/models.ts
+var DETECTOR_MODEL = {
+  repo: "onnx-community/roberta-base-openai-detector-ONNX",
+  // Verified reachable at pin time (2026-09-10) via the Hugging Face Hub API:
+  // RobertaForSequenceClassification, id2label {0: "Real", 1: "Fake"}, MIT license.
+  revision: "54895bd11f34b47a01369d25b2255224717409b8"
+};
+var DETECTOR_MODEL_LABELS = { ai: "Fake", human: "Real" };
+var DETECTOR_MODEL_LANGUAGES = ["en"];
+
+// src/lib/detector/ml-classifier.ts
+var MODEL_ID = `${DETECTOR_MODEL.repo}@${DETECTOR_MODEL.revision}`;
+async function loadTransformers() {
+  return import("@huggingface/transformers");
+}
+var classifierCache = /* @__PURE__ */ new Map();
+function keyFor(env) {
+  return `${MODEL_ID}:${env.device}`;
+}
+async function getClassifier(env) {
+  const key = keyFor(env);
+  let entry = classifierCache.get(key);
+  if (!entry) {
+    entry = (async () => {
+      const { pipeline, env: tjsEnv } = await loadTransformers();
+      if (env.cacheDir) tjsEnv.cacheDir = env.cacheDir;
+      return pipeline("text-classification", DETECTOR_MODEL.repo, {
+        revision: DETECTOR_MODEL.revision,
+        device: env.device,
+        // int8 is the quantization this repo explicitly publishes
+        // (onnx/model_int8.onnx), avoiding any dtype-to-filename ambiguity.
+        dtype: "int8",
+        progress_callback: env.onProgress
+      });
+    })();
+    classifierCache.set(key, entry);
+  }
+  return entry;
+}
+async function classifyText(text, env) {
+  const classifier = await getClassifier(env);
+  const output = await classifier(text, { top_k: null });
+  const scores = Array.isArray(output[0]) ? output[0] : output;
+  const aiScore = scores.find((s) => s.label === DETECTOR_MODEL_LABELS.ai)?.score ?? null;
+  const humanScore = scores.find((s) => s.label === DETECTOR_MODEL_LABELS.human)?.score ?? null;
+  const aiProbability = aiScore ?? (humanScore !== null ? 1 - humanScore : null);
+  return { aiProbability, label: (aiProbability ?? 0) >= 0.5 ? "ai" : "human" };
+}
+async function classifyDocument(text, language, env) {
+  if (!language || !DETECTOR_MODEL_LANGUAGES.includes(language)) {
+    return {
+      status: "unsupported_language",
+      aiProbability: null,
+      label: null,
+      modelId: MODEL_ID,
+      detail: `This model is trained on English text only. Document language: ${language ?? "undetermined"}.`
+    };
+  }
+  try {
+    const { aiProbability, label } = await classifyText(text, env);
+    return { status: "ok", aiProbability, label, modelId: MODEL_ID };
+  } catch (err) {
+    return {
+      status: "error",
+      aiProbability: null,
+      label: null,
+      modelId: MODEL_ID,
+      detail: err.message
+    };
+  }
 }
 
 // src/lib/detector/languages.ts
@@ -4552,7 +4802,8 @@ function statedLimits(keys) {
     "An absent mark is not proof of human authorship. Marks survive editing poorly, are not applied by every system, and cannot be detected at all without the key used to apply them.",
     vendorKeys.length === 0 ? "This deployment holds no detection key published by a model vendor. It tested only the keys listed in this report, so it cannot make any statement about marks applied by a vendor whose key is not public." : `Vendor-published keys held by this deployment: ${vendorKeys.map((k) => k.label).join(", ")}.`,
     "The watermark test operates on word pairs, not on a model\u2019s own subword vocabulary. A vendor\u2019s own detector has access to that vocabulary and can therefore reach a different conclusion on the same document.",
-    "The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced."
+    "The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced.",
+    "The model-backed classifier (mlClassifier) is trained primarily on English text from a broad set of generators. It only runs on English documents, and its confidence is lower on very short passages or on AI-written text that has been substantially edited afterward."
   ];
 }
 function analyzeDocument(text, options) {
@@ -4572,6 +4823,7 @@ function analyzeDocument(text, options) {
     watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
     distribution: null,
     aiLikelihood: null,
+    mlClassifier: null,
     passages: [],
     passageCorrection: null,
     limits
@@ -4692,6 +4944,7 @@ function analyzeDocument(text, options) {
     },
     distribution,
     aiLikelihood,
+    mlClassifier: null,
     passages,
     passageCorrection,
     limits
@@ -4723,7 +4976,22 @@ async function checkDocument(text, options) {
       baselines = {};
     }
   }
-  return analyzeDocument(text, { ...options, baselines });
+  const result = analyzeDocument(text, { ...options, baselines });
+  if (!options.includeModel || result.status !== "ok") return result;
+  if (!options.mlEnv) {
+    return {
+      ...result,
+      mlClassifier: {
+        status: "unavailable",
+        aiProbability: null,
+        label: null,
+        modelId: "",
+        detail: "includeModel was set but no mlEnv (runtime device) was provided."
+      }
+    };
+  }
+  const mlClassifier = await classifyDocument(text, result.language.code, options.mlEnv);
+  return { ...result, mlClassifier };
 }
 
 // mcp/hook-check.ts

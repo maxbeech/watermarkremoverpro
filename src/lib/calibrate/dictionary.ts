@@ -13,8 +13,15 @@ import type { LanguageCode } from '@/lib/detector/languages'
 /** In-memory cache of loaded dictionaries */
 const dictionaryCache = new Map<LanguageCode, SynonymDictionary>()
 
-/** Basic English synonym dictionary (extensible) */
-const EN_SYNONYMS: Record<string, string[]> = {
+/**
+ * Basic English synonym dictionary (extensible).
+ *
+ * Exported (not just used internally by `loadDictionary`) so the diff view's
+ * word-alternatives lookup (`src/lib/diff/word-alternatives.ts`) can offer the
+ * exact same variants the rule-based rewrite backend draws from, rather than
+ * a second, separately-maintained list that could drift from this one.
+ */
+export const EN_SYNONYMS: Record<string, string[]> = {
   // Deliberately excluded, second pass: the function words. Articles,
   // conjunctions and prepositions were listed here with "safe variants" and
   // none of them were safe, for the same reason the auxiliaries below are not.

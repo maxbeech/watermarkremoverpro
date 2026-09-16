@@ -9,7 +9,7 @@ import { PLANS, SITE } from '@/lib/site'
 export const metadata: Metadata = {
   title: 'AI Watermark Checker: check your writing for an AI provenance mark',
   description:
-    'Paste your own writing and get a calibrated confidence band, a per-passage breakdown and the stated limits. Free, no account, and the document never leaves your browser.',
+    'Paste your own writing and get a calibrated confidence band, a per-passage breakdown and the stated limits. Free, and the document never leaves your browser.',
   alternates: { canonical: '/check' },
 }
 
@@ -27,9 +27,9 @@ export default function CheckPage() {
     <>
       <JsonLd data={faqPageLd(CORE_FAQ)} />
       <PageHeader
-        eyebrow="Free · no account · nothing uploaded"
+        eyebrow="Free · nothing uploaded"
         title="Check your writing for an AI provenance mark"
-        lead={`Up to ${PLANS.anonymous.wordCap.toLocaleString()} words without an account. The engine downloads to your browser and your text is measured there, so there is nothing for us to store, log or hand to anyone.`}
+        lead={`Up to ${PLANS.anonymous.wordCap.toLocaleString()} words at a time. The engine downloads to your browser and your text is measured there, so there is nothing for us to store, log or hand to anyone.`}
       />
 
       <Section tight>

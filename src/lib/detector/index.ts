@@ -13,6 +13,7 @@
  */
 
 import { analyzeAiLikelihood, type AiLikelihoodResult } from './ai-likelihood'
+import { classifyDocument, type MlClassifierResult, type MlClassifierEnv } from './ml-classifier'
 import {
   analyzeDistribution,
   noBaselineResult,
@@ -89,6 +90,16 @@ export interface AnalysisResult {
    * and always shown with that distinction stated.
    */
   aiLikelihood: AiLikelihoodResult | null
+  /**
+   * The model-backed channel (see ./ml-classifier.ts): a real trained
+   * classifier, run on-device, distinct from the heuristic aiLikelihood
+   * channel above. Null on every result produced by the synchronous
+   * `analyzeDocument` (which never runs a model); populated by `checkDocument`
+   * only when the caller opts in with `includeModel: true` and supplies an
+   * `mlEnv`, since loading a real model is the one part of this engine that
+   * isn't instant, deterministic arithmetic.
+   */
+  mlClassifier: MlClassifierResult | null
   passages: PassageFinding[]
   passageCorrection: {
     method: 'benjamini-hochberg'
@@ -112,6 +123,17 @@ export interface AnalyzeOptions {
   fdr?: number
   /** Supply baselines explicitly (the browser bundle passes only what it loaded). */
   baselines?: Partial<Record<LanguageCode, Baseline>>
+  /**
+   * Also run the model-backed classifier (see ./ml-classifier.ts). Defaults
+   * to false: loading a real model is the one part of this engine that isn't
+   * instant, so every existing caller (tests, the rewrite orchestrator's
+   * internal re-check loop) keeps working unchanged unless it opts in.
+   * Ignored by the synchronous `analyzeDocument`, which never runs a model;
+   * only `checkDocument` reads it.
+   */
+  includeModel?: boolean
+  /** Required when includeModel is true: which runtime to run the model on. See MlClassifierEnv. */
+  mlEnv?: MlClassifierEnv
 }
 
 /** Significance threshold for calling a watermark result a detection. */
@@ -132,6 +154,7 @@ export function statedLimits(keys: DetectionKey[]): string[] {
       : `Vendor-published keys held by this deployment: ${vendorKeys.map((k) => k.label).join(', ')}.`,
     'The watermark test operates on word pairs, not on a model’s own subword vocabulary. A vendor’s own detector has access to that vocabulary and can therefore reach a different conclusion on the same document.',
     'The style measurement compares this document to contemporary reference prose in the same language. Distance from that reference reflects register, subject and translation, and is not evidence of how the document was produced.',
+    'The model-backed classifier (mlClassifier) is trained primarily on English text from a broad set of generators. It only runs on English documents, and its confidence is lower on very short passages or on AI-written text that has been substantially edited afterward.',
   ]
 }
 
@@ -153,6 +176,7 @@ export function analyzeDocument(text: string, options: AnalyzeOptions): Analysis
     watermark: { keysTested, results: [], anyDetected: false, coverageNotice: coverageNotice(options.keys) },
     distribution: null,
     aiLikelihood: null,
+    mlClassifier: null,
     passages: [],
     passageCorrection: null,
     limits,
@@ -297,6 +321,7 @@ export function analyzeDocument(text: string, options: AnalyzeOptions): Analysis
     },
     distribution,
     aiLikelihood,
+    mlClassifier: null,
     passages,
     passageCorrection,
     limits,
@@ -366,10 +391,29 @@ export async function checkDocument(
     }
   }
 
-  return analyzeDocument(text, { ...options, baselines })
+  const result = analyzeDocument(text, { ...options, baselines })
+  if (!options.includeModel || result.status !== 'ok') return result
+
+  if (!options.mlEnv) {
+    return {
+      ...result,
+      mlClassifier: {
+        status: 'unavailable',
+        aiProbability: null,
+        label: null,
+        modelId: '',
+        detail: 'includeModel was set but no mlEnv (runtime device) was provided.',
+      },
+    }
+  }
+
+  const mlClassifier = await classifyDocument(text, result.language.code, options.mlEnv)
+  return { ...result, mlClassifier }
 }
 
 export { MIN_TRIALS }
 export type { WatermarkChannelResult, DistributionalResult, Baseline, DetectionKey, KeyRegistryEntry }
 export { MIN_WORDS_FOR_LIKELIHOOD } from './ai-likelihood'
 export type { AiLikelihoodResult, AiLikelihoodSignal, AiLikelihoodBand } from './ai-likelihood'
+export type { MlClassifierResult, MlClassifierEnv, MlClassifierStatus, MlClassifierLabel } from './ml-classifier'
+export { DETECTOR_MODEL, DETECTOR_MODEL_LANGUAGES } from './models'

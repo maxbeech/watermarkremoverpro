@@ -2,10 +2,11 @@
 
 import type { AnalysisResult } from '@/lib/detector'
 import { ALPHA } from '@/lib/detector'
+import type { MlClassifierResult } from '@/lib/detector/ml-classifier'
 import { Band } from '@/components/brand/band'
 import { LimitNote } from '@/components/brand/ui'
 import { PassageBreakdown } from './passage-breakdown'
-import { KeyMeasure, MeasureHeader, Stat, Verdict, featureLabel, fmt } from './measures'
+import { KeyMeasure, MeasureHeader, MlClassifierPanel, Stat, Verdict, featureLabel, fmt } from './measures'
 
 /**
  * Rendering rules, which are product rules and not styling preferences:
@@ -20,7 +21,16 @@ import { KeyMeasure, MeasureHeader, Stat, Verdict, featureLabel, fmt } from './m
  * The measurement blocks come from ./measures, which the marketing site renders
  * too, so a visitor is shown the real thing before they run a check.
  */
-export function ResultView({ result }: { result: AnalysisResult }) {
+export function ResultView({
+  result,
+  mlClassifier = null,
+  mlClassifierLoading = false,
+}: {
+  result: AnalysisResult
+  /** The model-backed channel's result, resolved separately from `result` (see useMlClassifier). Falls back to result.mlClassifier when the caller does not track it separately. */
+  mlClassifier?: MlClassifierResult | null
+  mlClassifierLoading?: boolean
+}) {
   if (result.status !== 'ok') {
     return (
       <section className="rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 shadow-[var(--shadow-panel)]">
@@ -262,6 +272,9 @@ export function ResultView({ result }: { result: AnalysisResult }) {
           </div>
         </div>
       </section>
+
+      {/* ---------------------------------------------------------------- */}
+      <MlClassifierPanel result={mlClassifier ?? result.mlClassifier} loading={mlClassifierLoading} />
 
       {/* ---------------------------------------------------------------- */}
       <PassageBreakdown result={result} />

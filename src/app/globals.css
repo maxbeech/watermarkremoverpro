@@ -269,6 +269,17 @@ body {
   animation-play-state: paused;
 }
 
+/* The gauge's indeterminate sweep: a fixed arc rotating continuously while a
+   percentage isn't known yet. A spin rather than a fill, because a fill
+   implies a position on a 0-100 scale and there isn't one yet to show. */
+@keyframes mw-gauge-spin {
+  to { transform: rotate(360deg); }
+}
+.mw-gauge-spin {
+  animation: mw-gauge-spin 1.1s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

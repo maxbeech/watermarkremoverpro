@@ -33,7 +33,7 @@ export function softwareApplicationLd() {
     offers: [
       {
         '@type': 'Offer',
-        name: 'Free check, no signup',
+        name: 'Free AI-writing check',
         price: 0,
         priceCurrency: 'GBP',
         description: 'One document up to 1,500 words, analysed in the browser. The document is not uploaded.',

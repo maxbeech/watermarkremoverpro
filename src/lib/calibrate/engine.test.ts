@@ -93,6 +93,36 @@ describe('calibrateText', () => {
     }
   })
 
+  it('never substitutes a word on the excludedWords list', async () => {
+    // The same sample the repetition-mitigation test above already proves
+    // makes "the" a signature token eligible for substitution.
+    const text = SAMPLE_TEXT
+
+    const result = await calibrateText({
+      text,
+      language: 'en',
+      mode: 'apply',
+      config: { excludedWords: ['the'] },
+    })
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+
+    const theSubstitutions = result.substitutions.filter((s) => s.original.toLowerCase() === 'the')
+    // An 'excluded' entry is only ever recorded for a token that was a
+    // signature-token candidate for substitution in the first place, so its
+    // presence here is itself proof the exclusion intercepted a real
+    // candidate rather than a token that was never going to be touched.
+    expect(theSubstitutions.length).toBeGreaterThan(0)
+    for (const sub of theSubstitutions) {
+      expect(sub.reason).toBe('excluded')
+      expect(sub.replacement).toBe(sub.original)
+    }
+    // The applied text still reads "the" exactly as many times as the draft did.
+    expect(result.revised.text.toLowerCase().match(/\bthe\b/g)?.length).toBe(
+      text.toLowerCase().match(/\bthe\b/g)?.length,
+    )
+  })
+
   it('returns metrics with valid ranges', async () => {
     const result = await calibrateText({
       text: SAMPLE_TEXT,

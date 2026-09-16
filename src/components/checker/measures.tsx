@@ -1,7 +1,8 @@
 import type { AnalysisResult, WatermarkChannelResult } from '@/lib/detector'
 import type { PassageFinding } from '@/lib/detector'
+import type { MlClassifierResult } from '@/lib/detector/ml-classifier'
 import { Band } from '@/components/brand/band'
-import { Eyebrow } from '@/components/brand/ui'
+import { Eyebrow, LimitNote } from '@/components/brand/ui'
 
 /**
  * The presentational vocabulary for a measurement.
@@ -238,6 +239,105 @@ export function Verdict({ result }: { result: AnalysisResult }) {
             : 'The test could not run on this document.'}
       </p>
     </div>
+  )
+}
+
+/**
+ * The model-backed classifier channel: a real trained RoBERTa classifier, run
+ * on-device, distinct from the heuristic `aiLikelihood` channel above it. Its
+ * result arrives after the rest of the panel (loading a model is the one part
+ * of this engine that isn't instant), so this renders its own loading and
+ * unresolved states rather than assuming the caller already has a value.
+ */
+export function MlClassifierPanel({
+  result,
+  loading,
+}: {
+  result: MlClassifierResult | null
+  loading: boolean
+}) {
+  return (
+    <section className="overflow-hidden rounded-[var(--radius-panel)] border border-ink-200 bg-white shadow-[var(--shadow-panel)]">
+      <MeasureHeader
+        eyebrow="Channel four · model"
+        title="Model classifier"
+        note="A trained classifier, not a heuristic word count: scores this document the way a purpose-built AI detector would. A distinct signal from the AI-style likelihood channel above, not a replacement for the provenance mark."
+      />
+
+      <div className="px-5 py-5">
+        {loading && (
+          <p className="flex items-center gap-2.5 text-sm text-ink-600">
+            <span
+              aria-hidden="true"
+              className="inline-block h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-ink-200 border-t-ink-800"
+            />
+            Loading the classifier model into this tab. The first run downloads it; later runs are
+            instant.
+          </p>
+        )}
+
+        {!loading && result?.status === 'ok' && result.aiProbability !== null && (
+          <>
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+              <Stat label="AI probability">
+                <span
+                  className={
+                    'figure text-3xl leading-none ' +
+                    (result.label === 'ai' ? 'text-signal-700' : 'text-ink-900')
+                  }
+                >
+                  {fmtPct(result.aiProbability)}
+                </span>
+              </Stat>
+              <Stat label="Label">
+                <span className="text-base font-medium capitalize text-ink-800">{result.label}</span>
+              </Stat>
+            </div>
+
+            <div className="mt-6">
+              <Band
+                value={result.aiProbability * 100}
+                reference={0}
+                min={0}
+                max={100}
+                tone={result.label === 'ai' ? 'signal' : 'seal'}
+                height={12}
+                animate
+                title={`Model classifier ${fmtPct(result.aiProbability)} probability of AI authorship`}
+              />
+              <div className="mt-2 flex items-baseline justify-between">
+                <span className="t-eyebrow text-ink-400">0% · human</span>
+                <span className="t-eyebrow text-ink-400">100% · AI</span>
+              </div>
+            </div>
+
+          </>
+        )}
+
+        {!loading && result && result.status !== 'ok' && (
+          <p className="text-sm text-ink-600">
+            {result.detail ??
+              (result.status === 'unsupported_language'
+                ? 'This model is trained on English text only.'
+                : 'No model score was produced.')}
+          </p>
+        )}
+
+        {!loading && !result && (
+          <p className="text-sm text-ink-600">No model score was produced.</p>
+        )}
+
+        <div className="mt-5">
+          <LimitNote>
+            English text only. It was trained to separate one generator&apos;s output from human
+            writing rather than on a broad set of current generators, so it can be less reliable on
+            text from other or newer ones. Confidence is lower on very short passages, and on
+            AI-written text that has been substantially edited afterward. Never a substitute for the
+            provenance-mark channel above.
+          </LimitNote>
+        </div>
+      </div>
+    </section>
   )
 }
 
