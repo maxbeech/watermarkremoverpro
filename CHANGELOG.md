@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-09-18 - NeverPrompted goes live as its own product, not a preview
+
+`neverprompted-launch` merged into `main`: NeverPrompted is now a fully
+provisioned second brand on the same codebase, not a code-complete-but-unpaid
+placeholder. Its own commissioned logo and blue-to-green palette (sourced
+from the founder's own artwork) replace the earlier plan to ship it
+unbranded, and every piece of third-party infrastructure it needs to take
+money and send mail is now real:
+
+- A dedicated Stripe account (`acct_1UH8KiLz7fIwmclL`), its own Product/Price
+  (GBP 19/month) and its own webhook endpoint, verified end to end by
+  reaching a real `checkout.stripe.com` session with the correct price and
+  branding — stopping short of entering card details, the same bar this
+  product has always held its own billing to.
+- A dedicated ThreadCamp account and a fully DKIM/SPF/MX/DMARC-verified
+  `neverprompted.com` sending domain, with `hello@neverprompted.com` sending
+  transactional mail. Caught and fixed along the way: the inbox's default
+  `approve-first` autonomy would have silently held every password-reset and
+  verification email for manual approval rather than sending it, which is
+  now `auto`.
+- A dedicated GA4 property wired in for its own analytics, separate from
+  WatermarkRemoverPro's.
+- Its own Neon Postgres database. Caught and fixed along the way: a fresh
+  Marketplace-provisioned database has no schema of its own — sign-up was
+  failing with `relation "user" does not exist` until `scripts/db-push.ts`
+  was run against it.
+
+WatermarkRemoverPro's own production deployment is unaffected by any of
+this: it shares the merged codebase but none of the new brand's
+infrastructure, and its own redeploy from this merge was verified live
+afterwards (homepage, pricing, favicon all unchanged).
+
 ## 2026-09-10 (later still) - the workspace stops reading like a lab report
 
 Six things, all of them the same complaint from different angles: the app at
