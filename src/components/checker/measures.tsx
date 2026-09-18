@@ -7,8 +7,8 @@ import { Eyebrow, LimitNote } from '@/components/brand/ui'
 /**
  * The presentational vocabulary for a measurement.
  *
- * These components are the single source of truth for how a WatermarkRemoverPro figure
- * looks, and they are used by BOTH the real result view in the app and the
+ * These components are the single source of truth for how a figure this
+ * product reports looks, and they are used by BOTH the real result view in the app and the
  * specimen exhibits on the marketing site. That is deliberate: it makes it
  * impossible to show a visitor a marketing screenshot that the product cannot
  * actually produce, because the marketing screenshot IS the product's own

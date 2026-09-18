@@ -1,11 +1,13 @@
+import { SITE } from '@/lib/site'
+
 /**
  * ThreadCamp: this product's transactional email.
  *
- * WatermarkRemoverPro sends through ThreadCamp (threadcamp.com), a
- * Resend-compatible email API for AI agents that we own. It has its own
- * ThreadCamp account and its own inbox on its own verified domain
- * (hello@watermarkremoverpro.com), not the shared relay.threadcamp.com
- * address it started on; see CHANGELOG.md.
+ * This product sends through ThreadCamp (threadcamp.com), a
+ * Resend-compatible email API for AI agents that we own. Each brand has its
+ * own ThreadCamp account and its own inbox on its own verified domain
+ * (hello@watermarkremoverpro.com / hello@neverprompted.com), not the shared
+ * relay.threadcamp.com address it started on; see CHANGELOG.md.
  *
  * NO SILENT SUCCESS. An unconfigured product returns
  * `{ sent: false, reason: "not_configured" }` and a failed send returns
@@ -43,7 +45,7 @@ export function mailConfig(): MailConfig {
     apiUrl: (process.env.THREADCAMP_API_URL || DEFAULT_API_URL).replace(/\/+$/, ''),
     apiKey: process.env.THREADCAMP_API_KEY?.trim() || null,
     fromAddress: process.env.THREADCAMP_FROM_ADDRESS?.trim() || null,
-    fromName: process.env.THREADCAMP_FROM_NAME?.trim() || 'WatermarkRemoverPro',
+    fromName: process.env.THREADCAMP_FROM_NAME?.trim() || SITE.name,
   }
 }
 

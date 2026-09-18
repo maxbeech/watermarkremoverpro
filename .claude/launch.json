@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3540
+    },
+    {
+      "name": "neverprompted-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev:neverprompted"],
+      "port": 3541
     }
   ]
 }

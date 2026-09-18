@@ -2,6 +2,7 @@ import type { AnalysisResult } from '@/lib/detector'
 import { KeyMeasure, PassageRow, Verdict, featureLabel, fmt } from '@/components/checker/measures'
 import { Band } from '@/components/brand/band'
 import { Eyebrow } from '@/components/brand/ui'
+import { SITE } from '@/lib/site'
 
 /**
  * A product screen, framed.
@@ -12,7 +13,7 @@ import { Eyebrow } from '@/components/brand/ui'
  * decorative panel, and the URL in the chrome is the route that would produce it.
  */
 export function ExhibitFrame({
-  url = 'watermarkremoverpro.com/check',
+  url = `${SITE.url.replace(/^https?:\/\//, '')}/check`,
   caption,
   children,
   className = '',

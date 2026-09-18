@@ -117,6 +117,33 @@
   --shadow-exhibit: 0 2px 6px rgba(20, 20, 23, 0.04), 0 20px 48px -20px rgba(20, 20, 23, 0.18);
 }
 
+/*
+  NeverPrompted's own palette, sourced from its commissioned mark: the same
+  blue-to-green gradient the mark is drawn in, replacing WatermarkRemoverPro's
+  pure blue. Scoped to `[data-brand]` on `<html>` (set from BRAND_ID in
+  layout.tsx) rather than forked into a second theme file, because every
+  other token (ink, signal, and the pastel set) is shared and unaffected:
+  only the interactive/positive colours a visitor learns to associate with
+  the brand mark change.
+*/
+:root[data-brand='neverprompted'] {
+  --color-seal-50: #f0f8ff;
+  --color-seal-100: #dff0ff;
+  --color-seal-200: #bcdfff;
+  --color-seal-300: #8ec8ff;
+  --color-seal-400: #53acff;
+  --color-seal-500: #2194ff;
+  --color-seal-600: #0a7eea;
+  --color-seal-700: #0765bc;
+  --color-seal-800: #0a5092;
+  --color-seal-900: #093a67;
+
+  --color-mint-100: #d7fef4;
+  --color-mint-200: #b1fbe9;
+  --color-mint-500: #1eb892;
+  --color-mint-700: #0d775d;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;

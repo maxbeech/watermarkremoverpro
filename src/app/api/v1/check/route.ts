@@ -8,6 +8,7 @@ import { billableUnits, checkAllowance, recordUsage, unitsToPence } from '@/lib/
 import { countWords } from '@/lib/detector/tokenize'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import { configFromEnv, trackEvent } from '@/lib/openhelm-analytics-mp'
+import { SITE } from '@/lib/site'
 
 export const runtime = 'nodejs'
 
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'unauthorized',
-        message: 'Provide a WatermarkRemoverPro API key as "Authorization: Bearer mw_live_...".',
+        message: `Provide a ${SITE.name} API key as "Authorization: Bearer mw_live_...".`,
         documentation: '/docs/api',
       },
       { status: 401 },
@@ -157,7 +158,7 @@ export async function POST(request: Request) {
     {
       status: 200,
       headers: {
-        'X-WatermarkRemoverPro-Billable-Units': String(units),
+        'X-Billable-Units': String(units),
         'Cache-Control': 'no-store',
       },
     },

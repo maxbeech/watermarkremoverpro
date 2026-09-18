@@ -347,9 +347,16 @@ describe('constraint: the mirror-product pointer ships on every page', () => {
   })
 
   it('explains the split in its own homepage section rather than only in the footer', () => {
-    const home = read(join(ROOT, 'src/app/(site)/page.tsx'))
-    expect(home).toContain('MIRROR_PRODUCT')
-    expect(home.toLowerCase()).toMatch(/someone else/)
+    // page.tsx itself is just a brand switch (src/lib/site.ts); each brand's
+    // own homepage component carries the actual section.
+    for (const file of [
+      'src/components/marketing/homepage-watermarkremoverpro.tsx',
+      'src/components/marketing/homepage-neverprompted.tsx',
+    ]) {
+      const home = read(join(ROOT, file))
+      expect(home, file).toContain('MIRROR_PRODUCT')
+      expect(home.toLowerCase(), file).toMatch(/someone else/)
+    }
   })
 
   it('ships in the workspace too, which has its own chrome and not the site footer', () => {

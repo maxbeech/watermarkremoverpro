@@ -5,8 +5,7 @@ import { SITE, PLANS } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Terms of service',
-  description:
-    'The terms for using WatermarkRemoverPro: what the free and Pro plans include, what the service can and cannot promise about detection and rewriting, and how billing, cancellation and liability work.',
+  description: `The terms for using ${SITE.name}: what the free and Pro plans include, what the service can and cannot promise about detection and rewriting, and how billing, cancellation and liability work.`,
   alternates: { canonical: '/terms' },
 }
 

@@ -6,6 +6,7 @@ import type { Strength } from '@/lib/rewrite'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/detector/languages'
 import { splitExcludedWordsInput } from '@/lib/calibrate/excluded-terms'
 import { ENGINES, STRENGTH_OPTIONS, engine, type EngineId } from './settings'
+import { SITE } from '@/lib/site'
 
 export interface WorkspaceSettings {
   language: string
@@ -188,7 +189,7 @@ export function AdvancedSettings({
               value={settings.excludedWords.join('\n')}
               onChange={(e) => set('excludedWords', splitExcludedWordsInput(e.target.value))}
               disabled={disabled}
-              placeholder={'e.g. WatermarkRemoverPro\non-device AI detector'}
+              placeholder={`e.g. ${SITE.name}\non-device AI detector`}
               className="mt-2 block w-full rounded-[var(--radius-control)] border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 transition-colors hover:border-ink-300 disabled:opacity-60"
             />
           </div>

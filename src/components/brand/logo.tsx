@@ -1,15 +1,24 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import logoMark from '../../../public/brand/mark.png'
-import logoLockup from '../../../public/brand/lockup.png'
-import { SITE } from '@/lib/site'
+import wrpMark from '../../../public/brand/watermarkremoverpro/mark.png'
+import wrpLockup from '../../../public/brand/watermarkremoverpro/lockup.png'
+import npMark from '../../../public/brand/neverprompted/mark.png'
+import npLockup from '../../../public/brand/neverprompted/lockup.png'
+import { SITE, BRAND_ID, type BrandId } from '@/lib/site'
 
 /**
  * The logo, in one place.
  *
- * Both files are imported as static assets so Next.js can emit an immutable,
- * content-hashed URL with intrinsic dimensions attached: no layout shift, and
- * no second copy of the width/height numbers to keep in sync by hand.
+ * `public/brand/<brand>/{mark,lockup}.png` are each brand's own commissioned
+ * artwork, generated from the masters in `public/` by `npm run logos` (see
+ * scripts/build-logos.ts). Both brands' assets are bundled into every build;
+ * only the active `BRAND_ID` decides which pair actually renders, so there is
+ * one code path rather than a per-brand branch to keep in sync.
+ *
+ * Both image files are imported as static assets so Next.js can emit an
+ * immutable, content-hashed URL with intrinsic dimensions attached: no layout
+ * shift, and no second copy of the width/height numbers to keep in sync by
+ * hand.
  *
  * `unoptimized` is deliberate. These are web-sized derivatives already (see
  * scripts/build-logos.ts), so routing them through the image optimiser would
@@ -21,6 +30,11 @@ import { SITE } from '@/lib/site'
  * footer use. `variant="mark"` is the square-ish mark on its own, for places
  * too narrow for the wordmark.
  */
+const LOGOS: Record<BrandId, { mark: typeof wrpMark; lockup: typeof wrpLockup }> = {
+  watermarkremoverpro: { mark: wrpMark, lockup: wrpLockup },
+  neverprompted: { mark: npMark, lockup: npLockup },
+}
+
 export function Logo({
   variant = 'lockup',
   height = 28,
@@ -32,7 +46,7 @@ export function Logo({
   className?: string
   priority?: boolean
 }) {
-  const source = variant === 'lockup' ? logoLockup : logoMark
+  const source = variant === 'lockup' ? LOGOS[BRAND_ID].lockup : LOGOS[BRAND_ID].mark
   const width = Math.round((source.width / source.height) * height)
   return (
     <Image

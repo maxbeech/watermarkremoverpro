@@ -2,10 +2,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ForgotPasswordForm } from '@/components/reset-password-forms'
 import { AuthShell } from '@/components/auth-shell'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Reset your password',
-  description: 'Request a password reset link for your WatermarkRemoverPro account.',
+  description: `Request a password reset link for your ${SITE.name} account.`,
   alternates: { canonical: '/forgot-password' },
 }
 

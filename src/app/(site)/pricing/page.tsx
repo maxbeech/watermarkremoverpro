@@ -113,7 +113,6 @@ export default async function PricingPage() {
 
           <Reveal>
             <ExhibitFrame
-              url="watermarkremoverpro.com/check"
               tilt
               caption="A real analysis of a specimen paragraph carrying a mark under the open reference key this product publishes."
             >

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { PageHeader, Section, Wrap, Panel } from '@/components/brand/ui'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Documentation',
-  description:
-    'WatermarkRemoverPro documentation for machines: the JSON API and the MCP server, both running the same detection engine the browser does.',
+  description: `${SITE.name} documentation for machines: the JSON API and the MCP server, both running the same detection engine the browser does.`,
   alternates: { canonical: '/docs' },
 }
 

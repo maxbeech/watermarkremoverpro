@@ -9,6 +9,7 @@ import { billableUnits, checkAllowance, recordUsage } from '@/lib/metering'
 import { countWords } from '@/lib/detector/tokenize'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import type { AnalysisResult } from '@/lib/detector'
+import { SITE } from '@/lib/site'
 
 export const runtime = 'nodejs'
 
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: 'unauthorized',
-        message: 'Sign in, or present a WatermarkRemoverPro API key as "Authorization: Bearer mw_live_...".',
+        message: `Sign in, or present a ${SITE.name} API key as "Authorization: Bearer mw_live_...".`,
       },
       { status: 401 },
     )
@@ -136,7 +137,7 @@ export async function POST(request: Request) {
     headers: {
       'content-type': 'application/pdf',
       'content-disposition': `attachment; filename="watermarkremoverpro-evidence-${result.documentHash.slice(0, 12)}.pdf"`,
-      'X-WatermarkRemoverPro-Billable-Units': String(billableUnits(result.words)),
+      'X-Billable-Units': String(billableUnits(result.words)),
       'Cache-Control': 'no-store',
     },
   })

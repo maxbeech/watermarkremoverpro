@@ -2,10 +2,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { AuthForm } from '@/components/auth-form'
 import { AuthShell } from '@/components/auth-shell'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Create an account',
-  description: 'A free WatermarkRemoverPro account raises the per-document limit, unlocks every supported language, and saves your check history.',
+  description: `A free ${SITE.name} account raises the per-document limit, unlocks every supported language, and saves your check history.`,
   alternates: { canonical: '/signup' },
 }
 

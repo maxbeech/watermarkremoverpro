@@ -1,6 +1,9 @@
-import { BLOG_POSTS_A } from './blog-posts-a'
-import { BLOG_POSTS_B } from './blog-posts-b'
-import { BLOG_POSTS_C } from './blog-posts-c'
+import { BRAND_ID } from '@/lib/site'
+import type { BlogPost } from './blog-types'
+import { BLOG_POSTS_A as WRP_POSTS_A } from './watermarkremoverpro/blog-posts-a'
+import { BLOG_POSTS_B as WRP_POSTS_B } from './watermarkremoverpro/blog-posts-b'
+import { BLOG_POSTS_C as WRP_POSTS_C } from './watermarkremoverpro/blog-posts-c'
+import { BLOG_POSTS as NEVERPROMPTED_POSTS } from './neverprompted/blog-posts'
 
 export type {
   BlogCategory,
@@ -17,12 +20,20 @@ export type {
 } from './blog-types'
 
 /**
- * The blog's content source, assembled from three data files the same way
- * `pages.ts` is the single source for the pSEO pages. One post is one object;
- * the renderer in `blog-post-view.tsx` is the only thing that decides how it
- * gets drawn.
+ * The blog's content source, assembled per brand the same way `pages.ts` is
+ * the single source for the pSEO pages. One post is one object; the renderer
+ * in `blog-post-view.tsx` is the only thing that decides how it gets drawn.
+ *
+ * BRAND_ID is resolved once at build time (see src/lib/site.ts), so this
+ * picks one brand's posts and everything below never needs to know two
+ * brands exist.
  */
-export const BLOG_POSTS = [...BLOG_POSTS_A, ...BLOG_POSTS_B, ...BLOG_POSTS_C]
+const POSTS_BY_BRAND: Record<typeof BRAND_ID, BlogPost[]> = {
+  watermarkremoverpro: [...WRP_POSTS_A, ...WRP_POSTS_B, ...WRP_POSTS_C],
+  neverprompted: NEVERPROMPTED_POSTS,
+}
+
+export const BLOG_POSTS = POSTS_BY_BRAND[BRAND_ID]
 
 export const findPost = (slug: string) => BLOG_POSTS.find((p) => p.slug === slug)
 

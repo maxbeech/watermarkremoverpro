@@ -5,8 +5,7 @@ import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Privacy policy',
-  description:
-    'What WatermarkRemoverPro collects, what it never sees, and why: the free checker and the rewriter run entirely on your device, and everything server-side is scoped to what an account or a paid API call actually needs.',
+  description: `What ${SITE.name} collects, what it never sees, and why: the free checker and the rewriter run entirely on your device, and everything server-side is scoped to what an account or a paid API call actually needs.`,
   alternates: { canonical: '/privacy' },
 }
 

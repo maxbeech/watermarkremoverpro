@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import { ResetPasswordForm } from '@/components/reset-password-forms'
 import { AuthShell } from '@/components/auth-shell'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Set a new password',
-  description: 'Set a new password for your WatermarkRemoverPro account.',
+  description: `Set a new password for your ${SITE.name} account.`,
   alternates: { canonical: '/reset-password' },
   robots: { index: false, follow: false },
 }

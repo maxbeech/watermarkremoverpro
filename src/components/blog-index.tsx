@@ -3,8 +3,19 @@ import Image from 'next/image'
 import { PageHeader, Section, Wrap } from '@/components/brand/ui'
 import { BLOG_CATEGORIES, BLOG_POSTS, CATEGORY_TONE, categorySlug, type BlogPost } from '@/content/blog'
 import { readingMinutes } from '@/components/blog-post-view'
+import { SITE, BRAND_ID } from '@/lib/site'
 
 const CATEGORIES: (BlogPost['category'] | 'All')[] = ['All', ...BLOG_CATEGORIES]
+
+/**
+ * Genuinely brand-specific, not a name swap: WatermarkRemoverPro's blog leads
+ * with defending against an accusation, NeverPrompted's leads with sounding
+ * like yourself. See docs/neverprompted_launch_strategy.md, Part B1.
+ */
+const BLOG_LEAD =
+  BRAND_ID === 'neverprompted'
+    ? "News, guides and reviews for anyone whose own writing keeps reading as AI-generated, and wants it to sound like them again. Written by the team building the tool, and checked against what a rewrite can actually change."
+    : 'News, guides and reviews for anyone who has been accused of using AI, or who has to decide whether an accusation is fair. Written by the team building the tool, and checked against what a detector can actually prove.'
 
 function formatDate(iso: string): string {
   return new Date(`${iso}T09:00:00Z`).toLocaleDateString('en-GB', {
@@ -22,9 +33,13 @@ export function BlogIndex({ category }: { category?: BlogPost['category'] }) {
   return (
     <>
       <PageHeader
-        eyebrow="WatermarkRemoverPro Blog"
-        title="Provenance marks, false positives, and what actually holds up as evidence"
-        lead="News, guides and reviews for anyone who has been accused of using AI, or who has to decide whether an accusation is fair. Written by the team building the tool, and checked against what a detector can actually prove."
+        eyebrow={`${SITE.name} Blog`}
+        title={
+          BRAND_ID === 'neverprompted'
+            ? 'Sounding like yourself, false positives, and what actually changes a detector’s mind'
+            : 'Provenance marks, false positives, and what actually holds up as evidence'
+        }
+        lead={BLOG_LEAD}
       />
 
       <div className="border-b border-ink-200 bg-white py-5">

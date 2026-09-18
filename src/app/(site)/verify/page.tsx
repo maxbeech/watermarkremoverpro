@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { VerifyDemo } from './verify-demo'
 import { PageHeader } from '@/components/brand/ui'
 import { OPEN_REFERENCE_KEY } from '@/lib/detector/keys'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Verify the detector',
-  description:
-    'Mark a passage under the published reference key in your own browser and watch the WatermarkRemoverPro detector find it, then watch the same text score at chance under a different key.',
+  description: `Mark a passage under the published reference key in your own browser and watch the ${SITE.name} detector find it, then watch the same text score at chance under a different key.`,
   alternates: { canonical: '/verify' },
 }
 

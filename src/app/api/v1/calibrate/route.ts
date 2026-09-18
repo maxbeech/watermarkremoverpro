@@ -32,7 +32,7 @@ import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
 import { verifyApiKey, type VerifiedKey } from '@/lib/api-keys'
 import { databaseConfigured } from '@/lib/db'
 import { checkAllowance, recordUsage, billableUnits, unitsToPence } from '@/lib/metering'
-import { PLANS } from '@/lib/site'
+import { PLANS, SITE } from '@/lib/site'
 
 export const runtime = 'nodejs'
 
@@ -118,8 +118,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             error: 'unauthorized',
-            message:
-              'API key verification failed. Provide a valid WatermarkRemoverPro API key as "Authorization: Bearer mw_live_...".',
+            message: `API key verification failed. Provide a valid ${SITE.name} API key as "Authorization: Bearer mw_live_...".`,
           },
           { status: 401 },
         )
@@ -140,7 +139,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: 'request_too_large',
-          message: `Anonymous requests are capped at ${anonymousWordCap.toLocaleString()} words per call; this text is ${wordCount.toLocaleString()} words. Provide a WatermarkRemoverPro API key for a higher, metered limit.`,
+          message: `Anonymous requests are capped at ${anonymousWordCap.toLocaleString()} words per call; this text is ${wordCount.toLocaleString()} words. Provide a ${SITE.name} API key for a higher, metered limit.`,
           limit: anonymousWordCap,
         },
         { status: 413 },

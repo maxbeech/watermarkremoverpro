@@ -75,7 +75,7 @@ export default function ApiDocsPage() {
     "language": "en",
     "mode": "preview",
     "config": {
-      "excludedWords": ["WatermarkRemoverPro", "on-device AI detector"]
+      "excludedWords": ["${SITE.name}", "on-device AI detector"]
     }
   }'`}</Code>
         <p className="mt-3">

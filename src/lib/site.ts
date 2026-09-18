@@ -5,15 +5,71 @@ import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlemen
  * than one place: metadata, JSON-LD, llms.txt, the OpenAPI document and the
  * evidence report all read from here, so a change to the product's name or
  * pricing cannot end up half-applied.
+ *
+ * Two brands, one product. WatermarkRemoverPro and NeverPrompted are the same
+ * app, same detector, same rewrite engine, same pricing: only which door a
+ * visitor walked through differs. `NEXT_PUBLIC_BRAND` is a build-time choice
+ * (each brand is its own Vercel project), read once here rather than per
+ * request, so nothing below needs to know which brand it's serving.
  */
 
+export type BrandId = 'watermarkremoverpro' | 'neverprompted'
+
+interface Brand {
+  id: BrandId
+  name: string
+  tagline: string
+  description: string
+  /** Used if NEXT_PUBLIC_SITE_URL is unset for this deployment. */
+  defaultUrl: string
+  contactEmail: string
+  /** Canonical apex domain this brand's build redirects to www on (next.config.ts). */
+  domain: string
+}
+
+const BRANDS: Record<BrandId, Brand> = {
+  watermarkremoverpro: {
+    id: 'watermarkremoverpro',
+    name: 'WatermarkRemoverPro',
+    tagline: 'Reduce detectable AI-style evidence in your writing, on your device, honestly.',
+    description:
+      'WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
+    defaultUrl: 'https://www.watermarkremoverpro.com',
+    contactEmail: 'hello@watermarkremoverpro.com',
+    domain: 'watermarkremoverpro.com',
+  },
+  neverprompted: {
+    id: 'neverprompted',
+    name: 'NeverPrompted',
+    tagline: 'Make your writing sound like you again, on your device, honestly.',
+    description:
+      'NeverPrompted rewrites your own text on your device so it sounds like you again, fewer stock phrases and AI tells, and, where the technique allows it, checks for and reduces a statistical AI provenance mark too. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
+    defaultUrl: 'https://www.neverprompted.com',
+    contactEmail: 'hello@neverprompted.com',
+    domain: 'neverprompted.com',
+  },
+}
+
+function resolveBrand(): Brand {
+  const id = (process.env.NEXT_PUBLIC_BRAND?.trim() || 'watermarkremoverpro') as BrandId
+  const brand = BRANDS[id]
+  if (!brand) {
+    throw new Error(`NEXT_PUBLIC_BRAND="${id}" is not a known brand. Valid values: ${Object.keys(BRANDS).join(', ')}.`)
+  }
+  return brand
+}
+
+const ACTIVE_BRAND = resolveBrand()
+
+/** The active build's brand id. Only needed where identity itself matters (content selection, next.config.ts, asset selection); everything else should read SITE. */
+export const BRAND_ID: BrandId = ACTIVE_BRAND.id
+
 export const SITE = {
-  name: 'WatermarkRemoverPro',
-  tagline: 'Reduce detectable AI-style evidence in your writing, on your device, honestly.',
-  description:
-    'WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.watermarkremoverpro.com',
-  contactEmail: 'hello@watermarkremoverpro.com',
+  name: ACTIVE_BRAND.name,
+  tagline: ACTIVE_BRAND.tagline,
+  description: ACTIVE_BRAND.description,
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? ACTIVE_BRAND.defaultUrl,
+  contactEmail: ACTIVE_BRAND.contactEmail,
 } as const
 
 /**

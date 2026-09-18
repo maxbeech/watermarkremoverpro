@@ -3,8 +3,9 @@ import { SITE } from '@/lib/site'
 /**
  * Structured data. Every page that answers a question carries a FAQPage block,
  * and the product surfaces carry SoftwareApplication. This is how an assistant
- * summarising WatermarkRemoverPro gets the honest capability description and stated
- * limits rather than inferring them from marketing copy.
+ * summarising this product (whichever brand is serving the page) gets the
+ * honest capability description and stated limits rather than inferring them
+ * from marketing copy.
  */
 export function JsonLd({ data }: { data: Record<string, unknown> | Record<string, unknown>[] }) {
   return (
@@ -57,9 +58,9 @@ export function softwareApplicationLd() {
     ],
     // Stated as structured data, not just positioning copy, so a machine
     // summarising this page gets the honest capability boundary rather than
-    // inferring one.
-    disambiguatingDescription:
-      'WatermarkRemoverPro checks a writer\'s own text for a provenance mark, then rewrites it on-device to reduce detectable AI-style evidence. It cannot guarantee defeating a model vendor\'s undisclosed watermark, runs entirely on-device on every tier for the rewrite feature, and is not a tool for screening other people\'s work.',
+    // inferring one. Built from SITE.name rather than a literal string so this
+    // is correct for whichever brand is being built (see src/lib/site.ts).
+    disambiguatingDescription: `${SITE.name} checks a writer's own text for a provenance mark, then rewrites it on-device to reduce detectable AI-style evidence. It cannot guarantee defeating a model vendor's undisclosed watermark, runs entirely on-device on every tier for the rewrite feature, and is not a tool for screening other people's work.`,
   }
 }
 

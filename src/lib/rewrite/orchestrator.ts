@@ -25,11 +25,12 @@ import { candidateCount, minSimilarity, targetPassages, MAX_ROUNDS } from './tar
 import { scoreCandidates, pickBest } from './scoring'
 import { lexicalShiftPercent } from './lexical-shift'
 import type { PassageRewrite, RewriteRequest, RewriteResult } from './types'
+import { SITE } from '@/lib/site'
 
 export const REWRITE_LIMITS: string[] = [
   'This reduces detectable AI-style evidence. It cannot guarantee defeating a model vendor\'s undisclosed watermark. No tool can, since nobody outside that vendor holds the key it was applied with.',
   'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
-  'The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro\'s own check, tested against the keys this deployment holds, not a specific vendor\'s undisclosed detector.',
+  `The evidence scores shown use the same detector arithmetic as ${SITE.name}'s own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.`,
   'All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.',
   '"Balanced" also lightly varies a bounded sample of passages that showed no detectable signal at all, as a hedge against a watermark scheme this deployment cannot test for. "Preserve" never does this; "aggressive" and "regenerate" already vary most or all passages regardless of signal.',
 ]

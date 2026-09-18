@@ -5,11 +5,11 @@ import { PUBLIC_DETECTION_KEYS } from '@/lib/detector/public-keys'
 import { JsonLd, faqPageLd } from '@/components/json-ld'
 import { PageHeader } from '@/components/brand/ui'
 import { Faq } from '@/components/faq'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Stated limits',
-  description:
-    'What a WatermarkRemoverPro result cannot tell you: why a detected mark is not proof of authorship, why an absent mark is not proof of human authorship, and what the keyed construction means for any null result.',
+  description: `What a ${SITE.name} result cannot tell you: why a detected mark is not proof of authorship, why an absent mark is not proof of human authorship, and what the keyed construction means for any null result.`,
   alternates: { canonical: '/limits' },
 }
 
@@ -37,7 +37,7 @@ export default function LimitsPage() {
       <PageHeader
         eyebrow="Attached to every result"
         title="Stated limits"
-        lead="These are attached to every result WatermarkRemoverPro produces, in every channel, and printed in full on every exported report. They are the output, not commentary on it."
+        lead={`These are attached to every result ${SITE.name} produces, in every channel, and printed in full on every exported report. They are the output, not commentary on it.`}
       />
       <article className="mx-auto max-w-3xl px-5 pt-12">
 
@@ -60,7 +60,7 @@ export default function LimitsPage() {
             person simply wrote it.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
-            That asymmetry is unavoidable and it is why WatermarkRemoverPro never says “cleared”. What it can
+            That asymmetry is unavoidable and it is why {SITE.name} never says “cleared”. What it can
             give you is a documented, dated, hash-anchored record of a specific test on a specific
             file, with the method named, which is a great deal more than an unexplained percentage,
             and considerably more durable than a claim that overstates itself.
@@ -77,7 +77,7 @@ export default function LimitsPage() {
             specific check.
           </p>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-600">
-            Send your document to a WatermarkRemoverPro-operated server while rewriting it. Not on the free
+            Send your document to a {SITE.name}-operated server while rewriting it. Not on the free
             tier, not on Pro, not through the MCP server, not through the published package/CLI, and
             not later: there is no REST endpoint for rewriting, by design. Checking has an opt-in
             hosted mode for API/MCP callers; rewriting gets no exception to the on-device guarantee,

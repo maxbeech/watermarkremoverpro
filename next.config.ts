@@ -1,5 +1,17 @@
 import type { NextConfig } from 'next'
 
+/**
+ * Deliberately not imported from src/lib/site.ts: this file is loaded outside
+ * the app's normal module resolution, before the bundler is up, so it keeps
+ * its own tiny brand->domain map rather than pulling in that module's chain.
+ * Brand ids and their domains must still match src/lib/site.ts's BRAND_DOMAINS.
+ */
+const BRAND_DOMAINS: Record<string, string> = {
+  watermarkremoverpro: 'watermarkremoverpro.com',
+  neverprompted: 'neverprompted.com',
+}
+const activeDomain = BRAND_DOMAINS[process.env.NEXT_PUBLIC_BRAND?.trim() || 'watermarkremoverpro']
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
@@ -27,12 +39,17 @@ const nextConfig: NextConfig = {
   // but www is canonical (matches SITE.url, which Better Auth, Stripe checkout
   // and every page's metadata read from). 308 preserves the request method, so
   // this also covers the Stripe webhook POST if it's ever hit on the apex.
+  //
+  // Each brand is built and deployed as its own Vercel project, so this file
+  // only ever sees one brand's domain per build (NEXT_PUBLIC_BRAND): it does
+  // not need to redirect both brands' apex domains in one deployment.
   async redirects() {
+    if (!activeDomain) return []
     return [
       {
         source: '/:path*',
-        has: [{ type: 'host', value: 'watermarkremoverpro.com' }],
-        destination: 'https://www.watermarkremoverpro.com/:path*',
+        has: [{ type: 'host', value: activeDomain }],
+        destination: `https://www.${activeDomain}/:path*`,
         permanent: true,
       },
     ]

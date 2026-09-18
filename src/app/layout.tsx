@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { SITE } from '@/lib/site'
+import { BRAND_ID, SITE } from '@/lib/site'
 import './globals.css'
 import { OpenHelmAnalytics } from '../lib/openhelm-analytics'
 
@@ -40,10 +40,13 @@ const jetbrains = JetBrains_Mono({
 
 /*
   No `icons` block. The tab icon, the Android icon and the Apple touch icon are
-  favicon.ico, icon.png and apple-icon.png in this directory, generated from the
-  same brand mark the header and footer render by `npm run logos`, and picked up
-  by Next.js through its file conventions. Naming them here as well would be a
-  second place for the icon to be declared, and the one that quietly wins.
+  favicon.ico, icon.png and apple-icon.png in this directory, picked up by
+  Next.js through its file conventions. Each brand's own set is pre-rendered
+  by `npm run logos` into public/brand/<brand>/ and copied here for the active
+  brand by scripts/sync-brand-icons.mts (wired as `prebuild`/`predev:*`), so
+  they always match the mark the header and footer render. Naming them here
+  as well would be a second place for the icon to be declared, and the one
+  that quietly wins.
 */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -64,7 +67,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${jetbrains.variable}`}>
+    <html lang="en" data-brand={BRAND_ID} className={`${jakarta.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen antialiased">
         {children}
         <Analytics />

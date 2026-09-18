@@ -4,7 +4,11 @@
   "private": true,
   "description": "WatermarkRemoverPro: check your own writing for a statistical AI provenance mark, on your device.",
   "scripts": {
+    "predev": "tsx scripts/sync-brand-icons.mts",
     "dev": "next dev -p 3540",
+    "predev:neverprompted": "NEXT_PUBLIC_BRAND=neverprompted tsx scripts/sync-brand-icons.mts",
+    "dev:neverprompted": "NEXT_PUBLIC_BRAND=neverprompted NEXT_PUBLIC_SITE_URL=http://localhost:3541 next dev -p 3541",
+    "prebuild": "tsx scripts/sync-brand-icons.mts",
     "build": "next build",
     "start": "next start -p 3540",
     "lint": "eslint .",

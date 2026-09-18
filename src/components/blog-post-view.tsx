@@ -274,7 +274,7 @@ export function BlogPostView({ post }: { post: BlogPost }) {
                 <div className="grid gap-8 sm:grid-cols-2">
                   {post.internalLinks.length > 0 && (
                     <div>
-                      <p className="t-eyebrow text-ink-400">On WatermarkRemoverPro</p>
+                      <p className="t-eyebrow text-ink-400">On {SITE.name}</p>
                       <ul className="mt-3 space-y-2">
                         {post.internalLinks.map((l) => (
                           <li key={l.href}>
