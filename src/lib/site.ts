@@ -41,9 +41,9 @@ const BRANDS: Record<BrandId, Brand> = {
   neverprompted: {
     id: 'neverprompted',
     name: 'NeverPrompted',
-    tagline: 'Make your writing sound like you again, on your device, honestly.',
+    tagline: 'The free AI humanizer that helps your writing sound human again.',
     description:
-      'NeverPrompted rewrites your own text on your device so it sounds like you again, fewer stock phrases and AI tells, and, where the technique allows it, checks for and reduces a statistical AI provenance mark too. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
+      'NeverPrompted is a free AI humanizer: paste in a draft that reads like it came out of a prompt box, and get back a version with the stock phrasing, hedging and flat rhythm gone, so it sounds like you wrote it. It also checks for a statistical AI watermark and reduces it where the technique allows. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.',
     defaultUrl: 'https://www.neverprompted.com',
     contactEmail: 'hello@neverprompted.com',
     domain: 'neverprompted.com',

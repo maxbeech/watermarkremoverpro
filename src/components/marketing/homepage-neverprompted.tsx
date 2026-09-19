@@ -31,12 +31,14 @@ export function NeverPromptedHome({
       <div className="paper wash border-b border-ink-200">
         <Wrap wide className="pt-14 pb-16 sm:pt-20">
           <div className="mx-auto max-w-3xl text-center">
-            <Eyebrow>Free · nothing leaves this tab</Eyebrow>
-            <h1 className="t-display mt-6 text-ink-900">Get your own voice back.</h1>
+            <Eyebrow>Free AI humanizer · nothing leaves this tab</Eyebrow>
+            <h1 className="t-display mt-6 text-ink-900">Make your writing sound human again.</h1>
             <p className="t-lead mx-auto mt-5 max-w-2xl text-ink-600">
               Paste in a draft that reads like it came out of a prompt box, and {SITE.name} hands
-              you back a version that sounds like you again, plus a plain comparison of what
-              changed and why. It happens right here, in this browser tab, on this device.
+              you back a version with the stock phrasing, the hedging and the flat, even rhythm
+              gone, so it sounds like you wrote it. If the text also carries a statistical AI
+              watermark, the same pass checks for that and reduces it too, wherever the technique
+              allows. It all happens right here, in this browser tab, on this device.
             </p>
           </div>
 
@@ -74,14 +76,14 @@ export function NeverPromptedHome({
           <SectionHead
             eyebrow="How it works"
             title="Three steps, and none of them touch a server."
-            lead="The engine downloads to your browser once. Your draft is read and rewritten there, so there is nothing about your writing for anyone else to store, log or read."
+            lead="The engine downloads to your browser once, then reads and humanizes your draft right there, cutting the stock phrases and even rhythm that give AI writing away as it goes. There is nothing about your writing for anyone else to store, log or read."
           />
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             <StepCard
               index="1"
               tone="seal"
-              title="Paste your draft in"
+              title="Paste your AI-sounding draft in"
               body="Type it in, drop a file on the box, or use the upload button. Plain text, Markdown, RTF and CSV all read straight off your disk."
             />
             <StepCard
@@ -94,7 +96,7 @@ export function NeverPromptedHome({
               index="3"
               tone="butter"
               title="A workspace, not a wall of text"
-              body="The button opens your workspace: the rewritten draft, a side-by-side comparison you can accept paragraph by paragraph, and the full check underneath if you want it. Everything you run stays on this device."
+              body="The button opens your workspace: the humanized draft, a side-by-side comparison you can accept paragraph by paragraph, and the watermark and style check underneath if you want it. Everything you run stays on this device."
             />
           </div>
         </Wrap>
@@ -107,8 +109,8 @@ export function NeverPromptedHome({
             <SectionHead
               eyebrow="What comes back"
               eyebrowTone="sky"
-              title="Not different words. Your words, read out loud."
-              lead="You get a version that sounds like the person who actually wrote it: fewer stock phrases, less uniform rhythm, none of the tics a careful reader has learned to spot. You can compare every paragraph, before and after, and keep only the changes you agree with."
+              title="Your own words, with the AI tells sanded off."
+              lead="You get a version that sounds like the person who actually wrote it: fewer stock phrases, less uniform rhythm, none of the tics a careful reader has learned to spot. Compare every paragraph, before and after, and keep only the changes you agree with."
             />
             <div className="mt-7 space-y-3">
               <Legend
@@ -120,12 +122,12 @@ export function NeverPromptedHome({
                 body="Accept a rewrite, keep your own wording, or ask for another pass. Nothing is applied to the whole document without you seeing it first."
               />
               <Legend
-                term="The technical check, for anyone who wants it"
-                body="Underneath, the panel also reports whether a statistical watermark is present, plotted against a chance line with a confidence band around the figure. Most people never need this tab; it is there because we would rather show our working than ask for trust."
+                term="The watermark check, if you want it"
+                body="Underneath, the panel also reports whether a statistical AI watermark is present, plotted against a chance line with a confidence band around the figure. Most people never need this tab; it is there because we would rather show our working than ask for trust."
               />
             </div>
             <Link href="/method" className="link-quiet mt-6 inline-block text-sm font-medium text-ink-800">
-              Read how both checks are computed
+              Read how the rewrite and the watermark check both work
             </Link>
           </div>
 
@@ -165,9 +167,10 @@ export function NeverPromptedHome({
             </Position>
 
             <Position index="02" tone="mint" title="It won’t oversell you">
-              No tool can promise a guaranteed result against every detector, so this one doesn’t
-              try. It reduces detectable AI-style evidence, both the stylistic tells and, where the
-              technique allows it, the statistical mark, and it always tells you what it tested.
+              No AI humanizer can promise a guaranteed result against every detector, so this one
+              doesn’t try. It reduces detectable AI-style evidence, both the stylistic tells and,
+              where the technique allows it, the statistical watermark, and it always tells you
+              what it tested.
             </Position>
 
             <Position index="03" tone="rose" title="Your writing stays yours">
@@ -291,7 +294,7 @@ export function NeverPromptedHome({
                 Write freely, then make it sound like you every time.
               </h2>
               <p className="t-lead mt-4 max-w-2xl text-ink-600">
-                Pro gives you unlimited rewriting on your device with a stronger model and a wider
+                Pro gives you unlimited on-device humanizing with a stronger model and a wider
                 library of AI tells to catch, so there is no weekly token budget to watch. If you
                 also need a dated record of your own process, for a course requirement or a
                 client, Pro adds a PDF report with the check results and a hash tying it to the
