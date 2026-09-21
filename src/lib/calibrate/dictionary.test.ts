@@ -88,9 +88,30 @@ describe('dictionary: no variant is itself an AI tell', () => {
   })
 })
 
+/**
+ * Regression coverage for a real bug, found on this product's own marketing
+ * copy: "a dated PDF report if you need to show an editor or client what
+ * changed and why" came back with "show" -> "reveal", giving "need to reveal
+ * an editor or client what changed", which is ungrammatical. "show" is
+ * overwhelmingly used ditransitively ("show <someone> <something>"), and
+ * neither "reveal" nor "display" support that slot without inserting a
+ * preposition this flat substituter cannot add. Same failure mode as the
+ * auxiliary/modal and function-word cases above: dropped rather than patched.
+ */
+describe('dictionary: "show" is not substitutable', () => {
+  beforeEach(() => {
+    clearDictionaryCache()
+  })
+
+  it('has no dictionary entry for "show"', async () => {
+    const dictionary = await loadDictionary('en')
+    expect(dictionary.getVariants('show')).toBeNull()
+  })
+})
+
 /** Every headword the English table currently defines, so the assertion above cannot silently stop covering new entries. */
 const SAMPLE_HEADWORDS = [
   'make', 'get', 'go', 'know', 'think', 'see', 'come', 'take', 'give', 'find',
   'tell', 'ask', 'call', 'try', 'need', 'feel', 'leave', 'put', 'keep',
-  'begin', 'seem', 'help', 'talk', 'start', 'show', 'write', 'look', 'want', 'move',
+  'begin', 'seem', 'help', 'talk', 'start', 'write', 'look', 'want', 'move',
 ]

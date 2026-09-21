@@ -4700,10 +4700,98 @@ function hmacUnitInterval(key, message) {
   return n / 4294967296;
 }
 
+// src/lib/entitlements/rewrite-budget.ts
+var REWRITE_WINDOW_DAYS = 7;
+var REWRITE_TOKENS_PER_WINDOW = 2e4;
+var WINDOW_MS = REWRITE_WINDOW_DAYS * 24 * 60 * 60 * 1e3;
+
+// src/lib/site.ts
+var BRANDS = {
+  watermarkremoverpro: {
+    id: "watermarkremoverpro",
+    name: "WatermarkRemoverPro",
+    tagline: "Reduce detectable AI-style evidence in your writing, on your device, honestly.",
+    description: "WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.",
+    defaultUrl: "https://www.watermarkremoverpro.com",
+    contactEmail: "hello@watermarkremoverpro.com",
+    domain: "watermarkremoverpro.com"
+  },
+  neverprompted: {
+    id: "neverprompted",
+    name: "NeverPrompted",
+    tagline: "The free AI humanizer that helps your writing sound human again.",
+    description: "NeverPrompted is a free AI humanizer: paste in a draft that reads like it came out of a prompt box, and get back a version with the stock phrasing, hedging and flat rhythm gone, so it sounds like you wrote it. It also checks for a statistical AI watermark and reduces it where the technique allows. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.",
+    defaultUrl: "https://www.neverprompted.com",
+    contactEmail: "hello@neverprompted.com",
+    domain: "neverprompted.com"
+  }
+};
+function resolveBrand() {
+  const id = process.env.NEXT_PUBLIC_BRAND?.trim() || "watermarkremoverpro";
+  const brand = BRANDS[id];
+  if (!brand) {
+    throw new Error(`NEXT_PUBLIC_BRAND="${id}" is not a known brand. Valid values: ${Object.keys(BRANDS).join(", ")}.`);
+  }
+  return brand;
+}
+var ACTIVE_BRAND = resolveBrand();
+var BRAND_ID = ACTIVE_BRAND.id;
+var SITE = {
+  name: ACTIVE_BRAND.name,
+  tagline: ACTIVE_BRAND.tagline,
+  description: ACTIVE_BRAND.description,
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? ACTIVE_BRAND.defaultUrl,
+  contactEmail: ACTIVE_BRAND.contactEmail
+};
+var correctionLine = `${REWRITE_TOKENS_PER_WINDOW.toLocaleString("en-GB")} tokens of rewriting every ${REWRITE_WINDOW_DAYS} days`;
+var PLANS = {
+  anonymous: {
+    id: "anonymous",
+    name: "Free",
+    price: 0,
+    wordCap: 1500,
+    checksPerMonth: null,
+    rewrite: {
+      modelTier: "standard",
+      unlimited: false,
+      tellLibrary: "core",
+      tokensPerWindow: REWRITE_TOKENS_PER_WINDOW,
+      windowDays: REWRITE_WINDOW_DAYS
+    },
+    features: [
+      "Unlimited checking, in your browser, with no account and no word limit",
+      `${correctionLine}, on the Standard engine`,
+      "Confidence band, per-passage breakdown and stated limits on screen",
+      "Your document is never uploaded, on any feature"
+    ]
+  },
+  pro: {
+    id: "pro",
+    name: "Pro",
+    price: 19,
+    currency: "GBP",
+    wordCap: 1e5,
+    checksPerMonth: null,
+    rewrite: {
+      modelTier: "advanced",
+      unlimited: true,
+      tellLibrary: "extended",
+      tokensPerWindow: null,
+      windowDays: null
+    },
+    features: [
+      "Unlimited rewriting, with no weekly token budget",
+      "The Pro rewrite engine: a real language model in your browser, more candidates per passage, and the extended AI-tell library",
+      "The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash",
+      "API and MCP access to checking, metered; rewriting is always on-device, on every tier"
+    ]
+  }
+};
+
 // src/lib/detector/keys.ts
 var OPEN_REFERENCE_KEY = {
   id: "openmark-ref-1",
-  label: "WatermarkRemoverPro open reference scheme",
+  label: `${SITE.name} open reference scheme`,
   scheme: "greenlist-bigram-v1",
   gamma: 0.5,
   /*
@@ -4719,7 +4807,7 @@ var OPEN_REFERENCE_KEY = {
       tests/rename.test.ts pins it so a future rename sweep cannot take it.
     */
   secret: utf8("markwitness/open-reference-key/v1"),
-  provenance: "Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
+  provenance: `Published by ${SITE.name} for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.`,
   vendorPublished: false
 };
 var describeKey = (k) => ({

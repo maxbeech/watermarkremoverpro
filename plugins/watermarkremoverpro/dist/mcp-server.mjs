@@ -9277,6 +9277,109 @@ var init_env_names = __esm({
   }
 });
 
+// src/lib/entitlements/rewrite-budget.ts
+var REWRITE_WINDOW_DAYS, REWRITE_TOKENS_PER_WINDOW, WINDOW_MS;
+var init_rewrite_budget = __esm({
+  "src/lib/entitlements/rewrite-budget.ts"() {
+    "use strict";
+    init_tokenize();
+    REWRITE_WINDOW_DAYS = 7;
+    REWRITE_TOKENS_PER_WINDOW = 2e4;
+    WINDOW_MS = REWRITE_WINDOW_DAYS * 24 * 60 * 60 * 1e3;
+  }
+});
+
+// src/lib/site.ts
+function resolveBrand() {
+  const id = process.env.NEXT_PUBLIC_BRAND?.trim() || "watermarkremoverpro";
+  const brand = BRANDS[id];
+  if (!brand) {
+    throw new Error(`NEXT_PUBLIC_BRAND="${id}" is not a known brand. Valid values: ${Object.keys(BRANDS).join(", ")}.`);
+  }
+  return brand;
+}
+var BRANDS, ACTIVE_BRAND, BRAND_ID, SITE, correctionLine, PLANS, API_PRICE_PENCE_PER_1K_WORDS;
+var init_site = __esm({
+  "src/lib/site.ts"() {
+    "use strict";
+    init_rewrite_budget();
+    BRANDS = {
+      watermarkremoverpro: {
+        id: "watermarkremoverpro",
+        name: "WatermarkRemoverPro",
+        tagline: "Reduce detectable AI-style evidence in your writing, on your device, honestly.",
+        description: "WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.",
+        defaultUrl: "https://www.watermarkremoverpro.com",
+        contactEmail: "hello@watermarkremoverpro.com",
+        domain: "watermarkremoverpro.com"
+      },
+      neverprompted: {
+        id: "neverprompted",
+        name: "NeverPrompted",
+        tagline: "The free AI humanizer that helps your writing sound human again.",
+        description: "NeverPrompted is a free AI humanizer: paste in a draft that reads like it came out of a prompt box, and get back a version with the stock phrasing, hedging and flat rhythm gone, so it sounds like you wrote it. It also checks for a statistical AI watermark and reduces it where the technique allows. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.",
+        defaultUrl: "https://www.neverprompted.com",
+        contactEmail: "hello@neverprompted.com",
+        domain: "neverprompted.com"
+      }
+    };
+    ACTIVE_BRAND = resolveBrand();
+    BRAND_ID = ACTIVE_BRAND.id;
+    SITE = {
+      name: ACTIVE_BRAND.name,
+      tagline: ACTIVE_BRAND.tagline,
+      description: ACTIVE_BRAND.description,
+      url: process.env.NEXT_PUBLIC_SITE_URL ?? ACTIVE_BRAND.defaultUrl,
+      contactEmail: ACTIVE_BRAND.contactEmail
+    };
+    correctionLine = `${REWRITE_TOKENS_PER_WINDOW.toLocaleString("en-GB")} tokens of rewriting every ${REWRITE_WINDOW_DAYS} days`;
+    PLANS = {
+      anonymous: {
+        id: "anonymous",
+        name: "Free",
+        price: 0,
+        wordCap: 1500,
+        checksPerMonth: null,
+        rewrite: {
+          modelTier: "standard",
+          unlimited: false,
+          tellLibrary: "core",
+          tokensPerWindow: REWRITE_TOKENS_PER_WINDOW,
+          windowDays: REWRITE_WINDOW_DAYS
+        },
+        features: [
+          "Unlimited checking, in your browser, with no account and no word limit",
+          `${correctionLine}, on the Standard engine`,
+          "Confidence band, per-passage breakdown and stated limits on screen",
+          "Your document is never uploaded, on any feature"
+        ]
+      },
+      pro: {
+        id: "pro",
+        name: "Pro",
+        price: 19,
+        currency: "GBP",
+        wordCap: 1e5,
+        checksPerMonth: null,
+        rewrite: {
+          modelTier: "advanced",
+          unlimited: true,
+          tellLibrary: "extended",
+          tokensPerWindow: null,
+          windowDays: null
+        },
+        features: [
+          "Unlimited rewriting, with no weekly token budget",
+          "The Pro rewrite engine: a real language model in your browser, more candidates per passage, and the extended AI-tell library",
+          "The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash",
+          "API and MCP access to checking, metered; rewriting is always on-device, on every tier"
+        ]
+      }
+    };
+    API_PRICE_PENCE_PER_1K_WORDS = 2;
+  }
+});
+
 // src/lib/detector/keys.ts
 var OPEN_REFERENCE_KEY, describeKey;
 var init_keys = __esm({
@@ -9284,9 +9387,10 @@ var init_keys = __esm({
     "use strict";
     init_crypto();
     init_env_names();
+    init_site();
     OPEN_REFERENCE_KEY = {
       id: "openmark-ref-1",
-      label: "WatermarkRemoverPro open reference scheme",
+      label: `${SITE.name} open reference scheme`,
       scheme: "greenlist-bigram-v1",
       gamma: 0.5,
       /*
@@ -9302,7 +9406,7 @@ var init_keys = __esm({
           tests/rename.test.ts pins it so a future rename sweep cannot take it.
         */
       secret: utf8("markwitness/open-reference-key/v1"),
-      provenance: "Published by WatermarkRemoverPro for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.",
+      provenance: `Published by ${SITE.name} for verification and self-test. Not a model vendor key. It detects text marked under this published scheme only.`,
       vendorPublished: false
     };
     describeKey = (k) => ({
@@ -12570,7 +12674,15 @@ var init_dictionary = __esm({
       help: ["assist", "aid"],
       talk: ["speak"],
       start: ["begin"],
-      show: ["display", "reveal"],
+      // "show" was listed here with ['display', 'reveal'] and both variants are
+      // out for the same reason "let" -> "enable" was: they don't support the
+      // slot "show" is overwhelmingly used in, the ditransitive "show <someone>
+      // <something>". "reveal an editor what changed" and "display an editor
+      // what changed" are both ungrammatical; the correct forms need a
+      // preposition ("reveal ... to an editor") that this substituter can't
+      // insert. Reported case, from this product's own marketing copy: "a dated
+      // PDF report if you need to show an editor or client what changed and
+      // why" came back with "show" -> "reveal".
       write: ["compose", "draft"],
       look: ["gaze", "peer"],
       want: ["wish", "desire"],
@@ -13321,10 +13433,11 @@ var init_orchestrator = __esm({
     init_targeting();
     init_scoring();
     init_lexical_shift();
+    init_site();
     REWRITE_LIMITS = [
       "This reduces detectable AI-style evidence. It cannot guarantee defeating a model vendor's undisclosed watermark. No tool can, since nobody outside that vendor holds the key it was applied with.",
       'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
-      "The evidence scores shown use the same detector arithmetic as WatermarkRemoverPro's own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.",
+      `The evidence scores shown use the same detector arithmetic as ${SITE.name}'s own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.`,
       "All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.",
       '"Balanced" also lightly varies a bounded sample of passages that showed no detectable signal at all, as a hedge against a watermark scheme this deployment cannot test for. "Preserve" never does this; "aggressive" and "regenerate" already vary most or all passages regardless of signal.'
     ];
@@ -22231,66 +22344,7 @@ init_model_cache();
 init_keys();
 init_languages();
 init_tokenize();
-
-// src/lib/entitlements/rewrite-budget.ts
-init_tokenize();
-var REWRITE_WINDOW_DAYS = 7;
-var REWRITE_TOKENS_PER_WINDOW = 2e4;
-var WINDOW_MS = REWRITE_WINDOW_DAYS * 24 * 60 * 60 * 1e3;
-
-// src/lib/site.ts
-var SITE = {
-  name: "WatermarkRemoverPro",
-  tagline: "Reduce detectable AI-style evidence in your writing, on your device, honestly.",
-  description: "WatermarkRemoverPro checks your own text for a statistical AI provenance mark, then rewrites it on your device to reduce detectable AI-style evidence: both statistical watermark signal, where structurally possible, and human-perceptible AI tells like em dashes and stock phrasing. Every step runs entirely on your device; the document never leaves it, on either feature, on any tier.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.watermarkremoverpro.com",
-  contactEmail: "hello@watermarkremoverpro.com"
-};
-var correctionLine = `${REWRITE_TOKENS_PER_WINDOW.toLocaleString("en-GB")} tokens of rewriting every ${REWRITE_WINDOW_DAYS} days`;
-var PLANS = {
-  anonymous: {
-    id: "anonymous",
-    name: "Free",
-    price: 0,
-    wordCap: 1500,
-    checksPerMonth: null,
-    rewrite: {
-      modelTier: "standard",
-      unlimited: false,
-      tellLibrary: "core",
-      tokensPerWindow: REWRITE_TOKENS_PER_WINDOW,
-      windowDays: REWRITE_WINDOW_DAYS
-    },
-    features: [
-      "Unlimited checking, in your browser, with no account and no word limit",
-      `${correctionLine}, on the Standard engine`,
-      "Confidence band, per-passage breakdown and stated limits on screen",
-      "Your document is never uploaded, on any feature"
-    ]
-  },
-  pro: {
-    id: "pro",
-    name: "Pro",
-    price: 19,
-    currency: "GBP",
-    wordCap: 1e5,
-    checksPerMonth: null,
-    rewrite: {
-      modelTier: "advanced",
-      unlimited: true,
-      tellLibrary: "extended",
-      tokensPerWindow: null,
-      windowDays: null
-    },
-    features: [
-      "Unlimited rewriting, with no weekly token budget",
-      "The Pro rewrite engine: a real language model in your browser, more candidates per passage, and the extended AI-tell library",
-      "The dated evidence report as a PDF: signal strength, per-passage breakdown, stated limits, document hash",
-      "API and MCP access to checking, metered; rewriting is always on-device, on every tier"
-    ]
-  }
-};
-var API_PRICE_PENCE_PER_1K_WORDS = 2;
+init_site();
 
 // src/lib/calibrate/frequency.ts
 init_tokenize();

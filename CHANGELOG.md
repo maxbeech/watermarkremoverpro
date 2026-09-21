@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-09-21 - Fixed a real grammar bug in the rule-based rewrite fallback, MCP plugin 0.4.1
+
+Found by actually running `reduce_ai_evidence` over the NeverPrompted
+marketing copy shipped in the previous commit (the original attempt skipped
+it because the on-device advanced model's dependency wasn't reachable from
+the Claude Code plugin's sandboxed install; see below). The deterministic
+fallback swapped "show" -> "reveal" in "a dated PDF report if you need to
+show an editor or client what changed and why", producing "need to reveal an
+editor or client what changed", which is ungrammatical: "reveal" doesn't
+support the ditransitive slot "show" was in, and neither does "display"
+(its other listed variant). Removed the `show` entry from
+`src/lib/calibrate/dictionary.ts` entirely, the same call already made for
+`let` -> `enable` and the auxiliary/modal verbs, with regression coverage in
+`dictionary.test.ts`. This is the engine every free-tier user gets by
+default whenever the advanced model isn't cached, so it was a live product
+bug, not a dev-environment quirk. Rebuilt and committed
+`plugins/watermarkremoverpro/dist/*.mjs`, version bumped to 0.4.1 so
+existing installs pick it up.
+
+Separately fixed, locally only (not a code change): the advanced local
+model was failing to load in this dev environment because
+`@huggingface/transformers` is deliberately kept out of the bundled MCP
+server (see `tsup.mcp.config.ts`) and nothing had installed it next to the
+plugin's cached copy. Symlinked it in from this repo's own
+`node_modules`. Working as designed for the shipped plugin; this only
+affects local dogfooding on machines that haven't separately installed that
+package.
+
 ## 2026-09-18 - NeverPrompted goes live as its own product, not a preview
 
 `neverprompted-launch` merged into `main`: NeverPrompted is now a fully
@@ -12,7 +40,7 @@ money and send mail is now real:
 - A dedicated Stripe account (`acct_1UH8KiLz7fIwmclL`), its own Product/Price
   (GBP 19/month) and its own webhook endpoint, verified end to end by
   reaching a real `checkout.stripe.com` session with the correct price and
-  branding — stopping short of entering card details, the same bar this
+  branding, stopping short of entering card details, the same bar this
   product has always held its own billing to.
 - A dedicated ThreadCamp account and a fully DKIM/SPF/MX/DMARC-verified
   `neverprompted.com` sending domain, with `hello@neverprompted.com` sending
@@ -23,7 +51,7 @@ money and send mail is now real:
 - A dedicated GA4 property wired in for its own analytics, separate from
   WatermarkRemoverPro's.
 - Its own Neon Postgres database. Caught and fixed along the way: a fresh
-  Marketplace-provisioned database has no schema of its own — sign-up was
+  Marketplace-provisioned database has no schema of its own, so sign-up was
   failing with `relation "user" does not exist` until `scripts/db-push.ts`
   was run against it.
 

@@ -95,7 +95,15 @@ export const EN_SYNONYMS: Record<string, string[]> = {
   help: ['assist', 'aid'],
   talk: ['speak'],
   start: ['begin'],
-  show: ['display', 'reveal'],
+  // "show" was listed here with ['display', 'reveal'] and both variants are
+  // out for the same reason "let" -> "enable" was: they don't support the
+  // slot "show" is overwhelmingly used in, the ditransitive "show <someone>
+  // <something>". "reveal an editor what changed" and "display an editor
+  // what changed" are both ungrammatical; the correct forms need a
+  // preposition ("reveal ... to an editor") that this substituter can't
+  // insert. Reported case, from this product's own marketing copy: "a dated
+  // PDF report if you need to show an editor or client what changed and
+  // why" came back with "show" -> "reveal".
   write: ['compose', 'draft'],
   look: ['gaze', 'peer'],
   want: ['wish', 'desire'],
