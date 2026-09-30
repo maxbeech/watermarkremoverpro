@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-09-30 - Moved from Vercel to Helm7
+
+Both brands (WatermarkRemoverPro and NeverPrompted) now run as two Helm7
+products built from this one repository, each with its own
+`NEXT_PUBLIC_BRAND`. Database stays on Neon.
+
+- Removed `@vercel/analytics` (page views were never read; GA4 through
+  `OpenHelmAnalytics` is the measurement that matters).
+- Sentry's `environment` now comes from `NODE_ENV` instead of `VERCEL_ENV`.
+- `npm start` honours `$PORT`, which Helm7 assigns.
+- Privacy page names Helm7 as the host in place of Vercel.
+- New `tests/no-vercel.test.ts` keeps Vercel packages, `VERCEL_*` reads,
+  `x-vercel-*` headers, `maxDuration` and `vercel.json` out.
+- Development no longer needs the Vercel CLI: copy `.env.example`.
+
 ## 2026-09-21 - Fixed a real grammar bug in the rule-based rewrite fallback, MCP plugin 0.4.1
 
 Found by actually running `reduce_ai_evidence` over the NeverPrompted

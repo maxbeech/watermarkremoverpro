@@ -9,10 +9,10 @@
  *
  * The derivatives are committed rather than built on demand, and served
  * `unoptimized` through next/image, on purpose: a fixed brand asset gains
- * nothing from a per-request image transformation, and on Vercel every
- * transformation is billable quota spent on a file that never changes.
+ * nothing from a per-request image transformation, and it saves the server
+ * a transformation on a file that never changes.
  *
- * Each brand builds from its own Vercel project with its own
+ * Each brand builds from its own Helm7 product with its own
  * `NEXT_PUBLIC_BRAND`, but both share one `src/app/` tree, so the favicon
  * convention files (favicon.ico, icon.png, apple-icon.png) cannot hold both
  * brands at once. This script writes each brand's derivatives to

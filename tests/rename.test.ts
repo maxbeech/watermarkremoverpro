@@ -141,7 +141,7 @@ describe('what the rename deliberately did not touch', () => {
   })
 
   it('still reads the pre-rename configuration variables', () => {
-    // A Vercel project or MCP client config set before the rename keeps
+    // A deployment or MCP client config set before the rename keeps
     // working. Losing a detection key silently, while every request continues
     // to answer normally, is the exact failure this product refuses.
     const names = read('src/lib/env-names.ts')

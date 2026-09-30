@@ -13,7 +13,7 @@ describe('renamed configuration variables', () => {
   })
 
   it('still reads the pre-rename name, and says that is what it did', () => {
-    // The whole point: an MCP client config or a Vercel project set before the
+    // The whole point: an MCP client config or a deployment set before the
     // rename keeps working, and the surface reading it can tell the operator.
     const read = readAliasedEnv({ MARKWITNESS_API_KEY: 'mw_live_abc' }, ENV_API_KEY)
     expect(read).toEqual({ value: 'mw_live_abc', nameUsed: 'MARKWITNESS_API_KEY', legacy: true })

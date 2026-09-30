@@ -35,12 +35,12 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-  // The apex domain is registered alongside www on Vercel so it still resolves,
+  // The apex domain is attached alongside www so it still resolves,
   // but www is canonical (matches SITE.url, which Better Auth, Stripe checkout
   // and every page's metadata read from). 308 preserves the request method, so
   // this also covers the Stripe webhook POST if it's ever hit on the apex.
   //
-  // Each brand is built and deployed as its own Vercel project, so this file
+  // Each brand is built and deployed as its own Helm7 product, so this file
   // only ever sees one brand's domain per build (NEXT_PUBLIC_BRAND): it does
   // not need to redirect both brands' apex domains in one deployment.
   async redirects() {

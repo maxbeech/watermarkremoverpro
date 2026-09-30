@@ -2,7 +2,7 @@
  * Configuration variable names, and how a renamed one is read.
  *
  * The product was renamed from MarkWitness to WatermarkRemoverPro. Renaming a
- * variable that somebody has already set in a Vercel project, a shell profile
+ * variable that somebody has already set in a deployment, a shell profile
  * or an MCP client config is not free: the deployment keeps starting, and the
  * capability the variable enabled quietly stops existing. That is exactly the
  * silent degradation this codebase refuses everywhere else.

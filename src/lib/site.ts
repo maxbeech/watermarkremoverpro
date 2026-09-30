@@ -9,7 +9,7 @@ import { REWRITE_TOKENS_PER_WINDOW, REWRITE_WINDOW_DAYS } from '@/lib/entitlemen
  * Two brands, one product. WatermarkRemoverPro and NeverPrompted are the same
  * app, same detector, same rewrite engine, same pricing: only which door a
  * visitor walked through differs. `NEXT_PUBLIC_BRAND` is a build-time choice
- * (each brand is its own Vercel project), read once here rather than per
+ * (each brand is its own Helm7 product), read once here rather than per
  * request, so nothing below needs to know which brand it's serving.
  */
 

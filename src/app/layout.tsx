@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import { BRAND_ID, SITE } from '@/lib/site'
 import './globals.css'
 import { OpenHelmAnalytics } from '../lib/openhelm-analytics'
@@ -70,7 +69,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-brand={BRAND_ID} className={`${jakarta.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen antialiased">
         {children}
-        <Analytics />
         <OpenHelmAnalytics />
       </body>
     </html>

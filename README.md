@@ -25,7 +25,7 @@ anyone accuses them of anything.
 
 This repository is also [NeverPrompted](https://www.neverprompted.com). Same
 Next.js app, same repo, same detector, same rewrite engine, same pricing.
-Two Vercel projects built from the same code, distinguished only by which
+Two Helm7 products built from the same code, distinguished only by which
 door a visitor walked through. NeverPrompted leads with "sound like yourself
 again" instead of watermark defence; underneath, running a check or a
 rewrite does exactly the same thing on both. The full rationale is in
@@ -326,7 +326,7 @@ UI renders null as the reason it is null, never as `0` or a bare dash.
 
 ```bash
 npm install
-vercel env pull .env.local   # DATABASE_URL, BETTER_AUTH_SECRET
+cp .env.example .env.local   # then set DATABASE_URL, BETTER_AUTH_SECRET
 npm run db:push              # apply the schema (idempotent)
 npm run dev                  # http://localhost:3540
 
@@ -427,7 +427,7 @@ values is refused rather than silently resolved.
 ## Stack
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · Neon Postgres ·
-Better Auth · Stripe · pdf-lib · vitest · Vercel.
+Better Auth · Stripe · pdf-lib · vitest · hosted on Helm7.
 
 The detection engine is **isomorphic TypeScript**, not WASM. The binding
 requirement is that the computation is real and runs on-device, not that it is

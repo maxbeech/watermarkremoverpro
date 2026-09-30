@@ -3,14 +3,14 @@
  *
  * Next.js picks up `favicon.ico`, `icon.png` and `apple-icon.png` in
  * `src/app/` purely by filename convention, and both brands build from this
- * one `src/app/` tree in their own Vercel project. `scripts/build-logos.ts`
+ * one `src/app/` tree in their own Helm7 product. `scripts/build-logos.ts`
  * pre-renders each brand's set into `public/brand/<brand>/`; this script just
  * copies the one matching `NEXT_PUBLIC_BRAND` into place, so it costs a file
  * copy rather than an image transformation.
  *
  * Wired as `prebuild` (and a per-brand `predev:*`) in package.json, so it runs
  * automatically and needs no manual step when adding a brand or switching
- * which one a given Vercel project builds.
+ * which one a given product builds.
  */
 import { copyFileSync } from 'node:fs'
 import { join } from 'node:path'

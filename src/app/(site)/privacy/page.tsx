@@ -126,7 +126,7 @@ export default function PrivacyPage() {
               'Stripe for payment processing and subscription status.',
               'Our transactional email provider, for account and billing email, when configured.',
               'Sentry, for error monitoring.',
-              'Vercel, for hosting and CDN delivery.',
+              'Helm7, for hosting and CDN delivery.',
             ]}
           />
           <P>We do not sell personal data, and we do not use it for advertising.</P>
@@ -146,7 +146,7 @@ export default function PrivacyPage() {
         <Section title="International transfers">
           <P>
             We are based in the United Kingdom. Our infrastructure providers (Neon, Stripe, Sentry,
-            Vercel) may process data in the UK, the EU, and the United States under their own
+            Helm7) may process data in the UK, the EU, and the United States under their own
             standard safeguards.
           </P>
         </Section>

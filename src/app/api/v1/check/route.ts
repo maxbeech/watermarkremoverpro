@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     // The API-caller equivalent of a browser visitor hitting a paywall. It is
     // only way to see this journey at all, since an API integration has no
     // browser to fire a client-side event from.
-    // Awaited, not fire-and-forget: a Vercel serverless function can freeze
+    // Awaited, not fire-and-forget: a serverless runtime can freeze
     // as soon as the response is sent, so an un-awaited fetch here has no
     // guarantee of completing. sendEvents/trackEvent never throw, so this
     // adds no new failure mode to the response.

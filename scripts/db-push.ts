@@ -27,7 +27,7 @@ function loadEnv() {
 async function main() {
   loadEnv()
   if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not set. Run `vercel env pull .env.local` first.')
+    throw new Error('DATABASE_URL is not set. Put it in .env.local first.')
   }
 
   const sql = neon(process.env.DATABASE_URL)
