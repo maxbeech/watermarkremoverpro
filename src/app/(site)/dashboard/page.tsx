@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import { SignOutButton } from '@/components/auth-form'
 import { ApiKeyManager } from './api-key-manager'
 import { UpgradeButton } from './upgrade-button'
+import { AnalyticsIdentity } from '@/components/analytics/analytics-identity'
+import { CheckoutReturnTracker } from '@/components/analytics/checkout-return-tracker'
 import { currentEntitlements } from '@/lib/auth'
 import { listApiKeys } from '@/lib/api-keys'
 import { databaseConfigured, sql } from '@/lib/db'
@@ -22,7 +24,12 @@ interface CheckRow {
   created_at: string
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ upgraded?: string }>
+}) {
+  const { upgraded } = await searchParams
   if (!databaseConfigured()) {
     return (
       <section className="mx-auto max-w-3xl px-5 py-14">
@@ -60,6 +67,7 @@ export default async function DashboardPage() {
 
   return (
     <section className="mx-auto max-w-3xl px-5 py-12">
+      {upgraded === '1' ? <CheckoutReturnTracker /> : <AnalyticsIdentity assumeSignedIn />}
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="t-title text-ink-900">Your account</h1>
         <SignOutButton />

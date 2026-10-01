@@ -7,7 +7,7 @@ import { analyzeOnServer } from '@/lib/server-engine'
 import { billableUnits, checkAllowance, recordUsage, unitsToPence } from '@/lib/metering'
 import { countWords } from '@/lib/detector/tokenize'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
-import { configFromEnv, trackEvent } from '@/lib/openhelm-analytics-mp'
+import { configFromEnv, trackEvent, userRefFor } from '@/lib/openhelm-analytics-mp'
 import { SITE } from '@/lib/site'
 
 export const runtime = 'nodejs'
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
     // guarantee of completing. sendEvents/trackEvent never throw, so this
     // adds no new failure mode to the response.
     await trackEvent(
-      { ...configFromEnv(), clientId: key.accountId, surface: 'server' },
+      { ...configFromEnv(), clientId: await userRefFor(key.accountId), surface: 'server' },
       'api_paywall_hit',
       { plan: allowance.plan },
     )
@@ -139,7 +139,7 @@ export async function POST(request: Request) {
 
   // Awaited for the same reason as the paywall event above.
   await trackEvent(
-    { ...configFromEnv(), clientId: key.accountId, surface: 'server' },
+    { ...configFromEnv(), clientId: await userRefFor(key.accountId), surface: 'server' },
     'api_check_completed',
     { plan: key.plan, billable_units: units },
   )

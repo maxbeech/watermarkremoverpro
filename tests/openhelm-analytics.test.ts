@@ -15,6 +15,7 @@ import {
   sendEvents,
   trackEvent,
   configFromEnv,
+  userRefFor,
 } from "../src/lib/openhelm-analytics-mp";
 
 const CONFIG = {
@@ -132,5 +133,15 @@ describe("sending", () => {
 describe("client id", () => {
   it("mints GA's <random>.<seconds> shape", () => {
     expect(newClientId(() => 1_700_000_000_000)).toMatch(/^\d+\.1700000000$/);
+  });
+});
+
+describe("user reference", () => {
+  it("is the first 16 hex of SHA-256 over the user id, matching OpenHelm's contract vector", async () => {
+    expect(await userRefFor("00000000-0000-0000-0000-000000000000")).toBe("12b9377cbe7e5c94");
+  });
+
+  it("refuses an empty id rather than hashing nothing", async () => {
+    await expect(userRefFor(" ")).rejects.toThrow(/non-empty/);
   });
 });
