@@ -63,6 +63,7 @@ const SKIP_FILES = [
   'tests/stripe-guard.test.ts',
   'src/lib/openhelm-analytics.tsx',
   'src/lib/openhelm-analytics-mp.ts',
+  'src/lib/openhelm-analytics-client.test.ts',
   'tests/openhelm-analytics.test.ts',
   'AGENTS.md',
   'CLAUDE.md',

@@ -25,6 +25,7 @@ vi.mock('@/lib/gate', () => ({ guardStripeEvent: (...args: unknown[]) => guardSt
 vi.mock('@/lib/openhelm-analytics-mp', () => ({
   configFromEnv: () => ({ measurementId: 'G-TEST', apiSecret: 's' }),
   trackEvent: (...args: unknown[]) => trackEvent(...args),
+  userRefFor: async (id: string) => `ref_${id}`,
 }))
 vi.mock('@sentry/nextjs', () => ({
   captureException: (...args: unknown[]) => captureException(...args),
@@ -54,7 +55,7 @@ beforeEach(() => {
 })
 
 describe('POST /api/billing/webhook', () => {
-  it('records a subscription_created telemetry event, keyed on the account, not on email or name', async () => {
+  it('records a subscription_created telemetry event, keyed on the hashed user ref, not on the account id, email or name', async () => {
     constructEventAsync.mockResolvedValue({ type: 'checkout.session.completed' })
     applyBillingEvent.mockResolvedValue({
       handled: true,
@@ -68,7 +69,7 @@ describe('POST /api/billing/webhook', () => {
 
     expect(trackEvent).toHaveBeenCalledTimes(1)
     const [config, name, params] = trackEvent.mock.calls[0]
-    expect(config.clientId).toBe('acct_1')
+    expect(config.clientId).toBe('ref_acct_1')
     expect(config.surface).toBe('server')
     expect(name).toBe('subscription_created')
     expect(JSON.stringify(params)).not.toMatch(/@|name/i)
@@ -86,7 +87,7 @@ describe('POST /api/billing/webhook', () => {
     await POST(request())
 
     expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ clientId: 'acct_2' }),
+      expect.objectContaining({ clientId: 'ref_acct_2' }),
       'subscription_cancelled',
       expect.any(Object),
     )

@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs'
 import { applyBillingEvent, stripe, stripeConfigured } from '@/lib/billing'
 import { databaseConfigured } from '@/lib/db'
 import { guardStripeEvent } from '@/lib/gate'
-import { configFromEnv, trackEvent } from '@/lib/openhelm-analytics-mp'
+import { configFromEnv, trackEvent, userRefFor } from '@/lib/openhelm-analytics-mp'
 
 export const runtime = 'nodejs'
 
@@ -79,10 +79,9 @@ export async function POST(request: Request) {
     const outcome = await applyBillingEvent(event)
     if (outcome.transition && outcome.accountId) {
       // Server-side, non-browser surface (a webhook has no document/tab), so
-      // this goes through the Measurement Protocol rather than gtag. The
-      // account id is this product's own internal identifier: an opaque,
-      // non-PII UUID never derived from email or name, used only as GA4's
-      // required client_id, not surfaced anywhere as a queryable dimension.
+      // this goes through the Measurement Protocol rather than gtag. GA4's
+      // required client_id is the hashed user reference, so the internal
+      // account id never leaves this server.
       await sendBillingTelemetry(outcome.accountId, outcome.transition)
     }
     return NextResponse.json({ received: true, ...outcome })
@@ -102,7 +101,7 @@ export async function POST(request: Request) {
 }
 
 async function sendBillingTelemetry(accountId: string, transition: string): Promise<void> {
-  const config = { ...configFromEnv(), clientId: accountId, surface: 'server' as const }
+  const config = { ...configFromEnv(), clientId: await userRefFor(accountId), surface: 'server' as const }
   const result = await trackEvent(config, transition, { plan: 'pro' })
   if (!result.sent && result.reason !== 'not_configured') {
     // Analytics must never fail the webhook itself, but a real send failure

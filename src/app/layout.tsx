@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google'
 import { BRAND_ID, SITE } from '@/lib/site'
 import './globals.css'
 import { OpenHelmAnalytics } from '../lib/openhelm-analytics'
+import { AnalyticsIdentity } from '../components/analytics/analytics-identity'
 
 /**
  * The document shell, and nothing else.
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen antialiased">
         {children}
         <OpenHelmAnalytics />
+        <AnalyticsIdentity />
       </body>
     </html>
   )

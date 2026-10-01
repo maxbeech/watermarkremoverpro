@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { createAuthClient } from 'better-auth/react'
 import { buttonClass } from '@/components/brand/ui'
 import { track } from '@/lib/openhelm-analytics'
+import { EVENTS } from '@/lib/analytics-events'
+import { markSignedIn, markSignedOut } from '@/lib/analytics-identity-client'
 
 const client = createAuthClient()
 
@@ -25,7 +27,7 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
     e.preventDefault()
     setBusy(true)
     setError(null)
-    track(mode === 'signup' ? 'signup_started' : 'login_started')
+    track(mode === 'signup' ? EVENTS.signUpStarted : EVENTS.loginStarted)
 
     const result =
       mode === 'signup'
@@ -37,10 +39,13 @@ export function AuthForm({ mode }: { mode: 'signin' | 'signup' }) {
       setBusy(false)
       // No error message/reason in the params: Better Auth's message can echo
       // back user input (e.g. "user already exists" ties to the email typed).
-      track(mode === 'signup' ? 'signup_failed' : 'login_failed')
+      track(mode === 'signup' ? EVENTS.signUpFailed : EVENTS.loginFailed)
       return
     }
-    track(mode === 'signup' ? 'signup_succeeded' : 'login_succeeded')
+    // GA's recommended sign_up / login. The identity is attached on the next
+    // page, once the session cookie exists for the server to read.
+    track(mode === 'signup' ? EVENTS.signUp : EVENTS.login, { method: 'email' })
+    markSignedIn()
     window.location.href = '/dashboard'
   }
 
@@ -114,6 +119,7 @@ export function SignOutButton() {
       type="button"
       onClick={async () => {
         await client.signOut()
+        markSignedOut()
         window.location.href = '/'
       }}
       className="link-quiet text-sm text-ink-500"
