@@ -72,3 +72,16 @@ Large volume, wrong job, same discipline already applied to WatermarkRemoverPro'
 ## Sourcing note
 
 Seeded from: the live watermarkremoverpro.com domain and its two shipped humaniser-cluster pages (mostly returned generic detector-side terms already covered above and in the disqualified table); four named competitors, quillbot.com, undetectable.ai, stealthgpt.ai and hix.ai (the last of these sits inside a large generic AI-chatbot platform and returned little of direct use beyond confirming the category's scale); a hand-built plain-English phrase list; and a fresh, dated re-check of the core humaniser cluster already on file. HIX Bypass specifically did not yield a usable keyword-idea seed from its own URL; it remains one of the four named comparison targets on the strength of being a real, well-known competitor, not on the strength of its own keyword profile.
+
+## Addendum 2026-10-06: ChatGPT watermark in the EU
+
+Same keyword data as the sister plan (dated 2026-10-06, US): chatgpt watermark
+2,900; does chatgpt watermark text 260; chatgpt invisible watermark 170. This
+brand covers the writer's question, not the forensic one, and must not reuse the
+sister site's pages or phrasing.
+
+- `/blog/chatgpt-hidden-watermark-europe-your-writing`: what it means for me, what to do. Primary: chatgpt watermark.
+- `/guide/does-chatgpt-watermark-its-text`: short direct answers, built for answer engines to quote.
+- `/for/writers-in-the-eu`: EU-based students, freelancers, marketers; privacy angle.
+Rule: "make it sound like you", never "undetectable". The site states it cannot
+read OpenAI's mark.

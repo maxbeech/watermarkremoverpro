@@ -133,3 +133,23 @@ Supporting and long-tail keyword sets are semantic expansions of the verified
 cluster. They are not separately volume-verified, consistent with the
 "6–12 supporting + 2–4 long-tail" allowance for semantic variation rather
 than additional measured search volume.
+
+## Addendum 2026-10-06: OpenAI EU text watermark
+
+Google Ads Keyword Planner (US), avg monthly searches, queried 2026-10-06:
+chatgpt watermark 2,900 (Aug 2026 spike 3,600; low competition); does chatgpt
+watermark text 260 (Aug 1,600); remove chatgpt watermark 1,600; ai watermark
+remover 14,800 (competitor-dominated, not targeted); chatgpt invisible
+watermark 170; eu ai act article 50 170 (Aug 720, competition index 8);
+eu ai act watermark 30; openai watermark 110. "textgrain" returned no data
+(brand-new term, own it by being first to explain it).
+
+Targets and pages (this brand takes the forensic/compliance angle):
+- chatgpt watermark, openai text watermark, textgrain: `/blog/openai-chatgpt-text-watermark-eu-textgrain`, `/guide/chatgpt-watermark`
+- chatgpt vs claude watermark: `/guide/chatgpt-vs-claude-watermark`
+- eu ai act article 50 / watermark: refreshed `/guide/eu-ai-act-article-50`
+- editing and watermark robustness: refreshed `/guide/does-editing-remove-a-watermark`
+"remove chatgpt watermark" is not a page target; the honest framing is in the
+editing guide. Spike-driven volumes decay (chatgpt watermark fell 9,900 to 390
+within nine months of its last peak), so refresh dates and numbers when
+OpenAI ships detector access.

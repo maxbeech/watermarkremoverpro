@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { lexicalShiftPercent } from './lexical-shift'
+import { lexicalShiftPercent, wordChangePercent } from './lexical-shift'
 
 describe('lexicalShiftPercent', () => {
   it('is zero for identical text', () => {
@@ -35,5 +35,34 @@ describe('lexicalShiftPercent', () => {
     const result = lexicalShiftPercent(a, b)
     expect(result).toBeGreaterThanOrEqual(0)
     expect(result).toBeLessThanOrEqual(100)
+  })
+})
+
+describe('wordChangePercent', () => {
+  it('is zero for identical text and for empty text', () => {
+    const text = 'One paragraph of ordinary words.\n\nAnother paragraph follows it.'
+    expect(wordChangePercent(text, text)).toBe(0)
+    expect(wordChangePercent('', '')).toBe(0)
+  })
+
+  it('counts the share of ORIGINAL words that went missing', () => {
+    // 12 words, 2 replaced -> 17% (rounded).
+    const before = 'we use many robust tools to build useful things for people daily'
+    const after = 'we use many strong tools to build helpful things for people daily'
+    expect(wordChangePercent(before, after)).toBe(17)
+  })
+
+  it('does not count pure insertions as changed original words', () => {
+    expect(wordChangePercent('alpha beta gamma delta', 'alpha beta really gamma delta')).toBe(0)
+  })
+
+  it('is 100 when nothing survives', () => {
+    expect(wordChangePercent('alpha beta gamma', 'one two three')).toBe(100)
+  })
+
+  it('sums per paragraph when structure is preserved', () => {
+    const before = 'a b c d\n\ne f g h'
+    const after = 'a b c x\n\ne f g h'
+    expect(wordChangePercent(before, after)).toBe(13) // 1 of 8 words, rounded
   })
 })

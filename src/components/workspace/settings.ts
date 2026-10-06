@@ -35,6 +35,24 @@ export const STRENGTH_OPTIONS: { value: Strength; label: string; description: st
 export const DEFAULT_STRENGTH: Strength = 'balanced'
 
 /**
+ * Optional word-change target, as a share of the original words.
+ *
+ * Text watermarks that live in word choice (OpenAI's EU textGrain, and the
+ * green-list family generally) weaken in proportion to how many words change;
+ * OpenAI's own published test took detection from about 92% to 66% by
+ * replacing 10% of words with synonyms. A target keeps the rewrite going past
+ * what the detector flagged until that share of the wording has moved, but
+ * every change still has to clear the same meaning and fact checks, so it can
+ * be missed on a document that cannot safely move that far. Zero means off.
+ */
+export const WORD_CHANGE_TARGETS: { value: number; label: string }[] = [
+  { value: 0, label: 'Off' },
+  { value: 10, label: '10%' },
+  { value: 20, label: '20%' },
+  { value: 30, label: '30%' },
+]
+
+/**
  * The two engines, as a visitor experiences them.
  *
  * This collapses what used to be two separate menus, a "model tier" and a

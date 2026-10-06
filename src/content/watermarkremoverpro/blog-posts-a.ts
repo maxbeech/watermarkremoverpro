@@ -857,4 +857,153 @@ export const BLOG_POSTS_A: BlogPost[] = [
     ],
     schemaType: "none",
   },
+  {
+    slug: "openai-chatgpt-text-watermark-eu-textgrain",
+    title: "OpenAI's ChatGPT Text Watermark in the EU: What textGrain Is and Who Can Detect It",
+    h1: "OpenAI Will Watermark ChatGPT Text in the EU: What textGrain Means for Detection",
+    metaDescription: "OpenAI is adding an invisible watermark to ChatGPT and Codex text in the EU. What textGrain is, what OpenAI's own robustness numbers say, and who can actually detect it.",
+    category: "News",
+    format: "data-study",
+    intent: "informational",
+    publishedAt: "2026-10-06",
+    author: "WatermarkRemoverPro Content Team",
+    primaryKeyword: "chatgpt watermark",
+    supportingKeywords: [
+      "openai text watermark",
+      "textgrain watermark",
+      "chatgpt watermark eu",
+      "openai eu ai act watermark",
+      "does chatgpt watermark text",
+      "chatgpt invisible watermark",
+      "eu ai act article 50 text",
+      "ai text watermark detector",
+    ],
+    longTailKeywords: [
+      "can chatgpt watermark be detected",
+      "does editing chatgpt text remove the watermark",
+      "which ai companies watermark text",
+      "chatgpt watermark detector access researchers only",
+    ],
+    heroImage: {
+      src: "https://images.unsplash.com/photo-1594810205183-18a8b0ce6c13?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600",
+      alt: "EU flags outside a European institution building, representing OpenAI's ChatGPT watermark rollout under the EU AI Act",
+      unsplashId: "0NRkVddA2fw",
+    },
+    intro: [
+      "On 5 October 2026 OpenAI said it will start adding an invisible statistical watermark to text from ChatGPT and Codex in the European Union, to comply with the EU AI Act's transparency rules.",
+      "The mark is built into word choice, so it travels with copied text, but OpenAI's own tests show it weakens under editing, and the detector is restricted to approved researchers. That gap is the whole story for anyone running a check.",
+      "This piece separates what OpenAI has published from what nobody outside OpenAI can currently verify, and says plainly what a third-party checker, this one included, can and cannot tell you.",
+    ],
+    takeaways: [
+      "The watermark applies to ChatGPT and Codex for eligible users on all plans, in the EU only, rolling out over the coming weeks. API developers anywhere can opt in for select models; it is off by default and not a global default.",
+      "OpenAI's method, textGrain, nudges the model's next-word choices using a secret key. The mark lives in the words, so copy and paste preserves it, and OpenAI says it does not identify the user.",
+      "OpenAI's own test: replacing 10% of words with synonyms cut detection from about 92% to 66%. Short passages, math answers and translated text are harder to detect.",
+      "Detector access is limited to approved researchers and expert organisations at launch. No public detector, and no public key, exists.",
+      "A missing watermark does not prove human authorship, in OpenAI's own words.",
+    ],
+    sections: [
+      {
+        id: "what-openai-announced",
+        heading: "What OpenAI Announced",
+        body: [
+          "OpenAI's announcement covers two surfaces. In ChatGPT and Codex, the watermark rolls out to eligible users on every plan, but only in the EU. Through the API, developers anywhere in the world can switch it on for select models from the day of the announcement, with it off by default.",
+          "OpenAI was explicit that it is not making text watermarking a global default at launch. That makes this a regional compliance measure, not a change to how ChatGPT behaves everywhere, and it is the main difference from Anthropic's approach, which the company said it is applying worldwide.",
+          "The trigger is the EU AI Act's transparency rules, which took effect on 2 August 2026 and require providers to mark AI-generated content in a way other systems can identify. Anthropic, Google, Meta, Microsoft and OpenAI are among the companies that have committed to the EU's code of practice on AI-generated content.",
+        ],
+      },
+      {
+        id: "how-textgrain-works",
+        heading: "How textGrain Works",
+        body: [
+          "OpenAI's technical report, co-written with researchers at the University of Pennsylvania and Yale, describes textGrain as entropy-calibrated watermarking. In plain terms, a secret key is used to sort the model's candidate next words, and the model is gently steered toward one side of that sort when finishing a sentence.",
+          "Any single nudge is meaningless. Hundreds of them add up to a pattern a detector holding the key can find using only the text and the key. This is the same family of idea as the green-list scheme published by Kirchenbauer et al. in 2023, which our guide on provenance marks explains step by step.",
+          "Because the signal sits in the choice of words rather than in any file attribute, it survives copying, pasting and reformatting. OpenAI also says the watermark does not identify the person who prompted the model, and that it saw no meaningful change in model performance with it switched on.",
+        ],
+      },
+      {
+        id: "what-openais-own-tests-say-about-editing",
+        heading: "What OpenAI's Own Tests Say About Editing",
+        body: [
+          "OpenAI's robustness figure is the most useful number in the announcement. Replacing 10% of words with synonyms dropped detection from about 92% to 66%. The company also said short passages, math answers and translated text are harder to detect.",
+          "That is the expected behaviour of any scheme that lives in word choice: each replaced word is one fewer position carrying the signal. It is also why OpenAI cautions that a missing watermark can mean the text was too short, too heavily edited, or produced by another company's AI.",
+          "The unit matters. OpenAI states robustness as a share of words changed, so WatermarkRemoverPro's rewrite now reports the same unit on every result: the percentage of your original words that did not survive. It is a measure of how much your wording moved, not a measurement of OpenAI's mark, which we cannot read.",
+        ],
+      },
+      {
+        id: "who-can-detect-it",
+        heading: "Who Can Actually Detect It",
+        body: [
+          "For now, almost nobody outside OpenAI. The company is giving initial detector access only to approved researchers and expert organisations, to help evaluate reliability and responsible use. There is no public key and no public detector.",
+          "That is consistent with how keyed marks work, and with what we have said about Anthropic's mark: a third-party tool can only test keys it holds. WatermarkRemoverPro holds an open reference key for self-testing and accepts vendor or institution keys through configuration, and every result names the keys it tested. It does not hold OpenAI's, and any tool claiming to detect textGrain without that key is not doing what it says.",
+          "What a checker can still do honestly is report an independent, key-free AI-style likelihood, run named statistical tests, and state its own limits. See the guide on the ChatGPT watermark for the full breakdown.",
+        ],
+      },
+      {
+        id: "what-it-means-for-writers",
+        heading: "What It Means for Writers and Publishers",
+        body: [
+          "If you are in the EU and use ChatGPT, text you copy out may now carry a mark you cannot see. Whether anyone can read it depends on who holds the detector, and today that is a short list.",
+          "OpenAI's own caution cuts both ways. A mark can indicate that an OpenAI system generated or processed part of a passage, but not how much human judgment, editing or creativity went into it. A clean result is not proof of human authorship, and a detected mark is not proof of a lazy one.",
+          "Practically, the evidence that holds up is still process evidence: version history, drafts, notes. A documented check on your exact file, with its limits stated, is supporting material, not a verdict.",
+        ],
+      },
+    ],
+    table: {
+      caption: "OpenAI's EU text watermark, as announced on 5 October 2026",
+      headers: ["Item", "What OpenAI said", "What it means"],
+      rows: [
+        ["Where", "ChatGPT and Codex in the EU; API opt-in worldwide for select models", "Regional by default, not a global default"],
+        ["Method", "textGrain, a secret-key bias on next-word choice", "Signal lives in the words and survives copy-paste"],
+        ["10% synonym replacement", "Detection fell from about 92% to 66%", "Editing weakens the mark in proportion to words changed"],
+        ["Harder cases", "Short passages, math answers, translated text", "Absence of a mark proves little"],
+        ["Detector access", "Approved researchers and expert organisations only", "No public detector or key exists"],
+      ],
+    },
+    quote: {
+      quote: "A watermark tells you a system touched a passage. It tells you nothing about how much of the thinking was yours, which is the question everyone actually wants answered.",
+      attribution: "WatermarkRemoverPro editorial",
+      role: "our reading of the announcement",
+    },
+    pitfalls: [
+      "Assuming ChatGPT text everywhere is now watermarked, when the ChatGPT rollout is EU-only and the API mark is opt-in.",
+      "Treating a tool that claims to detect the OpenAI watermark as credible without asking which key it holds.",
+      "Reading a clean result as proof of human authorship, which OpenAI itself says it is not.",
+      "Treating a word-change percentage as a guarantee. It describes your edit, not the outcome of a detector you cannot run.",
+    ],
+    faq: [
+      {
+        question: "Does ChatGPT watermark its text now?",
+        answer: "In the EU, OpenAI says it will roll an invisible watermark out over the coming weeks to eligible ChatGPT and Codex users on all plans. Outside the EU it is not on by default in ChatGPT, though API developers anywhere can switch it on for select models.",
+      },
+      {
+        question: "What is textGrain?",
+        answer: "textGrain is the name of OpenAI's watermarking method. It uses a secret key to steer the model's word choices very slightly, so that a detector holding the key can find the pattern across hundreds of words.",
+      },
+      {
+        question: "Can the ChatGPT watermark be detected?",
+        answer: "Only with OpenAI's key. At launch, detector access is limited to approved researchers and expert organisations, so there is no public detector. A third-party tool can report what it measured under keys it holds, and should name them.",
+      },
+      {
+        question: "Does editing ChatGPT text remove the watermark?",
+        answer: "It weakens it. In OpenAI's own test, replacing 10% of words with synonyms reduced detection from about 92% to 66%, and short, translated or heavily edited text is harder to detect. OpenAI also says a missing watermark does not prove human authorship.",
+      },
+      {
+        question: "Does WatermarkRemoverPro detect OpenAI's watermark?",
+        answer: "No, because it does not hold OpenAI's key and none is public. It tests the keys it has and names them on every result, and it reports how many of your words a rewrite changed so you can compare with the figures OpenAI publishes.",
+      },
+    ],
+    internalLinks: [
+      { href: "/guide/chatgpt-watermark", label: "The ChatGPT watermark explained" },
+      { href: "/guide/chatgpt-vs-claude-watermark", label: "ChatGPT vs Claude watermarking compared" },
+      { href: "/guide/eu-ai-act-article-50", label: "EU AI Act Article 50 explained" },
+      { href: "/guide/does-editing-remove-a-watermark", label: "Does editing remove a watermark?" },
+      { href: "/check", label: "Check a document" },
+    ],
+    externalLinks: [
+      { href: "https://openai.com/index/eu-text-provenance/", label: "OpenAI: text provenance in the EU" },
+      { href: "https://techcrunch.com/2026/10/05/openai-will-start-watermarking-chatgpts-text-in-the-eu/", label: "TechCrunch: OpenAI will start watermarking ChatGPT's text in the EU" },
+      { href: "https://arxiv.org/abs/2301.10226", label: "Kirchenbauer et al., A Watermark for Large Language Models" },
+    ],
+    schemaType: "none",
+  },
 ]

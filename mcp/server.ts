@@ -208,6 +208,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
               'lists, "not just X, but Y") to the rewriter. "regenerate": rewrites every passage ' +
               'regardless of measured evidence.',
           },
+          targetWordChangePercent: {
+            type: 'number',
+            minimum: 1,
+            maximum: 60,
+            description:
+              'Optional goal: keep rewriting past the flagged passages until about this percentage of the ' +
+              'original words has changed. Text watermarks that live in word choice (OpenAI\'s EU textGrain ' +
+              'among them) weaken as more words change. Every change still has to pass the fact-lock and ' +
+              'the similarity floor, so the target can be missed; the result\'s wordChangePercent and ' +
+              'targetWordChangeReached say what actually happened.',
+          },
           tier: {
             type: 'string',
             enum: ['free', 'pro'],
@@ -410,12 +421,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
       const modelChoice = args?.model as ModelChoice | undefined
       const excludeWords = readExcludeWords(args?.excludeWords)
+      const targetWordChangePercent =
+        typeof args?.targetWordChangePercent === 'number' && args.targetWordChangePercent > 0
+          ? args.targetWordChangePercent
+          : undefined
 
       // Lazy, so a caller who never rewrites anything never loads the engine
       // selector or the model backend behind it.
       const { runRewriteOnNode, describeEngine } = await import('../src/lib/rewrite/backend/node-engine')
       const { result, engine } = await runRewriteOnNode(
-        { text, language, strength, tier, excludedWords: excludeWords },
+        { text, language, strength, tier, excludedWords: excludeWords, targetWordChangePercent },
         [OPEN_REFERENCE_KEY],
         { model: modelChoice },
       )
@@ -508,6 +523,8 @@ function summarizeRewrite(result: Awaited<ReturnType<typeof reduceEvidence>>) {
         'Vocabulary listed here has no plain equivalent that fits the same slot.',
     },
     additionalTellsInExtendedLibrary: result.additionalTellsInExtendedLibrary,
+    wordChangePercent: result.wordChangePercent,
+    targetWordChangeReached: result.targetWordChangeReached,
     roundsUsed: result.roundsUsed,
     tier: result.tier,
     strength: result.strength,

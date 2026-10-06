@@ -13279,6 +13279,117 @@ var init_scoring = __esm({
   }
 });
 
+// src/lib/diff/words.ts
+function atoms(text) {
+  return text.match(/\s+|[^\s]+/g) ?? [];
+}
+function diffWords(before, after) {
+  if (before === after) return before.length === 0 ? [] : [{ op: "equal", text: before }];
+  const a = atoms(before);
+  const b = atoms(after);
+  let head = 0;
+  while (head < a.length && head < b.length && a[head] === b[head]) head++;
+  let tail = 0;
+  while (tail < a.length - head && tail < b.length - head && a[a.length - 1 - tail] === b[b.length - 1 - tail]) {
+    tail++;
+  }
+  const midA = a.slice(head, a.length - tail);
+  const midB = b.slice(head, b.length - tail);
+  const parts = [];
+  const push = (op, text) => {
+    if (text.length === 0) return;
+    const last = parts[parts.length - 1];
+    if (last && last.op === op) last.text += text;
+    else parts.push({ op, text });
+  };
+  push("equal", a.slice(0, head).join(""));
+  if (midA.length > MAX_ATOMS || midB.length > MAX_ATOMS) {
+    push("delete", midA.join(""));
+    push("insert", midB.join(""));
+  } else {
+    for (const part of lcsDiff(midA, midB)) push(part.op, part.text);
+  }
+  push("equal", a.slice(a.length - tail).join(""));
+  return parts;
+}
+function lcsDiff(a, b) {
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  const table = new Uint32Array(rows * cols);
+  for (let i2 = a.length - 1; i2 >= 0; i2--) {
+    for (let j2 = b.length - 1; j2 >= 0; j2--) {
+      table[i2 * cols + j2] = a[i2] === b[j2] ? table[(i2 + 1) * cols + j2 + 1] + 1 : Math.max(table[(i2 + 1) * cols + j2], table[i2 * cols + j2 + 1]);
+    }
+  }
+  const parts = [];
+  const push = (op, text) => {
+    if (text.length === 0) return;
+    const last = parts[parts.length - 1];
+    if (last && last.op === op) last.text += text;
+    else parts.push({ op, text });
+  };
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      push("equal", a[i]);
+      i++;
+      j++;
+    } else if (table[(i + 1) * cols + j] >= table[i * cols + j + 1]) {
+      push("delete", a[i]);
+      i++;
+    } else {
+      push("insert", b[j]);
+      j++;
+    }
+  }
+  while (i < a.length) push("delete", a[i++]);
+  while (j < b.length) push("insert", b[j++]);
+  return parts;
+}
+function diffStats(parts) {
+  const words = (text) => (text.match(/[^\s]+/g) ?? []).length;
+  let added = 0;
+  let removed = 0;
+  let unchanged = 0;
+  for (const part of parts) {
+    if (part.op === "insert") added += words(part.text);
+    else if (part.op === "delete") removed += words(part.text);
+    else unchanged += words(part.text);
+  }
+  return { added, removed, unchanged };
+}
+function alignParagraphs(before, after) {
+  const a = splitParagraphs(before);
+  const b = splitParagraphs(after);
+  if (a.length !== b.length) {
+    return {
+      aligned: false,
+      pairs: [],
+      reason: `The draft has ${a.length} paragraph${a.length === 1 ? "" : "s"} and the rewrite has ${b.length}, so they cannot be matched up one to one.`
+    };
+  }
+  return {
+    aligned: true,
+    pairs: a.map((paragraph, index) => ({
+      index,
+      before: paragraph.text,
+      after: b[index].text,
+      start: b[index].start,
+      end: b[index].end,
+      changed: paragraph.text !== b[index].text
+    }))
+  };
+}
+var MAX_ATOMS;
+var init_words = __esm({
+  "src/lib/diff/words.ts"() {
+    "use strict";
+    init_tokenize();
+    MAX_ATOMS = 1500;
+  }
+});
+
 // src/lib/rewrite/lexical-shift.ts
 function lexicalShiftPercent(before, after) {
   const a = new Set(distinctBigrams(tokenize(before)).map(([prev, cur]) => `${prev} ${cur}`));
@@ -13289,11 +13400,25 @@ function lexicalShiftPercent(before, after) {
   const unionSize = a.size + b.size - shared;
   return Math.round((1 - shared / unionSize) * 100);
 }
+function wordChangePercent(before, after) {
+  const alignment = alignParagraphs(before, after);
+  const pairs = alignment.aligned ? alignment.pairs.map((p) => [p.before, p.after]) : [[before, after]];
+  let removed = 0;
+  let unchanged = 0;
+  for (const [a, b] of pairs) {
+    const stats = diffStats(diffWords(a, b));
+    removed += stats.removed;
+    unchanged += stats.unchanged;
+  }
+  const total = removed + unchanged;
+  return total === 0 ? 0 : Math.round(removed / total * 100);
+}
 var init_lexical_shift = __esm({
   "src/lib/rewrite/lexical-shift.ts"() {
     "use strict";
     init_tokenize();
     init_watermark();
+    init_words();
   }
 });
 
@@ -13308,6 +13433,9 @@ function replacePassages(text, replacements) {
   }
   result += text.slice(cursor);
   return result;
+}
+function atLeast(strength, floor) {
+  return STRENGTH_RANK.indexOf(strength) >= STRENGTH_RANK.indexOf(floor) ? strength : floor;
 }
 async function rewriteDocument(request, backend, keys) {
   const startTime = Date.now();
@@ -13324,6 +13452,8 @@ async function rewriteDocument(request, backend, keys) {
       elevatedVocabulary: [],
       additionalTellsInExtendedLibrary: 0,
       lexicalShiftPercent: 0,
+      wordChangePercent: 0,
+      targetWordChangeReached: null,
       roundsUsed: 0,
       tier: request.tier,
       strength: request.strength,
@@ -13401,6 +13531,51 @@ async function rewriteDocument(request, backend, keys) {
     if (survivedAfter >= survivedBefore && replacements.length < targets.length) break;
     if (survivedAfter === 0 && survivedBefore === 0 && request.strength !== "regenerate") break;
   }
+  const target = typeof request.targetWordChangePercent === "number" && request.targetWordChangePercent > 0 ? Math.min(request.targetWordChangePercent, MAX_TARGET_WORD_CHANGE) : null;
+  let targetReached = null;
+  if (target !== null) {
+    const topUpStrength = atLeast(request.strength, "aggressive");
+    let topUpRounds = 0;
+    while (wordChangePercent(request.text, currentText) < target && topUpRounds < MAX_ROUNDS * 4) {
+      topUpRounds++;
+      const remaining = analysis.passages.filter((p) => !attempted.has(p.index)).sort((a, b) => b.text.length - a.text.length).slice(0, TOP_UP_BATCH);
+      if (remaining.length === 0) break;
+      const replacements = [];
+      for (const passage of remaining) {
+        attempted.add(passage.index);
+        const candidateTexts = await backend.generate(passage.text, {
+          count: candidateCount(request.tier),
+          strength: topUpStrength,
+          language: request.language ?? analysis.language.code ?? void 0,
+          excludedWords: request.excludedWords,
+          englishVariant
+        });
+        const scored = await scoreCandidates(passage.text, candidateTexts, backend, {
+          minSimilarity: minSimilarity(topUpStrength),
+          keys,
+          excludedWords: request.excludedWords
+        });
+        const best = pickBest(scored);
+        if (best && best.text !== passage.text) {
+          replacements.push({ start: passage.start, end: passage.end, text: best.text });
+        }
+        passageResults.set(passage.index, mergeExisting(passageResults.get(passage.index), {
+          index: passage.index,
+          original: passageResults.get(passage.index)?.original ?? passage.text,
+          chosen: best ? best.text : null,
+          candidates: scored,
+          beforeZ: passageResults.get(passage.index)?.beforeZ ?? passage.watermarkZ,
+          afterZ: best?.evidenceZ ?? passage.watermarkZ,
+          beforeStyleDeviation: passageResults.get(passage.index)?.beforeStyleDeviation ?? passage.styleDeviation,
+          reason: best ? "llm-rewrite" : "unchanged-no-safe-candidate"
+        }));
+      }
+      if (replacements.length === 0) continue;
+      currentText = replacePassages(currentText, replacements);
+      analysis = await checkDocument(currentText, { keys, language: request.language });
+    }
+    targetReached = wordChangePercent(request.text, currentText) >= target;
+  }
   return {
     status: "ok",
     documentBefore,
@@ -13412,6 +13587,8 @@ async function rewriteDocument(request, backend, keys) {
     elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
     additionalTellsInExtendedLibrary,
     lexicalShiftPercent: lexicalShiftPercent(request.text, currentText),
+    wordChangePercent: wordChangePercent(request.text, currentText),
+    targetWordChangeReached: targetReached,
     roundsUsed: round,
     tier: request.tier,
     strength: request.strength,
@@ -13423,7 +13600,7 @@ function mergeExisting(existing, next) {
   if (!existing) return next;
   return { ...next, candidates: [...existing.candidates, ...next.candidates] };
 }
-var REWRITE_LIMITS;
+var REWRITE_LIMITS, STRENGTH_RANK, TOP_UP_BATCH, MAX_TARGET_WORD_CHANGE;
 var init_orchestrator = __esm({
   "src/lib/rewrite/orchestrator.ts"() {
     "use strict";
@@ -13439,8 +13616,12 @@ var init_orchestrator = __esm({
       'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
       `The evidence scores shown use the same detector arithmetic as ${SITE.name}'s own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.`,
       "All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.",
+      "Text watermarks that live in word choice, such as the one OpenAI began adding to ChatGPT and Codex output in the EU, weaken as more words change, and no tool outside the vendor can measure by how much: the keys and detectors are not public. The word-change figure shown is how much of your own wording moved, not a measurement of any vendor's mark.",
       '"Balanced" also lightly varies a bounded sample of passages that showed no detectable signal at all, as a hedge against a watermark scheme this deployment cannot test for. "Preserve" never does this; "aggressive" and "regenerate" already vary most or all passages regardless of signal.'
     ];
+    STRENGTH_RANK = ["preserve", "balanced", "aggressive", "regenerate"];
+    TOP_UP_BATCH = 4;
+    MAX_TARGET_WORD_CHANGE = 60;
   }
 });
 
@@ -22729,6 +22910,12 @@ CANNOT GUARANTEE defeating a specific model vendor's undisclosed watermark. Nobo
             enum: ["preserve", "balanced", "aggressive", "regenerate"],
             description: 'How much change to allow, in exchange for a larger evidence reduction. "preserve": stock phrases only, and only in passages a real check would flag as a finding; leaves dash punctuation and vocabulary alone. "balanced" (the default): adds dash punctuation, and rewrites AI-associated vocabulary ("robust", "comprehensive", "pivotal") where it RECURS, since a single occurrence is a word choice rather than a tell. "aggressive": rewrites that vocabulary on a single occurrence too, and sends any passage carrying a flagged construction (three-item lists, "not just X, but Y") to the rewriter. "regenerate": rewrites every passage regardless of measured evidence.'
           },
+          targetWordChangePercent: {
+            type: "number",
+            minimum: 1,
+            maximum: 60,
+            description: "Optional goal: keep rewriting past the flagged passages until about this percentage of the original words has changed. Text watermarks that live in word choice (OpenAI's EU textGrain among them) weaken as more words change. Every change still has to pass the fact-lock and the similarity floor, so the target can be missed; the result's wordChangePercent and targetWordChangeReached say what actually happened."
+          },
           tier: {
             type: "string",
             enum: ["free", "pro"],
@@ -22867,9 +23054,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
       const modelChoice = args?.model;
       const excludeWords = readExcludeWords(args?.excludeWords);
+      const targetWordChangePercent = typeof args?.targetWordChangePercent === "number" && args.targetWordChangePercent > 0 ? args.targetWordChangePercent : void 0;
       const { runRewriteOnNode: runRewriteOnNode2, describeEngine: describeEngine2 } = await Promise.resolve().then(() => (init_node_engine(), node_engine_exports));
       const { result, engine } = await runRewriteOnNode2(
-        { text, language, strength, tier, excludedWords: excludeWords },
+        { text, language, strength, tier, excludedWords: excludeWords, targetWordChangePercent },
         [OPEN_REFERENCE_KEY],
         { model: modelChoice }
       );
@@ -22931,6 +23119,8 @@ function summarizeRewrite(result) {
       note: 'These were measured on the final text and NOT rewritten. Constructions need a human or model: "aggressive" and above route the passages carrying them to the rewriter. Vocabulary listed here has no plain equivalent that fits the same slot.'
     },
     additionalTellsInExtendedLibrary: result.additionalTellsInExtendedLibrary,
+    wordChangePercent: result.wordChangePercent,
+    targetWordChangeReached: result.targetWordChangeReached,
     roundsUsed: result.roundsUsed,
     tier: result.tier,
     strength: result.strength,

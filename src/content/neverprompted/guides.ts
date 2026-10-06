@@ -431,4 +431,62 @@ export const GUIDES: LongTailPage[] = [
       },
     ],
   },
+  {
+    slug: 'does-chatgpt-watermark-its-text',
+    group: 'guide',
+    title: 'Does ChatGPT Watermark Its Text?',
+    metaTitle: 'Does ChatGPT Watermark Its Text? The EU Change, in Plain English',
+    metaDescription:
+      'Short, direct answers: where ChatGPT now adds an invisible watermark, who can see it, whether it identifies you, and what rewriting does. Updated for OpenAI’s October 2026 EU announcement.',
+    intro:
+      'In the EU, yes. OpenAI announced on 5 October 2026 that ChatGPT and Codex text will carry an invisible watermark there, rolling out over the coming weeks on all plans. Elsewhere ChatGPT isn’t watermarked by default, though developers using the API can switch it on for select models.',
+    sections: [
+      {
+        heading: 'The quick answers',
+        body: [
+          'Is it visible? No. It’s a pattern in which words the model chose, not a symbol or hidden file data.',
+          'Does it survive copy and paste? Yes, because it lives in the words themselves.',
+          'Does it identify me? OpenAI says no. It can indicate that an OpenAI system generated or processed part of a passage, not who asked for it.',
+          'Can anyone check it? Right now only approved researchers and expert organisations have access to OpenAI’s detector, so ordinary users and most institutions can’t.',
+        ],
+      },
+      {
+        heading: 'Why only the EU?',
+        body: [
+          'The EU AI Act’s transparency rules, in effect since 2 August 2026, require AI-generated content to be marked in a way other systems can identify. OpenAI is meeting that where it applies and has said it isn’t making text watermarking a global default at launch.',
+          'Anthropic took the other route in August and said it will watermark Claude’s text everywhere.',
+        ],
+      },
+      {
+        heading: 'What happens if I edit it?',
+        body: [
+          'The mark weakens. OpenAI’s own test showed detection falling from about 92% to 66% when 10% of words were replaced with synonyms, and short passages, math answers and translated text are harder to detect.',
+          'That doesn’t make a clean text proof you wrote it. OpenAI says a missing watermark doesn’t prove human authorship, because the text could be too short, heavily edited, or from a different AI.',
+        ],
+      },
+      {
+        heading: 'What NeverPrompted does about it',
+        body: [
+          'NeverPrompted can’t read OpenAI’s watermark, because nobody outside OpenAI holds the key, and it says so on every result. What it does is help you rewrite your own draft so it genuinely sounds like you, entirely on your device, and show you what percentage of your original words changed along the way.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Is there a free tool to detect the ChatGPT watermark?',
+        answer:
+          'No honest one. Detection needs OpenAI’s private key, and detector access is limited to approved researchers and expert organisations. NeverPrompted checks for patterns it can actually measure and tells you which ones.',
+      },
+      {
+        question: 'I’m outside the EU. Is my ChatGPT text watermarked?',
+        answer:
+          'Not by default. API developers can opt in, so text from an app built on OpenAI’s API might be, but ChatGPT itself isn’t for non-EU users at launch.',
+      },
+      {
+        question: 'Will it change how ChatGPT writes?',
+        answer:
+          'OpenAI says it saw no meaningful change in its models’ performance with the watermark on.',
+      },
+    ],
+  },
 ]

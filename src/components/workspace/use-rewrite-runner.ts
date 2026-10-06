@@ -114,6 +114,7 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
                 strength: settings.strength,
                 tier: 'pro',
                 excludedWords: settings.excludedWords,
+                targetWordChangePercent: settings.targetWordChange || undefined,
               },
               backend,
               PUBLIC_DETECTION_KEYS,
@@ -153,6 +154,7 @@ export function useRewriteRunner({ subscriber = false }: { subscriber?: boolean 
             // too; that is part of what the subscription buys.
             tier: subscriber ? 'pro' : 'free',
             excludedWords: settings.excludedWords,
+                targetWordChangePercent: settings.targetWordChange || undefined,
           },
           PUBLIC_DETECTION_KEYS,
         )

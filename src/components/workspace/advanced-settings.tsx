@@ -5,7 +5,7 @@ import Link from 'next/link'
 import type { Strength } from '@/lib/rewrite'
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/detector/languages'
 import { splitExcludedWordsInput } from '@/lib/calibrate/excluded-terms'
-import { ENGINES, STRENGTH_OPTIONS, engine, type EngineId } from './settings'
+import { ENGINES, STRENGTH_OPTIONS, WORD_CHANGE_TARGETS, engine, type EngineId } from './settings'
 import { SITE } from '@/lib/site'
 
 export interface WorkspaceSettings {
@@ -14,6 +14,8 @@ export interface WorkspaceSettings {
   engineId: EngineId
   /** Words or phrases the rewrite must never swap out, unchanged wherever they occur. Useful for SEO keywords, product names or other terms worth keeping byte-for-byte. */
   excludedWords: string[]
+  /** 0 = off. Share (%) of the original words the rewrite should aim to change, subject to the meaning and fact checks. Optional so a run stored before this setting existed still loads. */
+  targetWordChange?: number
 }
 
 /**
@@ -47,6 +49,7 @@ export function AdvancedSettings({
     settings.language ? LANGUAGE_NAMES[settings.language as LanguageCode] : 'Detect language',
     `${engine(settings.engineId).label} engine`,
     STRENGTH_OPTIONS.find((s) => s.value === settings.strength)?.label ?? settings.strength,
+    ...(settings.targetWordChange ? [`${settings.targetWordChange}% word change`] : []),
   ].join(' · ')
 
   return (
@@ -150,6 +153,36 @@ export function AdvancedSettings({
             <p className="mt-2.5 text-[13px] leading-relaxed text-ink-500">
               {STRENGTH_OPTIONS.find((s) => s.value === settings.strength)?.description}
             </p>
+          </fieldset>
+
+          {/* ------------------------------------------------- word-change target */}
+          <fieldset disabled={disabled}>
+            <legend className="text-sm font-semibold text-ink-800">Word-change target</legend>
+            <p className="mt-1 text-[13px] leading-relaxed text-ink-500">
+              Keep going past the flagged passages until about this share of your words has changed.
+              Useful when text came out of a system that marks its output through word choice, such
+              as ChatGPT in the EU, because that kind of mark weakens as more words change. Every
+              change still has to keep your meaning and your facts, so the target can be missed, and
+              the result says when it was.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {WORD_CHANGE_TARGETS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => set('targetWordChange', option.value)}
+                  aria-pressed={(settings.targetWordChange ?? 0) === option.value}
+                  className={
+                    'rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition-colors duration-150 ' +
+                    ((settings.targetWordChange ?? 0) === option.value
+                      ? 'border-ink-900 bg-ink-900 text-white'
+                      : 'border-ink-200 text-ink-700 hover:border-ink-300 hover:bg-ink-50')
+                  }
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </fieldset>
 
           {/* -------------------------------------------------------- language */}

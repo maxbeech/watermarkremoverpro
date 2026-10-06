@@ -15,6 +15,45 @@ products built from this one repository, each with its own
   `x-vercel-*` headers, `maxDuration` and `vercel.json` out.
 - Development no longer needs the Vercel CLI: copy `.env.example`.
 
+## 2026-10-06 - OpenAI's EU ChatGPT watermark: product and both brands' content
+
+OpenAI announced (5 October 2026) that ChatGPT and Codex text will carry an
+invisible textGrain watermark in the EU, with API opt-in worldwide and detector
+access limited to approved researchers. Its own robustness figure (10% of words
+replaced by synonyms: detection about 92% to 66%) is stated in words changed.
+
+**Product (shared by both brands):**
+- New `wordChangePercent` on every rewrite result: the share of the ORIGINAL
+  words that did not survive (`src/lib/rewrite/lexical-shift.ts`), shown as
+  "Words changed" in the analysis panel. Same unit vendors publish in. It
+  describes the user's edit, not a measurement of any vendor's mark.
+- New optional `targetWordChangePercent` (1-60) on `RewriteRequest`, the MCP
+  `reduce_ai_evidence` tool (`targetWordChangePercent`), the CLI
+  (`--target-word-change`) and a "Word-change target" control in the workspace
+  settings. After the evidence-driven rounds, unattempted passages are rewritten
+  until the target is met, using at least "aggressive" candidates, and every
+  candidate still has to clear the fact-lock and similarity floor. The result
+  carries `targetWordChangeReached`, and the UI says when it was missed.
+- `REWRITE_LIMITS`, the shared FAQ and `llms.txt` now state that OpenAI's mark
+  is keyed and unreadable by third parties. The detector still holds no vendor
+  key and says so; nothing here claims to detect textGrain.
+- Tests: `wordChangePercent` unit tests and three orchestrator tests for the
+  target (reported honestly, never bypasses the fact-lock).
+
+**WatermarkRemoverPro content (forensic/compliance register):** news post
+`/blog/openai-chatgpt-text-watermark-eu-textgrain`, guides `/guide/chatgpt-watermark`
+and `/guide/chatgpt-vs-claude-watermark`, new OpenAI sections in
+`/guide/eu-ai-act-article-50` and `/guide/does-editing-remove-a-watermark`,
+homepage news strip.
+
+**NeverPrompted content (plain-English, writer-facing register, written
+separately, nothing shared with the above):** blog post
+`/blog/chatgpt-hidden-watermark-europe-your-writing`, guide
+`/guide/does-chatgpt-watermark-its-text`, audience page `/for/writers-in-the-eu`,
+homepage news strip.
+
+`plugins/watermarkremoverpro/dist/mcp-server.mjs` rebuilt with the new tool option (plugin version not bumped; bump before publishing so existing installs update). `packages/rewrite-engine` dist is untracked and was not rebuilt.
+
 ## 2026-09-21 - Fixed a real grammar bug in the rule-based rewrite fallback, MCP plugin 0.4.1
 
 Found by actually running `reduce_ai_evidence` over the NeverPrompted

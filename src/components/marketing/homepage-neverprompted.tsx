@@ -57,6 +57,18 @@ export function NeverPromptedHome({
         </Wrap>
       </div>
 
+      {/* ------------------------------------------------------------- news */}
+      <div className="border-b border-ink-200 bg-seal-50">
+        <Wrap wide className="py-3">
+          <p className="text-center text-[13px] leading-relaxed text-ink-700">
+            <span className="font-semibold text-ink-900">In the EU?</span> ChatGPT text now carries an invisible watermark. Here is what it means for your writing, and how to make a draft properly yours.{' '}
+            <Link href="/blog/chatgpt-hidden-watermark-europe-your-writing" className="font-semibold text-seal-700 underline underline-offset-2">
+              Read more
+            </Link>
+          </p>
+        </Wrap>
+      </div>
+
       {/* --------------------------------------------------------- trusted by */}
       <div className="border-b border-ink-200 bg-white py-10 sm:py-12">
         <Wrap wide>

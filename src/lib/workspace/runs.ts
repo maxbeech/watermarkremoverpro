@@ -19,6 +19,8 @@ export interface RunSettings {
   strength: Strength
   engineId: EngineId
   excludedWords: string[]
+  /** 0/absent = off. See WorkspaceSettings.targetWordChange. */
+  targetWordChange?: number
 }
 
 export type RunStatus = 'pending' | 'running' | 'done' | 'error'
@@ -210,6 +212,10 @@ export interface RunSummary {
   processingTimeMs: number
   /** 0-100. See RewriteResult.lexicalShiftPercent: how much word-pair choice moved, regardless of what was detected. */
   lexicalShift: number
+  /** 0-100. Share of the original words that did not survive. See RewriteResult.wordChangePercent. */
+  wordChange: number
+  /** Null when no word-change target was set for the run. */
+  targetWordChangeReached: boolean | null
 }
 
 /**
@@ -254,6 +260,9 @@ export function summariseRun(result: RewriteResult): RunSummary {
     // rather than a null one. 0 reads as "nothing to report" here, which is
     // an honest enough default for a run this old rather than "undefined%".
     lexicalShift: result.lexicalShiftPercent ?? 0,
+    // Same old-run guard as above: a stored result predating the field.
+    wordChange: result.wordChangePercent ?? 0,
+    targetWordChangeReached: result.targetWordChangeReached ?? null,
   }
 }
 

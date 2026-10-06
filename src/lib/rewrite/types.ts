@@ -45,6 +45,16 @@ export interface RewriteRequest {
   tier: Tier
   /** Words/phrases that must never be swapped out, e.g. SEO terms the caller is trying to rank for. */
   excludedWords?: string[]
+  /**
+   * Optional goal: keep rewriting passages the detector did not flag until
+   * this share (0-60) of the original words has changed, or until no passage
+   * has a candidate that is both fact-locked and above the similarity floor.
+   * It is a goal, not a promise: an unsafe rewrite is still worse than no
+   * rewrite, so the result reports whether the target was actually reached.
+   * Exists because text watermarks that live in word choice (OpenAI's EU
+   * textGrain among them) weaken in proportion to how many words change.
+   */
+  targetWordChangePercent?: number
 }
 
 export interface RewriteResult {
@@ -78,6 +88,14 @@ export interface RewriteResult {
    * evidence-reduction numbers above, which are scoped to detected findings.
    */
   lexicalShiftPercent: number
+  /**
+   * 0-100: share of the original document's words that did not survive into
+   * `revisedText`. The unit vendors publish text-watermark robustness in. See
+   * wordChangePercent in lexical-shift.ts.
+   */
+  wordChangePercent: number
+  /** Null when no `targetWordChangePercent` was requested. */
+  targetWordChangeReached: boolean | null
   roundsUsed: number
   tier: Tier
   strength: Strength

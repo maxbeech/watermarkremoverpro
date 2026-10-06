@@ -38,6 +38,7 @@ interface ParsedArgs {
   language?: string
   json: boolean
   help: boolean
+  targetWordChange?: number
 }
 
 const STRENGTHS: Strength[] = ['preserve', 'balanced', 'aggressive', 'regenerate']
@@ -74,6 +75,14 @@ function parseArgs(argv: string[]): ParsedArgs {
         const value = argv[++i]
         if (!isModelChoice(value)) throw new Error(`--model must be one of: ${MODEL_CHOICES.join(', ')}`)
         result.model = value
+        break
+      }
+      case '--target-word-change': {
+        const value = Number(argv[++i])
+        if (!Number.isFinite(value) || value < 1 || value > 60) {
+          throw new Error('--target-word-change must be a number from 1 to 60 (percent of words)')
+        }
+        result.targetWordChange = value
         break
       }
       case '--language':
@@ -120,6 +129,12 @@ Options:
                          downloads and runs a real local LLM (Qwen2.5) on first use;
                          "standard" is the instant, no-download rule-based engine. All
                          three are entirely on-device.
+      --target-word-change <n>
+                         Keep rewriting past flagged passages until about n% (1-60) of the
+                         original words have changed. Text watermarks that live in word
+                         choice weaken as more words change. Every change still passes the
+                         fact-lock and similarity floor, so the target can be missed; the
+                         --json output says whether it was.
       --language <code> Force a language instead of auto-detecting (en, es, fr, de, pt).
       --json             Print the full RewriteResult as JSON instead of just the revised text.
   -h, --help             Show this help.
@@ -141,7 +156,13 @@ async function main() {
     process.exit(1)
   }
 
-  const request = { text, language: args.language, strength: args.strength, tier: args.tier }
+  const request = {
+    text,
+    language: args.language,
+    strength: args.strength,
+    tier: args.tier,
+    targetWordChangePercent: args.targetWordChange,
+  }
 
   const { result, engine } = await runRewriteOnNode(request, [OPEN_REFERENCE_KEY], { model: args.model })
 

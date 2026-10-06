@@ -116,6 +116,8 @@ describe('summariseRun', () => {
       // same as a real run stored before this change), so this exercises the
       // `?? 0` fallback rather than a real measurement.
       lexicalShift: 0,
+      wordChange: 0,
+      targetWordChangeReached: null,
     })
   })
 

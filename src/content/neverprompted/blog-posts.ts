@@ -571,4 +571,142 @@ export const BLOG_POSTS: BlogPost[] = [
     ],
     schemaType: "none",
   },
+  {
+    slug: "chatgpt-hidden-watermark-europe-your-writing",
+    title: "ChatGPT Now Hides a Watermark in Its Text in Europe. Here’s What That Means for Your Writing",
+    h1: "ChatGPT Is Quietly Marking Its Text in Europe. What Happens to Your Writing?",
+    metaDescription:
+      "OpenAI is adding an invisible watermark to ChatGPT text in the EU. What it is, who it affects, why your own edits matter, and how to make a draft genuinely sound like you.",
+    category: "News",
+    format: "how-to",
+    intent: "informational",
+    publishedAt: "2026-10-06",
+    author: "NeverPrompted Content Team",
+    primaryKeyword: "chatgpt watermark",
+    supportingKeywords: [
+      "does chatgpt watermark text",
+      "chatgpt invisible watermark",
+      "chatgpt watermark europe",
+      "openai watermark students",
+      "ai watermark my writing",
+      "how to make chatgpt text sound like me",
+    ],
+    longTailKeywords: [
+      "will my chatgpt essay have a watermark",
+      "can my boss see a chatgpt watermark",
+      "chatgpt watermark eu users only",
+      "does rewriting chatgpt text in my own words remove the watermark",
+    ],
+    heroImage: {
+      src: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1080",
+      alt: "A person writing in a notebook next to a laptop, thinking about the chatgpt watermark and their own writing",
+      unsplashId: "1455390582262-044cdead277a",
+    },
+    intro: [
+      "If you use ChatGPT in the EU, the text you copy out is about to carry a mark you can’t see. OpenAI announced on 5 October that it will add an invisible watermark to ChatGPT and Codex output there.",
+      "You won’t notice it, nobody can read it without OpenAI’s private key, and it doesn’t say who you are. But it does change what ‘I used ChatGPT for the first draft’ means once that draft is in the wild.",
+      "Here is the plain version: what’s happening, who’s affected, and why the best answer is the old one, making the writing properly yours.",
+    ],
+    takeaways: [
+      "The ChatGPT watermark is EU-only for now. In the API, developers anywhere can switch it on, but it is off by default.",
+      "It’s a pattern in the words the model picks, not a visible symbol, so it survives copy and paste. OpenAI says it doesn’t identify you.",
+      "OpenAI’s own testing shows heavy editing weakens it: swapping 10% of words for synonyms took detection from about 92% to 66%.",
+      "Only approved researchers and expert organisations can use OpenAI’s detector at the moment, so most people can’t check a text either way.",
+      "A missing watermark doesn’t prove you wrote something, and a present one doesn’t prove you didn’t think. Your own voice and your own process are what carry weight.",
+    ],
+    sections: [
+      {
+        id: "what-changed",
+        heading: "What Actually Changed This Week",
+        body: [
+          "OpenAI told the world on Monday that it will start adding an invisible watermark to text from ChatGPT and Codex for eligible users in the EU, on every plan, rolling out over the next few weeks. The reason is the EU AI Act, whose transparency rules took effect on 2 August and say AI-generated content has to be marked in a way other systems can identify.",
+          "Outside Europe, ChatGPT isn’t changing. Developers using the API anywhere can turn the watermark on for some models, but it’s off unless they do. OpenAI says it isn’t making text watermarking a global default at launch.",
+          "This follows Anthropic, which said in August it will watermark Claude’s text worldwide. That announcement drew complaints from people who felt they, not Claude, had supplied the instructions, context and decisions. It’s a fair feeling, and it’s worth holding onto for the rest of this post.",
+        ],
+      },
+      {
+        id: "what-a-text-watermark-is",
+        heading: "What an Invisible Text Watermark Is (and Isn’t)",
+        body: [
+          "Picture a model choosing between near-identical words, ‘use’ or ‘utilise’, ‘show’ or ‘demonstrate’. A watermark uses a secret key to lean those choices a tiny bit in a pattern. One choice means nothing. A few hundred add up to something a detector holding the key can spot.",
+          "Nothing is hidden in the formatting or in a file, which is why it follows the words wherever you paste them. It also isn’t a name tag. OpenAI says it doesn’t identify the user, and it says a watermark can show that an OpenAI system generated or processed part of a passage, not how much of your thinking, editing or creativity went into it.",
+        ],
+      },
+      {
+        id: "who-can-see-it",
+        heading: "Who Can Actually See It?",
+        body: [
+          "Almost nobody, for now. OpenAI is giving detector access only to approved researchers and expert organisations while it tests reliability. There is no public ChatGPT-watermark checker, and any site claiming it can spot OpenAI’s mark without that access is guessing.",
+          "That also means your teacher, editor or client probably can’t run the check themselves yet. But the situation will change as detectors spread, which is why it’s worth getting your habits right now rather than later.",
+        ],
+      },
+      {
+        id: "does-editing-help",
+        heading: "Does Rewriting It in Your Own Words Help?",
+        body: [
+          "Yes, in a limited and honest way. OpenAI’s own test found that replacing 10% of words with synonyms cut detection from about 92% to 66%, and that short passages, math answers and translated text are harder to detect. More of your own wording means fewer of the model’s fingerprints.",
+          "But don’t treat it as a trick. Changing words to dodge a mark gives you worse writing; changing them because they’re not how you’d say it gives you better writing, and the weaker watermark is a side effect. A missing watermark doesn’t prove human authorship either, OpenAI says so itself.",
+        ],
+      },
+      {
+        id: "making-it-yours",
+        heading: "How to Make a ChatGPT Draft Genuinely Yours",
+        body: [
+          "Read it aloud and mark every sentence you wouldn’t say. Replace stock transitions and hedges with how you’d actually put it. Add one detail only you know, a number, a name, a mistake you made. Change the order of an argument if you’d have made it differently.",
+          "NeverPrompted does the mechanical half of this on your device: it flags the stock phrases and flat rhythm, proposes rewrites you can accept or reject, and now shows what percentage of your original words changed, so you can see how far a draft has moved. You can also set a word-change target. It never uploads your text, and it can’t promise a result against a mark it doesn’t hold the key for.",
+        ],
+      },
+    ],
+    table: {
+      caption: "ChatGPT’s EU watermark at a glance",
+      headers: ["Question", "Answer", "Source"],
+      rows: [
+        ["Who gets it?", "ChatGPT and Codex users in the EU, on all plans, over the coming weeks", "OpenAI announcement, 5 October 2026"],
+        ["Outside the EU?", "Not by default; API developers can opt in for select models", "OpenAI announcement"],
+        ["Does it identify me?", "No, according to OpenAI", "OpenAI announcement"],
+        ["Can it be edited away?", "Weakened: about 92% to 66% detection with 10% of words replaced", "OpenAI’s own testing"],
+        ["Who can check it?", "Approved researchers and expert organisations", "OpenAI announcement"],
+      ],
+    },
+    quote: {
+      quote: "Don’t ask whether a tool can hide where a draft came from. Ask whether the finished piece sounds like you and says what you meant.",
+      attribution: "NeverPrompted editorial",
+      role: "our advice to writers",
+    },
+    pitfalls: [
+      "Assuming every ChatGPT answer is now watermarked. The ChatGPT rollout is EU-only for now.",
+      "Trusting a site that says it can detect OpenAI’s watermark. Without the key, nobody can.",
+      "Swapping synonyms mechanically. It reads worse and doesn’t change the ideas, which is what people actually judge.",
+      "Believing a clean result proves you wrote it. It doesn’t, and neither does a flag prove you didn’t.",
+    ],
+    faq: [
+      {
+        question: "Does ChatGPT watermark text now?",
+        answer: "In the EU, OpenAI says yes, rolling out over the coming weeks for eligible ChatGPT and Codex users. Elsewhere it isn’t on by default, though API developers can switch it on for some models.",
+      },
+      {
+        question: "Can my teacher or boss see the ChatGPT watermark?",
+        answer: "Not directly. It’s invisible, and OpenAI’s detector is limited to approved researchers and expert organisations for now. That may change, so it’s better to make your writing genuinely your own regardless.",
+      },
+      {
+        question: "Will rewriting ChatGPT text in my own words remove the watermark?",
+        answer: "It weakens it. OpenAI found that replacing 10% of words with synonyms dropped detection from about 92% to 66%. No honest tool can promise a complete removal, and a rewrite is worth doing for the quality of the writing first.",
+      },
+      {
+        question: "Does the watermark prove I used ChatGPT to write everything?",
+        answer: "No. OpenAI says a watermark can show a system generated or processed part of a passage, not how much of your judgment or editing is in it.",
+      },
+    ],
+    internalLinks: [
+      { href: "/guide/does-chatgpt-watermark-its-text", label: "Does ChatGPT watermark its text? The short answers" },
+      { href: "/for/writers-in-the-eu", label: "NeverPrompted for writers in the EU" },
+      { href: "/guide/how-to-make-ai-text-sound-human", label: "How to make AI text sound human" },
+      { href: "/check", label: "Check your draft" },
+    ],
+    externalLinks: [
+      { href: "https://openai.com/index/eu-text-provenance/", label: "OpenAI: text provenance in the EU" },
+      { href: "https://techcrunch.com/2026/10/05/openai-will-start-watermarking-chatgpts-text-in-the-eu/", label: "TechCrunch coverage of the announcement" },
+    ],
+    schemaType: "none",
+  },
 ]

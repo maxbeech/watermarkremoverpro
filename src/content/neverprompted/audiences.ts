@@ -311,4 +311,53 @@ export const AUDIENCES: LongTailPage[] = [
       },
     ],
   },
+  {
+    slug: 'writers-in-the-eu',
+    group: 'for',
+    title: 'For writers in the EU using ChatGPT',
+    metaTitle: 'ChatGPT Watermark in the EU: What Writers Should Do | NeverPrompted',
+    metaDescription:
+      'ChatGPT text in the EU now carries an invisible watermark. If you draft with it for work, study or publishing, here is how to keep your writing yours, on-device and private.',
+    intro:
+      'If you’re in the EU and you draft with ChatGPT, whatever you paste out of it will soon carry a mark you can’t see. It doesn’t name you, and almost nobody can read it yet. The sensible response isn’t panic. It’s making sure the final piece is really yours.',
+    sections: [
+      {
+        heading: 'What’s different for you specifically',
+        body: [
+          'OpenAI’s watermark applies to ChatGPT and Codex for eligible EU users on all plans, rolling out over the coming weeks. Your colleague in another country doesn’t get it by default. If you work across borders, your draft may carry it and theirs may not, which is one more reason ‘it passed a check’ never settles anything on its own.',
+          'The mark sits in word choice, so it travels in copied text. OpenAI also says it can’t tell how much human editing or judgement went in. In other words, a mark describes the tool, not your contribution.',
+        ],
+      },
+      {
+        heading: 'A sensible routine',
+        body: [
+          'Draft with whatever help you like, then read the result as your own editor. Cut the filler transitions, put in the detail only you have, and reorder anything that isn’t how you’d argue it. Keep your version history; it’s the best evidence of your process.',
+          'Then run the draft through NeverPrompted. It flags stock phrasing and flat rhythm, offers rewrites you approve one by one, and reports the share of your original words that changed. If a draft needs to move further, set a word-change target and see whether it can get there without losing meaning or facts.',
+        ],
+      },
+      {
+        heading: 'Privacy, which matters more here',
+        body: [
+          'EU writers have good reason to dislike pasting client or student material into another upload box. NeverPrompted runs the check and the rewrite on your device and doesn’t send your text anywhere.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Does the watermark mean I’ll be reported for using ChatGPT?',
+        answer:
+          'No. The watermark is a transparency measure under the EU AI Act, not a reporting system, and OpenAI says it doesn’t identify the user.',
+      },
+      {
+        question: 'Should I rewrite everything I take from ChatGPT?',
+        answer:
+          'Rewrite it so it says what you mean in your own voice. That’s good practice whatever the watermark does.',
+      },
+      {
+        question: 'Can NeverPrompted promise my text won’t be flagged?',
+        answer:
+          'No. It can’t read OpenAI’s mark and says so. It helps you make the writing yours and shows you what changed.',
+      },
+    ],
+  },
 ]

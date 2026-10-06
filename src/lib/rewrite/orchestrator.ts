@@ -23,8 +23,8 @@ import { applyDeterministicPass, measureStyleTells } from '@/lib/calibrate/ai-te
 import type { RewriteBackend } from './backend/types'
 import { candidateCount, minSimilarity, targetPassages, MAX_ROUNDS } from './targeting'
 import { scoreCandidates, pickBest } from './scoring'
-import { lexicalShiftPercent } from './lexical-shift'
-import type { PassageRewrite, RewriteRequest, RewriteResult } from './types'
+import { lexicalShiftPercent, wordChangePercent } from './lexical-shift'
+import type { PassageRewrite, RewriteRequest, RewriteResult, Strength } from './types'
 import { SITE } from '@/lib/site'
 
 export const REWRITE_LIMITS: string[] = [
@@ -32,6 +32,7 @@ export const REWRITE_LIMITS: string[] = [
   'Heavier rewriting (the "aggressive" and "regenerate" strengths) trades fidelity to your original wording for a larger reduction in evidence. Review the diff before using the result.',
   `The evidence scores shown use the same detector arithmetic as ${SITE.name}'s own check, tested against the keys this deployment holds, not a specific vendor's undisclosed detector.`,
   'All processing happens on this device or process. No document text is ever sent anywhere by this feature, on any tier.',
+  'Text watermarks that live in word choice, such as the one OpenAI began adding to ChatGPT and Codex output in the EU, weaken as more words change, and no tool outside the vendor can measure by how much: the keys and detectors are not public. The word-change figure shown is how much of your own wording moved, not a measurement of any vendor\'s mark.',
   '"Balanced" also lightly varies a bounded sample of passages that showed no detectable signal at all, as a hedge against a watermark scheme this deployment cannot test for. "Preserve" never does this; "aggressive" and "regenerate" already vary most or all passages regardless of signal.',
 ]
 
@@ -46,6 +47,19 @@ function replacePassages(text: string, replacements: Array<{ start: number; end:
   result += text.slice(cursor)
   return result
 }
+
+const STRENGTH_RANK: Strength[] = ['preserve', 'balanced', 'aggressive', 'regenerate']
+
+/** The stronger of two strengths. A word-change target must be able to reach passages "preserve" would never touch. */
+function atLeast(strength: Strength, floor: Strength): Strength {
+  return STRENGTH_RANK.indexOf(strength) >= STRENGTH_RANK.indexOf(floor) ? strength : floor
+}
+
+/** Passages rewritten per top-up round. Small enough that the target is not overshot by much, large enough to finish in a few detector re-runs. */
+const TOP_UP_BATCH = 4
+
+/** Ceiling on a requested target. Beyond this the similarity floor rejects nearly every candidate anyway, so a higher number would only promise what cannot be delivered. */
+const MAX_TARGET_WORD_CHANGE = 60
 
 export async function rewriteDocument(
   request: RewriteRequest,
@@ -67,6 +81,8 @@ export async function rewriteDocument(
       elevatedVocabulary: [],
       additionalTellsInExtendedLibrary: 0,
       lexicalShiftPercent: 0,
+      wordChangePercent: 0,
+      targetWordChangeReached: null,
       roundsUsed: 0,
       tier: request.tier,
       strength: request.strength,
@@ -187,6 +203,68 @@ export async function rewriteDocument(
     if (survivedAfter === 0 && survivedBefore === 0 && request.strength !== 'regenerate') break
   }
 
+  // Optional word-change target. Runs only after the evidence-driven rounds,
+  // so a document that needed no coverage to hit the target is untouched here,
+  // and only on passages not yet attempted: the same once-per-passage rule as
+  // above, for the same compounding-substitution reason. Every candidate still
+  // has to clear the fact-lock and the similarity floor, so reaching for a
+  // number cannot be what damages meaning; if the floor rejects everything the
+  // target is reported as missed rather than forced.
+  const target =
+    typeof request.targetWordChangePercent === 'number' && request.targetWordChangePercent > 0
+      ? Math.min(request.targetWordChangePercent, MAX_TARGET_WORD_CHANGE)
+      : null
+  let targetReached: boolean | null = null
+  if (target !== null) {
+    const topUpStrength = atLeast(request.strength, 'aggressive')
+    let topUpRounds = 0
+    while (wordChangePercent(request.text, currentText) < target && topUpRounds < MAX_ROUNDS * 4) {
+      topUpRounds++
+      const remaining = analysis.passages
+        .filter((p) => !attempted.has(p.index))
+        .sort((a, b) => b.text.length - a.text.length)
+        .slice(0, TOP_UP_BATCH)
+      if (remaining.length === 0) break
+
+      const replacements: Array<{ start: number; end: number; text: string }> = []
+      for (const passage of remaining) {
+        attempted.add(passage.index)
+        const candidateTexts = await backend.generate(passage.text, {
+          count: candidateCount(request.tier),
+          strength: topUpStrength,
+          language: request.language ?? analysis.language.code ?? undefined,
+          excludedWords: request.excludedWords,
+          englishVariant,
+        })
+        const scored = await scoreCandidates(passage.text, candidateTexts, backend, {
+          minSimilarity: minSimilarity(topUpStrength),
+          keys,
+          excludedWords: request.excludedWords,
+        })
+        const best = pickBest(scored)
+        if (best && best.text !== passage.text) {
+          replacements.push({ start: passage.start, end: passage.end, text: best.text })
+        }
+        passageResults.set(passage.index, mergeExisting(passageResults.get(passage.index), {
+          index: passage.index,
+          original: passageResults.get(passage.index)?.original ?? passage.text,
+          chosen: best ? best.text : null,
+          candidates: scored,
+          beforeZ: passageResults.get(passage.index)?.beforeZ ?? passage.watermarkZ,
+          afterZ: best?.evidenceZ ?? passage.watermarkZ,
+          beforeStyleDeviation: passageResults.get(passage.index)?.beforeStyleDeviation ?? passage.styleDeviation,
+          reason: best ? 'llm-rewrite' : 'unchanged-no-safe-candidate',
+        }))
+      }
+
+      if (replacements.length === 0) continue
+      currentText = replacePassages(currentText, replacements)
+      // Re-detect: passage offsets are only valid for the text they came from.
+      analysis = await checkDocument(currentText, { keys, language: request.language })
+    }
+    targetReached = wordChangePercent(request.text, currentText) >= target
+  }
+
   return {
     status: 'ok',
     documentBefore,
@@ -198,6 +276,8 @@ export async function rewriteDocument(
     elevatedVocabulary: elevatedVocabulary.filter((v) => v.count >= 2),
     additionalTellsInExtendedLibrary,
     lexicalShiftPercent: lexicalShiftPercent(request.text, currentText),
+    wordChangePercent: wordChangePercent(request.text, currentText),
+    targetWordChangeReached: targetReached,
     roundsUsed: round,
     tier: request.tier,
     strength: request.strength,

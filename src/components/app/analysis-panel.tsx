@@ -257,6 +257,7 @@ function WhatChanged({ summary }: { summary: RunSummary }) {
       <div className="mt-4 grid gap-2 @xs:grid-cols-2">
         <Tile label="Passages rewritten" value={`${summary.passagesRewritten}/${rewrittenOf}`} tone="seal" />
         <Tile label="Phrase swaps" value={summary.tellSwaps.toLocaleString()} />
+        <Tile label="Words changed" value={`${summary.wordChange}%`} />
         <Tile label="Word-pattern shift" value={`${summary.lexicalShift}%`} />
         <Tile
           label="Time on device"
@@ -267,6 +268,12 @@ function WhatChanged({ summary }: { summary: RunSummary }) {
           }
         />
       </div>
+      {summary.targetWordChangeReached === false && (
+        <p className="mt-3 text-[13px] leading-relaxed text-ink-500">
+          Your word-change target was not reached. The remaining passages had no rewrite that kept
+          both their meaning and their facts, so they were left as written rather than forced.
+        </p>
+      )}
     </section>
   )
 }

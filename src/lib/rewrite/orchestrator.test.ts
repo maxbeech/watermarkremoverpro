@@ -67,4 +67,45 @@ describe('rewriteDocument', () => {
     const result = await rewriteDocument({ text: '   ', strength: 'balanced', tier: 'free' }, backend, [OPEN_REFERENCE_KEY])
     expect(result.status).toBe('error')
   })
+
+  describe('word-change target', () => {
+    const text = () => generateMarkedText(OPEN_REFERENCE_KEY, VOCAB, 400, 21)
+
+    it('reports the word-change share and a null target when none was requested', async () => {
+      const result = await rewriteDocument(
+        { text: text(), language: 'en', strength: 'balanced', tier: 'free' },
+        createRuleBasedBackend('en'),
+        [OPEN_REFERENCE_KEY],
+      )
+      expect(result.targetWordChangeReached).toBeNull()
+      expect(result.wordChangePercent).toBeGreaterThanOrEqual(0)
+      expect(result.wordChangePercent).toBeLessThanOrEqual(100)
+    })
+
+    it('changes at least as many words as the same run without a target, and reports honestly whether it got there', async () => {
+      const base: RewriteRequest = { text: text(), language: 'en', strength: 'preserve', tier: 'pro' }
+      const without = await rewriteDocument(base, createRuleBasedBackend('en'), [OPEN_REFERENCE_KEY])
+      const withTarget = await rewriteDocument(
+        { ...base, targetWordChangePercent: 25 },
+        createRuleBasedBackend('en'),
+        [OPEN_REFERENCE_KEY],
+      )
+      expect(withTarget.wordChangePercent).toBeGreaterThanOrEqual(without.wordChangePercent)
+      // The flag must agree with the number it summarises, in both directions.
+      expect(withTarget.targetWordChangeReached).toBe(withTarget.wordChangePercent >= 25)
+    })
+
+    it('never pushes a passage through without a fact-lock-passing candidate', async () => {
+      const result = await rewriteDocument(
+        { text: text(), language: 'en', strength: 'preserve', tier: 'pro', targetWordChangePercent: 40 },
+        createRuleBasedBackend('en'),
+        [OPEN_REFERENCE_KEY],
+      )
+      for (const passage of result.passages) {
+        if (passage.chosen !== null && passage.chosen !== passage.original) {
+          expect(passage.candidates.find((c) => c.text === passage.chosen)?.factLockPassed).toBe(true)
+        }
+      }
+    })
+  })
 })
