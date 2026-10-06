@@ -1,5 +1,5 @@
 import 'server-only'
-import * as Sentry from '@sentry/nextjs'
+import { captureServerError, flushSentry } from '@/lib/observability'
 import { betterAuth } from 'better-auth'
 import { Pool } from '@neondatabase/serverless'
 import { headers } from 'next/headers'
@@ -81,14 +81,16 @@ export async function sendPasswordResetEmail(user: { id: string; email: string }
     // find in logs. No email address attached: sendDefaultPii is off by
     // design (src/instrumentation-client.ts), so only the internal user id
     // travels with the report.
-    Sentry.captureException(new Error(`could not send password reset email: ${result.reason}`), {
-      extra: { userId: user.id, reason: result.reason },
+    captureServerError(new Error(`could not send password reset email: ${result.reason}`), {
+      scope: 'password_reset_email',
+      userId: user.id,
+      reason: result.reason,
     })
     // This runs inside the Better Auth catch-all route (src/app/api/auth/[...all]),
     // a serverless function that is not wrapped by withSentryConfig, so nothing
     // else guarantees the capture above is actually sent before the function
     // freezes once the response goes out.
-    await Sentry.flush(2000)
+    await flushSentry()
     throw new Error(`could not send password reset email: ${result.reason}`)
   }
 }
@@ -144,7 +146,10 @@ export async function currentEntitlements(): Promise<Entitlements> {
       userId: session.user.id,
       email: session.user.email,
     }
-  } catch {
+  } catch (err) {
+    // Treated as signed out so a page still renders, but a broken session
+    // lookup is a real fault (database down, bad secret), so it becomes an issue.
+    captureServerError(err, { scope: 'auth_session' })
     return ANONYMOUS
   }
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { SiteHeader } from '@/components/chrome/site-header'
 import { Logo } from '@/components/brand/logo'
+import { FeedbackButton } from '@/components/feedback/feedback-button'
 import { MIRROR_PRODUCT, SITE } from '@/lib/site'
 
 /**
@@ -94,6 +95,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-ink-300">
             <FooterLink href="/privacy">Privacy policy</FooterLink>
             <FooterLink href="/terms">Terms of service</FooterLink>
+            <FeedbackButton />
             <span>
               &copy; {new Date().getFullYear()} {SITE.name}
             </span>

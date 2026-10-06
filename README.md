@@ -337,6 +337,24 @@ npm run e2e                  # drive the real journey in a real browser (needs `
 npm run logos                # regenerate the web logo assets AND the browser icons from public/logo*.png
 ```
 
+### Error monitoring and feedback
+
+Errors, logs and the in-app "Send feedback" form go to Sentry (org
+`maxed-labs`). Each brand is its own deployment with its own project and DSN:
+WatermarkRemoverPro reports to `watermarkremoverpro_web`, NeverPrompted to
+`neverprompted_web`. Set `NEXT_PUBLIC_SENTRY_DSN` and `SENTRY_DSN` for the brand
+being deployed (see `.env.example`); `next.config.ts` picks the project from
+`NEXT_PUBLIC_BRAND`. Without a DSN nothing is sent, production logs a warning
+and the feedback control falls back to an email address.
+
+This is a product whose promise is that a document never leaves the browser, so
+the scrubber is strict. `src/lib/scrub.ts` is the single scrubber for events,
+logs, breadcrumbs and transactions: it redacts emails, phone numbers, tokens,
+API keys and secret-looking fields, strips query strings, uses linear-time
+patterns, truncates very long strings, and drops the event if scrubbing itself
+fails. Server code reports through `src/lib/observability.ts`, which accepts ids,
+codes and counts only. The feedback form has screenshots switched off on purpose.
+
 `npm test` runs the unit suite **and** connects to the MCP server over the real
 protocol. A claim that a product "has an MCP server" is worth exactly as much as
 the last time someone actually connected to it.

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import * as Sentry from '@sentry/nextjs'
+import { captureServerError, flushSentry } from '@/lib/observability'
 import { createProCheckout, stripeConfigured } from '@/lib/billing'
 import { currentEntitlements } from '@/lib/auth'
 
@@ -29,10 +29,10 @@ export async function POST() {
     const url = await createProCheckout(entitlements.userId, entitlements.email)
     return NextResponse.json({ url })
   } catch (err) {
-    Sentry.captureException(err, { tags: { feature: 'billing_checkout' } })
+    captureServerError(err, { scope: 'billing_checkout', userId: entitlements.userId })
     // Not wrapped by withSentryConfig, so flush explicitly before this
     // serverless invocation freezes at response time.
-    await Sentry.flush(2000)
+    await flushSentry()
     return NextResponse.json({ error: 'checkout_failed', message: (err as Error).message }, { status: 502 })
   }
 }

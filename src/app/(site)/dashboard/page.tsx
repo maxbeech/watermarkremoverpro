@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { SignOutButton } from '@/components/auth-form'
+import { FeedbackButton } from '@/components/feedback/feedback-button'
 import { ApiKeyManager } from './api-key-manager'
 import { UpgradeButton } from './upgrade-button'
 import { AnalyticsIdentity } from '@/components/analytics/analytics-identity'
@@ -70,7 +71,10 @@ export default async function DashboardPage({
       {upgraded === '1' ? <CheckoutReturnTracker /> : <AnalyticsIdentity assumeSignedIn />}
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="t-title text-ink-900">Your account</h1>
-        <SignOutButton />
+        <div className="flex items-center gap-2">
+          <FeedbackButton variant="button" user={{ email: entitlements.email }} />
+          <SignOutButton />
+        </div>
       </div>
       <p className="mt-2 text-sm text-ink-500">{entitlements.email}</p>
 

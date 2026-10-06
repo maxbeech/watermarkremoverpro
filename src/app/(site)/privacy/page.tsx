@@ -112,9 +112,11 @@ export default function PrivacyPage() {
           <P>
             We use Sentry to catch crashes and server errors so we can fix them. It is configured with
             default personal data collection switched off (<code className="figure">sendDefaultPii: false</code>),
-            so it is not intended to capture your document text, email, or IP address as a matter of
-            course; an error report may still incidentally include technical context such as a request
-            path or a stack trace.
+            and everything it sends is scrubbed first for emails, phone numbers, tokens and keys, with
+            query strings removed from addresses. Your document text is never part of a report. If you
+            use the &quot;Send feedback&quot; form, the message you write, and the name and email you
+            choose to give, go to Sentry too; screenshots are switched off. An error report may still
+            incidentally include technical context such as a request path or a stack trace.
           </P>
         </Section>
 

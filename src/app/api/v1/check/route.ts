@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import * as Sentry from '@sentry/nextjs'
+import { captureServerError, flushSentry } from '@/lib/observability'
 import { z } from 'zod'
 import { verifyApiKey } from '@/lib/api-keys'
 import { databaseConfigured } from '@/lib/db'
@@ -52,10 +52,10 @@ export async function POST(request: Request) {
   try {
     key = await verifyApiKey(request.headers.get('authorization'))
   } catch (err) {
-    Sentry.captureException(err, { tags: { feature: 'api_key_verification' } })
+    captureServerError(err, { scope: 'api_key_verification' })
     // Not wrapped by withSentryConfig, so flush explicitly before this
     // serverless invocation freezes at response time.
-    await Sentry.flush(2000)
+    await flushSentry()
     return NextResponse.json(
       { error: 'verification_failed', message: (err as Error).message },
       { status: 503 },

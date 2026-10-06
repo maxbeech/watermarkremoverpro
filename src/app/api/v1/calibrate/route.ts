@@ -26,6 +26,7 @@
 
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { captureServerError, flushSentry } from '@/lib/observability'
 import { calibrateText, type CalibrationRequest } from '@/lib/calibrate'
 import { countWords } from '@/lib/detector/tokenize'
 import { SUPPORTED_LANGUAGES } from '@/lib/detector/languages'
@@ -105,6 +106,8 @@ export async function POST(request: Request) {
       try {
         apiKey = await verifyApiKey(authHeader)
       } catch (err) {
+        captureServerError(err, { scope: 'calibrate_key_verification' })
+        await flushSentry()
         return NextResponse.json(
           {
             error: 'verification_failed',
@@ -166,7 +169,7 @@ export async function POST(request: Request) {
           )
         }
       } catch (err) {
-        console.error('Allowance check failed:', err)
+        captureServerError(err, { scope: 'calibrate_allowance', accountId: apiKey.accountId })
         // Don't fail the request, but log it
       }
     }
@@ -211,7 +214,7 @@ export async function POST(request: Request) {
           documentHash: text.substring(0, 32), // Simple hash approximation
         })
       } catch (err) {
-        console.error('Failed to record usage:', err)
+        captureServerError(err, { scope: 'calibrate_record_usage', accountId: apiKey.accountId, apiKeyId: apiKey.id })
         // Don't fail the request
       }
     }
@@ -242,7 +245,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json(response, { status: 200 })
   } catch (err) {
-    console.error('Calibrate endpoint error:', err)
+    captureServerError(err, { scope: 'calibrate' })
+    await flushSentry()
     return NextResponse.json(
       {
         error: 'internal_error',

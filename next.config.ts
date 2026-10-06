@@ -1,3 +1,4 @@
+import { withSentryConfig } from '@sentry/nextjs'
 import type { NextConfig } from 'next'
 
 /**
@@ -11,6 +12,18 @@ const BRAND_DOMAINS: Record<string, string> = {
   neverprompted: 'neverprompted.com',
 }
 const activeDomain = BRAND_DOMAINS[process.env.NEXT_PUBLIC_BRAND?.trim() || 'watermarkremoverpro']
+
+/**
+ * Each brand reports to its own Sentry project (it is a separate deployment with
+ * its own DSN). The brand is a build-time choice, so the project is too;
+ * SENTRY_PROJECT overrides it. Kept here for the same reason as the map above.
+ */
+const BRAND_SENTRY_PROJECTS: Record<string, string> = {
+  watermarkremoverpro: 'watermarkremoverpro_web',
+  neverprompted: 'neverprompted_web',
+}
+const sentryProject =
+  process.env.SENTRY_PROJECT || BRAND_SENTRY_PROJECTS[process.env.NEXT_PUBLIC_BRAND?.trim() || 'watermarkremoverpro']
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -56,4 +69,20 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+/**
+ * Sentry wraps the build to upload source maps, so a production stack trace
+ * points at real lines. The upload is skipped without SENTRY_AUTH_TOKEN, which
+ * keeps `npm run build` working for anyone building without Sentry configured.
+ *
+ * `tunnelRoute: true` routes the browser SDK through our own domain on a path
+ * picked at random per build, so an ad blocker does not silently drop reports
+ * (a fixed "/monitoring" is on blocklists).
+ */
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG || 'maxed-labs',
+  project: sentryProject,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: true,
+  sourcemaps: { deleteSourcemapsAfterUpload: true },
+})

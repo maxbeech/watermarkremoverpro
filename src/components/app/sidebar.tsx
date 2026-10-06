@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { LogoLink } from '@/components/brand/logo'
+import { FeedbackButton } from '@/components/feedback/feedback-button'
 import { MIRROR_PRODUCT } from '@/lib/site'
 import { describeReset, type RewriteBudgetStatus } from '@/lib/entitlements/rewrite-budget'
 import { summariseRun, type RunRecord } from '@/lib/workspace/runs'
@@ -166,6 +167,8 @@ export function Sidebar({
             Checking someone else&apos;s work?
           </a>
         </div>
+
+        <FeedbackButton variant="sidebar" />
       </div>
     </div>
   )

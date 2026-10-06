@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import * as Sentry from '@sentry/nextjs'
+import { captureServerError, captureServerMessage, flushSentry } from '@/lib/observability'
 import { applyBillingEvent, stripe, stripeConfigured } from '@/lib/billing'
 import { databaseConfigured } from '@/lib/db'
 import { guardStripeEvent } from '@/lib/gate'
@@ -49,16 +49,17 @@ export async function POST(request: Request) {
     // a public webhook endpoint, not a bug in this code. Still worth a Sentry
     // trail so a sustained run of these (a misconfigured secret after a
     // rotation, say) is visible rather than only living in Stripe's own logs.
-    Sentry.captureMessage('Stripe webhook signature verification failed', {
-      level: 'warning',
-      extra: { reason: (err as Error).message },
+    captureServerMessage('Stripe webhook signature verification failed', {
+      scope: 'billing_webhook',
+      reason: 'signature_invalid',
+      errorName: (err as Error).name,
     })
     // This Route Handler is not wrapped by withSentryConfig, so nothing else
     // guarantees the event above is actually sent before this serverless
     // function freezes right after the response goes out. Flush explicitly
     // rather than relying on a capture that reads as done in code but never
     // reaches Sentry.
-    await Sentry.flush(2000)
+    await flushSentry()
     return NextResponse.json(
       { error: 'invalid_signature', message: (err as Error).message },
       { status: 400 },
@@ -91,8 +92,8 @@ export async function POST(request: Request) {
     // swallowed exactly like that: this is the highest-priority gap the
     // journey review found, since a broken handler here means "customer paid,
     // plan silently didn't update."
-    Sentry.captureException(err, { tags: { feature: 'billing_webhook' } })
-    await Sentry.flush(2000)
+    captureServerError(err, { scope: 'billing_webhook', eventType: event?.type })
+    await flushSentry()
     return NextResponse.json(
       { error: 'handler_failed', message: (err as Error).message },
       { status: 500 },
@@ -107,10 +108,11 @@ async function sendBillingTelemetry(accountId: string, transition: string): Prom
     // Analytics must never fail the webhook itself, but a real send failure
     // (as opposed to "GA is simply not configured on this deployment") is
     // worth its own trail rather than silently vanishing.
-    Sentry.captureMessage(`Billing telemetry event "${transition}" was not recorded`, {
-      level: 'warning',
-      extra: { reason: result.reason, error: 'error' in result ? result.error : undefined },
+    captureServerMessage('Billing telemetry event was not recorded', {
+      scope: 'billing_webhook',
+      transition,
+      reason: result.reason,
     })
-    await Sentry.flush(2000)
+    await flushSentry()
   }
 }

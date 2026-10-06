@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-10-06 - Sentry standard: scrubbed logs, errors as issues, feedback control
+
+- One scrubber (`src/lib/scrub.ts`) for events, logs, breadcrumbs and
+  transactions. Linear-time patterns, long strings truncated, fails closed (the
+  payload is dropped, never sent raw). Covered by `src/lib/scrub.test.ts`,
+  including adversarial input.
+- Shared init options (`src/lib/sentry-options.ts`) for client, server and edge,
+  with logs on and all console levels forwarded. `sentry.server.config.ts` and
+  `sentry.edge.config.ts` folded into `instrumentation.ts`.
+- `src/lib/observability.ts`: `captureServerError` and `captureServerMessage`,
+  ids and counts only. Billing webhook and checkout, API key verification, the
+  calibrate endpoint (which only logged before) and session lookup now go
+  through it.
+- Error boundaries: `global-error.tsx` and segment `error.tsx` for the site and
+  the workspace report to Sentry.
+- "Send feedback" in the workspace sidebar, the site footer and the account page
+  (pre-filled with the account email). Screenshots are off so a draft cannot be
+  captured. Opens the Sentry feedback form through our own tunnel route.
+- `next.config.ts` uses `withSentryConfig` with a random tunnel route; each brand
+  reports to its own project (`watermarkremoverpro_web`, new `neverprompted_web`).
+- `scripts/qa-sentry.mts` sends one test error and one test log.
+
 ## 2026-09-30 - Moved from Vercel to Helm7
 
 Both brands (WatermarkRemoverPro and NeverPrompted) now run as two Helm7
