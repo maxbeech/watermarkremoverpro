@@ -57,6 +57,15 @@ describe("scrubber hardening (SENTRY_STANDARD section 2)", () => {
     A(!scrubText("GET /api/x?code=abc123secret failed").includes("abc123secret"), "path query");
   });
 
+  T("URL fragments and queries lose all token material (OAuth implicit flow, magic links, codes)", () => {
+    const frag = `https://x.test/cb#access_token=abc123tok&id_token=${HEAD}.eyJzdWIiOiIxMjM0NTY3ODkwIn0.sigsig&state=s1`;
+    const q = "https://x.test/cb?code=zzcode99&state=s1";
+    for (const u of [frag, q, `GET ${frag} failed`, `visit ${q} now`, "see /cb#access_token=abc123tok done", "see /cb?code=zzcode99 done"]) {
+      const out = scrubText(u);
+      A(!/abc123tok|zzcode99|eyJ|sigsig/.test(out), `URL material survived: ${out}`);
+    }
+  });
+
   T("a secret straddling the truncation boundary never leaves its head behind", () => {
     const secret = `sk_live_${"Q7".repeat(40)}`;
     for (const off of [9890, 9894, 9896, 9898, 9899, 9900, 9902, 9906, 9990, 9996, 10000, 10006]) {
@@ -113,6 +122,11 @@ describe("scrubber hardening (SENTRY_STANDARD section 2)", () => {
     A(found.length === 0, `leaked: ${found.join(", ")}`);
   });
 
+  T("scrubEvent drops fragments and queries from request.url", () => {
+    const out: any = scrubEvent({ ...baseEvent(), request: { url: "https://x.test/cb#access_token=abc123tok&id_token=eyJabcdef.eyJghijkl.sig" } });
+    A(out !== null && !/abc123tok|eyJ/.test(JSON.stringify(out.request)), "request.url kept token material");
+  });
+
   T("scrubEvent fails closed when scrubbing throws", () => {
     const bad = baseEvent();
     Object.defineProperty(bad, "extra", { get() { throw new Error("boom"); }, enumerable: true });
@@ -147,12 +161,22 @@ describe("scrubber hardening (SENTRY_STANDARD section 2)", () => {
     }
   });
 
+  T("scrubBreadcrumb url/to/from lose fragments", () => {
+    const out: any = scrubBreadcrumb({ message: "nav", data: { url: "https://x.test/cb#access_token=abc123tok", to: "/cb#access_token=abc123tok", from: "/a?code=zzcode99" } } as any);
+    A(out !== null && !/abc123tok|zzcode99/.test(JSON.stringify(out)), "breadcrumb kept token material");
+  });
+
   T("scrubBreadcrumb strips URL queries, redacts secrets, and fails closed", () => {
     const out = scrubBreadcrumb({ message: "call bob@example.com", data: { url: "https://x.com/?token=bc123secret", to: "/a?code=zz99secret", token: "bctok" } } as any);
     A(out !== null && leaks(out, "bob@example.com", "bc123secret", "zz99secret", "bctok").length === 0, "breadcrumb leaked");
     const bad: any = { message: "x" };
     Object.defineProperty(bad, "data", { get() { throw new Error("boom"); }, enumerable: true });
     A(scrubBreadcrumb(bad) === null, "raw breadcrumb returned");
+  });
+
+  T("scrubTransaction drops fragments from request url and span data", () => {
+    const out: any = scrubTransaction({ type: "transaction", transaction: "/cb#access_token=abc123tok", request: { url: "https://x.test/cb#access_token=abc123tok" }, spans: [{ description: "GET https://x.test/cb#access_token=abc123tok", data: { "http.url": "https://x.test/cb#access_token=abc123tok", url: "/cb#id_token=abc123tok" } }] } as any);
+    A(out !== null && !/abc123tok/.test(JSON.stringify(out)), "transaction kept token material");
   });
 
   T("scrubTransaction strips URL queries from request, name and spans, and fails closed", () => {

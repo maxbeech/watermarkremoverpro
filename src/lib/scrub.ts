@@ -324,11 +324,14 @@ const HARDEN_KV_SQ_RE = new RegExp(`${HARDEN_KV_KEY}'(?!\\[[A-Za-z-]{2,12}\\]')(
 const HARDEN_KV_RAW_RE = new RegExp(`${HARDEN_KV_KEY}(?!\\[[A-Za-z-]{2,12}\\](?![\\w=+/%~.-]))[^\\s,;&}"'\\\\]+`, "gi");
 const HARDEN_EMAIL_RE = /[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63}){1,8}/g;
 const HARDEN_URLCRED_RE = /\b([a-z][a-z0-9+.-]{1,15}:\/\/)[^\s/@:]{1,200}:(?!\[[A-Za-z-]{2,12}\]@)[^\s/@]{1,500}@/gi;
-const HARDEN_PHONE_RE = /(^|[^\w.])((?:\+|0)\d[\d\s().-]{7,18}\d)(?![\w])/g;
-const HARDEN_NANP_RE = /(^|[^\w.])(\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4})(?![\w])/g;
+const HARDEN_PHONE_RE = /(^|[^\w.-])((?:\+|0)(?![0-9a-f]{7}-[0-9a-f]{4}-)\d[\d\s().-]{7,18}\d)(?![\w])/gi;
+const HARDEN_NANP_RE = /(^|[^\w.-])(\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4})(?![\w])/g;
 // Query strings and fragments carry capability tokens: keep scheme+host+path only.
-const HARDEN_URLQ_RE = /(https?:\/\/[^\s"'<>?#]{1,2000})\?(?!\[[A-Za-z-]{2,12}\](?:$|[\s"'<>]))[^\s"'<>]{0,4000}/gi;
-const HARDEN_PATHQ_RE = /(^|[\s"'(])(\/[^\s"'<>?#]{0,2000})\?(?!\[[A-Za-z-]{2,12}\](?:$|[\s"'<>]))[^\s"'<>]{0,4000}/g;
+const HARDEN_URLQ_RE = /(https?:\/\/[^\s"'<>?#]{1,2000})\?(?!\[[A-Za-z-]{2,12}\](?:$|[\s"'<>]))(?:[^\s"'<>]{0,4000}=\s\[[A-Za-z-]{2,12}\]|[^\s"'<>]{0,4000})/gi;
+const HARDEN_PATHQ_RE = /(^|[\s"'(])(\/[^\s"'<>?#]{0,2000})\?(?!\[[A-Za-z-]{2,12}\](?:$|[\s"'<>]))(?:[^\s"'<>]{0,4000}=\s\[[A-Za-z-]{2,12}\]|[^\s"'<>]{0,4000})/g;
+// Fragments carry tokens too (OAuth implicit flow, magic links): only a strict routing fragment may stay.
+const HARDEN_URLF_RE = /(https?:\/\/[^\s"'<>?#]{1,2000})#(?!\/[A-Za-z0-9_/-]{0,64}(?:$|[\s"'<>]))[^\s"'<>]{0,4000}/gi;
+const HARDEN_PATHF_RE = /(^|[\s"'(])(\/[^\s"'<>?#]{0,2000})#(?!\/[A-Za-z0-9_/-]{0,64}(?:$|[\s"'<>]))[^\s"'<>]{0,4000}/g;
 const HARDEN_TAIL_RE = /(\[redacted\]|\[[A-Za-z][A-Za-z-]{1,14}\])(?:[\w=+/%~-]|\.(?=\w))+/g;
 // Same, when the repo wraps its marker in quotes (`"[redacted]"tail`).
 const HARDEN_TAILQ_RE = /(\[redacted\]|\[[A-Za-z][A-Za-z-]{1,14}\])(["']\]?)(?:[\w=+/%~-]|\.(?=\w))+/g;
@@ -339,12 +342,17 @@ const HARDEN_DECODE: Record<string, string> = {
 };
 
 function hardenPre(input: string): string {
+  return hardenRedact(input, true);
+}
+
+/** Module-private: only the reporter's own feedback message is run with `redactContact` false (secrets still go). */
+function hardenRedact(input: string, redactContact: boolean): string {
   // Query strings first: decoding `%20` would otherwise end the URL early and leave the rest behind.
-  let s = input.replace(HARDEN_URLQ_RE, "$1").replace(HARDEN_PATHQ_RE, "$1$2");
+  let s = input.replace(HARDEN_URLQ_RE, "$1").replace(HARDEN_PATHQ_RE, "$1$2").replace(HARDEN_URLF_RE, "$1").replace(HARDEN_PATHF_RE, "$1$2");
   if (s.includes("%")) s = s.replace(HARDEN_PCT_RE, (m) => HARDEN_DECODE[m.toLowerCase()] ?? m);
   return s
     .replace(HARDEN_URLCRED_RE, `$1${HARDEN_MARK}@`)
-    .replace(HARDEN_EMAIL_RE, HARDEN_MARK)
+    .replace(HARDEN_EMAIL_RE, redactContact ? HARDEN_MARK : "$&")
     .replace(HARDEN_JWT_RE, `$1${HARDEN_MARK}`)
     .replace(HARDEN_BEARER_RE, HARDEN_MARK)
     .replace(HARDEN_AUTH_RE, `$1${HARDEN_MARK}`)
@@ -353,8 +361,8 @@ function hardenPre(input: string): string {
     .replace(HARDEN_KV_DQ_RE, `$1"${HARDEN_MARK}"`)
     .replace(HARDEN_KV_SQ_RE, `$1'${HARDEN_MARK}'`)
     .replace(HARDEN_KV_RAW_RE, `$1${HARDEN_MARK}`)
-    .replace(HARDEN_PHONE_RE, (m, pre: string, num: string) => (num.replace(/\D/g, "").length >= 9 ? `${pre}${HARDEN_MARK}` : m))
-    .replace(HARDEN_NANP_RE, `$1${HARDEN_MARK}`);
+    .replace(HARDEN_PHONE_RE, (m, pre: string, num: string) => (redactContact && num.replace(/\D/g, "").length >= 9 ? `${pre}${HARDEN_MARK}` : m))
+    .replace(HARDEN_NANP_RE, redactContact ? `$1${HARDEN_MARK}` : "$&");
 }
 
 function hardenPost(s: string): string {
@@ -388,7 +396,7 @@ function hardenIsSecretEntry(k: string, val: unknown): boolean {
 /** Recursively redact sensitive values, preserving structure for debugging. */
 export function scrubValue(value: unknown, ...rest: unknown[]): unknown {
   const core = scrubValueCore as (v: unknown, ...r: unknown[]) => unknown;
-  let v = value;
+  let v: unknown = value;
   if (v && typeof v === "object" && !Array.isArray(v)) {
     const entries = Object.entries(v as Record<string, unknown>);
     if (entries.some(([k, val]) => hardenIsSecretEntry(k, val))) {
@@ -407,8 +415,11 @@ const HARDEN_QUERY_KEYS = new Set(["url.query", "http.query", "query", "query_st
 const HARDEN_MAX_NODES = 20_000;
 
 function hardenStripQuery(url: string): string {
+  // Cut at the first `?` or `#`. Only a strict routing fragment (`#/some/route`) may stay, and never after a query.
   const i = url.search(/[?#]/);
-  return i === -1 ? url : url.slice(0, i);
+  if (i === -1) return url;
+  if (url.charAt(i) === "#" && /^#\/[A-Za-z0-9_/-]{0,64}$/.test(url.slice(i))) return url;
+  return url.slice(0, i);
 }
 
 /** Deep, idempotent pass: secret keys, URL queries, every string through the scrubber. */
@@ -444,24 +455,6 @@ type HardenReporter = { feedback: HardenBag; user: HardenBag } | undefined;
 const HARDEN_REPORTER_FEEDBACK_KEYS = ["name", "email", "contact_email", "message"];
 const HARDEN_REPORTER_USER_KEYS = ["email", "name"];
 
-/** Feedback is the one place where the reporter explicitly opted to share an email. */
-function scrubFeedbackMessage(input: string): string {
-  const emails: string[] = []
-  const phones: string[] = []
-  let protectedText = input.replace(EMAIL, (match) => {
-    const index = emails.push(match) - 1
-    return `__FEEDBACK_EMAIL_${String.fromCharCode(65 + index)}__`
-  })
-  protectedText = protectedText.replace(PHONE, (match) => {
-    const index = phones.push(match) - 1
-    return `__FEEDBACK_PHONE_${String.fromCharCode(65 + index)}__`
-  })
-  const scrubbed = hardenPost(hardenPre(scrubTextCore(protectedText, { keepEmails: true })))
-  return scrubbed
-    .replace(/__FEEDBACK_EMAIL_([A-Z])__/g, (_match, index: string) => emails[index.charCodeAt(0) - 65] ?? HARDEN_MARK)
-    .replace(/__FEEDBACK_PHONE_([A-Z])__/g, (_match, index: string) => phones[index.charCodeAt(0) - 65] ?? HARDEN_MARK)
-}
-
 /** The reporter's own words, read from the ORIGINAL feedback event before anything scrubs it. */
 function hardenReporter(event: unknown): HardenReporter {
   try {
@@ -473,7 +466,7 @@ function hardenReporter(event: unknown): HardenReporter {
       const out: HardenBag = {};
       if (src && typeof src === "object") for (const k of keys) {
         const v = (src as HardenBag)[k];
-        if (typeof v === "string") out[k] = k === "message" ? scrubFeedbackMessage(v) : v;
+        if (typeof v === "string") out[k] = k === "message" ? hardenPost(hardenRedact(hardenWindow(v), false)) : v;
       }
       return out;
     };
@@ -570,3 +563,4 @@ export const scrubLog: typeof scrubLogCore = ((...args: unknown[]) => {
     return null;
   }
 }) as unknown as typeof scrubLogCore;
+
