@@ -25,6 +25,8 @@ const NAV = [
   { href: '/check', label: 'Check' },
   { href: '/method', label: 'How it works' },
   { href: '/verify', label: 'Verify' },
+  { href: '/guide', label: 'Guides' },
+  { href: '/vs', label: 'Compare' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/blog', label: 'Blog' },
   { href: '/docs/api', label: 'API' },

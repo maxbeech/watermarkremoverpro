@@ -355,6 +355,10 @@ patterns, truncates very long strings, and drops the event if scrubbing itself
 fails. Server code reports through `src/lib/observability.ts`, which accepts ids,
 codes and counts only. The feedback form has screenshots switched off on purpose.
 
+The Sentry scrubber (`src/lib/scrub.ts`) redacts secrets of any length, backs up to a clean boundary when it truncates, and fails closed; its regression tests are in `tests/scrub-hardening.test.ts`.
+
+NeverPrompted's public content is deliberately kept separate from WatermarkRemoverPro's content. Its guide, comparison, audience and language pages are registered through `src/content/neverprompted/pages.ts`, linked from the brand homepage, and covered by a 500-word minimum-content test so a new search page cannot quietly ship as a thin doorway page. All public URLs use the HTTPS `www` origin; invalid or apex `NEXT_PUBLIC_SITE_URL` values fall back to the brand's canonical www URL.
+
 `npm test` runs the unit suite **and** connects to the MCP server over the real
 protocol. A claim that a product "has an MCP server" is worth exactly as much as
 the last time someone actually connected to it.

@@ -3,9 +3,10 @@ import { Calibrator } from '@/components/calibrator/calibrator'
 import { PageHeader, Wrap } from '@/components/brand/ui'
 
 export const metadata: Metadata = {
-  title: 'Calibrator',
+  title: 'Calibrator: adjust your text locally',
   description:
     'Calibrate your text for statistical profile adjustment. Understand and adjust word frequencies that trigger AI detection.',
+  alternates: { canonical: '/calibrator' },
 }
 
 /**

@@ -34,13 +34,23 @@ export const LANGUAGES: LongTailPage[] = SUPPORTED_LANGUAGES.map((code) => ({
         'The rewrite itself works the same way: it targets the phrasing habits that read as AI-generated in that specific language, not a translated list of English ones.',
       ],
     },
-    {
-      heading: 'If the language cannot be worked out',
+      {
+        heading: 'If the language cannot be worked out',
       body: [
         'When the engine cannot confidently tell what language a document is in, it says so rather than guessing and quietly measuring against the nearest match. A wrong-language result looks exactly like a right one until you notice everything you write scores the same, which is the sign something upstream is broken.',
-        'You can also set the language explicitly before running the check, if you know it and the engine is unsure.',
-      ],
-    },
+          'You can also set the language explicitly before running the check, if you know it and the engine is unsure.',
+        ],
+      },
+      {
+        heading: 'What the result can and cannot tell you',
+        body: [
+          `A result for ${LANGUAGE_NAMES[code]} tells you how this draft compares with the ${LANGUAGE_NAMES[code]} reference used by the engine. It does not grade your fluency, decide whether the writing is good, or identify who wrote it. A formal register, specialist subject or careful second-language edit can all sit away from the reference for perfectly ordinary reasons.`,
+          'Use the highlighted passages as editing prompts, not verdicts. Keep a change when it makes the sentence clearer or more like something you would say; ignore it when it changes your meaning, your terminology or a deliberate choice of tone. The point is control over the draft, not a number to chase.',
+          `The rewrite is equally explicit about its limits. It can change stock phrasing and rhythm in ${LANGUAGE_NAMES[code]} while preserving the facts you supplied, but it cannot prove authorship or guarantee a result against a vendor's private detector. You see the before-and-after text and decide what stays.`,
+          'That distinction matters when a draft is formal or translated. A lower distance from the reference is not automatically better, and a higher distance is not a failure. The useful question is whether a suggested change improves this sentence for its intended reader.',
+          'Keep the draft you started with, review each proposed change, and treat the measurement as one piece of editing evidence. Your judgement about meaning, tone and context remains the final check.',
+        ],
+      },
   ],
   faq: [
     {

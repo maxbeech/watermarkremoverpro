@@ -470,6 +470,13 @@ export const GUIDES: LongTailPage[] = [
           'NeverPrompted can’t read OpenAI’s watermark, because nobody outside OpenAI holds the key, and it says so on every result. What it does is help you rewrite your own draft so it genuinely sounds like you, entirely on your device, and show you what percentage of your original words changed along the way.',
         ],
       },
+      {
+        heading: 'A sensible editing routine',
+        body: [
+          'Keep the original draft and your version history. Before you reach for any checker, write down what you actually want the piece to say, then add the examples, qualifications and small observations that only you can supply. Those are more valuable than trying to make a document look statistically different after the fact.',
+          'If you use a rewrite tool, review the changes sentence by sentence. A good edit should make the prose more precise and more recognisably yours; it should not quietly add facts, flatten a technical term or turn a careful claim into a confident one. NeverPrompted keeps the comparison visible so you can reject a change without losing your original.',
+        ],
+      },
     ],
     faq: [
       {

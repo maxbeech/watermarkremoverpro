@@ -50,6 +50,15 @@ describe('brand resolution (src/lib/site.ts)', () => {
     expect(SITE.url).toBe('https://www.neverprompted.com')
     expect(SITE.contactEmail).toBe('hello@neverprompted.com')
   })
+
+  it('keeps a configured NeverPrompted origin on HTTPS www', async () => {
+    vi.resetModules()
+    process.env.NEXT_PUBLIC_BRAND = 'neverprompted'
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://neverprompted.com'
+    const { SITE } = await import('@/lib/site')
+    expect(SITE.url).toBe('https://www.neverprompted.com')
+    delete process.env.NEXT_PUBLIC_SITE_URL
+  })
 })
 
 describe('brand content does not leak into the other brand', () => {

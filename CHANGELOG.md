@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-07: NeverPrompted Search Console remediation
+
+- Canonical URLs now reject HTTP, apex and malformed `NEXT_PUBLIC_SITE_URL` values, keeping the www HTTPS origin as the single source for metadata, JSON-LD, robots and the sitemap.
+- Added a canonical URL to the Calibrator page and clearer site-wide links to the guide and comparison hubs.
+- Added a homepage content hub and expanded the NeverPrompted language and ChatGPT-watermark guidance so public pages provide more useful, indexable substance rather than thin doorway copy.
+
+## 2026-10-07: Sentry scrubber security pass
+
+- **Long secrets.** JWTs, bearer tokens, vendor keys (`sk_`, `whsec_`, `hlm_sk_`, `sntrys_`) and `key=value` secrets of any length are now redacted whole. The old bounded patterns left the tail of anything longer than their limit.
+- **Truncation.** The 10k cut backs up to the previous delimiter, so half a secret can never survive at the boundary.
+- **Encodings and key names.** Percent-encoded emails, `Bearer%20...`, `token%3D...`, escaped JSON, `Authorization: Basic ...`, connection-string credentials and keys such as `passwd`, `pwd`, `jwt` and `Set-Cookie` are covered at any depth.
+- **Fail closed, no bypass.** Events, transactions, breadcrumbs and logs are dropped if scrubbing throws. A second deep pass scrubs stack-frame vars, spans, contexts and tags, feedback events included (only the reporter's own `contexts.feedback` and user are kept).
+- **Tests.** `tests/scrub-hardening.test.ts` covers long JWTs, varied key lengths, secrets straddling the truncation boundary, hostile 20k strings, key variants and fail-closed behaviour.
+
 ## 2026-10-06 - Sentry standard: scrubbed logs, errors as issues, feedback control
 
 - One scrubber (`src/lib/scrub.ts`) for events, logs, breadcrumbs and

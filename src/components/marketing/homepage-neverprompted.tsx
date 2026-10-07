@@ -162,6 +162,37 @@ export function NeverPromptedHome({
         </Wrap>
       </Section>
 
+      {/* ------------------------------------------------------ content paths */}
+      <Section surface="deep" tight>
+        <Wrap wide>
+          <SectionHead
+            eyebrow="Read before you rewrite"
+            eyebrowTone="mint"
+            title="Practical answers for real writing problems."
+            lead="Start with the question you are actually asking. These guides explain what makes prose feel machine-made, what a watermark can and cannot tell you, and how to edit without sanding away your voice."
+          />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { href: '/guide/does-my-writing-sound-like-ai', label: 'Does my writing sound like AI?', detail: 'A plain-English checklist and the limits of reading by eye.' },
+              { href: '/guide/how-to-make-ai-text-sound-human', label: 'Make AI text sound human', detail: 'Concrete edits for rhythm, specificity and stock phrasing.' },
+              { href: '/guide/does-chatgpt-watermark-its-text', label: 'Does ChatGPT watermark text?', detail: 'What the EU change means, and what it does not prove.' },
+              { href: '/in/english', label: 'Writing in five languages', detail: 'Why a real language baseline matters to any result.' },
+            ].map((item) => (
+              <Link key={item.href} href={item.href} className="rounded-[var(--radius-panel)] border border-ink-200 bg-white p-5 transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-[2px] hover:border-ink-300 hover:shadow-[var(--shadow-raised)]">
+                <h3 className="t-heading text-ink-900">{item.label}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-600">{item.detail}</p>
+                <span className="mt-4 inline-block text-sm font-semibold text-seal-700">Read the guide →</span>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-6 text-sm text-ink-500">
+            Browse all <Link href="/guide" className="link-quiet font-medium">guides</Link>,{' '}
+            <Link href="/vs" className="link-quiet font-medium">comparisons</Link> and{' '}
+            <Link href="/for" className="link-quiet font-medium">writing routines</Link>.
+          </p>
+        </Wrap>
+      </Section>
+
       {/* --------------------------------------------------- three positions */}
       <Section tight>
         <Wrap wide>

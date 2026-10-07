@@ -339,6 +339,9 @@ export const AUDIENCES: LongTailPage[] = [
         heading: 'Privacy, which matters more here',
         body: [
           'EU writers have good reason to dislike pasting client or student material into another upload box. NeverPrompted runs the check and the rewrite on your device and doesn’t send your text anywhere.',
+          'That is a practical protection, not just a positioning line. You can open the browser network panel while you work and see that the document itself is not posted to an analysis endpoint. The local history is stored in this browser, and you can delete it when you are finished.',
+          'Keep your own version history as well. A before-and-after file, notes about what you changed and the context in which you used assistance are more useful evidence of authorship than a single detector score, especially while watermark access remains limited.',
+          'If a client or institution has its own disclosure policy, follow that policy as well. A private editor can help you make a draft clearer; it cannot replace the agreement governing how the draft was made.',
         ],
       },
     ],

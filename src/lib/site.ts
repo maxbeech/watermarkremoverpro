@@ -59,6 +59,27 @@ function resolveBrand(): Brand {
   return brand
 }
 
+/**
+ * Keep every build on the one public origin we submit to search engines.
+ * Deployment variables are useful for local previews, but an apex or HTTP
+ * value must never leak into canonicals, JSON-LD, robots or the sitemap.
+ */
+function resolvePublicUrl(brand: Brand): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+  const expected = `www.${brand.domain}`
+  if (!configured) return brand.defaultUrl
+
+  try {
+    const url = new URL(configured)
+    if (url.protocol !== 'https:' || url.hostname !== expected || url.pathname !== '/') {
+      return brand.defaultUrl
+    }
+    return url.origin
+  } catch {
+    return brand.defaultUrl
+  }
+}
+
 const ACTIVE_BRAND = resolveBrand()
 
 /** The active build's brand id. Only needed where identity itself matters (content selection, next.config.ts, asset selection); everything else should read SITE. */
@@ -68,7 +89,7 @@ export const SITE = {
   name: ACTIVE_BRAND.name,
   tagline: ACTIVE_BRAND.tagline,
   description: ACTIVE_BRAND.description,
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? ACTIVE_BRAND.defaultUrl,
+  url: resolvePublicUrl(ACTIVE_BRAND),
   contactEmail: ACTIVE_BRAND.contactEmail,
 } as const
 
