@@ -1,4 +1,5 @@
 import type { BlogPost } from "../blog-types"
+import { BLOG_POSTS_ADDITIONS } from './blog-posts-additions'
 
 /**
  * NeverPrompted's own editorial calendar. Not a copy of
@@ -12,17 +13,17 @@ import type { BlogPost } from "../blog-types"
  *
  * See docs/neverprompted_launch_strategy.md, Part B, for the editorial plan.
  */
-export const BLOG_POSTS: BlogPost[] = [
+const LAUNCH_POSTS: BlogPost[] = [
   {
     slug: "why-ai-writing-sounds-like-ai",
     title: "Why Does AI Writing Sound Like AI? The Real Linguistic Patterns",
     h1: "Why Does AI Writing Sound Like AI?",
     metaDescription:
-      "The actual patterns that make text read as AI-generated: predictable word choice, flat sentence rhythm, stock transitions, and why language models produce them.",
+      "The patterns that make text read as AI-generated: word choice, flat rhythm and stock transitions, plus practical ways to edit them.",
     category: "Academy",
     format: "deep-dive",
     intent: "informational",
-    publishedAt: "2026-09-18",
+    publishedAt: "2026-10-01",
     author: "NeverPrompted Content Team",
     primaryKeyword: "why does ai writing sound like ai",
     supportingKeywords: [
@@ -166,7 +167,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Reviews",
     format: "review",
     intent: "commercial",
-    publishedAt: "2026-09-18",
+    publishedAt: "2026-10-02",
     author: "NeverPrompted Content Team",
     primaryKeyword: "best ai humanizer",
     supportingKeywords: [
@@ -312,7 +313,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "News",
     format: "data-study",
     intent: "informational",
-    publishedAt: "2026-09-18",
+    publishedAt: "2026-10-03",
     author: "NeverPrompted Content Team",
     primaryKeyword: "does google penalize ai content",
     supportingKeywords: [
@@ -446,7 +447,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Academy",
     format: "deep-dive",
     intent: "informational",
-    publishedAt: "2026-09-18",
+    publishedAt: "2026-10-04",
     author: "NeverPrompted Content Team",
     primaryKeyword: "ai writing detection explained",
     supportingKeywords: [
@@ -576,7 +577,7 @@ export const BLOG_POSTS: BlogPost[] = [
     title: "ChatGPT Now Hides a Watermark in Its Text in Europe. Here’s What That Means for Your Writing",
     h1: "ChatGPT Is Quietly Marking Its Text in Europe. What Happens to Your Writing?",
     metaDescription:
-      "OpenAI is adding an invisible watermark to ChatGPT text in the EU. What it is, who it affects, why your own edits matter, and how to make a draft genuinely sound like you.",
+      "OpenAI is adding a ChatGPT watermark in the EU. What it means, who it affects and how to make a draft genuinely sound like you.",
     category: "News",
     format: "how-to",
     intent: "informational",
@@ -710,3 +711,6 @@ export const BLOG_POSTS: BlogPost[] = [
     schemaType: "none",
   },
 ]
+
+/** The 15-post launch calendar, kept in two cohesive editorial modules. */
+export const BLOG_POSTS: BlogPost[] = [...LAUNCH_POSTS, ...BLOG_POSTS_ADDITIONS]

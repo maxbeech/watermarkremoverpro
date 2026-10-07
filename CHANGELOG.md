@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-07: NeverPrompted launch editorial calendar
+
+- Expanded NeverPrompted's registered blog source to 15 original Academy, News and Reviews posts, each with metadata, FAQ, structured-data type, credited hero image, internal links and an authoritative source.
+- Publication dates now span 1–7 October 2026; the existing shared blog renderer continues to supply canonical metadata, Open Graph/Twitter cards, JSON-LD and sitemap entries from this one source.
+
 ## 2026-10-07: textGrain pages and a 25% word-change target
 
 - **Product.** The word-change target now offers 25% (labelled textGrain) and 40%, with the explanation that OpenAI's own test took detection from about 92% to 66% at 10% of words replaced and to about 17% at 25%. Length and topic caveats are stated beside the control.
