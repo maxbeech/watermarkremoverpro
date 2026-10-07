@@ -51,7 +51,7 @@ function post(seed: EditorialSeed): BlogPost {
     },
     intro: [
       `The question behind “${seed.primaryKeyword}” is usually more personal than technical: you want a draft to sound like something you would genuinely send. ${seed.angle}`,
-      `This guide starts with a small, reversible move — ${seed.firstMove} — then shows what to inspect before you make bigger changes. It is about improving clarity and ownership, not making promises that no writing tool can keep.`,
+      `This guide starts with a small, reversible move: ${seed.firstMove}. It then shows what to inspect before you make bigger changes. It is about improving clarity and ownership, not making promises that no writing tool can keep.`,
       `The examples reflect the way an editor would work: notice a pattern, test one change, read the result aloud, and keep only what improves the piece.`,
     ],
     takeaways: [
@@ -95,7 +95,7 @@ function post(seed: EditorialSeed): BlogPost {
       },
       {
         id: 'when-to-use-a-tool',
-        heading: 'Where a rewriting tool fits — and where it does not',
+        heading: 'Where a rewriting tool fits, and where it does not',
         body: [
           `A tool is useful when it helps you spot repetition, compare alternatives or get unstuck on a clumsy sentence. It is not a substitute for knowing whether a claim is true, whether you have permission to share an example, or whether an assignment meets its rules. Those decisions require the writer, not an interface.`,
           `Use a tool as a second pair of eyes: accept a suggestion only after checking it against the surrounding paragraph. NeverPrompted keeps that process on your device and shows changes for review. It does not upload a draft for the purpose of rewriting, and it does not guarantee a particular detector or provenance result.`,
