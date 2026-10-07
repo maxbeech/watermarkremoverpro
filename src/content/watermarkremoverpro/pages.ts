@@ -480,7 +480,7 @@ const GUIDES: LongTailPage[] = [
         heading: 'How well it survives editing',
         body: [
           'OpenAI’s own test found that replacing 10% of words with synonyms reduced detection from about 92% to 66%. It also said short passages, math answers and translated text are harder to detect.',
-          'This is why OpenAI warns that a missing watermark does not prove human authorship: the text may be too short, too heavily edited, or from another company’s system. For a wider look at the mechanism see /guide/does-editing-remove-a-watermark.',
+          'This is why OpenAI warns that a missing watermark does not prove human authorship: the text may be too short, too heavily edited, or from another company’s system. For the full set of published figures see /guide/textgrain, and for what weakens the mark in practice see /guide/remove-chatgpt-watermark; the mechanism is covered in /guide/does-editing-remove-a-watermark.',
         ],
       },
       {
@@ -556,6 +556,166 @@ const GUIDES: LongTailPage[] = [
         question: 'Do other AI companies watermark text too?',
         answer:
           'Google, Meta and Microsoft are among the companies that have committed to the EU’s code of practice on AI-generated content, alongside Anthropic and OpenAI. Check each provider’s own announcements for what they have actually shipped.',
+      },
+    ],
+  },
+  {
+    slug: 'textgrain',
+    group: 'guide',
+    title: 'textGrain: OpenAI’s text watermark, how it works and how it holds up',
+    metaTitle: 'textGrain explained: OpenAI’s text watermark, detection rates and limits',
+    metaDescription:
+      'textGrain is the invisible watermark OpenAI is adding to ChatGPT and Codex text in the EU. Detection rates by length and topic, what 10% and 25% word replacement does, and who can run the detector.',
+    intro:
+      'textGrain is the name OpenAI gave its text watermarking method when it announced the EU rollout on 5 October 2026. This page collects the published figures in one place and says what each one means for anyone reading, writing or checking text.',
+    sections: [
+      {
+        heading: 'What textGrain does',
+        body: [
+          'OpenAI describes textGrain as an invisible statistical signal added to the model’s word choices. A detector looks for that signal to assess whether a passage contains an OpenAI watermark. Nothing is added to the text as characters, so stripping hidden Unicode does nothing to it.',
+          'Rollout is staged. ChatGPT and Codex users in the EU on every plan get it over the coming weeks, API customers anywhere can opt in for select models from 5 October (it stays off by default), and OpenAI is working with cloud partners to offer it for model outputs accessed through them. OpenAI also says it plans to release the technology as open source.',
+        ],
+      },
+      {
+        heading: 'The published detection figures',
+        body: [
+          'At a target false positive rate of 1%, OpenAI reports its detector found the mark in about 80% of 200-token passages and about 95% of 400-token passages for content such as psychology. Detection was substantially lower for mathematics, where there is less freedom in word choice.',
+          'For edits, tested on 400-token passages: replacing 10% of words with synonyms reduced detection from about 92% to 66%, and replacing 25% reduced it to 17%. OpenAI’s own conclusion is that editing can substantially weaken the signal.',
+          'Read together: length helps the detector, constrained content and edits hurt it, and the relationship with edits is steep rather than gradual. Those figures come from OpenAI’s ideal-conditions evaluation, and OpenAI itself says strong performance there does not guarantee reliable detection in everyday use.',
+        ],
+      },
+      {
+        heading: 'Who can run the detector',
+        body: [
+          'Approved researchers and expert organisations can apply for access, granted case by case under the EU Code of Practice. It reports whether it finds an OpenAI watermark without identifying the user or revealing prompts. OpenAI is not making it public at launch because of the risk of missed watermarks and false positives.',
+          'That means there is no public textGrain key, and a tool claiming a textGrain verdict has either been approved or is guessing. WatermarkRemoverPro does not hold the key, never reports a textGrain result, and lists the keys it did test on every analysis.',
+        ],
+      },
+      {
+        heading: 'What textGrain does not tell you',
+        body: [
+          'OpenAI lists the limits itself: a watermark does not measure how much a person contributed, establish ownership or responsibility, identify the user, or verify accuracy. A missing watermark does not prove human authorship, since the text may be short, edited, translated, from an unsupported model, older than the rollout, or from another company’s system.',
+          'For how this compares with Anthropic’s mark see /guide/chatgpt-vs-claude-watermark, and for the method class they share see /guide/does-editing-remove-a-watermark.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'What does textGrain stand for?',
+        answer:
+          'It is simply OpenAI’s product name for its text watermarking method, not an acronym. The technical report describes a keyed statistical bias on next-word choice.',
+      },
+      {
+        question: 'Does textGrain work on short text?',
+        answer:
+          'Less well. OpenAI reports about 80% detection at 200 tokens against about 95% at 400 tokens at a 1% false positive rate, and substantially lower rates for math-style answers.',
+      },
+      {
+        question: 'Is textGrain open source?',
+        answer:
+          'OpenAI says it plans to make the technology available in open source and will update its technical report with more detail in the coming weeks. Check OpenAI’s report for the current state.',
+      },
+      {
+        question: 'Can ChatGPT text outside the EU carry textGrain?',
+        answer:
+          'Only if produced through an API integration that opted in, or generated in the EU and carried elsewhere. The consumer rollout is EU-only at launch.',
+      },
+    ],
+  },
+  {
+    slug: 'remove-chatgpt-watermark',
+    group: 'guide',
+    title: 'How to remove the ChatGPT watermark (textGrain): what actually weakens it',
+    metaTitle: 'Remove the ChatGPT watermark: what weakens textGrain, and what does not',
+    metaDescription:
+      'The ChatGPT text watermark lives in word choice, not hidden characters. What OpenAI’s own numbers say about editing, why 25% of words is the figure to aim for, and how to set it in WatermarkRemoverPro.',
+    intro:
+      'People searching for a ChatGPT watermark remover are usually trying one of three things that do not work, because the textGrain mark is not a symbol, a font quirk or file metadata. It is a bias in which words were chosen, so only changing words changes it.',
+    sections: [
+      {
+        heading: 'What does not remove it',
+        body: [
+          'Deleting zero-width characters, retyping the text, changing the font, converting to PDF or pasting into a plain-text editor all leave the words unchanged, so they leave the signal unchanged. Light synonym swapping is not enough either: OpenAI’s test found 10% of words replaced still left detection at about 66%.',
+        ],
+      },
+      {
+        heading: 'What the published numbers say does weaken it',
+        body: [
+          'In OpenAI’s evaluation of 400-token passages, replacing 25% of words with synonyms cut detection from about 92% to about 17%. Short passages and math content were already harder to detect, and OpenAI notes that translated text is harder too.',
+          'So the working rule is the share of original words that no longer appear, measured the way OpenAI measured it. Around 25% is where the published curve falls away, and longer texts deserve a margin above that. Nobody outside OpenAI can verify the result against the real detector, so treat this as a reduction in a published figure, not a guarantee.',
+        ],
+      },
+      {
+        heading: 'Doing it without wrecking the text',
+        body: [
+          'Replacing a quarter of the words by hand or with a blunt synonym tool tends to damage meaning, names, numbers and technical terms. WatermarkRemoverPro’s rewrite engine runs a fact lock and a similarity floor on every changed passage, so a change that alters a number, a name or the meaning is rejected and the original sentence is kept.',
+          'Open Advanced settings and set the word-change target to 25% (textGrain). The engine keeps rewriting past the passages the detector flagged until that share of your words has moved, then reports the share it reached. The same control is the --target-word-change flag on the command line and targetWordChangePercent in the MCP tool. If the document cannot safely move that far, the result says the target was missed instead of pretending.',
+        ],
+      },
+      {
+        heading: 'A note on disclosure',
+        body: [
+          'A watermark does not determine whether you had to disclose AI use, and removing it does not change any disclosure duty that your employer, publisher, school or the EU AI Act’s rules for deployers may place on you. Check the rule that applies to you before you decide how to present the text.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Is there a ChatGPT watermark remover that guarantees removal?',
+        answer:
+          'No honest one. The detector is restricted to approved researchers, so no third party can confirm a result. What can be shown is the share of words changed, compared with OpenAI’s published figures.',
+      },
+      {
+        question: 'Will changing 25% of the words change my meaning?',
+        answer:
+          'Not if the edit is checked. Each rewritten passage must clear a meaning-similarity floor and a fact lock covering names, numbers and dates, and a passage that fails is left as it was.',
+      },
+      {
+        question: 'Does the same approach work on the Claude watermark?',
+        answer:
+          'Both are word-choice watermarks, so the direction is the same, but there are no published robustness figures for Claude’s mark and neither key is public. See /guide/claude-ai-watermark.',
+      },
+    ],
+  },
+  {
+    slug: 'textgrain-vs-synthid',
+    group: 'guide',
+    title: 'textGrain vs SynthID Text: two text watermarks compared',
+    metaTitle: 'textGrain vs SynthID Text: how OpenAI’s and Google DeepMind’s watermarks compare',
+    metaDescription:
+      'OpenAI says textGrain matched or exceeded SynthID for text in its tests. What each method is, who can detect it, and why neither tells you who wrote a passage.',
+    intro:
+      'SynthID for text came out of Google DeepMind and has been the reference point for text watermarking; the watermarking Anthropic announced in August is reported to be built on it. OpenAI’s textGrain is the newest entrant, and OpenAI says it matched or exceeded SynthID in its own evaluations.',
+    sections: [
+      {
+        heading: 'Same family, different implementations',
+        body: [
+          'Both embed a keyed statistical signal in word choice during generation. Neither adds visible marks or metadata. Both are therefore carried by copy and paste, both weaken with heavy editing, translation and short length, and both need a key to detect.',
+        ],
+      },
+      {
+        heading: 'What OpenAI claims, and what it has not shown',
+        body: [
+          'OpenAI says textGrain matched or exceeded the approaches it tested, including SynthID for text, and reports no meaningful benchmark loss from watermarking. These are vendor figures from OpenAI’s own evaluation, and the full methodology is in a technical report that OpenAI says it will extend. No independent head-to-head is available yet.',
+        ],
+      },
+      {
+        heading: 'Detection access',
+        body: [
+          'OpenAI’s detector is limited to approved researchers and expert organisations. OpenAI also marks images and audio with SynthID and Content Credentials, and those verification tools are public, which is a separate matter from text. See /guide/chatgpt-vs-claude-watermark for the two chat assistants side by side.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Is textGrain the same as SynthID?',
+        answer:
+          'No. SynthID is Google DeepMind’s technology. textGrain is OpenAI’s own method for text, and OpenAI says it compared it with SynthID for text.',
+      },
+      {
+        question: 'Which is harder to remove?',
+        answer:
+          'No independent comparison exists. OpenAI’s published edit figures apply to textGrain only.',
       },
     ],
   },

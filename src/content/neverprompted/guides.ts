@@ -496,4 +496,133 @@ export const GUIDES: LongTailPage[] = [
       },
     ],
   },
+  {
+    slug: 'what-is-textgrain',
+    group: 'guide',
+    title: 'What Is textGrain? ChatGPT’s New Watermark, Explained Simply',
+    metaTitle: 'What Is textGrain? ChatGPT’s Hidden Watermark in Plain English',
+    metaDescription:
+      'textGrain is the name of the invisible watermark OpenAI is adding to ChatGPT text in the EU. What it is, how it hides in your wording, and why it fades when a lot of the words change.',
+    intro:
+      'You may have seen the word textGrain in the news this week. It’s OpenAI’s name for the invisible watermark that ChatGPT and Codex are starting to put on their text in the EU. Here’s what it is without the jargon.',
+    sections: [
+      {
+        heading: 'The simplest way to think about it',
+        body: [
+          'When ChatGPT writes, it picks each next word from a long list of options. textGrain quietly tilts those picks, a little, toward a secret pattern. No single word looks odd. But across a few hundred words, the leaning adds up to a fingerprint that someone with the secret key can spot.',
+          'That’s why you can’t see it, and why copying and pasting keeps it: the fingerprint is made of the words themselves.',
+        ],
+      },
+      {
+        heading: 'Why a longer text is easier to spot',
+        body: [
+          'OpenAI’s own numbers: at a one per cent false alarm rate, its detector caught about 80% of 200-token passages and about 95% of 400-token passages. That’s roughly 150 words versus 300. Maths answers were much harder, because there’s little choice about which words to use.',
+        ],
+      },
+      {
+        heading: 'Why changing words weakens it',
+        body: [
+          'Since the pattern lives in your word choices, swapping words breaks it up. OpenAI found that replacing 10% of the words with synonyms dropped detection from about 92% to 66%, and replacing 25% dropped it to about 17%.',
+        ],
+      },
+      {
+        heading: 'Who can see it',
+        body: [
+          'Only approved researchers and expert organisations, for now. OpenAI isn’t releasing the detector publicly because it can miss real watermarks and flag things that don’t have one. So a free website claiming to read textGrain isn’t something to rely on, and NeverPrompted doesn’t claim to.',
+        ],
+      },
+      {
+        heading: 'Where you’ll run into it',
+        body: [
+          'If you use ChatGPT or Codex from within the EU, the mark is being switched on for every plan over the coming weeks. If you build with OpenAI’s API, it stays off unless you choose to turn it on for supported models. Text you generated in the EU and carried elsewhere keeps its pattern, because the pattern travels with the words.',
+          'Most people will never see a result. The detector isn’t public, so the realistic situations are researchers studying the technology, and organisations that have been approved to use it. If someone shows you a verdict, it’s fair to ask who ran it and with what key.',
+        ],
+      },
+      {
+        heading: 'What it can’t tell anyone',
+        body: [
+          'It doesn’t say who wrote the prompt, how much of the final text is yours, or whether the text is true. And not finding it doesn’t prove a person wrote the text, which is OpenAI’s point as much as anyone’s.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Is textGrain on every ChatGPT answer?',
+        answer:
+          'In the EU, it’s being rolled out to ChatGPT and Codex users on all plans over the coming weeks. Outside the EU it isn’t on by default.',
+      },
+      {
+        question: 'How do I pronounce textGrain?',
+        answer:
+          'Just as it looks: text, then grain, as in the grain of wood. The name hints at a pattern running through the text.',
+      },
+      {
+        question: 'Is textGrain the same as the Claude watermark?',
+        answer:
+          'No. Claude’s mark is Anthropic’s, applied worldwide. textGrain is OpenAI’s. Both hide in word choice, and neither has a public detector.',
+      },
+    ],
+  },
+  {
+    slug: 'how-to-remove-chatgpt-watermark-from-text',
+    group: 'guide',
+    title: 'How to Remove the ChatGPT Watermark From Your Text',
+    metaTitle: 'How to Remove the ChatGPT Watermark From Text (What Really Works)',
+    metaDescription:
+      'The ChatGPT watermark isn’t hidden characters, so deleting them won’t help. Here’s what does weaken it, how many words you need to change, and how to do it in NeverPrompted without losing your meaning.',
+    intro:
+      'If you’ve searched for a ChatGPT watermark remover, the main thing to know is that textGrain isn’t something you can delete. It’s how the words were chosen. So the only fix is changing words, sensibly.',
+    sections: [
+      {
+        heading: 'Three things that won’t work',
+        body: [
+          'Clearing formatting, running the text through a character cleaner and retyping it yourself all keep the same words. The mark is in the words, so it stays.',
+        ],
+      },
+      {
+        heading: 'How much needs to change',
+        body: [
+          'OpenAI’s test is the best guide we have. Swapping 10% of the words left about two-thirds of watermarked passages still detectable. Swapping 25% left only about one in six. So about a quarter of your words is the number to aim for, a bit more on long pieces.',
+        ],
+      },
+      {
+        heading: 'How to do it in NeverPrompted',
+        body: [
+          'Paste your text, open Advanced, and under Word-change target choose 25% (textGrain). NeverPrompted keeps rewriting until about that share of your words has changed, and tells you what it reached.',
+          'It won’t trade your meaning for the number. Names, figures and dates are locked, and a rewrite that drifts from what you said is dropped. If it can’t reach the target safely, it says so and shows how far it got.',
+        ],
+      },
+      {
+        heading: 'When the number can’t be reached',
+        body: [
+          'Some writing leaves little room to move. A recipe with exact quantities, a legal clause, a paragraph of code comments or a list of names has words that can’t change without changing the meaning. In those cases NeverPrompted stops short of the target and shows the percentage it actually reached, rather than forcing replacements that would make the text wrong.',
+          'Short pieces behave differently too. OpenAI says shorter text is harder to detect to begin with, so a two-sentence answer carries a weaker mark than a long essay. For long pieces, choose a target a little above 25% so you have a margin, then read the result through once, start to finish, before you use it.',
+        ],
+      },
+      {
+        heading: 'Why we’re upfront about the limits',
+        body: [
+          'Plenty of sites will promise a clean result. We can’t, because the only test that counts belongs to OpenAI and isn’t available to us or to you. What we can do is give you a number you can check, the share of your words that changed, and the same published figures OpenAI used so you can see where that number sits.',
+        ],
+      },
+      {
+        heading: 'Then make it sound like you',
+        body: [
+          'A watermark is only one signal. Read the result aloud, put back the phrases you’d really use, and add something only you know. That’s what makes it yours.',
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Can NeverPrompted guarantee the watermark is gone?',
+        answer:
+          'No. Only OpenAI’s own detector could confirm that, and it isn’t public. NeverPrompted tells you how many of your words changed, which you can compare with OpenAI’s published figures.',
+      },
+      {
+        question: 'Does it work if I translate the text instead?',
+        answer:
+          'Translation also makes the watermark harder to detect, according to OpenAI, but it can change your meaning in ways you won’t notice. Checking the rewrite sentence by sentence is safer.',
+      },
+    ],
+  },
 ]

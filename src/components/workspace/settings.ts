@@ -39,8 +39,9 @@ export const DEFAULT_STRENGTH: Strength = 'balanced'
  *
  * Text watermarks that live in word choice (OpenAI's EU textGrain, and the
  * green-list family generally) weaken in proportion to how many words change;
- * OpenAI's own published test took detection from about 92% to 66% by
- * replacing 10% of words with synonyms. A target keeps the rewrite going past
+ * OpenAI's own published test (400-token passages) took detection from about
+ * 92% to 66% by replacing 10% of words with synonyms, and to about 17% at 25%.
+ * That is why 25% is the level to aim for with textGrain text. A target keeps the rewrite going past
  * what the detector flagged until that share of the wording has moved, but
  * every change still has to clear the same meaning and fact checks, so it can
  * be missed on a document that cannot safely move that far. Zero means off.
@@ -49,7 +50,9 @@ export const WORD_CHANGE_TARGETS: { value: number; label: string }[] = [
   { value: 0, label: 'Off' },
   { value: 10, label: '10%' },
   { value: 20, label: '20%' },
+  { value: 25, label: '25% (textGrain)' },
   { value: 30, label: '30%' },
+  { value: 40, label: '40%' },
 ]
 
 /**

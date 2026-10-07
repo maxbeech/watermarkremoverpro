@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-07: textGrain pages and a 25% word-change target
+
+- **Product.** The word-change target now offers 25% (labelled textGrain) and 40%, with the explanation that OpenAI's own test took detection from about 92% to 66% at 10% of words replaced and to about 17% at 25%. Length and topic caveats are stated beside the control.
+- **WatermarkRemoverPro.** New guides `/guide/textgrain` (every published figure in one place), `/guide/remove-chatgpt-watermark` and `/guide/textgrain-vs-synthid`; homepage strip and `llms.txt` now name textGrain and the 25% figure.
+- **NeverPrompted.** New plain-English guides `/guide/what-is-textgrain` and `/guide/how-to-remove-chatgpt-watermark-from-text`, a homepage guide card and a textGrain mention in the news strip.
+- **Search targets.** "chatgpt watermark remover" (about 3,600 a month) and "remove chatgpt watermark" (about 1,600) are the established terms; textGrain terms have no Keyword Planner data yet, so the pages name it in titles, headings and FAQs ahead of demand. Claude-mark searches rose from about 30 to 6,600 a month when Anthropic announced its mark in August, so a similar jump is plausible.
+
 ## 2026-10-07: NeverPrompted Search Console remediation
 
 - Canonical URLs now reject HTTP, apex and malformed `NEXT_PUBLIC_SITE_URL` values, keeping the www HTTPS origin as the single source for metadata, JSON-LD, robots and the sitemap.

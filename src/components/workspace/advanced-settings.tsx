@@ -165,6 +165,13 @@ export function AdvancedSettings({
               change still has to keep your meaning and your facts, so the target can be missed, and
               the result says when it was.
             </p>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-500">
+              For ChatGPT or Codex text from the EU, pick 25%: in OpenAI’s own textGrain test,
+              replacing 25% of words took detection from about 92% to about 17%, against 66% at
+              10%. Longer passages hold the mark better than short ones, so give 30% or more to
+              text over a few hundred words. This changes your wording, not OpenAI’s detector, which
+              we cannot test.
+            </p>
             <div className="mt-3 flex flex-wrap gap-2">
               {WORD_CHANGE_TARGETS.map((option) => (
                 <button

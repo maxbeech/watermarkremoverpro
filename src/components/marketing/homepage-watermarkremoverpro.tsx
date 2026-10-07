@@ -59,9 +59,13 @@ export function WatermarkRemoverProHome({
       <div className="border-b border-ink-200 bg-seal-50">
         <Wrap wide className="py-3">
           <p className="text-center text-[13px] leading-relaxed text-ink-700">
-            <span className="font-semibold text-ink-900">New, 5 October:</span> OpenAI will watermark ChatGPT and Codex text in the EU. Its own tests show editing weakens the mark, and only approved researchers can detect it.{' '}
+            <span className="font-semibold text-ink-900">New, 5 October:</span> OpenAI will watermark ChatGPT and Codex text in the EU with textGrain. Its own tests show 25% of words replaced drops detection to about 17%, and only approved researchers can run the detector.{' '}
             <Link href="/blog/openai-chatgpt-text-watermark-eu-textgrain" className="font-semibold text-seal-700 underline underline-offset-2">
               Read more
+            </Link>{' '}
+            or see{' '}
+            <Link href="/guide/textgrain" className="font-semibold text-seal-700 underline underline-offset-2">
+              textGrain explained
             </Link>
           </p>
         </Wrap>

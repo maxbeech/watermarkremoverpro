@@ -38,7 +38,7 @@ this path makes a network call with document text, on any tier.
   out over the coming weeks on all plans. API developers anywhere can opt in for
   select models; it is off by default and not a global default.
 - OpenAI's own test: replacing 10% of words with synonyms cut detection from
-  about 92% to 66%. Short passages, math answers and translated text are harder
+  about 92% to 66%, and 25% cut it to about 17%. Short passages, math answers and translated text are harder
   to detect. A missing watermark does not prove human authorship.
 - OpenAI's detector is limited to approved researchers and expert organisations.
   No public key exists, so ${SITE.name} cannot detect it and says so on every result.
@@ -46,7 +46,7 @@ this path makes a network call with document text, on any tier.
   worldwide. Both respond to the EU AI Act transparency rules (in effect 2 August 2026).
 - The rewrite reports wordChangePercent (share of original words that changed,
   the unit OpenAI states robustness in) and accepts targetWordChangePercent
-  (1-60) as an optional goal that still respects the fact-lock and similarity floor.
+  (1-60; 25 matches the textGrain figures) as an optional goal that still respects the fact-lock and similarity floor.
 
 ## Install (copy this, it is the whole setup)
 
