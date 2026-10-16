@@ -344,7 +344,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       { href: '/limits', label: "What WatermarkRemoverPro can and can't tell you" },
       { href: '/check', label: 'Run a free check' },
       { href: '/blog/turnitin-ai-false-positive-how-to-check', label: 'Turnitin flagged you? How to check your own essay' },
-      { href: '/blog/how-common-are-ai-detector-false-positives', label: 'How common are AI detector false positives?' },
+      { href: '/blog/gptzero-review-false-positives', label: 'GPTZero review: accuracy, bias and false positives' },
     ],
     externalLinks: [
       { href: 'https://arxiv.org/abs/2304.02819', label: 'Liang et al., "GPT detectors are biased against non-native English writers"' },
@@ -631,6 +631,16 @@ export const BLOG_POSTS_C: BlogPost[] = [
           "That scope is stated plainly rather than implied to be wider. A result under one key says nothing about text marked under a key WatermarkRemoverPro doesn't have, which is exactly why an absent mark is never treated as proof of human authorship, only as 'no mark found under the keys tested'.",
         ],
       },
+      {
+        id: 'where-text-watermarking-is-in-2026',
+        heading: 'Where text watermarking is in 2026',
+        body: [
+          "Green-list watermarking is no longer only a research idea. Google DeepMind's SynthID-Text, described by Dathathri et al. in Nature in 2024, is a text watermark built for production use. It changes only the sampling step and leaves model training alone. The paper reports a live experiment covering nearly 20 million Gemini responses, with text quality preserved.",
+          "The reference code released alongside that paper is a research implementation, and its Bayesian scoring option has to be trained on watermarked and unwatermarked text before it can be used. A detector can only test the schemes and keys it holds. Text marked under a scheme you do not have can be neither confirmed nor ruled out by a test like the one described above.",
+          "Regulation is moving too. According to the European Commission, Article 50 of the EU AI Act, which sets transparency duties for AI-generated content, applies from 2 August 2026. How machine-readable marking of generated text should work is still technically unsettled, and secondary commentary disagrees on whether some systems already on the market get a transition period. Check the adopted text rather than any summary, this article included.",
+          "None of this changes the statistics. Marked text still shows an excess of green tokens under the right key. What the rules change is who is expected to add a mark in the first place.",
+        ],
+      },
     ],
     table: {
       caption: "A worked z-test walkthrough: the first three rows are WatermarkRemoverPro's own measured and live-demo figures; the fourth is an illustrative example of an under-length document.",
@@ -675,18 +685,25 @@ export const BLOG_POSTS_C: BlogPost[] = [
         answer:
           "No. It means the text is statistically very unlikely to be unmarked under that specific key, a narrower claim than 'this was written by AI'. It says nothing about text generated without a watermark at all, or marked under a different key.",
       },
+      {
+        question: 'Is watermarking actually used on AI text today?',
+        answer:
+          "Yes, by at least one major provider. Google DeepMind's SynthID-Text is described in a 2024 Nature paper as deployed in production for Gemini. Vendors do not publish their detection keys, so a missing mark under any one tool is never proof of human writing.",
+      },
     ],
     internalLinks: [
       { href: '/method', label: 'How the method works' },
       { href: '/verify', label: 'Live detector demo' },
       { href: '/limits', label: "What WatermarkRemoverPro can and can't tell you" },
-      { href: '/blog/what-is-an-ai-watermark-detector', label: 'What is an AI watermark? How detection works' },
+      { href: '/blog/ai-detector-comparison-2026', label: 'AI detector comparison 2026: what each tool measures' },
       { href: '/blog/claude-ai-watermark-anthropic-provenance-mark', label: "Claude's AI watermark: what Anthropic's mark means" },
     ],
     externalLinks: [
       { href: 'https://arxiv.org/abs/2301.10226', label: 'Kirchenbauer et al., "A Watermark for Large Language Models"' },
+      { href: 'https://www.nature.com/articles/s41586-024-08025-4', label: 'Dathathri et al., "Scalable watermarking for identifying large language model outputs" (Nature, 2024)' },
       { href: 'https://www.nist.gov/itl/ai-risk-management-framework', label: 'NIST AI Risk Management Framework' },
       { href: 'https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai', label: 'European Commission: regulatory framework for AI' },
+      { href: 'https://artificialintelligenceact.eu/transparency-rules-article-50/', label: 'EU AI Act Article 50 transparency rules (secondary guide)' },
     ],
     schemaType: 'none',
   },
@@ -750,7 +767,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
         heading: 'Turnitin: a classifier built for institutions',
         body: [
           "Turnitin is built into existing coursework submission systems, which makes it the default many universities already have running. It's not something an individual typically buys or accesses directly.",
-          'Turnitin states a document-level false-positive rate under 1% for documents with over 20% AI writing, validated on an 800,000-document test set, and a sentence-level rate of roughly 4%, more common at the boundary between human and AI text.',
+          'Turnitin states a document-level false-positive rate under 1% for documents with 20% or more AI writing, validated on an 800,000-document set of pre-ChatGPT writing samples, and a sentence-level rate of roughly 4%, more common at the boundary between human and AI text. Those figures date from 2023, when the detector was new, so read them as the vendor\'s last published numbers rather than current ones.',
           "Independent education press has also reported on Turnitin itself acknowledging higher false-positive rates occur in some cases, a useful reminder that even a low headline figure isn't zero.",
         ],
       },
@@ -805,6 +822,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
           "None of the four claims 100% accuracy, and GPTZero says so about the category in general on its own site. That's a useful baseline for judging every marketing claim you read, including ours.",
           "A 'clean' result from any of these tools is not absolute proof of anything. A classifier's low score means the writing didn't look statistically AI-like to that model. A watermark detector's absent signal means no mark was found under the keys tested, not that the document is definitively human.",
           "Our own limits page states this plainly for WatermarkRemoverPro specifically, and it's worth holding the same standard against any tool you're considering, whatever its marketing copy says.",
+          "The rules around marking are moving too. Article 50 of the EU AI Act, which sets transparency duties for AI-generated content, applies from 2 August 2026 according to the European Commission. The technical standard for marking generated text is still unsettled, so no vendor's marking claim should be read as settled, ours included.",
         ],
       },
     ],
@@ -812,7 +830,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       caption: 'AI detector comparison 2026: what each tool actually measures',
       headers: ['Tool', 'What it actually measures', 'Stated accuracy / FPR (cited)', 'API available?', "Who it's for"],
       rows: [
-        ['Turnitin', 'General AI-writing classifier', 'Document-level FPR under 1% (800,000-doc test set); sentence-level FPR approx. 4%', 'Institutional integration, not public self-serve', 'Schools and universities doing bulk screening'],
+        ['Turnitin', 'General AI-writing classifier', 'Document-level FPR under 1% (800,000 pre-ChatGPT samples; 2023 figures); sentence-level FPR approx. 4%', 'Institutional integration, not public self-serve', 'Schools and universities doing bulk screening'],
         ['GPTZero', 'General AI-writing classifier', 'Stated 99% accuracy; ~1% FPR claimed for de-biased ESL detection; 96.5% mixed-document accuracy', 'Yes, offered', 'Educators and content platforms wanting broad coverage'],
         ['Originality.ai', 'General AI-writing classifier, multilingual', 'Stated 97.8% accuracy on its multilingual model', 'Yes, offered', 'Agencies and content teams screening bulk copy'],
         ['WatermarkRemoverPro', 'Keyed statistical watermark presence (green-list method), not general style classification', 'Positive-control z > 8 (p < 1e-6); live /verify demo z = 20.45 under correct key vs z = 0.1 under wrong key', 'Yes, with metered JSON API and MCP server', 'Individuals checking their own writing before it goes out'],
@@ -834,7 +852,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       {
         question: 'Which AI detector has the lowest false positive rate?',
         answer:
-          "On stated figures alone, Turnitin's document-level rate of under 1% is the lowest headline number among the classifiers here, though it's tested on a different definition (documents with over 20% AI writing) than GPTZero's or Originality.ai's figures, so treat direct comparisons with some caution.",
+          "On stated figures alone, Turnitin's document-level rate of under 1% is the lowest headline number among the classifiers here, though it's tested on a different definition (documents with 20% or more AI writing) than GPTZero's or Originality.ai's figures, so treat direct comparisons with some caution.",
       },
       {
         question: 'Is WatermarkRemoverPro a replacement for Turnitin or GPTZero?',
@@ -858,7 +876,6 @@ export const BLOG_POSTS_C: BlogPost[] = [
       { href: '/vs/originality-ai', label: 'WatermarkRemoverPro vs Originality.ai' },
       { href: '/blog/turnitin-ai-detector-vs-watermarkremoverpro', label: 'Turnitin AI detector vs WatermarkRemoverPro' },
       { href: '/blog/gptzero-review-false-positives', label: 'GPTZero review: accuracy, bias and false positives' },
-      { href: '/blog/originality-ai-review-false-positives', label: 'Originality.ai review: reliable for high-stakes use?' },
     ],
     externalLinks: [
       { href: 'https://gptzero.me', label: 'GPTZero' },
@@ -866,6 +883,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
       { href: 'https://www.turnitin.com/blog/understanding-false-positives-within-our-ai-writing-detection-capabilities', label: 'Turnitin: document-level false positive rate' },
       { href: 'https://www.turnitin.com/blog/understanding-the-false-positive-rate-for-sentences-of-our-ai-writing-detection-capability', label: 'Turnitin: sentence-level false positive rate' },
       { href: 'https://www.k12dive.com/news/turnitin-false-positives-AI-detector/652221/', label: 'K-12 Dive: Turnitin acknowledges false positives' },
+      { href: 'https://artificialintelligenceact.eu/transparency-rules-article-50/', label: 'EU AI Act Article 50 transparency rules (secondary guide)' },
     ],
     schemaType: 'none',
   },

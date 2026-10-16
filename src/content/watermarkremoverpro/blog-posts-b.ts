@@ -155,7 +155,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
       { href: '/pricing', label: 'WatermarkRemoverPro Pro pricing' },
       { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/limits', label: 'Stated limits of the check' },
-      { href: '/blog/how-common-are-ai-detector-false-positives', label: 'How common are AI detector false positives?' },
+      { href: '/blog/gptzero-review-false-positives', label: 'GPTZero review: accuracy, bias and false positives' },
       { href: '/blog/turnitin-ai-detector-vs-watermarkremoverpro', label: 'Turnitin AI detector vs WatermarkRemoverPro' },
     ],
     externalLinks: [
@@ -368,6 +368,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
       'Independent research on the broader class of GPT detectors found bias against non-native English writers, which is worth reading carefully for what it does and doesn\'t prove.',
       'GPTZero is a general AI-writing classifier, a different tool from a narrow keyed-watermark test like WatermarkRemoverPro.',
       'Even GPTZero says plainly that no AI detector is 100% accurate.',
+      'Overall accuracy and false positive rate are different numbers, so a 99% headline does not settle how often genuine human writing gets flagged.',
     ],
     sections: [
       {
@@ -417,6 +418,31 @@ export const BLOG_POSTS_B: BlogPost[] = [
         body: [
           'Reach for GPTZero when you want a general read on a document with no known watermark key involved, a classic classifier job.',
           'Reach for a keyed test like WatermarkRemoverPro when you specifically want to check your own writing for a known, testable statistical mark, or when you want a dated evidence report with stated limits attached to it, not just a percentage.',
+        ],
+      },
+      {
+        id: 'why-false-positive-figures-do-not-compare',
+        heading: 'Why false positive figures do not compare',
+        body: [
+          'A false positive is when a detector flags genuine human writing as AI-generated. Whether that happens to a whole document or to a single sentence changes the number a lot, and so does the test set the vendor used. GPTZero\'s roughly 1% figure for ESL writers, Turnitin\'s under-1% document-level figure and its roughly 4% sentence-level figure are not measured the same way, so they are not rows in one league table.',
+          'Turnitin\'s document-level figure, for example, comes from an 800,000-document set of pre-ChatGPT writing samples and applies to documents with 20% or more AI writing. Its own breakdown also shows that 54% of false-positive sentences sit right next to genuine AI text, which is why errors cluster at the boundary between human and machine writing. Turnitin also advises educators to use a score to open a conversation with a student, not as proof on its own.',
+        ],
+      },
+      {
+        id: 'accuracy-is-not-the-false-positive-rate',
+        heading: 'A 99% accuracy claim is not a 1% false positive rate',
+        body: [
+          'Overall accuracy blends false positives and false negatives across one test set. A false positive rate counts only how often genuine human writing is wrongly flagged. The two can move independently, so a tool can post a high accuracy figure while still misjudging one group of writers more often.',
+          'That is the practical gap in GPTZero\'s own numbers. The 99% headline does not tell you the false positive rate for short, plain, or non-native writing, and the separate ESL figure is GPTZero\'s own claim, not an independently published replication.',
+        ],
+      },
+      {
+        id: 'if-a-flag-lands-on-your-own-work',
+        heading: 'If a flag lands on your own work',
+        body: [
+          'Ask for the actual report: which passages were flagged, and under what settings the check was run. A single score with no passage-level detail is hard to contest and hard to learn from.',
+          'Keep the evidence of how the text was made before anyone asks for it. Save drafts as separate versions rather than overwriting one file, note roughly when you started and finished, and keep the brief the work answered. A paper trail built in advance beats reconstructing a process from memory after a submission or an invoice has stalled.',
+          'A WatermarkRemoverPro evidence report can sit alongside that trail. It is a dated, exportable PDF with a SHA-256 hash tying it to the exact file, a stated confidence band, and the method\'s limits printed next to the result. It is not a rebuttal of a GPTZero score, because it tests for a different thing: a keyed statistical mark, not a writing style.',
         ],
       },
       {
@@ -470,18 +496,27 @@ export const BLOG_POSTS_B: BlogPost[] = [
         question: 'Should I pick GPTZero or WatermarkRemoverPro if I only have time for one check?',
         answer: 'It depends what you actually know going in. If you have no idea which tool, if any, produced a piece of text, a style-based classifier like GPTZero is the only kind of check that applies. If you specifically want to know whether your own writing carries a known, testable statistical mark, a keyed test is the more precise question to ask. Where time allows, running both and reading them as two separate data points rather than a single verdict is the more careful approach.',
       },
+      {
+        question: 'Is GPTZero\'s 99% accuracy the same as a 1% false positive rate?',
+        answer: 'No. Overall accuracy blends false positives and false negatives across a test set, while a false positive rate counts only how often genuine human writing is wrongly flagged. The two can move independently, so each needs its own figure.',
+      },
+      {
+        question: 'What should I ask for when a client or institution flags my writing?',
+        answer: 'The full report, including which passages were flagged and under what settings. Then offer your own evidence, such as saved drafts, timestamps and research notes. A calm, specific reply that names what you are disputing usually moves a stalled invoice or submission faster than a general denial.',
+      },
     ],
     internalLinks: [
       { href: '/vs/gptzero', label: 'WatermarkRemoverPro vs GPTZero' },
       { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/verify', label: 'Live watermark detection demo' },
       { href: '/for/non-native-english-writers', label: 'WatermarkRemoverPro for non-native English writers' },
-      { href: '/blog/how-common-are-ai-detector-false-positives', label: 'How common are AI detector false positives?' },
+      { href: '/blog/ai-detector-comparison-2026', label: 'AI detector comparison 2026: Turnitin, GPTZero, Originality.ai' },
     ],
     externalLinks: [
       { href: 'https://gptzero.me', label: 'GPTZero\'s stated accuracy and bias claims' },
       { href: 'https://arxiv.org/abs/2304.02819', label: 'Liang et al. on detector bias against non-native English writers' },
       { href: 'https://arxiv.org/abs/2301.10226', label: 'Kirchenbauer et al., "A Watermark for Large Language Models"' },
+      { href: 'https://www.turnitin.com/blog/understanding-the-false-positive-rate-for-sentences-of-our-ai-writing-detection-capability', label: 'Turnitin: sentence-level false positive rate' },
     ],
     schemaType: 'Review',
     reviewRating: {
@@ -489,170 +524,6 @@ export const BLOG_POSTS_B: BlogPost[] = [
       ratingValue: 3.6,
       bestRating: 5,
       summary: 'GPTZero publishes a strong headline accuracy figure and says it has been de-biased for ESL writers, but independent research on detector bias against non-native English writers means any single-tool verdict is worth corroborating rather than treating as final.',
-    },
-  },
-  {
-    slug: 'originality-ai-review-false-positives',
-    title: 'Originality.ai Review: Reliable for High-Stakes Use?',
-    h1: 'Originality.ai Review: Reliable for High-Stakes Use?',
-    metaDescription: 'Originality.ai claims 97.8% accuracy but no published false-positive rate. Here\'s what that gap means if a client flags your invoice.',
-    category: 'Reviews',
-    format: 'review',
-    intent: 'commercial',
-    publishedAt: '2026-08-09',
-    author: 'WatermarkRemoverPro Content Team',
-    primaryKeyword: 'originality ai false positive',
-    supportingKeywords: [
-      'Originality.ai accuracy',
-      'Originality.ai review',
-      'freelance writer AI detector dispute',
-      'AI detector client dispute',
-      'Originality.ai false positive rate',
-      'content agency AI screening',
-      'AI writing detector for freelancers',
-      'proof of authorship freelance',
-    ],
-    longTailKeywords: [
-      'what to do if a client\'s Originality.ai score is wrong',
-      'does Originality.ai publish a false positive rate',
-      'how freelancers can prove they didn\'t use AI',
-    ],
-    heroImage: {
-      src: 'https://images.unsplash.com/photo-1516382799247-87df95d790b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
-      alt: 'A magnifying glass inspecting a document, illustrating a review of Originality.ai false positive risk',
-      unsplashId: 'd9ILr-dbEdg',
-    },
-    intro: [
-      'An Originality AI false positive can turn a routine invoice into a week of back-and-forth before anyone agrees what actually happened. If you write for clients or agencies, there is a decent chance one of them runs your invoices through Originality.ai before paying up, since it has become a default screening step in parts of the content industry.',
-      'So it is worth knowing exactly what the tool claims for itself, what it does not say on the same pages, and what a freelancer can actually do when a flagged score threatens to hold up payment.',
-    ],
-    takeaways: [
-      'Originality.ai states a 97.8% multilingual accuracy figure and points to third-party studies.',
-      'It does not publish a specific false-positive percentage on the pages you can point to.',
-      'That gap makes it harder to judge exactly how much risk a single flagged score represents.',
-      'If a client withholds payment over a flagged score, ask for the report itself and offer independent corroborating evidence.',
-      'A WatermarkRemoverPro evidence report is complementary evidence of your own process, not a rebuttal of Originality.ai\'s specific number.',
-    ],
-    sections: [
-      {
-        id: 'why-freelancers-end-up-here',
-        heading: 'Why freelancers end up here',
-        body: [
-          'Agencies buy Originality.ai in bulk, often as one line in a wider quality-control checklist alongside plagiarism and grammar checks. A writer usually only learns it is running when a piece gets bounced back with a score attached and a request to "please explain."',
-          'That is an awkward spot to be in. You are being judged against a number you had no part in generating, by a tool whose exact reliability you cannot easily verify from the outside.',
-        ],
-      },
-      {
-        id: 'what-originality-ai-claims-about-itself',
-        heading: 'What Originality.ai claims about itself',
-        body: [
-          'On its own site, Originality.ai states 97.8% accuracy for its multilingual model, and references peer-reviewed third-party studies as backing. It is bundled with plagiarism checking, a grammar check and a fact-check feature, positioned as an all-in-one content quality gate rather than a single-purpose detector.',
-          'Its FAQ does acknowledge that false positives happen, and says the company "transparently shares" false positive rates from its own accuracy study. That is a reasonable thing to say. It is just not the same as printing the number on the page in front of you.',
-        ],
-      },
-      {
-        id: 'the-gap-thats-worth-noticing',
-        heading: 'The gap that\'s worth noticing',
-        body: [
-          'A 97.8% accuracy claim sounds precise, but accuracy and false-positive rate are not interchangeable numbers. A tool can be highly accurate overall while still producing a meaningful false-positive rate on a specific slice of documents: short pieces, technical writing, non-native English, heavily edited drafts.',
-          'Without that specific figure sitting next to the accuracy claim, a freelancer facing a dispute has no easy way to gauge exactly how much weight a single Originality.ai score should carry. That is the practical problem this review is pointing at, not a claim that the tool is wrong, simply that the risk is harder to size up than it should be.',
-          'Consider a short, 400-word product description, written in plain, functional language because that is what the client brief called for. Short, simple sentences are exactly the kind of text a style-based classifier can misread, whichever tool is used, because there is less room for the idiosyncratic variation that usually signals a human hand. A freelancer who mostly writes long-form, discursive copy might rarely hit this problem. One who regularly writes short technical or product copy is more exposed to it, and that is precisely the kind of risk a published false-positive rate, broken down by document length or type, would help someone gauge in advance rather than discover the hard way.',
-        ],
-      },
-      {
-        id: 'what-to-ask-for-when-a-client-flags-your-work',
-        heading: 'What to ask for when a client flags your work',
-        body: [
-          'Ask for the actual report, not just the headline percentage: which passages triggered it, and under what settings the check was run. Ask whether the client has run other genuinely human-written samples of yours through the same tool for comparison, since a baseline reading matters.',
-          'And be ready to offer your own evidence rather than only disputing theirs. Draft history in your writing tool, timestamps, research notes, even a rough outline you worked from: these build a picture of your actual process that a single score cannot capture either way.',
-          'It also helps to frame the reply as fact-finding rather than confrontation. A message along the lines of "could you share the specific report and which passages were flagged, so I can look at exactly what triggered it" tends to get a more useful response than one that opens by disputing the tool\'s competence outright. Most agencies are not trying to catch anyone out; they are usually following a policy set by a client of their own further up the chain, and a specific, calm request for the underlying detail typically moves an invoice along faster than a general objection does.',
-        ],
-      },
-      {
-        id: 'how-a-watermarkremoverpro-evidence-report-helps-and-what-it-doesnt-prove',
-        heading: 'How a WatermarkRemoverPro evidence report helps, and what it doesn\'t prove',
-        body: [
-          'A WatermarkRemoverPro evidence report is not a rebuttal of Originality.ai\'s specific score, and it would be dishonest to sell it as one, because the two tools test for different things entirely. Originality.ai is a style-based classifier; WatermarkRemoverPro checks your own writing for a specific keyed statistical mark.',
-          'What the evidence report does give you is a dated, exportable PDF, with a SHA-256 hash tying it to the exact file, a stated confidence band, and the method\'s stated limits printed alongside the result. It is an "I can show what I actually did" artefact you generate yourself, on your own document, rather than something aimed at arguing a client\'s tool was wrong.',
-        ],
-      },
-      {
-        id: 'building-a-paper-trail-before-you-ever-need-it',
-        heading: 'Building a paper trail before you ever need it',
-        body: [
-          'The freelancers who handle these disputes best usually built the habit before the dispute happened. Keeping drafts, running your own check on finished work before submitting it, and saving research notes costs a few minutes and pays off the one time a client\'s tool flags something wrongly.',
-          'It is a small bit of admin against a real financial risk, worth doing routinely rather than scrambling for it after an invoice gets stuck.',
-          'A simple routine works better than an elaborate one. Save each draft as a new version rather than overwriting the same file, note roughly when you started and finished a piece, and keep the client\'s original brief attached to the invoice it relates to. None of this takes long, but it means that if a dispute ever does arise, you are not reconstructing your process from memory weeks after the fact, you are handing over a paper trail that already exists.',
-        ],
-      },
-      {
-        id: 'verdict',
-        heading: 'Verdict',
-        body: [
-          'Originality.ai has a strong bundled feature set and a headline number backed by referenced studies. What holds it back from a higher score here is simple: for a freelancer facing a real payment dispute, not being able to point to a specific published false-positive rate makes the risk harder to size up in the moment that matters most.',
-        ],
-      },
-    ],
-    table: {
-      caption: 'What Originality.ai states about its own accuracy, and what it doesn\'t state on the same pages',
-      headers: ['Claim', 'What\'s stated', 'What\'s not stated on the same page'],
-      rows: [
-        ['Multilingual model accuracy', '97.8%', 'The underlying false-positive percentage'],
-        ['Evidence basis', '"Peer-reviewed third party studies" referenced', 'Specific study figures shown on that page'],
-        ['False positives', 'Acknowledged as happening; rates described as "transparently" shared', 'No numeric false-positive rate printed on the FAQ page itself'],
-      ],
-    },
-    quote: {
-      quote: 'The worst part of a flagged invoice isn\'t the accusation, it\'s not knowing how much weight the number is even supposed to carry. Without a published false-positive rate, you\'re arguing in the dark.',
-      attribution: 'A freelance copywriter',
-      role: 'describing a typical client dispute, speaking generally',
-    },
-    pitfalls: [
-      'Assuming a 97.8% accuracy claim tells you the false-positive rate: it does not, since they are different measurements.',
-      'Disputing a client\'s flagged score with nothing but a denial, instead of drafts, timestamps or an independent check of your own.',
-      'Not keeping a WatermarkRemoverPro evidence report or equivalent on file until after a dispute has already started.',
-      'Assuming every client runs the same settings or document type through Originality.ai, when comparison baselines can differ.',
-    ],
-    faq: [
-      {
-        question: 'What should I do if a client says Originality.ai flagged my article?',
-        answer: 'Ask for the actual report and which passages triggered it, then offer your own evidence, such as drafts, timestamps, research notes, or an independent check of your own, rather than only disputing their score.',
-      },
-      {
-        question: 'Does Originality.ai publish a false positive rate anywhere?',
-        answer: 'Its FAQ says it transparently shares false-positive rates from its own accuracy study, but a specific numeric figure is not printed on the page making the accuracy claim itself.',
-      },
-      {
-        question: 'Can a WatermarkRemoverPro report overturn an Originality.ai result?',
-        answer: 'No, and it is not designed to. It checks a different thing entirely, your own writing against a keyed statistical mark, and works as complementary evidence of your process, not a rebuttal of another tool\'s specific score.',
-      },
-      {
-        question: 'Is it worth checking my own work before submitting it to a client?',
-        answer: 'For anyone working with agencies known to screen invoices, yes. A quick check and a saved evidence report cost little and can save a lot of back-and-forth later.',
-      },
-      {
-        question: 'How quickly should I respond if a client flags my work?',
-        answer: 'As soon as you reasonably can. A prompt, specific reply that names exactly what you are disputing and offers supporting evidence reads far better to a client than a delayed general denial, and it keeps the invoice moving rather than letting it stall indefinitely.',
-      },
-    ],
-    internalLinks: [
-      { href: '/vs/originality-ai', label: 'WatermarkRemoverPro vs Originality.ai' },
-      { href: '/for/freelance-writers', label: 'WatermarkRemoverPro for freelance writers' },
-      { href: '/pricing', label: 'WatermarkRemoverPro Pro pricing' },
-      { href: '/docs/api', label: 'WatermarkRemoverPro API documentation' },
-      { href: '/blog/5-things-ai-detector-report-should-tell-you', label: '5 things an AI detector report should tell you' },
-    ],
-    externalLinks: [
-      { href: 'https://originality.ai', label: 'Originality.ai\'s stated accuracy claims' },
-      { href: 'https://www.turnitin.com/blog/understanding-false-positives-within-our-ai-writing-detection-capabilities', label: 'Turnitin on document-level false positive rates' },
-      { href: 'https://gptzero.me', label: 'GPTZero\'s stated accuracy and bias claims' },
-    ],
-    schemaType: 'Review',
-    reviewRating: {
-      itemName: 'Originality.ai',
-      ratingValue: 3.4,
-      bestRating: 5,
-      summary: 'Originality.ai cites a strong multilingual accuracy figure and points to third-party studies, but does not surface a specific false-positive percentage on its own marketing pages, which makes it harder for a freelancer facing a client dispute to know exactly what risk they\'re up against.',
     },
   },
   {

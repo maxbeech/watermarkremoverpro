@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-16: Weekly content lifecycle pass (WatermarkRemoverPro blog)
+
+Acted on the verdicts from the weekly Search Console scoring (90-day window).
+
+- **Consolidated.** `how-common-are-ai-detector-false-positives` and `originality-ai-review-false-positives` were merged into `gptzero-review-false-positives`, which is the surviving page for the AI-detector false-positive cluster. The survivor gains the document-versus-sentence explanation, the accuracy-is-not-a-false-positive-rate section, the what-to-ask-for and paper-trail guidance, two FAQ items and the Turnitin sentence-level source. Both old URLs now answer 301 to the survivor (`next.config.ts`), and they are removed from the sitemap and content source.
+- **Refreshed.** `green-list-watermarking-explained` gains a 2026 section on production text watermarking (SynthID-Text, Nature 2024) and the EU AI Act Article 50 timing, with sources; its dead link to `/blog/what-is-an-ai-watermark-detector` now points at the comparison post. `ai-detector-comparison-2026` now dates the Turnitin figures (2023, pre-ChatGPT test set), links to the surviving review, and notes Article 50. The slug is unchanged, so the existing URL keeps its ranking signal.
+- **Links.** Internal links to the merged posts now point at the survivor, and the comparison post no longer links to the merged Originality review.
+- **Dates.** `publishedAt` is unchanged on both refreshed posts. The post schema has no separate updated date, so the visible date still reads the original publication.
+- **Tests.** `tests/blog-consolidation.test.ts` pins the merge: merged slugs are not live posts, the survivor carries the merged sections and FAQ, no internal link points at a merged slug, and both 301 rules exist.
+
 ## 2026-10-07: NeverPrompted launch editorial calendar
 
 - Expanded NeverPrompted's registered blog source to 15 original Academy, News and Reviews posts, each with metadata, FAQ, structured-data type, credited hero image, internal links and an authoritative source.

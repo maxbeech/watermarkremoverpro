@@ -25,6 +25,31 @@ const BRAND_SENTRY_PROJECTS: Record<string, string> = {
 const sentryProject =
   process.env.SENTRY_PROJECT || BRAND_SENTRY_PROJECTS[process.env.NEXT_PUBLIC_BRAND?.trim() || 'watermarkremoverpro']
 
+/**
+ * Blog posts merged into a surviving page during the content lifecycle pass
+ * (see CHANGELOG.md). Each old URL answers 301 to the page that now carries its
+ * material, so the search signal moves rather than dropping to a 404. A 301 is
+ * set explicitly because `permanent: true` would send Next's default 308.
+ *
+ * Only the WatermarkRemoverPro build has these posts, so the rules are scoped
+ * to that brand and the NeverPrompted build never sees them.
+ */
+const isWatermarkRemoverPro = (process.env.NEXT_PUBLIC_BRAND?.trim() || 'watermarkremoverpro') === 'watermarkremoverpro'
+const mergedBlogRedirects = isWatermarkRemoverPro
+    ? [
+        {
+          source: '/blog/how-common-are-ai-detector-false-positives',
+          destination: '/blog/gptzero-review-false-positives',
+          statusCode: 301,
+        },
+        {
+          source: '/blog/originality-ai-review-false-positives',
+          destination: '/blog/gptzero-review-false-positives',
+          statusCode: 301,
+        },
+      ]
+    : []
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
@@ -57,15 +82,17 @@ const nextConfig: NextConfig = {
   // only ever sees one brand's domain per build (NEXT_PUBLIC_BRAND): it does
   // not need to redirect both brands' apex domains in one deployment.
   async redirects() {
-    if (!activeDomain) return []
-    return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: activeDomain }],
-        destination: `https://www.${activeDomain}/:path*`,
-        permanent: true,
-      },
-    ]
+    const apexRedirects = activeDomain
+      ? [
+          {
+            source: '/:path*',
+            has: [{ type: 'host' as const, value: activeDomain }],
+            destination: `https://www.${activeDomain}/:path*`,
+            permanent: true,
+          },
+        ]
+      : []
+    return [...apexRedirects, ...mergedBlogRedirects]
   },
 }
 
