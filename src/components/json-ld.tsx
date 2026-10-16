@@ -1,5 +1,13 @@
 import { SITE } from '@/lib/site'
 
+const SCHEMA_CONTEXT = 'https://schema.org'
+
+/** A graph keeps one top-level context for consumers that cannot inspect a JSON-LD array. */
+export function serializeJsonLd(data: Record<string, unknown> | Record<string, unknown>[]) {
+  const document = Array.isArray(data) ? { '@context': SCHEMA_CONTEXT, '@graph': data } : data
+  return JSON.stringify(document).replace(/</g, '\\u003c')
+}
+
 /**
  * Structured data. Every page that answers a question carries a FAQPage block,
  * and the product surfaces carry SoftwareApplication. This is how an assistant
@@ -17,14 +25,14 @@ export function JsonLd({ data }: { data: Record<string, unknown> | Record<string
       // element early and turns the remainder of the document into markup. It
       // costs nothing to be immune to that rather than to rely on every future
       // author of a page title knowing it.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }}
     />
   )
 }
 
 export function softwareApplicationLd() {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'SoftwareApplication',
     name: SITE.name,
     url: SITE.url,
@@ -66,7 +74,7 @@ export function softwareApplicationLd() {
 
 export function faqPageLd(items: { question: string; answer: string }[]) {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'FAQPage',
     mainEntity: items.map((item) => ({
       '@type': 'Question',
@@ -78,7 +86,7 @@ export function faqPageLd(items: { question: string; answer: string }[]) {
 
 export function breadcrumbLd(trail: { name: string; url: string }[]) {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'BreadcrumbList',
     itemListElement: trail.map((item, i) => ({
       '@type': 'ListItem',
@@ -98,7 +106,7 @@ export function blogPostingLd(post: {
   heroImageSrc: string
 }) {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.metaDescription,
@@ -117,7 +125,7 @@ export function blogPostingLd(post: {
 
 export function howToLd(post: { title: string; metaDescription: string; steps: { heading: string; body: string }[] }) {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'HowTo',
     name: post.title,
     description: post.metaDescription,
@@ -138,7 +146,7 @@ export function reviewLd(rating: {
   author: string
 }) {
   return {
-    '@context': 'https://schema.org',
+    '@context': SCHEMA_CONTEXT,
     '@type': 'Review',
     itemReviewed: { '@type': 'SoftwareApplication', name: rating.itemName },
     reviewRating: {

@@ -1332,3 +1332,7 @@ Design quality only. No functional, pricing or business-logic change.
 - Fixed two live E2E assertions that searched for stat labels case-sensitively
   while `innerText` returns them uppercased by CSS. The product was correct; the
   assertions were checking a stylesheet.
+
+## 2026-10-16
+
+- Wrap multi-node JSON-LD in a standard graph with a top-level schema context for consumers that assume an object. Preserve every schema and script-safe escaping; add compatibility regressions for NEVERPROMPTED_WEB-1.

@@ -462,3 +462,5 @@ implementations that can silently disagree.
 See [`docs/BUILD_LOG.md`](docs/BUILD_LOG.md) for what is built, what is verified
 live, and what is explicitly deferred, including the payment-processor gap that
 keeps paid plans switched off rather than shown as a button that fails.
+
+Structured data arrays are serialised as a JSON-LD graph with a shared root context. Each schema node is preserved, including its existing context, and script-closing text remains escaped.
