@@ -6,6 +6,8 @@ export default tseslint.config(
   {
     ignores: [
       '.next/**',
+      // Other agents' checkouts contain their own source and generated bundles.
+      '.claude/worktrees/**',
       'node_modules/**',
       'next-env.d.ts',
       'corpus/**',

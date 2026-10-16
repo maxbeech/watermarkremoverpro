@@ -464,3 +464,5 @@ live, and what is explicitly deferred, including the payment-processor gap that
 keeps paid plans switched off rather than shown as a button that fails.
 
 Structured data arrays are serialised as a JSON-LD graph with a shared root context. Each schema node is preserved, including its existing context, and script-closing text remains escaped.
+
+Lint checks this checkout and excludes nested `.claude/worktrees` owned by parallel coding instances.

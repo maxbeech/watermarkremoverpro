@@ -1336,3 +1336,5 @@ Design quality only. No functional, pricing or business-logic change.
 ## 2026-10-16
 
 - Wrap multi-node JSON-LD in a standard graph with a top-level schema context for consumers that assume an object. Preserve every schema and script-safe escaping; add compatibility regressions for NEVERPROMPTED_WEB-1.
+
+- Exclude other coding instances’ nested worktrees from this checkout’s lint run. Application source remains checked.
