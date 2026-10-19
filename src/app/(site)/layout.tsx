@@ -72,10 +72,14 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               <FooterLink href="/limits">Stated limits</FooterLink>
               <FooterLink href="/pricing">Pricing</FooterLink>
               <FooterLink href="/blog">Blog</FooterLink>
+              <FooterLink href="/guide">Guides</FooterLink>
+              <FooterLink href="/vs">Compare</FooterLink>
+              <FooterLink href="/in">Languages</FooterLink>
             </div>
 
             <div className="space-y-2.5">
               <p className="font-semibold text-white">For machines</p>
+              <FooterLink href="/docs">Documentation</FooterLink>
               <FooterLink href="/docs/api">JSON API</FooterLink>
               <FooterLink href="/docs/mcp">MCP server</FooterLink>
               <FooterLink href="/llms.txt" external>
@@ -87,7 +91,19 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
 
-          <p className="mt-12 border-t border-ink-800 pt-6 text-xs leading-relaxed text-ink-300">
+          <div className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-ink-800 pt-6 text-sm">
+            <FooterLink href="/guide/remove-chatgpt-watermark">Remove the ChatGPT watermark</FooterLink>
+            <FooterLink href="/guide/eu-ai-act-article-50">EU AI Act Article 50</FooterLink>
+            <FooterLink href="/blog/openai-chatgpt-text-watermark-eu-textgrain">
+              ChatGPT textGrain in the EU
+            </FooterLink>
+            <FooterLink href="/vs/originality-ai">vs Originality.ai</FooterLink>
+            <FooterLink href="/vs/turnitin-ai-detector">vs Turnitin</FooterLink>
+            <FooterLink href="/in/english">English</FooterLink>
+            <FooterLink href="/in/german">German</FooterLink>
+          </div>
+
+          <p className="mt-6 text-xs leading-relaxed text-ink-300">
             A detected mark is not proof of authorship. An absent mark is not proof of human
             authorship. {SITE.name} reports what it measured and names what it could not measure.
           </p>
