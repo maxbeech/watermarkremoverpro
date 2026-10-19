@@ -1,5 +1,23 @@
 import { describe, expect, it } from 'vitest'
-import { serializeJsonLd } from './json-ld'
+import { organizationLd, serializeJsonLd, websiteLd } from './json-ld'
+import { SITE } from '@/lib/site'
+
+describe('home page publisher and site nodes', () => {
+  it('describes the publisher as an Organization on the site origin', () => {
+    expect(organizationLd()).toEqual({ '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: SITE.url })
+  })
+  it('describes the site as a WebSite with the same name and origin', () => {
+    const node = websiteLd()
+    expect(node['@type']).toBe('WebSite')
+    expect(node.name).toBe(SITE.name)
+    expect(node.url).toBe(SITE.url)
+    expect(node.description).toBe(SITE.description)
+  })
+  it('serialises alongside the existing nodes as one graph', () => {
+    const document = JSON.parse(serializeJsonLd([organizationLd(), websiteLd()]))
+    expect(document['@graph'].map((node: { '@type': string }) => node['@type'])).toEqual(['Organization', 'WebSite'])
+  })
+})
 
 describe('structured data document compatibility', () => {
   it('gives multi-node data a root context without discarding any schema', () => {

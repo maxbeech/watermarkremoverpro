@@ -84,6 +84,32 @@ export function faqPageLd(items: { question: string; answer: string }[]) {
   }
 }
 
+/**
+ * Publisher and site identity for the home page. The product node above says
+ * what the software is; these say who publishes it and which site it lives on,
+ * so an assistant resolving the brand gets an Organization and a WebSite
+ * rather than a bare SoftwareApplication. https://schema.org/Organization
+ */
+export function organizationLd() {
+  return {
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.url,
+  }
+}
+
+/** https://schema.org/WebSite */
+export function websiteLd() {
+  return {
+    '@context': SCHEMA_CONTEXT,
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: SITE.url,
+    description: SITE.description,
+  }
+}
+
 export function breadcrumbLd(trail: { name: string; url: string }[]) {
   return {
     '@context': SCHEMA_CONTEXT,

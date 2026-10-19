@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-19: Home page publisher and site structured data (WatermarkRemoverPro)
+
+- **Structured data.** The WatermarkRemoverPro home page now also emits an `Organization` and a `WebSite` node alongside the existing `SoftwareApplication` and `FAQPage`, so the brand resolves to a publisher and a site, not just a product. Both are built from `SITE` (name and origin) in `src/components/json-ld.tsx`. NeverPrompted's home page is unchanged.
+- **Tests.** `src/components/json-ld.test.ts` pins the two builders and their serialisation as one graph.
+
 ## 2026-10-16: Weekly content lifecycle pass (WatermarkRemoverPro blog)
 
 Acted on the verdicts from the weekly Search Console scoring (90-day window).

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { CORE_FAQ, Faq } from '@/components/faq'
-import { JsonLd, faqPageLd, softwareApplicationLd } from '@/components/json-ld'
+import { JsonLd, faqPageLd, organizationLd, softwareApplicationLd, websiteLd } from '@/components/json-ld'
 import { ButtonLink, Eyebrow, LimitNote, Panel, Section, SectionHead, Wrap } from '@/components/brand/ui'
 import { ExhibitFrame, ResultExhibit, StyleExhibit } from '@/components/marketing/exhibit'
 import { Bullet, Legend, Position, StepCard, TrustItem } from '@/components/marketing/homepage-fragments'
@@ -23,7 +23,7 @@ export function WatermarkRemoverProHome({
 }) {
   return (
     <>
-      <JsonLd data={[softwareApplicationLd(), faqPageLd(CORE_FAQ)]} />
+      <JsonLd data={[organizationLd(), websiteLd(), softwareApplicationLd(), faqPageLd(CORE_FAQ)]} />
 
       {/* ------------------------------------------------------------ hero */}
       <div className="paper wash border-b border-ink-200">
