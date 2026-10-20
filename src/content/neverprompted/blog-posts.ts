@@ -574,7 +574,7 @@ const LAUNCH_POSTS: BlogPost[] = [
   },
   {
     slug: "chatgpt-hidden-watermark-europe-your-writing",
-    title: "ChatGPT Now Hides a Watermark in Its Text in Europe. Here’s What That Means for Your Writing",
+    title: "ChatGPT Watermark in Europe: What It Means for Your Writing",
     h1: "ChatGPT Is Quietly Marking Its Text in Europe. What Happens to Your Writing?",
     metaDescription:
       "OpenAI is adding a ChatGPT watermark in the EU. What it means, who it affects and how to make a draft genuinely sound like you.",

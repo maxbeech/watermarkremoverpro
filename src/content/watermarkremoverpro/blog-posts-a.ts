@@ -687,9 +687,9 @@ export const BLOG_POSTS_A: BlogPost[] = [
   },
   {
     slug: "openai-chatgpt-text-watermark-eu-textgrain",
-    title: "OpenAI's ChatGPT Text Watermark in the EU: What textGrain Is and Who Can Detect It",
+    title: "ChatGPT Watermark in the EU: What textGrain Means for Detection",
     h1: "OpenAI Will Watermark ChatGPT Text in the EU: What textGrain Means for Detection",
-    metaDescription: "OpenAI is adding an invisible watermark to ChatGPT and Codex text in the EU. What textGrain is, what OpenAI's own robustness numbers say, and who can actually detect it.",
+    metaDescription: "OpenAI is adding an invisible watermark to ChatGPT and Codex text in the EU. What textGrain is and who can detect it.",
     category: "News",
     format: "data-study",
     intent: "informational",
