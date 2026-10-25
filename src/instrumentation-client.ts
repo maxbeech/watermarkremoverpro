@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 import { sharedSentryOptions } from '@/lib/sentry-options'
+import { CLIENT_DENIED_URLS, CLIENT_IGNORED_ERROR_PATTERNS } from '@/lib/sentry-filters'
 
 /**
  * Browser error reporting. Loaded by Next on the client at boot.
@@ -18,6 +19,8 @@ if (dsn) {
   Sentry.init({
     dsn,
     ...shared,
+    ignoreErrors: CLIENT_IGNORED_ERROR_PATTERNS,
+    denyUrls: CLIENT_DENIED_URLS,
     // Requests go through our own tunnel route (next.config.ts), so they are
     // same-origin and ad-blocker safe. The content-type header is required, not
     // cosmetic: without one the tunnel receives an empty body and a feedback

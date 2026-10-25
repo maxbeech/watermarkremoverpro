@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-25: Wallet-extension errors out of Sentry (NeverPrompted)
+
+- A visitor's MetaMask extension threw "Failed to connect to MetaMask" from its injected `scripts/inpage.js`, which was reported as an error on the home page (NEVERPROMPTED_WEB-2). Those messages and extension script URLs are now ignored by the browser Sentry init (`src/lib/sentry-filters.ts`, tested in `tests/sentry-filters.test.ts`). Nothing in our code ran.
+
 ## 2026-10-19: Home page publisher and site structured data (WatermarkRemoverPro)
 
 - **Structured data.** The WatermarkRemoverPro home page now also emits an `Organization` and a `WebSite` node alongside the existing `SoftwareApplication` and `FAQPage`, so the brand resolves to a publisher and a site, not just a product. Both are built from `SITE` (name and origin) in `src/components/json-ld.tsx`. NeverPrompted's home page is unchanged.
