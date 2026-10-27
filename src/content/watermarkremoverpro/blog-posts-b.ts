@@ -554,7 +554,7 @@ export const BLOG_POSTS_B: BlogPost[] = [
     ],
     heroImage: {
       src: 'https://images.unsplash.com/photo-1644088379091-d574269d422f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
-      alt: 'An abstract network of connected nodes, representing the statistical structure behind Claude\'s AI watermark',
+      alt: 'An abstract network of connected nodes, representing the statistical structure of the Claude AI watermark from Anthropic',
       unsplashId: 'xuTJZ7uD7PI',
     },
     intro: [

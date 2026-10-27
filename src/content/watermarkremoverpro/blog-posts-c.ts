@@ -202,7 +202,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     ],
     heroImage: {
       src: 'https://images.unsplash.com/photo-1589994965851-a8f479c573a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
-      alt: 'A statue of Lady Justice holding scales, representing an appeal against an AI detection false positive',
+      alt: 'A statue of Lady Justice holding scales, representing an AI detection false positive appeal',
       unsplashId: 'yCdPU73kGSc',
     },
     intro: [
@@ -551,7 +551,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     ],
     heroImage: {
       src: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
-      alt: 'A performance analytics dashboard on a screen, representing the statistics behind green-list AI watermark detection',
+      alt: 'A performance analytics dashboard on a screen, representing the statistics behind an AI watermark detector using green-list tokens',
       unsplashId: 'JKUTrJ4vK00',
     },
     intro: [
@@ -736,7 +736,7 @@ export const BLOG_POSTS_C: BlogPost[] = [
     ],
     heroImage: {
       src: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
-      alt: 'A data reporting dashboard on a laptop screen, representing a 2026 comparison of AI detector tools',
+      alt: 'A data reporting dashboard on a laptop screen, representing a 2026 comparison of AI detector tools and their AI detector API access',
       unsplashId: 'qwtCeJ5cLYs',
     },
     intro: [
