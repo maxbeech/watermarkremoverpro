@@ -506,7 +506,6 @@ export const BLOG_POSTS_B: BlogPost[] = [
       },
     ],
     internalLinks: [
-      { href: '/vs/gptzero', label: 'WatermarkRemoverPro vs GPTZero' },
       { href: '/method', label: 'How the WatermarkRemoverPro method works' },
       { href: '/verify', label: 'Live watermark detection demo' },
       { href: '/for/non-native-english-writers', label: 'WatermarkRemoverPro for non-native English writers' },

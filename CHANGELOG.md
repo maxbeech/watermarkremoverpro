@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-11-03: Weekly content lifecycle pass, comparison page merged (WatermarkRemoverPro)
+
+Acted on the verdicts from the weekly Search Console scoring (90-day window).
+
+- **Consolidated.** `/vs/gptzero`, a template comparison page with the same subject as the GPTZero review, is merged into `gptzero-review-false-positives`. The review already carries the keyed-test material in "How GPTZero differs from a keyed watermark test", so nothing was lost. `/vs/gptzero` now answers 301 to the review (`next.config.ts`), its seed is removed from `src/content/watermarkremoverpro/pages.ts`, so it leaves the sitemap and the `/vs` index, and the two internal links to it now point at the review.
+- **No change: `green-list-watermarking-explained`.** Its REFRESH verdict is stale. The 2026 refresh from 2026-10-16 is live (the "Where text watermarking is in 2026" section and the SynthID-Text and Article 50 sources). Eighteen days is too soon to judge the position, so no second edit.
+- **No change: `ai-detector-comparison-2026`.** Its REFRESH verdict asked to change the year. 2026 is the current year and the slug is what carries the ranking signal, so the year stays. The Turnitin figures were dated on 2026-10-16.
+- **Tests.** `tests/vs-comparison-consolidation.test.ts` pins the merge: no `/vs/gptzero` page is generated, no internal link points at it, and its 301 rule exists.
+- **Dates.** No visible date changed.
+
 ## 2026-11-03: Page translation no longer crashes the workspace (NEVERPROMPTED_WEB-3)
 
 - **Report.** A Brazilian visitor with Chrome's page translation on (`<font>` wrappers in the click trail) deleted a rewrite from the sidebar and hit "NotFoundError: Failed to execute 'removeChild'". The translator had swapped React's text node for a `<font>` element, so React's later removal found it was no longer a child. The route error boundary then said "That is on us".

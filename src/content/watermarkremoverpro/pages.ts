@@ -289,20 +289,6 @@ const COMPARISON_SEEDS: ComparisonSeed[] = [
     ],
   },
   {
-    slug: 'gptzero',
-    competitor: 'GPTZero',
-    metaTitle: 'WatermarkRemoverPro vs GPTZero: a provenance-mark test, not a classifier',
-    whatItIs: [
-      'GPTZero is a widely used AI-text classifier. You paste text and it returns a judgement about how likely it is to be machine-generated, based largely on perplexity and burstiness, meaning how predictable the wording is and how much sentence structure varies.',
-      'It is available directly to individuals, which makes it the tool many accused writers reach for first.',
-    ],
-    keyDifference: [
-      'Both are self-serve, so the difference is in what is being measured. A perplexity-based classifier asks whether writing looks predictable. That signal is real but it is also the signal that penalises clear, plain, well-edited prose, and second-language writing in particular.',
-      'WatermarkRemoverPro’s primary channel does not use fluency at all: it is a keyed test for a green-list watermark, which is present or absent independently of how the writing reads.',
-      'We are also explicit about a limit a classifier does not have to state: our test is keyed, and no vendor publishes its key, so we tell you exactly which keys were tested and that a null result applies only to those.',
-    ],
-  },
-  {
     slug: 'originality-ai',
     competitor: 'Originality.ai',
     metaTitle: 'WatermarkRemoverPro vs Originality.ai: checking your own work vs screening others’',

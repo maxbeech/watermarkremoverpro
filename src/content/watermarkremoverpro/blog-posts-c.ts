@@ -872,7 +872,6 @@ export const BLOG_POSTS_C: BlogPost[] = [
     ],
     internalLinks: [
       { href: '/vs/turnitin-ai-detector', label: 'WatermarkRemoverPro vs Turnitin AI detector' },
-      { href: '/vs/gptzero', label: 'WatermarkRemoverPro vs GPTZero' },
       { href: '/vs/originality-ai', label: 'WatermarkRemoverPro vs Originality.ai' },
       { href: '/blog/turnitin-ai-detector-vs-watermarkremoverpro', label: 'Turnitin AI detector vs WatermarkRemoverPro' },
       { href: '/blog/gptzero-review-false-positives', label: 'GPTZero review: accuracy, bias and false positives' },

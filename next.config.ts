@@ -47,6 +47,14 @@ const mergedBlogRedirects = isWatermarkRemoverPro
           destination: '/blog/gptzero-review-false-positives',
           statusCode: 301,
         },
+        // /vs/gptzero was a template comparison page with the same subject as the
+        // GPTZero review; its keyed-test material already lives in the review's
+        // "How GPTZero differs from a keyed watermark test" section.
+        {
+          source: '/vs/gptzero',
+          destination: '/blog/gptzero-review-false-positives',
+          statusCode: 301,
+        },
       ]
     : []
 
