@@ -357,6 +357,9 @@ codes and counts only. The feedback form has screenshots switched off on purpose
 
 The Sentry scrubber (`src/lib/scrub.ts`) redacts secrets of any length, backs up to a clean boundary when it truncates, and fails closed; its regression tests are in `tests/scrub-hardening.test.ts`.
 
+Browser-side noise that is not ours (wallet extensions, in-app webview bridges, a stackless `undefined` rejection, and React DOM errors on a page the visitor has translated) is dropped by `src/lib/sentry-client-noise.ts`, generated from `ProductFactory/_services/sentry-client-noise`; edit it there, not here.
+
+
 NeverPrompted's public content is deliberately kept separate from WatermarkRemoverPro's content. Its guide, comparison, audience and language pages are registered through `src/content/neverprompted/pages.ts`, linked from the brand homepage, and covered by a 500-word minimum-content test so a new search page cannot quietly ship as a thin doorway page. All public URLs use the HTTPS `www` origin; invalid or apex `NEXT_PUBLIC_SITE_URL` values fall back to the brand's canonical www URL.
 
 `npm test` runs the unit suite **and** connects to the MCP server over the real

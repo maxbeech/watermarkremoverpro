@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { dropClientNoise } from '@/lib/sentry-client-noise'
 import { scrubBreadcrumb, scrubEvent, scrubLog, scrubTransaction } from '@/lib/scrub'
 
 /**
@@ -13,7 +14,8 @@ export function sharedSentryOptions() {
     tracesSampleRate: 0.1,
     // Never send request bodies, headers or user identifiers by default.
     sendDefaultPii: false,
-    beforeSend: scrubEvent,
+    // Browser-side noise from injected software and page translation is dropped first.
+    beforeSend: dropClientNoise(scrubEvent),
     beforeSendTransaction: scrubTransaction,
     beforeBreadcrumb: scrubBreadcrumb,
     // Structured logs, plus every console call forwarded as a log line.

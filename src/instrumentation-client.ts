@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
+import { CLIENT_NOISE_DENY_URLS, CLIENT_NOISE_IGNORE_ERRORS } from '@/lib/sentry-client-noise'
 import { sharedSentryOptions } from '@/lib/sentry-options'
-import { CLIENT_DENIED_URLS, CLIENT_IGNORED_ERROR_PATTERNS } from '@/lib/sentry-filters'
 
 /**
  * Browser error reporting. Loaded by Next on the client at boot.
@@ -19,8 +19,11 @@ if (dsn) {
   Sentry.init({
     dsn,
     ...shared,
-    ignoreErrors: CLIENT_IGNORED_ERROR_PATTERNS,
-    denyUrls: CLIENT_DENIED_URLS,
+    // Wallet extensions (NEVERPROMPTED_WEB-2), in-app webviews and other injected
+    // scripts raise errors that are not ours. Shared across products: see
+    // src/lib/sentry-client-noise.ts.
+    ignoreErrors: CLIENT_NOISE_IGNORE_ERRORS,
+    denyUrls: CLIENT_NOISE_DENY_URLS,
     // Requests go through our own tunnel route (next.config.ts), so they are
     // same-origin and ad-blocker safe. The content-type header is required, not
     // cosmetic: without one the tunnel receives an empty body and a feedback

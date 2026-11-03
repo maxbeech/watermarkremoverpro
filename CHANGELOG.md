@@ -1,8 +1,15 @@
 # Changelog
 
+## 2026-11-03: Page translation no longer crashes the workspace (NEVERPROMPTED_WEB-3)
+
+- **Report.** A Brazilian visitor with Chrome's page translation on (`<font>` wrappers in the click trail) deleted a rewrite from the sidebar and hit "NotFoundError: Failed to execute 'removeChild'". The translator had swapped React's text node for a `<font>` element, so React's later removal found it was no longer a child. The route error boundary then said "That is on us".
+- **Fix.** The run title and the AI figure in the sidebar are marked `translate="no"` (the title is the person's own text), and the AI figure is one text node rather than two. If this error still happens on a translated page, the error screen now says the browser's translation changed the page and offers "Reload page", and the event is no longer sent to Sentry. The same error on an untranslated page still reports.
+- **Shared filter.** The browser-noise rules now come from `src/lib/sentry-client-noise.ts`, the copy shared with the other Maxed Labs products (generated from `ProductFactory/_services/sentry-client-noise`). It replaces `src/lib/sentry-filters.ts`, whose wallet-extension rules (NEVERPROMPTED_WEB-2) it keeps, and adds the in-app-webview bridge and stackless `undefined` rejection rules.
+- **Not tested.** A real Google Translate session in a browser; the translation check is covered by unit tests only.
+
 ## 2026-10-25: Wallet-extension errors out of Sentry (NeverPrompted)
 
-- A visitor's MetaMask extension threw "Failed to connect to MetaMask" from its injected `scripts/inpage.js`, which was reported as an error on the home page (NEVERPROMPTED_WEB-2). Those messages and extension script URLs are now ignored by the browser Sentry init (`src/lib/sentry-filters.ts`, tested in `tests/sentry-filters.test.ts`). Nothing in our code ran.
+- A visitor's MetaMask extension threw "Failed to connect to MetaMask" from its injected `scripts/inpage.js`, which was reported as an error on the home page (NEVERPROMPTED_WEB-2). Those messages and extension script URLs are now ignored by the browser Sentry init (now `src/lib/sentry-client-noise.ts`, shared across products). Nothing in our code ran.
 
 ## 2026-10-19: Home page publisher and site structured data (WatermarkRemoverPro)
 

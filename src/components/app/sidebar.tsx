@@ -113,13 +113,19 @@ export function Sidebar({
                     (active ? 'bg-ink-800 text-white' : 'text-ink-200 hover:bg-ink-800/60')
                   }
                 >
-                  <span className="block truncate text-[13px] font-medium">{run.title}</span>
+                  {/* The title is the person's own text and the row is deleted by React.
+                      translate="no" keeps a page translator from swapping this text node
+                      for a <font> element, which makes React's later removeChild throw
+                      (NEVERPROMPTED_WEB-3). */}
+                  <span translate="no" className="block truncate text-[13px] font-medium">
+                    {run.title}
+                  </span>
                   <span className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[11px] text-ink-400">
                     <time dateTime={run.createdAt}>{shortDate(run.createdAt)}</time>
                     {run.status === 'error' && <span className="text-signal-300">did not run</span>}
                     {run.status === 'pending' && <span>queued</span>}
                     {summary?.likelihoodAfter !== null && summary !== null && (
-                      <span className="figure">AI {summary.likelihoodAfter}</span>
+                      <span translate="no" className="figure">{`AI ${summary.likelihoodAfter}`}</span>
                     )}
                   </span>
                 </Link>
