@@ -15,6 +15,7 @@ export const EVENTS = {
   loginFailed: 'login_failed',
   checkStarted: 'check_started',
   checkCompleted: 'check_completed',
+  checkSucceeded: 'check_succeeded',
   checkFailed: 'check_failed',
   workspaceOpened: 'workspace_opened',
   rewriteStarted: 'rewrite_started',

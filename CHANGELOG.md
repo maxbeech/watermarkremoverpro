@@ -1,3 +1,8 @@
+## 2026-11-06: Separate successful analysis from completion diagnostics
+
+- Add `check_succeeded` for actual supported analyses. Preserve `check_completed` diagnostics for empty, unsupported and undetermined inputs.
+- Share the boundary between both brand deployments; cover every refusal status and successful metadata-only emission.
+
 # Changelog
 
 ## 2026-11-06: active return measurement

@@ -10,6 +10,7 @@ import { buttonClass } from '@/components/brand/ui'
 import { DocumentInput } from '@/components/workspace/document-input'
 import { useMlClassifier } from '@/components/workspace/use-ml-classifier'
 import { track } from '@/lib/openhelm-analytics'
+import { recordCompletedCheck } from '@/lib/analytics-check'
 import { ResultView } from './result-view'
 
 /**
@@ -64,7 +65,7 @@ export function Checker({ wordCap = PLANS.anonymous.wordCap }: { wordCap?: numbe
       })
       // Metadata only: status and a detection boolean, never the document or a
       // value derived from its content.
-      track('check_completed', { language, status: result.status, mark_detected: result.watermark.anyDetected })
+      recordCompletedCheck(result, language)
       setPhase({ kind: 'done', result })
       // The heuristic channels above are instant; the model classifier is not,
       // so it runs separately and patches into the result view once it settles.
