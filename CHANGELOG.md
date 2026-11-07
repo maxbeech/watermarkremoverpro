@@ -1384,3 +1384,5 @@ Design quality only. No functional, pricing or business-logic change.
 - Wrap multi-node JSON-LD in a standard graph with a top-level schema context for consumers that assume an object. Preserve every schema and script-safe escaping; add compatibility regressions for NEVERPROMPTED_WEB-1.
 
 - Exclude other coding instances’ nested worktrees from this checkout’s lint run. Application source remains checked.
+
+2026-11-06: The shared GA bootstrap disables implicit page views before startup, so the explicit route tracker owns the initial and subsequent SPA page views. Product value and active-return events remain enabled.

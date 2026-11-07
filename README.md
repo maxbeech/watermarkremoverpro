@@ -477,3 +477,5 @@ GA4 is configured with `NEXT_PUBLIC_GA_MEASUREMENT_ID`. The reviewed value actio
 The generated return modules come from OpenHelm/shared/src through Products/_services/openhelm-analytics. Keep existing consent gates, exclude explicit test identities (`oh_is_test`), and run the return contract tests alongside the full test suite before release. Register the `oh_cohort_date` and `oh_return_contract` event dimensions in the selected GA property.
 
 Analytics value delivery uses `check_succeeded` after a completed analysis with `status=ok`. `check_completed` remains diagnostic and also includes empty or unsupported inputs; those refusals do not qualify as delivered value. Both brand deployments use the same tested boundary and send metadata only.
+
+2026-11-06: The shared GA bootstrap disables implicit page views before startup, so the explicit route tracker owns the initial and subsequent SPA page views. Product value and active-return events remain enabled.
