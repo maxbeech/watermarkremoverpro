@@ -1400,4 +1400,185 @@ export const BLOG_POSTS_C: BlogPost[] = [
     ],
     schemaType: 'none',
   },
+  {
+    slug: 'can-you-make-ai-text-undetectable',
+    title: 'Can You Make AI Text Undetectable? What a Measured Test Shows',
+    h1: 'Can You Make AI Text Undetectable? What a Measured Test Shows',
+    metaDescription:
+      'No honest tool can make AI text undetectable. We ran one 68-word paragraph through a rewrite and checked it before and after, with the real scores and their limits.',
+    category: 'Academy',
+    format: 'deep-dive',
+    intent: 'informational',
+    publishedAt: '2026-11-10',
+    author: 'WatermarkRemoverPro Content Team',
+    primaryKeyword: 'make ai text undetectable',
+    supportingKeywords: [
+      'undetectable ai text',
+      'can ai text be undetectable',
+      'ai text classifier',
+      'ai detector bypass claims',
+      'reduce ai detection score',
+      'ai writing detection accuracy',
+      'ai watermark detector',
+      'on-device rewrite',
+      'ai humanizer guarantee',
+      'ai detection false positive',
+    ],
+    longTailKeywords: [
+      'is undetectable ai text possible',
+      'can you make chatgpt text undetectable',
+      'why no ai humanizer can guarantee undetectable',
+      'how to test an ai detection score before and after a rewrite',
+    ],
+    heroImage: {
+      src: 'https://images.unsplash.com/photo-1758874573150-05c1b6b56407?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600',
+      alt: 'Make AI text undetectable: a writer testing a draft on a laptop before deciding what a rewrite can honestly change',
+      unsplashId: 'LuzrLgzAFco',
+    },
+    intro: [
+      "Searches for 'make AI text undetectable' usually come from one of two people: a writer whose honest draft was flagged, or someone who wants a guarantee that a checker will never notice the machine in their text.",
+      'Plenty of tools promise exactly that guarantee. This post does not repeat the promise. It measures one rewrite on one paragraph, using the same check WatermarkRemoverPro runs, and reports the numbers including the ones that do not flatter the tool.',
+      'The short answer is that no tool can make AI text undetectable. The before-and-after test shows why the word is the wrong target, and what a measurable, reviewable change looks like instead.',
+    ],
+    takeaways: [
+      'No rewrite can guarantee that a detector will never flag a text. Detectors give probabilities, and different detectors measure different things.',
+      'A measurable reduction is possible but usually modest. On our 68-word sample the style heuristic fell from 98 to 87, and it stayed in the high band.',
+      'The word-level watermark test found no mark before or after the rewrite. That says nothing about marks applied under keys nobody outside the vendor holds.',
+      'Short text is unreliable to score in either direction. The style measure needs at least 120 words before it reports a figure.',
+      'The honest goal is a smaller, reviewable change to your own writing, checked against your institution or client rules, not invisibility.',
+    ],
+    sections: [
+      {
+        id: 'why-undetectable-is-the-wrong-target',
+        heading: 'Why undetectable is the wrong target',
+        body: [
+          'A detector does not return a fact about who wrote a text. It returns a score built from patterns it was trained to notice, and every score sits somewhere between confident and uncertain. Turning that score into a promise that it will never fire is a category error, and no honest vendor can make it.',
+          'The clearest public example is OpenAI\'s own text classifier. It launched in January 2023 and was withdrawn on 20 July 2023 because of its low rate of accuracy. At launch it correctly flagged 26% of AI-written text and wrongly labelled 9% of human-written text as AI-written, and OpenAI warned that it was unreliable on text under 1,000 characters ([Search Engine Land](https://searchengineland.com/openai-ai-classifier-no-longer-available-429912)). A detector built by the model\'s own maker was not good enough to keep running.',
+          'That history matters for any claim of undetectability. If the company that trained the model could not reliably classify its own output, a rewriting tool cannot promise to beat every checker, now or after the next update.',
+        ],
+      },
+      {
+        id: 'what-is-actually-being-measured',
+        heading: 'What is actually being measured',
+        body: [
+          'WatermarkRemoverPro runs three separate instruments, and they answer different questions. Treating them as one number is the first mistake most people make.',
+          'The first is a watermark test. It looks for a statistical pattern in word pairs under a published reference key. It finds nothing unless a text was marked under that exact scheme, and the product says so. A result of no mark means no mark under these keys, not no mark at all.',
+          'The second is a style heuristic. It counts habits that appear more often in model output than in edited human prose: dash clauses, a short list of elevated words such as "delve" and "robust", connective adverbs such as "ultimately", repeated sentence openers, templated three-item lists, emoji, and uniform sentence length. It returns a 0 to 100 score and a band. It is a rule set, not a statistical test of authorship.',
+          'The third is a model-based classifier, a RoBERTa detector that returns the probability that a passage is machine-written. It runs on English only and is weaker on very short passages and on text that has been edited after generation.',
+          'Wikipedia\'s editors reached a similar conclusion in their own guide to spotting AI writing. They describe the patterns as signs to look for in combination, not as proof on their own ([TechCrunch](https://techcrunch.com/2025/11/20/the-best-guide-to-spotting-ai-writing-comes-from-wikipedia/)).',
+        ],
+      },
+      {
+        id: 'the-worked-test',
+        heading: 'The worked test on one paragraph',
+        body: [
+          'The sample is a 68-word paragraph of deliberately typical AI prose, written for this test. It is the kind of text a model produces when asked for a short introduction, and it contains the habits the heuristic looks for:',
+          '"In today\'s fast-paced digital landscape, it is important to note that clear writing matters more than ever. Moreover, a well-crafted paragraph serves as a foundation for trust — and it can make or break a reader\'s first impression. Let\'s delve into why this matters. First, clarity builds credibility. Second, consistency builds reliability. Finally, precision drives results. Ultimately, the goal is to communicate robust, comprehensive ideas in a seamless way."',
+          'The procedure has three steps. First, the check runs on the original. Second, the rewrite runs at the balanced strength, which adds dash and vocabulary changes but does not restructure whole sentences. Third, the check runs again on the rewritten output. The rewrite and both checks ran entirely on the device, and nothing was sent anywhere.',
+          'The rewritten version reads: "In today\'s fast-paced digital landscape, note that clear writing matters more than ever. Also, a well-crafted paragraph serves as a foundation for trust, and it can make or break a reader\'s first impression. Let\'s look at why this matters. First, clarity builds credibility. Second, consistency builds reliability. Finally, precision drives results. Ultimately, the goal is to communicate robust, comprehensive ideas in a seamless way."',
+          'Read the two versions side by side and the change is visible. The dash is gone, "delve" has become a plain phrase, and about one word in eight has moved. The meaning is unchanged, which is the point of a rewrite, and the rest of the paragraph still reads like a model wrote it.',
+        ],
+      },
+      {
+        id: 'the-numbers',
+        heading: 'The numbers, before and after',
+        body: [
+          'The table below reports every figure the tool returned for this paragraph. Nothing has been rounded upward to look better, and rows where the tool declined to give a figure say so.',
+        ],
+      },
+      {
+        id: 'what-the-numbers-say',
+        heading: 'What the numbers say, and what they do not',
+        body: [
+          'The style heuristic dropped from 98 to 87, a fall of 11 points. Most of that came from removing the dash and the word "delve". It did not reach a low band, because the rewrite left the rhythm alone: seven sentences of similar length, with a coefficient of variation of 0.69, and two elevated words that a plain-English pass would not touch without changing the sense.',
+          'The model-based classifier moved the other way. It called both versions human, with a probability of 0.0015 before and 0.0070 after. Two instruments disagreed on the same paragraph, and both results come from a 64-word text. The style measure needs at least 120 words before it reports a figure, so that row returned insufficient data rather than a guess.',
+          'That disagreement is the most useful finding in the test. A reader who sees a high score from one checker and a human label from another has learned something true: neither number is a verdict on who wrote the paragraph. Anyone promising a single score that settles the question is selling certainty the evidence does not carry.',
+        ],
+      },
+      {
+        id: 'reduce-the-signals-by-hand',
+        heading: 'How a writer can reduce the signals honestly',
+        body: [
+          'If your own draft has these habits, the useful fix is to make the writing better, not to hide where it came from. Start with the three things the test showed: cut the dash and use a comma or a full stop, replace stock vocabulary with the specific word you mean, and vary sentence length deliberately, with one short sentence to make a point and one longer sentence that carries an example.',
+          'Then add the thing a model cannot know: a concrete detail from your own experience, a number you measured, or a judgement that is yours. That is what makes writing read as yours, and it changes the text in ways no rewrite can fake.',
+          'Changing the wording does not change who wrote the text or whether its use was allowed. Check your course, employer or client rules separately. The earlier post on what a rewrite can and cannot reduce covers that distinction in more depth.',
+        ],
+      },
+      {
+        id: 'where-the-promise-breaks',
+        heading: 'Where the undetectable promise breaks',
+        body: [
+          'The promise fails in three places. A score from one detector is not the detector, so a text that passes one checker can fail another. A score measured on one paragraph is not a property of the writer, so a result on a short sample says little about a full essay. And a rewrite tuned to lower one score still contains the same ideas, which is what a reviewer or an examiner will read.',
+          'The product\'s own position is narrower than the promise. It reduces measured evidence in the passages its checks flag, on the device, and it reports before and after figures so you can judge the change yourself. It does not guarantee an outcome against any checker it has not been tested against.',
+        ],
+      },
+    ],
+    table: {
+      caption: 'Measured before and after the rewrite, on the same 68-word paragraph (64 words after the rewrite)',
+      headers: ['Measure', 'Before', 'After', 'Reading'],
+      rows: [
+        ['Words scored', '68', '64', 'The rewrite changed about 13% of the words'],
+        ['Style heuristic score (0 to 100)', '98 (high band)', '87 (high band)', 'Fell by 11 points and stayed in the high band'],
+        ['Dash used as a clause connector', '1', '0', 'The em dash was replaced with a comma'],
+        ['Elevated vocabulary hits', '3', '2', '"delve" was rewritten; "robust" and "comprehensive" stayed'],
+        ['Connective adverbs', '1', '1', '"Ultimately" stayed'],
+        ['Sentence-length variation (coefficient)', '0.71', '0.69', 'Rhythm barely changed'],
+        ['Watermark test, reference key', 'No mark; 0 of 7 passages survive correction', 'No mark; 0 of 7 passages survive correction', 'No mark either way, and only under the reference key'],
+        ['Model-based AI probability', '0.0015 (human)', '0.0070 (human)', 'Both read as human; the figure rose slightly'],
+        ['Style measure', 'Insufficient data (under 120 words)', 'Insufficient data (under 120 words)', 'Not reported, rather than reported unreliably'],
+      ],
+    },
+    quote: {
+      quote: 'A detected mark is not proof of authorship. An absent mark is not proof of human authorship.',
+      attribution: 'WatermarkRemoverPro check_document, limits section',
+      role: 'the product\'s own statement of what its check can and cannot show',
+    },
+    pitfalls: [
+      'Treating a single score as a verdict. The same paragraph can read high on one instrument and human on another, and both results come from a short sample.',
+      'Trusting a tool that promises undetectable output. OpenAI withdrew its own text classifier in 2023 for low accuracy, so a rewriter cannot promise more than the detectors it is measured against.',
+      'Rewriting until a score drops and stopping there. A lower number does not change the ideas, and a reviewer will still read the same argument.',
+      'Judging a full essay by a 64-word test. The style measure needs at least 120 words, and short passages are weaker on every instrument.',
+    ],
+    faq: [
+      {
+        question: 'Can AI-generated text ever be fully undetectable?',
+        answer:
+          'No honest tool can promise that. Detectors return probabilities that differ between tools, and OpenAI withdrew its own text classifier in July 2023 because its accuracy was too low to keep running.',
+      },
+      {
+        question: 'Does rewriting reduce an AI detection score?',
+        answer:
+          'Sometimes, and usually modestly. In our test the style heuristic fell from 98 to 87 on a 68-word paragraph, and it stayed in the high band. No rewrite guarantees a detection outcome.',
+      },
+      {
+        question: 'If one checker says a text is human, does that prove who wrote it?',
+        answer:
+          'No. In the same test the model-based classifier read both versions as human while the style heuristic read them as high. A single label is evidence to weigh, not proof of authorship.',
+      },
+      {
+        question: 'How short can a text be before the check stops being reliable?',
+        answer:
+          'The style measure needs at least 120 words before it reports a figure. The model-based classifier is weaker on very short passages, and OpenAI warned that its own classifier was unreliable under 1,000 characters.',
+      },
+      {
+        question: 'Should I run a rewrite before I submit my work?',
+        answer:
+          'Check your course, employer or client rules first. Reducing detectable evidence does not change whether AI assistance is allowed, and a rewrite that changes only wording leaves the ideas and the responsibility with you.',
+      },
+    ],
+    internalLinks: [
+      { href: '/blog/can-a-rewrite-reduce-ai-detection', label: 'Remove AI detection? What a rewrite can and cannot reduce' },
+      { href: '/blog/ai-paraphrasing-tool-detection-risk', label: 'AI paraphrasing tools: why the rewrite still gets flagged' },
+      { href: '/blog/what-is-an-ai-watermark-detector', label: 'What is an AI watermark? How detection actually works' },
+      { href: '/blog/per-language-ai-detection-accuracy', label: 'Per-language AI detection accuracy, compared' },
+      { href: '/rewrite', label: 'Free on-device AI text rewriter' },
+      { href: '/method', label: 'How the WatermarkRemoverPro method works' },
+    ],
+    externalLinks: [
+      { href: 'https://searchengineland.com/openai-ai-classifier-no-longer-available-429912', label: 'Search Engine Land: OpenAI AI classifier no longer available due to low accuracy' },
+      { href: 'https://techcrunch.com/2025/11/20/the-best-guide-to-spotting-ai-writing-comes-from-wikipedia/', label: 'TechCrunch: the best guide to spotting AI writing comes from Wikipedia' },
+      { href: 'https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing', label: 'Wikipedia: Signs of AI writing' },
+    ],
+    schemaType: 'none',
+  },
 ]
