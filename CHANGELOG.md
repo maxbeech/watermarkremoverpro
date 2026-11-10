@@ -5,6 +5,17 @@
 
 # Changelog
 
+## 2026-11-10: Weekly content lifecycle pass, ChatGPT vs Claude refreshed (WatermarkRemoverPro)
+
+Acted on the verdicts from the weekly Search Console scoring (90-day window). Three rows were due; one was refreshed, two were closed without a file change.
+
+- **Refreshed.** `/guide/chatgpt-vs-claude-watermark` (13 impressions, average position 9.1). The page said Anthropic "said it applies worldwide". The TechCrunch report of Anthropic's 11 August 2026 support-page update does not say that. It says models released after 2 August 2026 carry the mark, older models are being extended, and the mark applies at model level across Claude products. The meta description and body now state that, and say the page does not claim a wider scope than Anthropic has stated. Also added: a dated status line on Claude detector access (no public detector found as of 10 November 2026), internal links to `/guide/textgrain` and `/guide/does-editing-remove-a-watermark`, and a "Sources, and what is not yet confirmed" section with the primary coverage used.
+- **No change: `/guide/remove-chatgpt-watermark`.** Verdict was CONSOLIDATE into `/guide/chatgpt-watermark`. Not merged: the page is linked from the site-wide footer (`src/app/(site)/layout.tsx`), it is the removal-intent landing page, and its single impression sits at position 2. Folding it would demote the product's removal page to fix one impression.
+- **Deferred: `/guide/does-an-ai-humanizer-help-with-turnitin`.** Verdict was CONSOLIDATE for 3 impressions. Not merged in this run: it shares the Turnitin cluster that the previous lifecycle pass deferred for a human intent decision (the `/blog/turnitin-ai-detector-vs-watermarkremoverpro` pair, recorded in Content Inventory). A task is open for that decision.
+- **Noticed, not changed.** `/guide/chatgpt-watermark` says Anthropic "said it is applying its Claude watermark worldwide", the same unsupported claim. It is left for a follow-up so this pass stays within its three rows.
+- **Tests.** `tests/chatgpt-vs-claude-refresh.test.ts` pins the corrected scope, the sources section, the dated status line and the internal links.
+- **Dates.** No visible date changed; the guide template renders none.
+
 ## 2026-11-06: active return measurement
 
 - Record first measured visits and intentional returns using the shared three-hour, seven-day browser contract.

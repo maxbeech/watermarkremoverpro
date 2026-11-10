@@ -506,14 +506,14 @@ const GUIDES: LongTailPage[] = [
     title: 'ChatGPT vs Claude: how the two text watermarks differ',
     metaTitle: 'ChatGPT vs Claude watermark: scope, method and who can detect each',
     metaDescription:
-      'OpenAI watermarks ChatGPT text in the EU only; Anthropic says it applies its Claude watermark worldwide. A side-by-side of scope, method, detector access and what each means for a checker.',
+      'OpenAI watermarks ChatGPT text in the EU, with API opt-in elsewhere; Anthropic says Claude text from models released after 2 August 2026 carries its mark. Scope, method, detector access and what each means for a checker.',
     intro:
       'Two of the largest model providers now mark their text, but not in the same way or in the same places. The differences decide what a reader, an employer or a checking tool can actually conclude.',
     sections: [
       {
         heading: 'Scope: regional versus worldwide',
         body: [
-          'OpenAI’s watermark covers ChatGPT and Codex in the EU, rolling out over the coming weeks, with an opt-in for API developers anywhere. Anthropic announced its Claude watermark in August 2026 and said it applies worldwide.',
+          'OpenAI’s watermark covers ChatGPT and Codex in the EU, rolling out over the coming weeks, with an opt-in for API developers anywhere. Anthropic confirmed in August 2026 that models released after 2 August 2026 carry a text watermark automatically, with older models brought in over time. Its support page says the mark is applied at model level, so it is present whichever Claude product the text comes from. Anthropic has not, in the coverage we checked, limited it to the EU, and has not said it applies worldwide either, so this page does not claim a scope beyond what it has stated.',
           'Both sit under the same driver, the EU AI Act’s transparency rules, which took effect on 2 August 2026. Anthropic, Google, Meta, Microsoft and OpenAI are among the companies that have committed to the EU’s code of practice on AI-generated content, so more providers are likely to follow.',
         ],
       },
@@ -522,6 +522,7 @@ const GUIDES: LongTailPage[] = [
         body: [
           'OpenAI’s textGrain is a keyed bias on next-word choice and comes with a published report and robustness figures: a 10% synonym replacement dropped detection from about 92% to 66%. Both vendors’ marks belong to the family of word-choice watermarks, which weaken under editing and translation.',
           'OpenAI reported no meaningful change in model performance with the mark on. Neither mark is visible to a reader, and neither identifies the user.',
+          'For the published OpenAI figures in one place see /guide/textgrain, and for how a word-choice mark is weakened in general see /guide/does-editing-remove-a-watermark.',
         ],
       },
       {
@@ -529,6 +530,15 @@ const GUIDES: LongTailPage[] = [
         body: [
           'Neither provider publishes a detection key. OpenAI is limiting detector access to approved researchers and expert organisations; a third-party checker therefore cannot test either mark. WatermarkRemoverPro tests the keys it holds, including a public reference key for self-testing, and lists them on every result.',
           'Mixed provenance is the usual case: a draft from one model, edited by a person, summarised by another. Because a mark shows only that a system touched part of a passage, the honest reading of any single result is narrow. See /guide/claude-ai-watermark and /guide/chatgpt-watermark for each mark on its own.',
+          'Status as of 10 November 2026: Anthropic said on 12 August 2026 that a text detection API was coming. In the coverage we checked, we did not find a public Claude text detector, and this page has not tested one.',
+        ],
+      },
+      {
+        heading: 'Sources, and what is not yet confirmed',
+        body: [
+          'OpenAI announced the EU text watermark on 5 October 2026. Coverage used here: https://forklog.com/en/openai-to-introduce-text-watermarking-in-the-eu/ and https://cybernews.com/news/chatgpt-watermark-openai/. The OpenAI figures are cited from the textGrain guide, which lists their source.',
+          'Anthropic’s scope is taken from its 11 August 2026 support-page update as reported by TechCrunch: https://techcrunch.com/2026/08/11/anthropic-says-it-will-watermark-text-generated-by-its-ai-models/. TechCrunch reports that models released after 2 August 2026 carry the mark automatically, that older models are being extended, and that the mark applies at model level across Claude products, including the API and Claude Code.',
+          'Not confirmed as of 10 November 2026: whether Anthropic’s text detector is public, and how much editing removes the Claude mark. TechCrunch says it asked Anthropic to clarify the editing question and had not yet had an answer when it published.',
         ],
       },
     ],
